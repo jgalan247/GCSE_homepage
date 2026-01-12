@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Hub | Your Computing Journey Starts Here</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 2s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #6B8DD6, #8E37D7);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+        .blob {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="font-poppins bg-slate-900 text-white min-h-screen overflow-x-hidden">
+    
+    <!-- Animated Background Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+        <div class="absolute top-40 right-20 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float-delayed"></div>
+        <div class="absolute bottom-20 left-1/3 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 py-8">
+        <div class="container mx-auto px-6">
+            <nav class="flex items-center justify-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-2xl shadow-lg shadow-purple-500/30">
+                        💻
+                    </div>
+                    <span class="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+                        CS Hub
+                    </span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative z-10 py-16 md:py-24">
+        <div class="container mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                <span class="text-sm text-purple-200">Your gateway to Computer Science excellence</span>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight">
+                <span class="bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">
+                    Level Up Your
+                </span>
+                <br>
+                <span class="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
+                    Computing Skills
+                </span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-12">
+                Interactive resources, games, and tools designed to make learning Computer Science fun and accessible for everyone. 🚀
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <span>🎮</span>
+                    <span class="text-sm text-slate-300">Interactive Games</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <span>📚</span>
+                    <span class="text-sm text-slate-300">GCSE Resources</span>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700">
+                    <span>🧩</span>
+                    <span class="text-sm text-slate-300">Inclusive Learning</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cards Section -->
+    <section class="relative z-10 py-12 pb-24">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                
+                <!-- Card 1: Edexcel GCSE CS -->
+                <a href="https://hvgcsecs.cshub.org.je/index.html" class="card-hover group">
+                    <div class="h-full rounded-3xl p-1 bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-600 shadow-2xl shadow-purple-500/20">
+                        <div class="h-full bg-slate-900 rounded-[calc(1.5rem-4px)] p-8">
+                            <div class="flex items-start justify-between mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    📖
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-violet-500/20 text-violet-300 border border-violet-500/30">
+                                    Edexcel 1CP2
+                                </span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-violet-300 transition-colors">
+                                GCSE Computer Science
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">
+                                Complete revision for the Edexcel specification. Master all six topics with interactive lessons, video tutorials from Craig 'n' Dave, and past paper practice. Everything you need for Papers 1 & 2! 🎯
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Algorithms</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Data</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Networks</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Python</span>
+                            </div>
+                            <div class="flex items-center text-violet-400 font-semibold group-hover:translate-x-2 transition-transform">
+                                <span>Start Revising</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 2: Revision Games -->
+                <a href="https://hvgcseactivities.cshub.org.je/edexcel/" class="card-hover group">
+                    <div class="h-full rounded-3xl p-1 bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 shadow-2xl shadow-orange-500/20">
+                        <div class="h-full bg-slate-900 rounded-[calc(1.5rem-4px)] p-8">
+                            <div class="flex items-start justify-between mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    🎮
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                                    18+ Games
+                                </span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-orange-300 transition-colors">
+                                Revision Games
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">
+                                Learn through play! Cookie Quizzer, Memory Match, Connection Walls, Sequence Builders, and Category Sort games. Build streaks, earn points, and master 150+ key terms while having fun! 🍪
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Cookie Quizzer</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Memory Match</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Connection Wall</span>
+                            </div>
+                            <div class="flex items-center text-orange-400 font-semibold group-hover:translate-x-2 transition-transform">
+                                <span>Play Now</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 3: Paper 2 Quest -->
+                <a href="https://hvinclusion.cshub.org.je/" class="card-hover group">
+                    <div class="h-full rounded-3xl p-1 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 shadow-2xl shadow-teal-500/20">
+                        <div class="h-full bg-slate-900 rounded-[calc(1.5rem-4px)] p-8">
+                            <div class="flex items-start justify-between mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    🗺️
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                                    Gamified
+                                </span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-teal-300 transition-colors">
+                                Paper 2 Quest
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">
+                                Embark on an adventure through Paper 2! A gamified learning experience with coins, stars, and world maps. Perfect for students who learn best through interactive, game-based challenges. Level up! ⭐
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">🪙 Earn Coins</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">⭐ Collect Stars</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">🗺️ World Map</span>
+                            </div>
+                            <div class="flex items-center text-teal-400 font-semibold group-hover:translate-x-2 transition-transform">
+                                <span>Start Quest</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Card 4: Worksheet Generator -->
+                <a href="https://lrsinclusion.cshub.org.je/" class="card-hover group">
+                    <div class="h-full rounded-3xl p-1 bg-gradient-to-br from-pink-400 via-rose-500 to-red-500 shadow-2xl shadow-pink-500/20">
+                        <div class="h-full bg-slate-900 rounded-[calc(1.5rem-4px)] p-8">
+                            <div class="flex items-start justify-between mb-6">
+                                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center text-3xl shadow-lg group-hover:scale-110 transition-transform">
+                                    📝
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                                    For Teachers
+                                </span>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-pink-300 transition-colors">
+                                Worksheet Generator
+                            </h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">
+                                Create differentiated KS2–KS4 worksheets with SEND adaptations. Generate AI prompts for Autism, Dyslexia, ADHD, and more. Customize difficulty, reading age, and question count. 🧩
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">SEND Support</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">Differentiated</span>
+                                <span class="px-3 py-1 rounded-full text-xs bg-slate-800 text-slate-300">AI-Powered</span>
+                            </div>
+                            <div class="flex items-center text-pink-400 font-semibold group-hover:translate-x-2 transition-transform">
+                                <span>Create Worksheets</span>
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="relative z-10 py-16 border-t border-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto text-center">
+                <div>
+                    <div class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">6</div>
+                    <div class="text-slate-400 text-sm">Topics Covered</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent mb-2">18+</div>
+                    <div class="text-slate-400 text-sm">Interactive Games</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent mb-2">150+</div>
+                    <div class="text-slate-400 text-sm">Key Terms</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent mb-2">100%</div>
+                    <div class="text-slate-400 text-sm">Free to Use</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 border-t border-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center text-xl">
+                        💻
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        CS Hub
+                    </span>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-slate-400 text-sm mb-1">
+                        © 2025 All resources are copyright protected.
+                    </p>
+                    <p class="text-slate-500 text-sm">
+                        Created and designed by <span class="text-purple-400 font-semibold">Dr. Galan</span> | 
+                        <a href="https://coderra.je" class="text-purple-400 hover:text-purple-300 transition-colors">Coderra.je</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
