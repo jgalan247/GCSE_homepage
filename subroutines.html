@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subroutines Practice - Edexcel GCSE CS</title>
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    
+    <!-- Skulpt from jsDelivr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-tertiary:#21262d;--accent-purple:#8b5cf6;--accent-green:#10b981;--accent-red:#ef4444;--accent-amber:#f59e0b;--accent-blue:#3b82f6;--accent-cyan:#06b6d4;--text-primary:#f0f6fc;--text-secondary:#8b949e;--text-muted:#6e7681;--border:#30363d}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6}
+        header{background:linear-gradient(135deg,#059669,#047857);padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+        .header-content{max-width:1600px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo{display:flex;align-items:center;gap:.75rem}
+        .logo-icon{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem}
+        .logo h1{font-size:1.2rem;font-weight:700}.logo span{font-size:.8rem;opacity:.85}
+        .header-info{display:flex;gap:1.5rem;font-size:.85rem;opacity:.9}
+        .topic-badge{background:rgba(255,255,255,.2);padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:600}
+        .question-nav-bar{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:.75rem 2rem;overflow-x:auto}
+        .nav-container{max-width:1600px;margin:0 auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+        .nav-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-right:.5rem;white-space:nowrap}
+        .nav-btn{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-secondary);padding:.5rem 1rem;border-radius:6px;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+        .nav-btn:hover,.nav-btn.active{background:var(--accent-green);color:#fff;border-color:var(--accent-green)}
+        .nav-btn.completed{border-color:var(--accent-cyan);color:var(--accent-cyan)}
+        .nav-btn.completed.active{background:var(--accent-cyan);color:#fff}
+        main{max-width:1600px;margin:0 auto;padding:1.5rem 2rem;display:grid;grid-template-columns:1fr 1.2fr;gap:1.5rem;min-height:calc(100vh - 140px)}
+        @media(max-width:1200px){main{grid-template-columns:1fr}}
+        .panel{background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
+        .panel-header{background:var(--bg-tertiary);padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .panel-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary)}
+        .question-content{padding:1.25rem;flex:1;overflow-y:auto;max-height:calc(100vh - 250px)}
+        .question-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+        .question-number{width:36px;height:36px;background:var(--accent-green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+        .question-meta{font-size:.8rem;color:var(--text-muted)}
+        .question-context{background:var(--bg-tertiary);border-left:3px solid var(--accent-cyan);padding:1rem;margin-bottom:1.25rem;border-radius:0 8px 8px 0}
+        .question-context p{color:var(--text-secondary);font-size:.9rem;margin-bottom:.5rem}
+        .question-context p:last-child{margin-bottom:0}
+        .concept-box{background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.3);padding:.75rem;border-radius:6px;font-size:.85rem;color:var(--accent-cyan);margin-bottom:1rem}
+        .concept-box strong{color:var(--text-primary)}
+        .instruction{font-weight:600;color:var(--text-primary);margin-bottom:1rem;font-size:.95rem}
+        .task-list{list-style:none;margin-bottom:1rem}
+        .task-list li{display:flex;gap:.75rem;margin-bottom:.5rem;padding:.6rem .75rem;background:var(--bg-tertiary);border-radius:6px;font-size:.875rem}
+        .task-bullet{width:6px;height:6px;background:var(--accent-green);border-radius:50%;margin-top:.45rem;flex-shrink:0}
+        .task-text{color:var(--text-secondary)}
+        .task-text code{background:var(--bg-primary);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--accent-cyan)}
+        .note{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);padding:.75rem;border-radius:6px;font-size:.85rem;color:var(--accent-amber);margin-bottom:1rem}
+        .marks-badge{display:inline-block;background:var(--bg-tertiary);border:1px solid var(--border);padding:.4rem .75rem;border-radius:6px;font-size:.8rem;color:var(--text-secondary)}
+        .code-panel{display:flex;flex-direction:column;gap:1rem}
+        .editor-container{flex:1;min-height:350px;display:flex;flex-direction:column}
+        .editor-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+        .file-name{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)}
+        .file-icon{color:var(--accent-amber)}
+        .editor-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+        .btn{padding:.5rem .875rem;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;display:flex;align-items:center;gap:.35rem}
+        .btn-run{background:var(--accent-green);color:#fff}.btn-run:hover{background:#059669;transform:translateY(-1px)}
+        .btn-reset{background:var(--bg-secondary);color:var(--text-secondary);border:1px solid var(--border)}.btn-reset:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+        .btn-submit{background:var(--accent-cyan);color:#fff}.btn-submit:hover{background:#0891b2;transform:translateY(-1px)}
+        .editor-wrapper{flex:1;overflow:hidden;border-radius:0 0 8px 8px}
+        .CodeMirror{height:100%!important;font-family:'JetBrains Mono',monospace;font-size:13px;min-height:300px}
+        .output-container{min-height:150px;max-height:250px}
+        .output-header{display:flex;justify-content:space-between;align-items:center}
+        .output-status{font-size:.7rem;padding:.2rem .5rem;border-radius:4px;font-weight:500}
+        .status-ready{background:rgba(59,130,246,.2);color:var(--accent-blue)}
+        .status-running{background:rgba(245,158,11,.2);color:var(--accent-amber)}
+        .status-success{background:rgba(16,185,129,.2);color:var(--accent-green)}
+        .status-error{background:rgba(239,68,68,.2);color:var(--accent-red)}
+        #output{padding:1rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;white-space:pre-wrap;color:var(--text-secondary);min-height:80px;max-height:180px;overflow-y:auto}
+        #output .error{color:var(--accent-red)}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:2rem}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;width:100%;max-width:700px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+        .modal-header{background:var(--bg-tertiary);padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .modal-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+        .modal-close{background:0 0;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer;line-height:1}.modal-close:hover{color:var(--text-primary)}
+        .modal-content{padding:1.5rem;overflow-y:auto;flex:1}
+        .mark-item{display:flex;gap:.75rem;margin-bottom:.75rem;padding:.75rem;background:var(--bg-tertiary);border-radius:6px;border-left:3px solid var(--accent-green)}
+        .mark-points{background:var(--accent-cyan);color:#fff;padding:.2rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;height:fit-content;white-space:nowrap}
+        .mark-text{font-size:.875rem;color:var(--text-secondary)}
+        .mark-text code{background:var(--bg-primary);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;color:var(--accent-cyan)}
+        .model-answer{background:var(--bg-tertiary);border-radius:8px;padding:1rem;margin-top:1rem}
+        .model-answer h4{font-size:.85rem;color:var(--text-muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
+        .model-answer pre{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent-green);white-space:pre-wrap;line-height:1.5}
+        .total-marks{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-weight:600;color:var(--accent-cyan)}
+        .input-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:90%;max-width:400px}
+        .input-box h3{margin-bottom:1rem;font-size:1rem}
+        .input-box input{width:100%;padding:.75rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:1rem;margin-bottom:1rem}
+        .input-box input:focus{outline:0;border-color:var(--accent-cyan)}
+        .input-box button{width:100%;padding:.75rem;background:var(--accent-cyan);color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer}
+        .key-concepts{background:var(--bg-tertiary);border-radius:8px;padding:1rem;margin-bottom:1rem}
+        .key-concepts h4{font-size:.75rem;color:var(--text-muted);margin-bottom:.5rem;text-transform:uppercase}
+        .key-concepts ul{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem}
+        .key-concepts li{background:var(--bg-primary);padding:.25rem .5rem;border-radius:4px;font-size:.75rem;color:var(--accent-cyan)}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">fn</div>
+                <div><h1>Subroutines Practice</h1><span>Procedures, Functions & Parameters</span></div>
+            </div>
+            <div class="header-info">
+                <span class="topic-badge">Topic 6.6</span>
+                <span>📝 107 marks</span>
+            </div>
+        </div>
+    </header>
+    <nav class="question-nav-bar">
+        <div class="nav-container">
+            <span class="nav-label">Questions:</span>
+            <button class="nav-btn active" data-q="1">Q1 (6)</button>
+            <button class="nav-btn" data-q="2">Q2 (8)</button>
+            <button class="nav-btn" data-q="3">Q3 (8)</button>
+            <button class="nav-btn" data-q="4">Q4 (10)</button>
+            <button class="nav-btn" data-q="5">Q5 (10)</button>
+            <button class="nav-btn" data-q="6">Q6 (12)</button>
+            <button class="nav-btn" data-q="7">Q7 (12)</button>
+            <button class="nav-btn" data-q="8">Q8 (12)</button>
+            <button class="nav-btn" data-q="9">Q9 (14)</button>
+            <button class="nav-btn" data-q="10">Q10 (15)</button>
+        </div>
+    </nav>
+    <main>
+        <div class="panel question-panel">
+            <div class="panel-header"><span class="panel-title">Question</span><span class="marks-badge" id="marks-display">6 marks</span></div>
+            <div class="question-content" id="question-display"></div>
+        </div>
+        <div class="code-panel">
+            <div class="panel editor-container">
+                <div class="panel-header editor-header">
+                    <div class="file-name"><span class="file-icon">🐍</span><span id="current-file">Q01.py</span></div>
+                    <div class="editor-actions">
+                        <button class="btn btn-reset" onclick="resetCode()">↺ Reset</button>
+                        <button class="btn btn-run" onclick="runCode()">▶ Run</button>
+                        <button class="btn btn-submit" onclick="showMarkScheme()">📋 Submit</button>
+                    </div>
+                </div>
+                <div class="editor-wrapper"><textarea id="code-editor"></textarea></div>
+            </div>
+            <div class="panel output-container">
+                <div class="panel-header output-header"><span class="panel-title">Output</span><span class="output-status status-ready" id="status">Ready</span></div>
+                <pre id="output">Click "Run" to execute your code...</pre>
+            </div>
+        </div>
+    </main>
+    <div class="modal-overlay" id="markscheme-modal">
+        <div class="modal">
+            <div class="modal-header"><span class="modal-title">📋 Mark Scheme - Question <span id="ms-question-num">1</span></span><button class="modal-close" onclick="closeMarkScheme()">&times;</button></div>
+            <div class="modal-content" id="markscheme-content"></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="input-modal">
+        <div class="input-box"><h3 id="input-prompt">Enter input:</h3><input type="text" id="input-field" autofocus><button onclick="submitInput()">Submit</button></div>
+    </div>
+
+    <script>
+const questions = {
+    1: {
+        file: "Q01.py", time: "8 minutes", marks: 6, saveAs: "Q01FINISHED.py",
+        context: ["A program uses a procedure to display a welcome message.", "A procedure is a subroutine that performs an action but does not return a value."],
+        instruction: "Open file Q01. Amend the code to:",
+        tasks: [
+            "complete the procedure definition with the correct keyword",
+            "add a colon after the procedure name",
+            "add a print statement inside the procedure",
+            "call the procedure in the main program"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q01 - Simple Procedure
+
+# Define a procedure to display a welcome message
+ welcome():
+    # Add a print statement here
+    
+
+# Main program
+# Call the welcome procedure here
+
+print("Program finished")
+`,
+        markScheme: [
+            {points: "1", text: "Keyword <code>def</code> before procedure name"},
+            {points: "1", text: "Colon after <code>welcome():</code>"},
+            {points: "1", text: "Print statement inside procedure"},
+            {points: "1", text: "Print displays appropriate welcome message"},
+            {points: "1", text: "Procedure called: <code>welcome()</code>"},
+            {points: "1", text: "Program runs without error"}
+        ],
+        modelAnswer: `# Q01 - Simple Procedure
+
+# Define a procedure to display a welcome message
+def welcome():
+    print("Welcome to the program!")
+
+# Main program
+welcome()
+
+print("Program finished")`
+    },
+    2: {
+        file: "Q02.py", time: "10 minutes", marks: 8, saveAs: "Q02FINISHED.py",
+        context: ["A program uses a procedure with a parameter to personalise a greeting.", "Parameters allow data to be passed into a subroutine."],
+        instruction: "Open file Q02. Amend the code to:",
+        tasks: [
+            "add a parameter called <code>name</code> to the procedure",
+            "use the parameter in the print statement",
+            "call the procedure with the argument <code>userName</code>",
+            "call the procedure a second time with the string <code>\"Guest\"</code>"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q02 - Procedure with Parameter
+
+def greet():
+    print("Hello,", )
+
+# Main program
+userName = input("Enter your name: ")
+
+# Call greet with userName
+
+
+# Call greet with "Guest"
+
+`,
+        markScheme: [
+            {points: "1", text: "Parameter added: <code>def greet(name):</code>"},
+            {points: "1", text: "Parameter used in print: <code>print(\"Hello,\", name)</code>"},
+            {points: "1", text: "Procedure called with variable: <code>greet(userName)</code>"},
+            {points: "1", text: "Procedure called with string: <code>greet(\"Guest\")</code>"},
+            {points: "1", text: "Argument matches parameter name convention"},
+            {points: "1", text: "Both calls produce correct output"},
+            {points: "2", text: "Understanding of argument vs parameter demonstrated"}
+        ],
+        modelAnswer: `# Q02 - Procedure with Parameter
+
+def greet(name):
+    print("Hello,", name)
+
+# Main program
+userName = input("Enter your name: ")
+
+# Call greet with userName
+greet(userName)
+
+# Call greet with "Guest"
+greet("Guest")`
+    },
+    3: {
+        file: "Q03.py", time: "10 minutes", marks: 8, saveAs: "Q03FINISHED.py",
+        context: ["A program uses a function to calculate the square of a number.", "A function is a subroutine that returns a value to the calling code."],
+        instruction: "Open file Q03. Amend the code to:",
+        tasks: [
+            "add a parameter to the function",
+            "calculate the square of the parameter",
+            "return the result using the <code>return</code> keyword",
+            "capture the returned value in the main program",
+            "display the result"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q03 - Function with Return Value
+
+def square():
+    result = 
+    
+
+# Main program
+number = int(input("Enter a number: "))
+
+answer = 
+
+print("The square is:", )
+`,
+        markScheme: [
+            {points: "1", text: "Parameter added: <code>def square(num):</code>"},
+            {points: "1", text: "Calculation: <code>result = num * num</code> or <code>num ** 2</code>"},
+            {points: "1", text: "Return statement: <code>return(result)</code> or <code>return result</code>"},
+            {points: "1", text: "Function called with argument: <code>square(number)</code>"},
+            {points: "1", text: "Returned value captured: <code>answer = square(number)</code>"},
+            {points: "1", text: "Result displayed: <code>print(..., answer)</code>"},
+            {points: "2", text: "Correct output for test data"}
+        ],
+        modelAnswer: `# Q03 - Function with Return Value
+
+def square(num):
+    result = num * num
+    return(result)
+
+# Main program
+number = int(input("Enter a number: "))
+
+answer = square(number)
+
+print("The square is:", answer)`
+    },
+    4: {
+        file: "Q04.py", time: "12 minutes", marks: 10, saveAs: "Q04FINISHED.py",
+        context: ["A program demonstrates the difference between local and global variables.", "Local variables only exist inside the subroutine where they are created.", "Global variables can be accessed throughout the program."],
+        instruction: "Open file Q04. Amend the code to:",
+        tasks: [
+            "identify which variable is global and which is local",
+            "fix the error by using the <code>global</code> keyword",
+            "complete the function to modify the global variable",
+            "fill in the answers at the bottom of the code"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q04 - Local and Global Variables
+
+counter = 0
+
+def incrementCounter():
+    # This line causes an error - fix it
+    counter = counter + 1
+    localVar = 10
+    print("Inside function - counter:", counter)
+    print("Inside function - localVar:", localVar)
+
+# Main program
+print("Before function - counter:", counter)
+incrementCounter()
+print("After function - counter:", counter)
+
+# ANSWERS:
+# Which variable is global? 
+globalVariable = ""
+# Which variable is local? 
+localVariable = ""
+# What keyword makes a local variable access the global one?
+keyword = ""
+`,
+        markScheme: [
+            {points: "1", text: "Added <code>global counter</code> inside function"},
+            {points: "1", text: "Global keyword placed before counter is modified"},
+            {points: "1", text: "Function correctly increments counter"},
+            {points: "1", text: "Counter value is 1 after function call"},
+            {points: "1", text: "Global variable identified: <code>counter</code>"},
+            {points: "1", text: "Local variable identified: <code>localVar</code>"},
+            {points: "1", text: "Keyword identified: <code>global</code>"},
+            {points: "3", text: "Understanding of scope demonstrated"}
+        ],
+        modelAnswer: `# Q04 - Local and Global Variables
+
+counter = 0
+
+def incrementCounter():
+    global counter
+    counter = counter + 1
+    localVar = 10
+    print("Inside function - counter:", counter)
+    print("Inside function - localVar:", localVar)
+
+# Main program
+print("Before function - counter:", counter)
+incrementCounter()
+print("After function - counter:", counter)
+
+# ANSWERS:
+globalVariable = "counter"
+localVariable = "localVar"
+keyword = "global"`
+    },
+    5: {
+        file: "Q05.py", time: "12 minutes", marks: 10, saveAs: "Q05FINISHED.py",
+        context: ["A program uses the random library to generate random numbers.", "The random library must be imported before its functions can be used."],
+        instruction: "Open file Q05. Amend the code to:",
+        tasks: [
+            "import the random library",
+            "use <code>random.randint()</code> to generate a number between 1 and 100",
+            "use <code>random.choice()</code> to select a random item from the list",
+            "use <code>random.random()</code> to generate a decimal between 0 and 1"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q05 - Using the Random Library
+
+# Import the random library here
+
+
+colours = ["red", "green", "blue", "yellow"]
+
+# Generate random integer between 1 and 100
+randomNumber = random.(1, )
+
+# Select random item from list
+randomColour = random.(colours)
+
+# Generate random decimal between 0 and 1
+randomDecimal = random.()
+
+print("Random number:", randomNumber)
+print("Random colour:", randomColour)
+print("Random decimal:", randomDecimal)
+`,
+        markScheme: [
+            {points: "1", text: "<code>import random</code>"},
+            {points: "1", text: "Function: <code>random.randint</code>"},
+            {points: "1", text: "Parameters: <code>(1, 100)</code>"},
+            {points: "1", text: "Function: <code>random.choice</code>"},
+            {points: "1", text: "Parameter: <code>(colours)</code>"},
+            {points: "1", text: "Function: <code>random.random</code>"},
+            {points: "1", text: "No parameters for random.random: <code>()</code>"},
+            {points: "3", text: "Program runs and produces valid random outputs"}
+        ],
+        modelAnswer: `# Q05 - Using the Random Library
+
+import random
+
+colours = ["red", "green", "blue", "yellow"]
+
+# Generate random integer between 1 and 100
+randomNumber = random.randint(1, 100)
+
+# Select random item from list
+randomColour = random.choice(colours)
+
+# Generate random decimal between 0 and 1
+randomDecimal = random.random()
+
+print("Random number:", randomNumber)
+print("Random colour:", randomColour)
+print("Random decimal:", randomDecimal)`
+    },
+    6: {
+        file: "Q06.py", time: "15 minutes", marks: 12, saveAs: "Q06FINISHED.py",
+        context: ["A program uses a function with multiple parameters.", "The order of arguments must match the order of parameters.", "The function calculates the area of a rectangle."],
+        instruction: "Open file Q06. Amend the code to:",
+        tasks: [
+            "add two parameters to the function: <code>pLength</code> and <code>pWidth</code>",
+            "calculate the area using the parameters",
+            "return the calculated area",
+            "call the function with the correct arguments in the correct order",
+            "display the result formatted to 2 decimal places"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q06 - Function with Multiple Parameters
+
+def calculateArea():
+    area = 
+    return
+
+# Main program
+length = float(input("Enter length: "))
+width = float(input("Enter width: "))
+
+result = calculateArea()
+
+print("Area:", )
+`,
+        markScheme: [
+            {points: "1", text: "Two parameters: <code>def calculateArea(pLength, pWidth):</code>"},
+            {points: "1", text: "Parameters use 'p' prefix convention"},
+            {points: "1", text: "Calculation: <code>area = pLength * pWidth</code>"},
+            {points: "1", text: "Return statement: <code>return(area)</code>"},
+            {points: "1", text: "Function called: <code>calculateArea(length, width)</code>"},
+            {points: "1", text: "Arguments in correct order"},
+            {points: "1", text: "Result captured in variable"},
+            {points: "1", text: "Formatted to 2 decimal places: <code>{:.2f}</code>"},
+            {points: "1", text: "Format method used correctly"},
+            {points: "3", text: "Correct output for test data"}
+        ],
+        modelAnswer: `# Q06 - Function with Multiple Parameters
+
+def calculateArea(pLength, pWidth):
+    area = pLength * pWidth
+    return(area)
+
+# Main program
+length = float(input("Enter length: "))
+width = float(input("Enter width: "))
+
+result = calculateArea(length, width)
+
+print("Area: {:.2f}".format(result))`
+    },
+    7: {
+        file: "Q07.py", time: "15 minutes", marks: 12, saveAs: "Q07FINISHED.py",
+        context: ["A dice game uses functions and the random library.", "One function rolls a dice, another checks if the player wins."],
+        instruction: "Open file Q07. Amend the code to:",
+        tasks: [
+            "import the random library",
+            "complete the <code>rollDice</code> function to return a random number 1-6",
+            "complete the <code>checkWin</code> function with a parameter",
+            "return <code>True</code> if the roll is 6, <code>False</code> otherwise",
+            "call both functions correctly in the main program"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q07 - Dice Game with Functions
+
+
+
+def rollDice():
+    dice = random.
+    return
+
+def checkWin():
+    if  == 6:
+        return 
+    else:
+        return 
+
+# Main program
+playerRoll = 
+print("You rolled:", playerRoll)
+
+won = checkWin()
+
+if won == True:
+    print("You win!")
+else:
+    print("Try again!")
+`,
+        markScheme: [
+            {points: "1", text: "<code>import random</code>"},
+            {points: "1", text: "rollDice uses <code>random.randint(1, 6)</code>"},
+            {points: "1", text: "rollDice returns the dice value"},
+            {points: "1", text: "checkWin has parameter: <code>def checkWin(roll):</code>"},
+            {points: "1", text: "Comparison: <code>if roll == 6:</code>"},
+            {points: "1", text: "Returns <code>True</code> for win"},
+            {points: "1", text: "Returns <code>False</code> for lose"},
+            {points: "1", text: "rollDice called: <code>playerRoll = rollDice()</code>"},
+            {points: "1", text: "checkWin called with argument: <code>checkWin(playerRoll)</code>"},
+            {points: "3", text: "Program runs correctly"}
+        ],
+        modelAnswer: `# Q07 - Dice Game with Functions
+
+import random
+
+def rollDice():
+    dice = random.randint(1, 6)
+    return(dice)
+
+def checkWin(roll):
+    if roll == 6:
+        return True
+    else:
+        return False
+
+# Main program
+playerRoll = rollDice()
+print("You rolled:", playerRoll)
+
+won = checkWin(playerRoll)
+
+if won == True:
+    print("You win!")
+else:
+    print("Try again!")`
+    },
+    8: {
+        file: "Q08.py", time: "15 minutes", marks: 12, saveAs: "Q08FINISHED.py",
+        context: ["A program has procedures and functions with errors.", "You need to identify and fix the bugs related to subroutines."],
+        instruction: "Open file Q08. Fix the following errors:",
+        tasks: [
+            "fix the syntax error in the procedure definition",
+            "fix the error where the function doesn't return a value",
+            "fix the error where the argument doesn't match the parameter",
+            "fix the error where the returned value isn't captured",
+            "fix the scope error with the local variable"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q08 - Debugging Subroutines
+
+def displayMessage(text)
+    print(text)
+
+def double(number):
+    result = number * 2
+
+def getGreeting():
+    message = "Hello there!"
+    return(message)
+
+# Main program
+displayMessage()
+
+answer = double(5)
+print("Double:", answer)
+
+getGreeting()
+print("Greeting:", message)
+`,
+        markScheme: [
+            {points: "1", text: "Added colon: <code>def displayMessage(text):</code>"},
+            {points: "1", text: "Added return: <code>return(result)</code> in double"},
+            {points: "1", text: "Added argument: <code>displayMessage(\"Welcome!\")</code>"},
+            {points: "1", text: "Captured return value: <code>greeting = getGreeting()</code>"},
+            {points: "1", text: "Used captured variable: <code>print(..., greeting)</code>"},
+            {points: "1", text: "Understanding that message is local to function"},
+            {points: "1", text: "All functions run without error"},
+            {points: "2", text: "Correct output for all function calls"},
+            {points: "3", text: "Understanding of subroutine concepts"}
+        ],
+        modelAnswer: `# Q08 - Debugging Subroutines
+
+def displayMessage(text):
+    print(text)
+
+def double(number):
+    result = number * 2
+    return(result)
+
+def getGreeting():
+    message = "Hello there!"
+    return(message)
+
+# Main program
+displayMessage("Welcome!")
+
+answer = double(5)
+print("Double:", answer)
+
+greeting = getGreeting()
+print("Greeting:", greeting)`
+    },
+    9: {
+        file: "Q09.py", time: "18 minutes", marks: 14, saveAs: "Q09FINISHED.py",
+        context: ["A password generator uses multiple functions and the random library.", "It generates a password by combining random letters, numbers and symbols."],
+        instruction: "Open file Q09. Complete the program to:",
+        tasks: [
+            "import the random library",
+            "complete <code>getRandomLetter</code> to return a random letter from the string",
+            "complete <code>getRandomNumber</code> to return a random digit 0-9 as a string",
+            "complete <code>getRandomSymbol</code> to return a random symbol from the list",
+            "complete <code>generatePassword</code> to build a 6-character password",
+            "the password should have 3 letters, 2 numbers, and 1 symbol"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q09 - Password Generator
+
+
+
+letters = "abcdefghijklmnopqrstuvwxyz"
+symbols = ["!", "@", "#", "$", "%"]
+
+def getRandomLetter():
+    letter = random.(letters)
+    return
+
+def getRandomNumber():
+    number = random.(0, 9)
+    return()
+
+def getRandomSymbol():
+    symbol = random.
+    return(symbol)
+
+def generatePassword():
+    password = ""
+    # Add 3 letters
+    password = password + getRandomLetter()
+    password = password + 
+    password = password + 
+    # Add 2 numbers
+    password = password + 
+    password = password + 
+    # Add 1 symbol
+    password = password + 
+    return(password)
+
+# Main program
+newPassword = 
+print("Your password is:", newPassword)
+`,
+        markScheme: [
+            {points: "1", text: "<code>import random</code>"},
+            {points: "1", text: "getRandomLetter uses <code>random.choice(letters)</code>"},
+            {points: "1", text: "getRandomLetter returns the letter"},
+            {points: "1", text: "getRandomNumber uses <code>random.randint(0, 9)</code>"},
+            {points: "1", text: "getRandomNumber returns <code>str(number)</code>"},
+            {points: "1", text: "getRandomSymbol uses <code>random.choice(symbols)</code>"},
+            {points: "1", text: "generatePassword calls getRandomLetter 3 times"},
+            {points: "1", text: "generatePassword calls getRandomNumber 2 times"},
+            {points: "1", text: "generatePassword calls getRandomSymbol 1 time"},
+            {points: "1", text: "generatePassword returns complete password"},
+            {points: "1", text: "Main program calls generatePassword"},
+            {points: "3", text: "Program generates valid 6-character password"}
+        ],
+        modelAnswer: `# Q09 - Password Generator
+
+import random
+
+letters = "abcdefghijklmnopqrstuvwxyz"
+symbols = ["!", "@", "#", "$", "%"]
+
+def getRandomLetter():
+    letter = random.choice(letters)
+    return(letter)
+
+def getRandomNumber():
+    number = random.randint(0, 9)
+    return(str(number))
+
+def getRandomSymbol():
+    symbol = random.choice(symbols)
+    return(symbol)
+
+def generatePassword():
+    password = ""
+    # Add 3 letters
+    password = password + getRandomLetter()
+    password = password + getRandomLetter()
+    password = password + getRandomLetter()
+    # Add 2 numbers
+    password = password + getRandomNumber()
+    password = password + getRandomNumber()
+    # Add 1 symbol
+    password = password + getRandomSymbol()
+    return(password)
+
+# Main program
+newPassword = generatePassword()
+print("Your password is:", newPassword)`
+    },
+    10: {
+        file: "Q10.py", time: "20 minutes", marks: 15, saveAs: "Q10FINISHED.py",
+        context: ["A quiz game uses procedures and functions to organise the code.", "Global variables track the score, functions handle game logic."],
+        instruction: "Open file Q10. Write a program to:",
+        tasks: [
+            "import the random library",
+            "create a global variable <code>score</code> initialised to 0",
+            "create a procedure <code>displayWelcome</code> with no parameters",
+            "create a function <code>generateQuestion</code> that returns two random numbers and their sum",
+            "create a function <code>checkAnswer</code> that takes user answer and correct answer as parameters",
+            "use the <code>global</code> keyword to update the score",
+            "return True/False from checkAnswer based on whether answer is correct"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q10 - Quiz Game
+
+# Import random library
+
+
+# Global variable for score
+
+
+# Procedure to display welcome message
+def displayWelcome():
+    
+
+# Function to generate a question
+# Returns: num1, num2, correctAnswer
+def generateQuestion():
+    num1 = random.randint(1, 10)
+    num2 = random.randint(1, 10)
+    correctAnswer = 
+    return(num1, num2, )
+
+# Function to check the answer
+# Updates global score if correct
+# Returns True if correct, False if wrong
+def checkAnswer(, ):
+    
+    if userAnswer == correctAnswer:
+        
+        return
+    else:
+        return
+
+# Main program
+
+
+print("What is", num1, "+", num2, "?")
+userAnswer = int(input("Your answer: "))
+
+result = checkAnswer(, )
+
+if result == True:
+    print("Correct!")
+else:
+    print("Wrong! The answer was", correctAnswer)
+
+print("Your score:", score)
+`,
+        markScheme: [
+            {points: "1", text: "<code>import random</code>"},
+            {points: "1", text: "Global variable: <code>score = 0</code>"},
+            {points: "1", text: "displayWelcome procedure defined"},
+            {points: "1", text: "displayWelcome prints welcome message"},
+            {points: "1", text: "generateQuestion calculates: <code>correctAnswer = num1 + num2</code>"},
+            {points: "1", text: "generateQuestion returns all three values"},
+            {points: "1", text: "checkAnswer has two parameters"},
+            {points: "1", text: "checkAnswer uses <code>global score</code>"},
+            {points: "1", text: "checkAnswer increments score: <code>score = score + 1</code>"},
+            {points: "1", text: "checkAnswer returns True/False correctly"},
+            {points: "1", text: "displayWelcome called in main"},
+            {points: "1", text: "generateQuestion called and values captured"},
+            {points: "1", text: "checkAnswer called with correct arguments"},
+            {points: "2", text: "Program runs correctly"}
+        ],
+        modelAnswer: `# Q10 - Quiz Game
+
+import random
+
+score = 0
+
+def displayWelcome():
+    print("Welcome to the Maths Quiz!")
+
+def generateQuestion():
+    num1 = random.randint(1, 10)
+    num2 = random.randint(1, 10)
+    correctAnswer = num1 + num2
+    return(num1, num2, correctAnswer)
+
+def checkAnswer(userAnswer, correctAnswer):
+    global score
+    if userAnswer == correctAnswer:
+        score = score + 1
+        return(True)
+    else:
+        return(False)
+
+# Main program
+displayWelcome()
+
+num1, num2, correctAnswer = generateQuestion()
+
+print("What is", num1, "+", num2, "?")
+userAnswer = int(input("Your answer: "))
+
+result = checkAnswer(userAnswer, correctAnswer)
+
+if result == True:
+    print("Correct!")
+else:
+    print("Wrong! The answer was", correctAnswer)
+
+print("Your score:", score)`
+    }
+};
+
+    const keyConcepts = {
+        1: ["procedure", "def keyword", "no return value"],
+        2: ["parameter", "argument", "passing data"],
+        3: ["function", "return value", "capturing result"],
+        4: ["local variable", "global variable", "scope", "global keyword"],
+        5: ["import", "random library", "randint", "choice", "random"],
+        6: ["multiple parameters", "argument order", "formatting"],
+        7: ["functions", "random", "return Boolean", "True/False"],
+        8: ["debugging", "syntax errors", "scope errors"],
+        9: ["multiple functions", "string concatenation", "random"],
+        10: ["procedures", "functions", "global", "return values"]
+    };
+
+    let currentQuestion = 1;
+    let editor;
+    let inputResolve = null;
+    let completedQuestions = new Set();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Sk === 'undefined') {
+            document.getElementById('output').innerHTML = '<span class="error">Error: Python interpreter failed to load. Please refresh the page.</span>';
+        }
+        
+        editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            mode: 'python',
+            theme: 'dracula',
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            autofocus: true
+        });
+        
+        loadQuestion(1);
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                loadQuestion(parseInt(this.dataset.q));
+            });
+        });
+        
+        document.getElementById('input-field').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') submitInput();
+        });
+    });
+
+    function loadQuestion(num) {
+        currentQuestion = num;
+        const q = questions[num];
+        const concepts = keyConcepts[num];
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const n = parseInt(btn.dataset.q);
+            btn.classList.toggle('active', n === num);
+            btn.classList.toggle('completed', completedQuestions.has(n));
+        });
+        
+        const taskItems = q.tasks.map(t => `<li><span class="task-bullet"></span><span class="task-text">${t}</span></li>`).join('');
+        const contextHtml = q.context.map(p => `<p>${p}</p>`).join('');
+        const conceptsHtml = concepts.map(c => `<li>${c}</li>`).join('');
+        
+        document.getElementById('question-display').innerHTML = `
+            <div class="question-header">
+                <div class="question-number">${num}</div>
+                <div class="question-meta">Suggested time: ${q.time}</div>
+            </div>
+            <div class="key-concepts">
+                <h4>Key Concepts</h4>
+                <ul>${conceptsHtml}</ul>
+            </div>
+            <div class="question-context">${contextHtml}</div>
+            <p class="instruction">${q.instruction}</p>
+            <ul class="task-list">${taskItems}</ul>
+            ${q.note ? `<div class="note"><strong>Note:</strong> ${q.note}</div>` : ''}
+            <p style="font-size:.85rem;color:var(--text-muted);margin-top:1rem">Save as <code style="background:var(--bg-tertiary);padding:.15rem .4rem;border-radius:4px;color:var(--accent-cyan)">${q.saveAs}</code></p>
+        `;
+        
+        document.getElementById('marks-display').textContent = `${q.marks} marks`;
+        document.getElementById('current-file').textContent = q.file;
+        editor.setValue(q.starterCode);
+        document.getElementById('output').textContent = 'Click "Run" to execute your code...';
+        updateStatus('ready');
+    }
+
+    function resetCode() {
+        editor.setValue(questions[currentQuestion].starterCode);
+        document.getElementById('output').textContent = 'Code reset.';
+        updateStatus('ready');
+    }
+
+    function updateStatus(s) {
+        const el = document.getElementById('status');
+        el.className = 'output-status';
+        const m = {
+            ready: ['status-ready', 'Ready'],
+            running: ['status-running', 'Running...'],
+            success: ['status-success', 'Complete'],
+            error: ['status-error', 'Error']
+        };
+        el.classList.add(m[s][0]);
+        el.textContent = m[s][1];
+    }
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+            throw "File not found: '" + x + "'";
+        }
+        return Sk.builtinFiles["files"][x];
+    }
+
+    function outf(t) {
+        document.getElementById('output').textContent += t;
+    }
+
+    function inputfun(p) {
+        return new Promise(function(r) {
+            document.getElementById('output').textContent += p;
+            document.getElementById('input-prompt').textContent = p || 'Enter input:';
+            document.getElementById('input-modal').classList.add('active');
+            document.getElementById('input-field').value = '';
+            document.getElementById('input-field').focus();
+            inputResolve = r;
+        });
+    }
+
+    function submitInput() {
+        const v = document.getElementById('input-field').value;
+        document.getElementById('input-modal').classList.remove('active');
+        document.getElementById('output').textContent += v + '\n';
+        if (inputResolve) {
+            inputResolve(v);
+            inputResolve = null;
+        }
+    }
+
+    function runCode() {
+        if (typeof Sk === 'undefined') {
+            document.getElementById('output').innerHTML = '<span class="error">Python interpreter not loaded. Please refresh.</span>';
+            return;
+        }
+        
+        const c = editor.getValue();
+        document.getElementById('output').textContent = '';
+        updateStatus('running');
+        
+        Sk.configure({
+            output: outf,
+            read: builtinRead,
+            inputfun: inputfun,
+            inputfunTakesPrompt: true,
+            __future__: Sk.python3
+        });
+        
+        Sk.misceval.asyncToPromise(function() {
+            return Sk.importMainWithBody("<stdin>", false, c, true);
+        }).then(function() {
+            updateStatus('success');
+        }).catch(function(e) {
+            document.getElementById('output').innerHTML += '<span class="error">\n' + e.toString() + '</span>';
+            updateStatus('error');
+        });
+    }
+
+    function showMarkScheme() {
+        const q = questions[currentQuestion];
+        completedQuestions.add(currentQuestion);
+        document.querySelector(`.nav-btn[data-q="${currentQuestion}"]`).classList.add('completed');
+        
+        const mi = q.markScheme.map(i => `
+            <div class="mark-item">
+                <span class="mark-points">${i.points}</span>
+                <span class="mark-text">${i.text}</span>
+            </div>
+        `).join('');
+        
+        document.getElementById('ms-question-num').textContent = currentQuestion;
+        document.getElementById('markscheme-content').innerHTML = `
+            ${mi}
+            <div class="model-answer">
+                <h4>Model Answer</h4>
+                <pre>${escapeHtml(q.modelAnswer)}</pre>
+            </div>
+            <div class="total-marks">Total for Question ${currentQuestion} = ${q.marks} marks</div>
+        `;
+        document.getElementById('markscheme-modal').classList.add('active');
+    }
+
+    function closeMarkScheme() {
+        document.getElementById('markscheme-modal').classList.remove('active');
+    }
+
+    function escapeHtml(t) {
+        const d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
+    }
+
+    document.getElementById('markscheme-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeMarkScheme();
+    });
+    </script>
+</body>
+</html>

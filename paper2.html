@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edexcel GCSE CS Paper 2 Practice</title>
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    
+    <!-- Skulpt from jsDelivr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-tertiary:#21262d;--accent-purple:#8b5cf6;--accent-green:#10b981;--accent-red:#ef4444;--accent-amber:#f59e0b;--accent-blue:#3b82f6;--text-primary:#f0f6fc;--text-secondary:#8b949e;--text-muted:#6e7681;--border:#30363d}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6}
+        header{background:linear-gradient(135deg,#6d28d9,#4c1d95);padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+        .header-content{max-width:1600px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo{display:flex;align-items:center;gap:.75rem}
+        .logo-icon{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem}
+        .logo h1{font-size:1.2rem;font-weight:700}.logo span{font-size:.8rem;opacity:.85}
+        .header-info{display:flex;gap:1.5rem;font-size:.85rem;opacity:.9}
+        .question-nav-bar{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:.75rem 2rem;overflow-x:auto}
+        .nav-container{max-width:1600px;margin:0 auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+        .nav-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-right:.5rem;white-space:nowrap}
+        .nav-btn{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-secondary);padding:.5rem 1rem;border-radius:6px;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+        .nav-btn:hover,.nav-btn.active{background:var(--accent-purple);color:#fff;border-color:var(--accent-purple)}
+        .nav-btn.completed{border-color:var(--accent-green);color:var(--accent-green)}
+        .nav-btn.completed.active{background:var(--accent-green);color:#fff}
+        main{max-width:1600px;margin:0 auto;padding:1.5rem 2rem;display:grid;grid-template-columns:1fr 1.2fr;gap:1.5rem;min-height:calc(100vh - 140px)}
+        @media(max-width:1200px){main{grid-template-columns:1fr}}
+        .panel{background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
+        .panel-header{background:var(--bg-tertiary);padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .panel-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary)}
+        .question-content{padding:1.25rem;flex:1;overflow-y:auto;max-height:calc(100vh - 250px)}
+        .question-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+        .question-number{width:36px;height:36px;background:var(--accent-purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+        .question-meta{font-size:.8rem;color:var(--text-muted)}
+        .question-context{background:var(--bg-tertiary);border-left:3px solid var(--accent-amber);padding:1rem;margin-bottom:1.25rem;border-radius:0 8px 8px 0}
+        .question-context p{color:var(--text-secondary);font-size:.9rem;margin-bottom:.5rem}
+        .question-context p:last-child{margin-bottom:0}
+        .instruction{font-weight:600;color:var(--text-primary);margin-bottom:1rem;font-size:.95rem}
+        .task-list{list-style:none;margin-bottom:1rem}
+        .task-list li{display:flex;gap:.75rem;margin-bottom:.5rem;padding:.6rem .75rem;background:var(--bg-tertiary);border-radius:6px;font-size:.875rem}
+        .task-bullet{width:6px;height:6px;background:var(--accent-blue);border-radius:50%;margin-top:.45rem;flex-shrink:0}
+        .task-text{color:var(--text-secondary)}
+        .task-text code{background:var(--bg-primary);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--accent-green)}
+        .note{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);padding:.75rem;border-radius:6px;font-size:.85rem;color:var(--accent-amber);margin-bottom:1rem}
+        .marks-badge{display:inline-block;background:var(--bg-tertiary);border:1px solid var(--border);padding:.4rem .75rem;border-radius:6px;font-size:.8rem;color:var(--text-secondary)}
+        .code-panel{display:flex;flex-direction:column;gap:1rem}
+        .editor-container{flex:1;min-height:350px;display:flex;flex-direction:column}
+        .editor-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+        .file-name{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)}
+        .file-icon{color:var(--accent-amber)}
+        .editor-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+        .btn{padding:.5rem .875rem;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;display:flex;align-items:center;gap:.35rem}
+        .btn-run{background:var(--accent-green);color:#fff}.btn-run:hover{background:#059669;transform:translateY(-1px)}
+        .btn-reset{background:var(--bg-secondary);color:var(--text-secondary);border:1px solid var(--border)}.btn-reset:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+        .btn-submit{background:var(--accent-purple);color:#fff}.btn-submit:hover{background:#7c3aed;transform:translateY(-1px)}
+        .editor-wrapper{flex:1;overflow:hidden;border-radius:0 0 8px 8px}
+        .CodeMirror{height:100%!important;font-family:'JetBrains Mono',monospace;font-size:13px;min-height:300px}
+        .output-container{min-height:150px;max-height:250px}
+        .output-header{display:flex;justify-content:space-between;align-items:center}
+        .output-status{font-size:.7rem;padding:.2rem .5rem;border-radius:4px;font-weight:500}
+        .status-ready{background:rgba(59,130,246,.2);color:var(--accent-blue)}
+        .status-running{background:rgba(245,158,11,.2);color:var(--accent-amber)}
+        .status-success{background:rgba(16,185,129,.2);color:var(--accent-green)}
+        .status-error{background:rgba(239,68,68,.2);color:var(--accent-red)}
+        #output{padding:1rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;white-space:pre-wrap;color:var(--text-secondary);min-height:80px;max-height:180px;overflow-y:auto}
+        #output .error{color:var(--accent-red)}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:2rem}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;width:100%;max-width:700px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+        .modal-header{background:var(--bg-tertiary);padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .modal-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+        .modal-close{background:0 0;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer;line-height:1}.modal-close:hover{color:var(--text-primary)}
+        .modal-content{padding:1.5rem;overflow-y:auto;flex:1}
+        .mark-item{display:flex;gap:.75rem;margin-bottom:.75rem;padding:.75rem;background:var(--bg-tertiary);border-radius:6px;border-left:3px solid var(--accent-green)}
+        .mark-points{background:var(--accent-purple);color:#fff;padding:.2rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;height:fit-content;white-space:nowrap}
+        .mark-text{font-size:.875rem;color:var(--text-secondary)}
+        .mark-text code{background:var(--bg-primary);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;color:var(--accent-green)}
+        .model-answer{background:var(--bg-tertiary);border-radius:8px;padding:1rem;margin-top:1rem}
+        .model-answer h4{font-size:.85rem;color:var(--text-muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
+        .model-answer pre{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent-green);white-space:pre-wrap;line-height:1.5}
+        .total-marks{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-weight:600;color:var(--accent-purple)}
+        .input-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:90%;max-width:400px}
+        .input-box h3{margin-bottom:1rem;font-size:1rem}
+        .input-box input{width:100%;padding:.75rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:1rem;margin-bottom:1rem}
+        .input-box input:focus{outline:0;border-color:var(--accent-blue)}
+        .input-box button{width:100%;padding:.75rem;background:var(--accent-blue);color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer}
+        .loading-msg{text-align:center;padding:2rem;color:var(--text-muted)}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">P2</div>
+                <div><h1>Paper 2 Practice</h1><span>Edexcel GCSE Computer Science (1CP2/02)</span></div>
+            </div>
+            <div class="header-info"><span>⏱ 2 hours</span><span>📝 120 marks</span></div>
+        </div>
+    </header>
+    <nav class="question-nav-bar">
+        <div class="nav-container">
+            <span class="nav-label">Questions:</span>
+            <button class="nav-btn active" data-q="1">Q1 (7)</button>
+            <button class="nav-btn" data-q="2">Q2 (10)</button>
+            <button class="nav-btn" data-q="3">Q3 (13)</button>
+            <button class="nav-btn" data-q="4">Q4 (15)</button>
+            <button class="nav-btn" data-q="5">Q5 (15)</button>
+            <button class="nav-btn" data-q="6">Q6 (15)</button>
+            <button class="nav-btn" data-q="7">Q7 (7)</button>
+            <button class="nav-btn" data-q="8">Q8 (8)</button>
+            <button class="nav-btn" data-q="9">Q9 (15)</button>
+            <button class="nav-btn" data-q="10">Q10 (15)</button>
+        </div>
+    </nav>
+    <main>
+        <div class="panel question-panel">
+            <div class="panel-header"><span class="panel-title">Question</span><span class="marks-badge" id="marks-display">7 marks</span></div>
+            <div class="question-content" id="question-display"></div>
+        </div>
+        <div class="code-panel">
+            <div class="panel editor-container">
+                <div class="panel-header editor-header">
+                    <div class="file-name"><span class="file-icon">🐍</span><span id="current-file">Q01.py</span></div>
+                    <div class="editor-actions">
+                        <button class="btn btn-reset" onclick="resetCode()">↺ Reset</button>
+                        <button class="btn btn-run" onclick="runCode()">▶ Run</button>
+                        <button class="btn btn-submit" onclick="showMarkScheme()">📋 Submit</button>
+                    </div>
+                </div>
+                <div class="editor-wrapper"><textarea id="code-editor"></textarea></div>
+            </div>
+            <div class="panel output-container">
+                <div class="panel-header output-header"><span class="panel-title">Output</span><span class="output-status status-ready" id="status">Ready</span></div>
+                <pre id="output">Click "Run" to execute your code...</pre>
+            </div>
+        </div>
+    </main>
+    <div class="modal-overlay" id="markscheme-modal">
+        <div class="modal">
+            <div class="modal-header"><span class="modal-title">📋 Mark Scheme - Question <span id="ms-question-num">1</span></span><button class="modal-close" onclick="closeMarkScheme()">&times;</button></div>
+            <div class="modal-content" id="markscheme-content"></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="input-modal">
+        <div class="input-box"><h3 id="input-prompt">Enter input:</h3><input type="text" id="input-field" autofocus><button onclick="submitInput()">Submit</button></div>
+    </div>
+
+    <script>
+const questions = {
+    1: {
+        file: "Q01.py", time: "10 minutes", marks: 7, saveAs: "Q01FINISHED.py",
+        context: ["A program simulates the roll of a dice. The program uses a random number generator to create a random integer, between 1 and 6, to represent the roll."],
+        instruction: "Open file Q01. Amend the code to add or complete lines to:",
+        tasks: [
+            "import the <code>random</code> library",
+            "create one variable",
+            "create one constant",
+            "assign the result of a library call to a variable",
+            "display a message and the contents of a variable on the screen"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q01 - Dice Roll Simulator
+
+import 
+
+SIDES = 
+roll = 
+
+roll = random.(1, )
+
+print(, roll)
+`,
+        markScheme: [
+            {points: "1", text: "<code>import random</code>"},
+            {points: "1", text: "Constant assigned: <code>SIDES = 6</code>"},
+            {points: "1", text: "Variable initialised: <code>roll = 0</code>"},
+            {points: "1", text: "Library function: <code>randint</code>"},
+            {points: "1", text: "Second parameter: <code>SIDES</code>"},
+            {points: "1", text: "Print includes string message"},
+            {points: "1", text: "Print includes variable <code>roll</code>"}
+        ],
+        modelAnswer: `# Q01 - Dice Roll Simulator
+
+import random
+
+SIDES = 6
+roll = 0
+
+roll = random.randint(1, SIDES)
+
+print("You rolled:", roll)`
+    },
+    2: {
+        file: "Q02.py", time: "15 minutes", marks: 10, saveAs: "Q02FINISHED.py",
+        context: ["A programmer has started to write a program, but it does not work correctly.", "The program should ask \"Would you like me to count down?\". If user types 'y', the computer displays numbers from 5 to 0, then \"Goodbye\"."],
+        instruction: "Open file Q02. Amend the code to:",
+        tasks: [
+            "fix the syntax error on line 3: <code>import randum</code>",
+            "fix the syntax error on line 7: missing colon after if statement",
+            "fix the syntax error on line 9: missing colon after for loop",
+            "fix the syntax error on line 11: missing closing quote",
+            "change the identifier <code>x</code> to a more meaningful name throughout",
+            "add a comment to explain the range function's -1 parameter",
+            "add two uses of white space to aid readability"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q02 - Countdown Program
+
+import randum
+
+x = input("Would you like me to count down? (y/n): ")
+
+if (x == 'y')
+    
+    for num in range(5, -1, -1)
+        print(num)
+        
+print("Goodbye)
+`,
+        markScheme: [
+            {points: "1", text: "Fix import: <code>import random</code>"},
+            {points: "1", text: "Add colon: <code>if (choice == 'y'):</code>"},
+            {points: "1", text: "Add colon: <code>for num in range(5, -1, -1):</code>"},
+            {points: "1", text: "Fix string: <code>print(\"Goodbye\")</code>"},
+            {points: "1", text: "Meaningful variable name like <code>choice</code> used consistently"},
+            {points: "1", text: "Comment explaining -1 causes backwards/reverse stepping"},
+            {points: "2", text: "Two uses of white space (blank lines between sections)"},
+            {points: "1", text: "Correct output for 'y' (5,4,3,2,1,0,Goodbye)"},
+            {points: "1", text: "Correct output for 'n' (Goodbye only)"}
+        ],
+        modelAnswer: `# Q02 - Countdown Program
+
+import random
+
+choice = input("Would you like me to count down? (y/n): ")
+
+if (choice == 'y'):
+    # The -1 step makes the loop count backwards
+    for num in range(5, -1, -1):
+        print(num)
+
+print("Goodbye")`
+    },
+    3: {
+        file: "Q03.py", time: "20 minutes", marks: 13, saveAs: "Q03FINISHED.py",
+        context: ["A program is needed that must: accept only numbers from 1 to 20 inclusive, print 'invalid input' if outside range, print the number followed by 'is even' or 'is odd'."],
+        instruction: "Open file Q03. Amend the code to:",
+        tasks: [
+            "fix the runtime error caused by inputting a valid number (type conversion needed)",
+            "fix the logic errors that cause incorrect outputs for numbers 1-20",
+            "fix the logic error that allows numbers outside range to be processed",
+            "use correct relational operators for validation",
+            "use correct Boolean operator (and/or) for range check",
+            "make all output messages match requirements"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q03 - Odd or Even Checker
+
+number = input("Enter a number (1-20): ")
+
+if number < 1 or number > 20:
+    print("invalid")
+
+if number % 2 = 0:
+    print(number, "even")
+else:
+    print(number, "odd")
+`,
+        markScheme: [
+            {points: "1", text: "Fix runtime error: <code>number = int(input(...))</code>"},
+            {points: "1", text: "Fix comparison: <code>==</code> not <code>=</code>"},
+            {points: "1", text: "Use if/else structure for validation"},
+            {points: "1", text: "Relational operator <code>>=1</code>"},
+            {points: "1", text: "Relational operator <code><=20</code>"},
+            {points: "1", text: "Correct Boolean operator <code>and</code>"},
+            {points: "1", text: "Output message 'invalid input'"},
+            {points: "1", text: "Output message 'is even'"},
+            {points: "1", text: "Output message 'is odd'"},
+            {points: "1", text: "Only process valid inputs (nested structure)"},
+            {points: "3", text: "Solution design and functionality (levels-based)"}
+        ],
+        modelAnswer: `# Q03 - Odd or Even Checker
+
+number = int(input("Enter a number (1-20): "))
+
+if number >= 1 and number <= 20:
+    if number % 2 == 0:
+        print(number, "is even")
+    else:
+        print(number, "is odd")
+else:
+    print("invalid input")`
+    },
+    4: {
+        file: "Q04.py", time: "20 minutes", marks: 15, saveAs: "Q04FINISHED.py",
+        context: ["A program takes a year group as input and outputs the education stage.", "0 = Exit, 1-6 = Primary, 7-11 = Secondary, 12-13 = College", "The lines of code are mixed up and need rearranging."],
+        instruction: "Open file Q04. Amend the code to:",
+        tasks: [
+            "rearrange the lines to make the program work correctly",
+            "use comments, white space, indentation and layout for readability",
+            "ensure input is taken before the loop and inside the loop",
+            "ensure validation messages match tests",
+            "ensure institution messages match year groups"
+        ],
+        note: "Do not change functionality of given lines. Do not add additional functionality.",
+        starterCode: `# Q04 - Education Stage Finder
+# Rearrange these lines to make the program work
+
+print("College")
+print("Year too big")
+elif (year > 13):
+year = int(input("Enter year group (0 to exit): "))
+elif (year < 7):
+while (year != 0):
+print("Secondary")
+if (year < 1):
+print("Primary")
+elif (year < 12):
+print("Year too small")
+year = int(input("Enter year group (0 to exit): "))
+`,
+        markScheme: [
+            {points: "1", text: "Comments, white space and layout aid readability"},
+            {points: "1", text: "Initial input outside loop"},
+            {points: "1", text: "while loop as outermost construct"},
+            {points: "1", text: "<code>elif (year > 13)</code> placed after <code>if (year < 1)</code>"},
+            {points: "1", text: "<code>elif (year < 12)</code> placed after <code>elif (year < 7)</code>"},
+            {points: "1", text: "Input inside loop for next iteration"},
+            {points: "1", text: "'Year too small' matches test"},
+            {points: "1", text: "'Year too big' matches test"},
+            {points: "1", text: "Primary for years 1-6"},
+            {points: "1", text: "Secondary for years 7-11"},
+            {points: "1", text: "College for years 12-13"},
+            {points: "4", text: "Correct outputs for all test data"}
+        ],
+        modelAnswer: `# Q04 - Education Stage Finder
+
+year = int(input("Enter year group (0 to exit): "))
+
+while (year != 0):
+    
+    if (year < 1):
+        print("Year too small")
+    elif (year < 7):
+        print("Primary")
+    elif (year < 12):
+        print("Secondary")
+    elif (year > 13):
+        print("Year too big")
+    else:
+        print("College")
+    
+    year = int(input("Enter year group (0 to exit): "))`
+    },
+    5: {
+        file: "Q05.py", time: "25 minutes", marks: 15, saveAs: "Q05FINISHED.py",
+        context: ["Students collect data about water volume in paper cones.", "Formula: V = (1/3) × π × r² × h", "A subprogram must calculate volume for any radius and height passed as parameters."],
+        instruction: "Open file Q05. Amend the program and subprogram to meet the following requirements:",
+        tasks: [
+            "the subprogram must work for any values of radius and height passed as parameters",
+            "the subprogram must calculate the volume based on the input parameters",
+            "the main program must print the volume, formatted to show three decimal places"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q05 - Cone Volume Calculator
+# V = (1/3) * pi * r^2 * h
+
+import 
+
+def calculateVolume():
+    theVolume = 
+    return
+
+baseRadius = 3.5
+coneHeight = 8.2
+
+coneVolume = calculateVolume()
+
+print("Volume:", )
+`,
+        markScheme: [
+            {points: "1", text: "<code>import math</code>"},
+            {points: "1", text: "Two parameters in definition: <code>(pRadius, pHeight)</code>"},
+            {points: "1", text: "Formula uses <code>math.pi</code>"},
+            {points: "1", text: "Correct formula: <code>(1/3) * math.pi * pRadius**2 * pHeight</code>"},
+            {points: "1", text: "Calculation assigned to <code>theVolume</code>"},
+            {points: "1", text: "Return statement: <code>return(theVolume)</code>"},
+            {points: "1", text: "Function called with <code>baseRadius, coneHeight</code>"},
+            {points: "1", text: "Arguments in correct order"},
+            {points: "1", text: "Returned value captured in <code>coneVolume</code>"},
+            {points: "1", text: "Format to 3 decimal places: <code>{:.3f}</code>"},
+            {points: "2", text: "Correct output displayed"},
+            {points: "3", text: "Functionality (levels-based)"}
+        ],
+        modelAnswer: `# Q05 - Cone Volume Calculator
+# V = (1/3) * pi * r^2 * h
+
+import math
+
+def calculateVolume(pRadius, pHeight):
+    theVolume = (1/3) * math.pi * pRadius ** 2 * pHeight
+    return(theVolume)
+
+baseRadius = 3.5
+coneHeight = 8.2
+
+coneVolume = calculateVolume(baseRadius, coneHeight)
+
+print("Volume: {:.3f}".format(coneVolume))`
+    },
+    6: {
+        file: "Q06.py", time: "25 minutes", marks: 15, saveAs: "Q06FINISHED.py",
+        context: ["A program is needed to authenticate system logins consisting of a login name and a four-digit passcode.", "User data is stored in a 2D list: [user number, last name, first name, login name, passcode].", "Passcodes are integers between 1000 and 9999."],
+        instruction: "Open file Q06. Write a program to meet these requirements:",
+        tasks: [
+            "Prompt for and accept a login name, no validation required",
+            "Prompt for and accept a four-digit passcode, ensure between 1000-9999",
+            "Work with any number of users in the list using <code>len()</code>",
+            "Use a linear search to find the matching login name and passcode",
+            "Display a welcome message including user's names if found",
+            "Display an invalid input message if not found",
+            "Use comments, white space and layout for readability"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q06 - Login Authentication System
+
+users = [
+    [1, "Smith", "John", "jsmith", 1234],
+    [2, "Jones", "Emma", "ejones", 5678],
+    [3, "Brown", "Alex", "abrown", 9012],
+    [4, "Taylor", "Sam", "staylor", 3456]
+]
+
+# Write your solution below
+
+`,
+        markScheme: [
+            {points: "1", text: "Accepts login name input"},
+            {points: "1", text: "Accepts passcode as integer input"},
+            {points: "1", text: "Validates passcode >=1000 and <=9999"},
+            {points: "1", text: "Uses <code>len(users)</code> for array length"},
+            {points: "1", text: "Uses Boolean to track found state"},
+            {points: "1", text: "Uses 2D indexing <code>users[i][3]</code> for login"},
+            {points: "1", text: "Uses 2D indexing <code>users[i][4]</code> for passcode"},
+            {points: "1", text: "Linear search with for loop"},
+            {points: "1", text: "Displays welcome with user's first and last names"},
+            {points: "1", text: "Displays invalid message when not found"},
+            {points: "3", text: "Good programming practices (comments, layout)"},
+            {points: "2", text: "Functionality (levels-based)"}
+        ],
+        modelAnswer: `# Q06 - Login Authentication System
+
+users = [
+    [1, "Smith", "John", "jsmith", 1234],
+    [2, "Jones", "Emma", "ejones", 5678],
+    [3, "Brown", "Alex", "abrown", 9012],
+    [4, "Taylor", "Sam", "staylor", 3456]
+]
+
+# Get user input
+inputLogin = input("Enter login name: ")
+inputPasscode = int(input("Enter passcode: "))
+
+# Validate passcode range
+if inputPasscode >= 1000 and inputPasscode <= 9999:
+    
+    # Search for matching credentials
+    found = False
+    
+    for i in range(len(users)):
+        if users[i][3] == inputLogin and users[i][4] == inputPasscode:
+            found = True
+            firstName = users[i][2]
+            lastName = users[i][1]
+    
+    # Display result
+    if found:
+        print("Welcome,", firstName, lastName)
+    else:
+        print("Invalid login name or passcode")
+else:
+    print("Passcode must be between 1000 and 9999")`
+    },
+    7: {
+        file: "Q07.py", time: "10 minutes", marks: 7, saveAs: "Q07FINISHED.py",
+        context: ["A program displays temperature data and calculates ice cream costs with discount.", "Study the code and identify the programming constructs."],
+        instruction: "Open file Q07. Amend the lines at the bottom of the code to give the:",
+        tasks: [
+            "name of a constant used in the program",
+            "name of an array used in the program",
+            "line number of an initialisation of a variable with a real number",
+            "line numbers for a selection construct",
+            "line numbers for a repetition construct",
+            "line number for an iteration construct",
+            "line number for an instruction that outputs information to the screen"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q07 - Study this code and answer questions
+
+# Line 1
+DISCOUNT = 0.15
+# Line 2
+THRESHOLD = 100
+# Line 3
+temperatures = [22.5, 24.0, 19.5, 26.0]
+# Line 4
+totalCost = 0.0
+# Line 5
+cost = float(input("Enter cost (0 to stop): "))
+# Line 6
+while cost > 0:
+# Line 7
+    totalCost = totalCost + cost
+# Line 8
+    cost = float(input("Enter cost (0 to stop): "))
+# Line 9
+for temp in temperatures:
+# Line 10
+    print("Temperature:", temp)
+# Line 11
+if totalCost > THRESHOLD:
+# Line 12
+    totalCost = totalCost * (1 - DISCOUNT)
+# Line 13
+print("Total:", totalCost)
+
+# ===== FILL IN YOUR ANSWERS BELOW =====
+constantName = ""
+arrayName = ""
+realNumberLine = 
+selectionLines = ""
+repetitionLines = ""
+iterationLine = 
+outputLine = 
+`,
+        markScheme: [
+            {points: "1", text: "Constant: <code>DISCOUNT</code> or <code>THRESHOLD</code>"},
+            {points: "1", text: "Array: <code>temperatures</code>"},
+            {points: "1", text: "Real number line: <code>4</code> (totalCost = 0.0)"},
+            {points: "1", text: "Selection lines: <code>11-12</code>"},
+            {points: "1", text: "Repetition lines: <code>6-8</code>"},
+            {points: "1", text: "Iteration line: <code>9</code>"},
+            {points: "1", text: "Output line: <code>10</code> or <code>13</code>"}
+        ],
+        modelAnswer: `# ANSWERS:
+constantName = "DISCOUNT"
+arrayName = "temperatures"
+realNumberLine = 4
+selectionLines = "11-12"
+repetitionLines = "6-8"
+iterationLine = 9
+outputLine = 13`
+    },
+    8: {
+        file: "Q08.py", time: "15 minutes", marks: 8, saveAs: "Q08FINISHED.py",
+        context: ["A program for an exercise routine displays warm-up exercises.", "The user enters a number and that many exercises are randomly selected and displayed."],
+        instruction: "Open file Q08. Amend the code to:",
+        tasks: [
+            "fix the syntax error on original line 4: <code>import randum</code>",
+            "fix the syntax error on original line 16: <code>for exercise in exerciseTable</code>",
+            "complete original line 20 to generate a random number between 0 and 4",
+            "complete original line 8 to make exercise names be string data types",
+            "fix the IndexError on original line 21: <code>name = exerciseTable[index + 1]</code>",
+            "fix the NameError on original line 22: <code>print(naime)</code>",
+            "fix the logic error that causes one less exercise to be printed",
+            "use white space to improve readability"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q08 - Exercise Routine
+
+import randum
+
+exerciseTable = ["squats", "planks", pushups, "lunges", "burpees"]
+
+numExercises = int(input("How many exercises? "))
+
+for count in range(numExercises - 1)
+    index = random.
+    name = exerciseTable[index + 1]
+    print(naime)
+`,
+        markScheme: [
+            {points: "1", text: "Fix import: <code>import random</code>"},
+            {points: "1", text: "Add colon: <code>for count in range(...):</code>"},
+            {points: "1", text: "Complete random: <code>random.randint(0, 4)</code>"},
+            {points: "1", text: "Fix string: <code>\"pushups\"</code>"},
+            {points: "1", text: "Fix index: <code>exerciseTable[index]</code> (remove +1)"},
+            {points: "1", text: "Fix variable: <code>print(name)</code>"},
+            {points: "1", text: "Fix range: <code>range(numExercises)</code> (remove -1)"},
+            {points: "1", text: "White space added for readability"}
+        ],
+        modelAnswer: `# Q08 - Exercise Routine
+
+import random
+
+exerciseTable = ["squats", "planks", "pushups", "lunges", "burpees"]
+
+numExercises = int(input("How many exercises? "))
+
+for count in range(numExercises):
+    index = random.randint(0, 4)
+    name = exerciseTable[index]
+    print(name)`
+    },
+    9: {
+        file: "Q09.py", time: "25 minutes", marks: 15, saveAs: "Q09FINISHED.py",
+        context: ["A program generates a user ID string.", "Letter part: surname + first letter of first name (all lowercase).", "Number part: sum of ASCII values of birth year digits.", "Example: Viola Bassir, born 2005 → bassirv199 (ASCII: 50+48+48+53=199)"],
+        instruction: "Open file Q09. Amend the code to:",
+        tasks: [
+            "Ensure local and global variables with same names are not confused - change local variable names",
+            "Add a procedure with no parameters to display a welcome message",
+            "Call the welcome procedure before taking input",
+            "Ensure surname and first name are all lowercase",
+            "Validate the date of birth using <code>.isdigit()</code>",
+            "Call makeID function only if date of birth is valid",
+            "Fix the logic error: use <code>ord()</code> not <code>int()</code> for ASCII values"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q09 - User ID Generator
+
+def makeID(surname, firstName, birthYear):
+    letterPart = surname + firstName[0]
+    
+    numberPart = 0
+    for digit in birthYear:
+        numberPart = numberPart + int(digit)
+    
+    userID = letterPart + str(numberPart)
+    return userID
+
+# Main program
+surname = input("Enter surname: ")
+firstName = input("Enter first name: ")
+birthYear = input("Enter birth year (e.g. 2005): ")
+
+result = makeID(surname, firstName, birthYear)
+print("Your ID is:", result)
+`,
+        markScheme: [
+            {points: "1", text: "Local variables renamed (e.g., <code>pSurname, pFirstName, pBirthYear</code>)"},
+            {points: "1", text: "Welcome procedure defined with no parameters"},
+            {points: "1", text: "Welcome displays appropriate message"},
+            {points: "1", text: "Welcome called before input"},
+            {points: "1", text: "Surname converted to lowercase: <code>.lower()</code>"},
+            {points: "1", text: "First name converted to lowercase"},
+            {points: "1", text: "Validation uses <code>birthYear.isdigit()</code>"},
+            {points: "1", text: "makeID only called if validation passes"},
+            {points: "1", text: "Error message for invalid birth year"},
+            {points: "1", text: "Fix to use <code>ord(digit)</code> for ASCII value"},
+            {points: "2", text: "Correct ID generated (e.g., bassirv199)"},
+            {points: "3", text: "Functionality (levels-based)"}
+        ],
+        modelAnswer: `# Q09 - User ID Generator
+
+def welcome():
+    print("=== User ID Generator ===")
+
+def makeID(pSurname, pFirstName, pBirthYear):
+    letterPart = pSurname + pFirstName[0]
+    
+    numberPart = 0
+    for digit in pBirthYear:
+        numberPart = numberPart + ord(digit)
+    
+    userID = letterPart + str(numberPart)
+    return userID
+
+# Main program
+welcome()
+
+surname = input("Enter surname: ")
+firstName = input("Enter first name: ")
+birthYear = input("Enter birth year (e.g. 2005): ")
+
+surname = surname.lower()
+firstName = firstName.lower()
+
+if birthYear.isdigit():
+    result = makeID(surname, firstName, birthYear)
+    print("Your ID is:", result)
+else:
+    print("Invalid birth year - digits only")`
+    },
+    10: {
+        file: "Q10.py", time: "25 minutes", marks: 15, saveAs: "Q10FINISHED.py",
+        context: ["A program reads data about screws from a file and counts copper screws.", "It also stores brick names in an array and writes them to a file in uppercase.", "Expected output: Total screws: 26, Copper screws: 8, Wrote 12 brick names"],
+        instruction: "Open file Q10. Amend the code to:",
+        tasks: [
+            "process the screw data by looping through the array",
+            "split each line on the comma to get material and quantity",
+            "count the total screws and copper screws separately",
+            "loop through the bricks array",
+            "convert each brick name to uppercase using <code>.upper()</code>",
+            "display the correct totals matching expected output"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q10 - Inventory Processing
+
+bricks = ["Red Standard", "Yellow London", "Blue Engineering",
+          "Brown Facing", "Grey Concrete", "White Glazed",
+          "Orange Clay", "Black Perforated", "Green Eco",
+          "Pink Decorative", "Cream Heritage", "Buff Wirecut"]
+
+screwData = ["steel,10", "copper,5", "brass,8", "copper,3"]
+
+totalScrews = 0
+copperScrews = 0
+
+# Process screw data here
+
+
+# Process brick names here
+
+
+print("Total screws:", totalScrews, "Copper screws:", copperScrews)
+print("Wrote", len(bricks), "brick names")
+`,
+        markScheme: [
+            {points: "1", text: "Loop through screwData: <code>for line in screwData:</code>"},
+            {points: "1", text: "Split on comma: <code>line.split(\",\")</code>"},
+            {points: "1", text: "Get material: <code>parts[0]</code>"},
+            {points: "1", text: "Convert quantity to int: <code>int(parts[1])</code>"},
+            {points: "1", text: "Add to totalScrews"},
+            {points: "1", text: "Check for copper: <code>if material == \"copper\":</code>"},
+            {points: "1", text: "Add copper quantity to copperScrews"},
+            {points: "1", text: "Loop through bricks"},
+            {points: "1", text: "Convert to uppercase: <code>.upper()</code>"},
+            {points: "1", text: "Print/display uppercase bricks"},
+            {points: "1", text: "Correct total: 26"},
+            {points: "1", text: "Correct copper count: 8"},
+            {points: "3", text: "Functionality (levels-based)"}
+        ],
+        modelAnswer: `# Q10 - Inventory Processing
+
+bricks = ["Red Standard", "Yellow London", "Blue Engineering",
+          "Brown Facing", "Grey Concrete", "White Glazed",
+          "Orange Clay", "Black Perforated", "Green Eco",
+          "Pink Decorative", "Cream Heritage", "Buff Wirecut"]
+
+screwData = ["steel,10", "copper,5", "brass,8", "copper,3"]
+
+totalScrews = 0
+copperScrews = 0
+
+# Process screw data
+for line in screwData:
+    parts = line.split(",")
+    material = parts[0]
+    quantity = int(parts[1])
+    totalScrews = totalScrews + quantity
+    if material == "copper":
+        copperScrews = copperScrews + quantity
+
+# Process brick names
+for brick in bricks:
+    upperBrick = brick.upper()
+    print(upperBrick)
+
+print("Total screws:", totalScrews, "Copper screws:", copperScrews)
+print("Wrote", len(bricks), "brick names")`
+    }
+};
+
+    let currentQuestion = 1;
+    let editor;
+    let inputResolve = null;
+    let completedQuestions = new Set();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if Skulpt loaded
+        if (typeof Sk === 'undefined') {
+            document.getElementById('output').innerHTML = '<span class="error">Error: Python interpreter failed to load. Please refresh the page.</span>';
+        }
+        
+        editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            mode: 'python',
+            theme: 'dracula',
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            autofocus: true
+        });
+        
+        loadQuestion(1);
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                loadQuestion(parseInt(this.dataset.q));
+            });
+        });
+        
+        document.getElementById('input-field').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') submitInput();
+        });
+    });
+
+    function loadQuestion(num) {
+        currentQuestion = num;
+        const q = questions[num];
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const n = parseInt(btn.dataset.q);
+            btn.classList.toggle('active', n === num);
+            btn.classList.toggle('completed', completedQuestions.has(n));
+        });
+        
+        const taskItems = q.tasks.map(t => `<li><span class="task-bullet"></span><span class="task-text">${t}</span></li>`).join('');
+        const contextHtml = q.context.map(p => `<p>${p}</p>`).join('');
+        
+        document.getElementById('question-display').innerHTML = `
+            <div class="question-header">
+                <div class="question-number">${num}</div>
+                <div class="question-meta">Suggested time: ${q.time}</div>
+            </div>
+            <div class="question-context">${contextHtml}</div>
+            <p class="instruction">${q.instruction}</p>
+            <ul class="task-list">${taskItems}</ul>
+            ${q.note ? `<div class="note"><strong>Note:</strong> ${q.note}</div>` : ''}
+            <p style="font-size:.85rem;color:var(--text-muted);margin-top:1rem">Save as <code style="background:var(--bg-tertiary);padding:.15rem .4rem;border-radius:4px;color:var(--accent-green)">${q.saveAs}</code></p>
+        `;
+        
+        document.getElementById('marks-display').textContent = `${q.marks} marks`;
+        document.getElementById('current-file').textContent = q.file;
+        editor.setValue(q.starterCode);
+        document.getElementById('output').textContent = 'Click "Run" to execute your code...';
+        updateStatus('ready');
+    }
+
+    function resetCode() {
+        editor.setValue(questions[currentQuestion].starterCode);
+        document.getElementById('output').textContent = 'Code reset.';
+        updateStatus('ready');
+    }
+
+    function updateStatus(s) {
+        const el = document.getElementById('status');
+        el.className = 'output-status';
+        const m = {
+            ready: ['status-ready', 'Ready'],
+            running: ['status-running', 'Running...'],
+            success: ['status-success', 'Complete'],
+            error: ['status-error', 'Error']
+        };
+        el.classList.add(m[s][0]);
+        el.textContent = m[s][1];
+    }
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+            throw "File not found: '" + x + "'";
+        }
+        return Sk.builtinFiles["files"][x];
+    }
+
+    function outf(t) {
+        document.getElementById('output').textContent += t;
+    }
+
+    function inputfun(p) {
+        return new Promise(function(r) {
+            document.getElementById('output').textContent += p;
+            document.getElementById('input-prompt').textContent = p || 'Enter input:';
+            document.getElementById('input-modal').classList.add('active');
+            document.getElementById('input-field').value = '';
+            document.getElementById('input-field').focus();
+            inputResolve = r;
+        });
+    }
+
+    function submitInput() {
+        const v = document.getElementById('input-field').value;
+        document.getElementById('input-modal').classList.remove('active');
+        document.getElementById('output').textContent += v + '\n';
+        if (inputResolve) {
+            inputResolve(v);
+            inputResolve = null;
+        }
+    }
+
+    function runCode() {
+        if (typeof Sk === 'undefined') {
+            document.getElementById('output').innerHTML = '<span class="error">Python interpreter not loaded. Please refresh.</span>';
+            return;
+        }
+        
+        const c = editor.getValue();
+        document.getElementById('output').textContent = '';
+        updateStatus('running');
+        
+        Sk.configure({
+            output: outf,
+            read: builtinRead,
+            inputfun: inputfun,
+            inputfunTakesPrompt: true,
+            __future__: Sk.python3
+        });
+        
+        Sk.misceval.asyncToPromise(function() {
+            return Sk.importMainWithBody("<stdin>", false, c, true);
+        }).then(function() {
+            updateStatus('success');
+        }).catch(function(e) {
+            document.getElementById('output').innerHTML += '<span class="error">\n' + e.toString() + '</span>';
+            updateStatus('error');
+        });
+    }
+
+    function showMarkScheme() {
+        const q = questions[currentQuestion];
+        completedQuestions.add(currentQuestion);
+        document.querySelector(`.nav-btn[data-q="${currentQuestion}"]`).classList.add('completed');
+        
+        const mi = q.markScheme.map(i => `
+            <div class="mark-item">
+                <span class="mark-points">${i.points}</span>
+                <span class="mark-text">${i.text}</span>
+            </div>
+        `).join('');
+        
+        document.getElementById('ms-question-num').textContent = currentQuestion;
+        document.getElementById('markscheme-content').innerHTML = `
+            ${mi}
+            <div class="model-answer">
+                <h4>Model Answer</h4>
+                <pre>${escapeHtml(q.modelAnswer)}</pre>
+            </div>
+            <div class="total-marks">Total for Question ${currentQuestion} = ${q.marks} marks</div>
+        `;
+        document.getElementById('markscheme-modal').classList.add('active');
+    }
+
+    function closeMarkScheme() {
+        document.getElementById('markscheme-modal').classList.remove('active');
+    }
+
+    function escapeHtml(t) {
+        const d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
+    }
+
+    document.getElementById('markscheme-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeMarkScheme();
+    });
+    </script>
+</body>
+</html>
