@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turtle Graphics Practice - Edexcel GCSE CS</title>
+    
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    
+    <!-- Skulpt from jsDelivr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg-primary:#0d1117;--bg-secondary:#161b22;--bg-tertiary:#21262d;--accent-purple:#8b5cf6;--accent-green:#10b981;--accent-red:#ef4444;--accent-amber:#f59e0b;--accent-blue:#3b82f6;--accent-orange:#f97316;--text-primary:#f0f6fc;--text-secondary:#8b949e;--text-muted:#6e7681;--border:#30363d}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6}
+        header{background:linear-gradient(135deg,#ea580c,#c2410c);padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+        .header-content{max-width:1800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+        .logo{display:flex;align-items:center;gap:.75rem}
+        .logo-icon{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.5rem}
+        .logo h1{font-size:1.2rem;font-weight:700}.logo span{font-size:.8rem;opacity:.85}
+        .header-info{display:flex;gap:1.5rem;font-size:.85rem;opacity:.9}
+        .topic-badge{background:rgba(255,255,255,.2);padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:600}
+        .question-nav-bar{background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:.75rem 2rem;overflow-x:auto}
+        .nav-container{max-width:1800px;margin:0 auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+        .nav-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-right:.5rem;white-space:nowrap}
+        .nav-btn{background:var(--bg-tertiary);border:1px solid var(--border);color:var(--text-secondary);padding:.5rem 1rem;border-radius:6px;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+        .nav-btn:hover,.nav-btn.active{background:var(--accent-orange);color:#fff;border-color:var(--accent-orange)}
+        .nav-btn.completed{border-color:var(--accent-green);color:var(--accent-green)}
+        .nav-btn.completed.active{background:var(--accent-green);color:#fff}
+        main{max-width:1800px;margin:0 auto;padding:1.5rem 2rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;min-height:calc(100vh - 140px)}
+        @media(max-width:1400px){main{grid-template-columns:1fr 1fr}}
+        @media(max-width:1000px){main{grid-template-columns:1fr}}
+        .panel{background:var(--bg-secondary);border-radius:12px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column}
+        .panel-header{background:var(--bg-tertiary);padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .panel-title{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary)}
+        .question-content{padding:1.25rem;flex:1;overflow-y:auto;max-height:calc(100vh - 250px)}
+        .question-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+        .question-number{width:36px;height:36px;background:var(--accent-orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+        .question-meta{font-size:.8rem;color:var(--text-muted)}
+        .question-context{background:var(--bg-tertiary);border-left:3px solid var(--accent-orange);padding:1rem;margin-bottom:1.25rem;border-radius:0 8px 8px 0}
+        .question-context p{color:var(--text-secondary);font-size:.9rem;margin-bottom:.5rem}
+        .question-context p:last-child{margin-bottom:0}
+        .instruction{font-weight:600;color:var(--text-primary);margin-bottom:1rem;font-size:.95rem}
+        .task-list{list-style:none;margin-bottom:1rem}
+        .task-list li{display:flex;gap:.75rem;margin-bottom:.5rem;padding:.6rem .75rem;background:var(--bg-tertiary);border-radius:6px;font-size:.875rem}
+        .task-bullet{width:6px;height:6px;background:var(--accent-orange);border-radius:50%;margin-top:.45rem;flex-shrink:0}
+        .task-text{color:var(--text-secondary)}
+        .task-text code{background:var(--bg-primary);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.8em;color:var(--accent-orange)}
+        .note{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);padding:.75rem;border-radius:6px;font-size:.85rem;color:var(--accent-amber);margin-bottom:1rem}
+        .marks-badge{display:inline-block;background:var(--bg-tertiary);border:1px solid var(--border);padding:.4rem .75rem;border-radius:6px;font-size:.8rem;color:var(--text-secondary)}
+        .code-panel{display:flex;flex-direction:column}
+        .editor-container{flex:1;min-height:300px;display:flex;flex-direction:column}
+        .editor-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+        .file-name{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)}
+        .file-icon{color:var(--accent-amber)}
+        .editor-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+        .btn{padding:.5rem .875rem;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;display:flex;align-items:center;gap:.35rem}
+        .btn-run{background:var(--accent-green);color:#fff}.btn-run:hover{background:#059669;transform:translateY(-1px)}
+        .btn-reset{background:var(--bg-secondary);color:var(--text-secondary);border:1px solid var(--border)}.btn-reset:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+        .btn-submit{background:var(--accent-orange);color:#fff}.btn-submit:hover{background:#ea580c;transform:translateY(-1px)}
+        .editor-wrapper{flex:1;overflow:hidden;border-radius:0 0 8px 8px}
+        .CodeMirror{height:100%!important;font-family:'JetBrains Mono',monospace;font-size:13px;min-height:250px}
+        .turtle-panel{min-height:350px}
+        .turtle-canvas{flex:1;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:0 0 8px 8px;min-height:300px}
+        #turtle-canvas{background:#fff}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:1000;align-items:center;justify-content:center;padding:2rem}
+        .modal-overlay.active{display:flex}
+        .modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;width:100%;max-width:700px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+        .modal-header{background:var(--bg-tertiary);padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+        .modal-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
+        .modal-close{background:0 0;border:none;color:var(--text-secondary);font-size:1.5rem;cursor:pointer;line-height:1}.modal-close:hover{color:var(--text-primary)}
+        .modal-content{padding:1.5rem;overflow-y:auto;flex:1}
+        .mark-item{display:flex;gap:.75rem;margin-bottom:.75rem;padding:.75rem;background:var(--bg-tertiary);border-radius:6px;border-left:3px solid var(--accent-green)}
+        .mark-points{background:var(--accent-orange);color:#fff;padding:.2rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;height:fit-content;white-space:nowrap}
+        .mark-text{font-size:.875rem;color:var(--text-secondary)}
+        .mark-text code{background:var(--bg-primary);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.85em;color:var(--accent-orange)}
+        .model-answer{background:var(--bg-tertiary);border-radius:8px;padding:1rem;margin-top:1rem}
+        .model-answer h4{font-size:.85rem;color:var(--text-muted);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.05em}
+        .model-answer pre{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent-green);white-space:pre-wrap;line-height:1.5}
+        .total-marks{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-weight:600;color:var(--accent-orange)}
+        .input-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:90%;max-width:400px}
+        .input-box h3{margin-bottom:1rem;font-size:1rem}
+        .input-box input{width:100%;padding:.75rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:1rem;margin-bottom:1rem}
+        .input-box input:focus{outline:0;border-color:var(--accent-orange)}
+        .input-box button{width:100%;padding:.75rem;background:var(--accent-orange);color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer}
+        .key-concepts{background:var(--bg-tertiary);border-radius:8px;padding:1rem;margin-bottom:1rem}
+        .key-concepts h4{font-size:.75rem;color:var(--text-muted);margin-bottom:.5rem;text-transform:uppercase}
+        .key-concepts ul{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem}
+        .key-concepts li{background:var(--bg-primary);padding:.25rem .5rem;border-radius:4px;font-size:.75rem;color:var(--accent-orange)}
+        .output-text{padding:.5rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-muted);max-height:60px;overflow-y:auto;background:var(--bg-tertiary);border-radius:4px;margin:.5rem}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🐢</div>
+                <div><h1>Turtle Graphics Practice</h1><span>Drawing with Python Turtle</span></div>
+            </div>
+            <div class="header-info">
+                <span class="topic-badge">Turtle Library</span>
+                <span>📝 107 marks</span>
+            </div>
+        </div>
+    </header>
+    <nav class="question-nav-bar">
+        <div class="nav-container">
+            <span class="nav-label">Questions:</span>
+            <button class="nav-btn active" data-q="1">Q1 (6)</button>
+            <button class="nav-btn" data-q="2">Q2 (8)</button>
+            <button class="nav-btn" data-q="3">Q3 (8)</button>
+            <button class="nav-btn" data-q="4">Q4 (10)</button>
+            <button class="nav-btn" data-q="5">Q5 (10)</button>
+            <button class="nav-btn" data-q="6">Q6 (12)</button>
+            <button class="nav-btn" data-q="7">Q7 (12)</button>
+            <button class="nav-btn" data-q="8">Q8 (12)</button>
+            <button class="nav-btn" data-q="9">Q9 (14)</button>
+            <button class="nav-btn" data-q="10">Q10 (15)</button>
+        </div>
+    </nav>
+    <main>
+        <div class="panel question-panel">
+            <div class="panel-header"><span class="panel-title">Question</span><span class="marks-badge" id="marks-display">6 marks</span></div>
+            <div class="question-content" id="question-display"></div>
+        </div>
+        <div class="panel code-panel">
+            <div class="panel-header editor-header">
+                <div class="file-name"><span class="file-icon">🐍</span><span id="current-file">Q01.py</span></div>
+                <div class="editor-actions">
+                    <button class="btn btn-reset" onclick="resetCode()">↺ Reset</button>
+                    <button class="btn btn-run" onclick="runCode()">▶ Run</button>
+                    <button class="btn btn-submit" onclick="showMarkScheme()">📋 Submit</button>
+                </div>
+            </div>
+            <div class="editor-wrapper"><textarea id="code-editor"></textarea></div>
+            <div class="output-text" id="output"></div>
+        </div>
+        <div class="panel turtle-panel">
+            <div class="panel-header"><span class="panel-title">Turtle Canvas</span></div>
+            <div class="turtle-canvas">
+                <div id="turtle-canvas"></div>
+            </div>
+        </div>
+    </main>
+    <div class="modal-overlay" id="markscheme-modal">
+        <div class="modal">
+            <div class="modal-header"><span class="modal-title">📋 Mark Scheme - Question <span id="ms-question-num">1</span></span><button class="modal-close" onclick="closeMarkScheme()">&times;</button></div>
+            <div class="modal-content" id="markscheme-content"></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="input-modal">
+        <div class="input-box"><h3 id="input-prompt">Enter input:</h3><input type="text" id="input-field" autofocus><button onclick="submitInput()">Submit</button></div>
+    </div>
+
+    <script>
+const questions = {
+    1: {
+        file: "Q01.py", time: "8 minutes", marks: 6, saveAs: "Q01FINISHED.py",
+        context: ["A program uses turtle graphics to draw a simple square.", "The turtle starts at the centre of the screen facing right (east)."],
+        instruction: "Open file Q01. Amend the code to:",
+        tasks: [
+            "import the turtle library",
+            "create a turtle called <code>myTurtle</code>",
+            "use a loop to draw a square with sides of 100 pixels",
+            "turn right 90 degrees after each side"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q01 - Draw a Square
+
+# Import the turtle library
+
+
+# Create a turtle
+myTurtle = turtle.()
+
+# Draw a square (4 sides, each 100 pixels)
+for i in range(4):
+    myTurtle.(100)
+    myTurtle.(90)
+`,
+        markScheme: [
+            {points: "1", text: "<code>import turtle</code>"},
+            {points: "1", text: "Create turtle: <code>turtle.Turtle()</code>"},
+            {points: "1", text: "Loop runs 4 times: <code>range(4)</code>"},
+            {points: "1", text: "Forward movement: <code>myTurtle.forward(100)</code>"},
+            {points: "1", text: "Turn right: <code>myTurtle.right(90)</code>"},
+            {points: "1", text: "Square is drawn correctly"}
+        ],
+        modelAnswer: `# Q01 - Draw a Square
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+for i in range(4):
+    myTurtle.forward(100)
+    myTurtle.right(90)`
+    },
+    2: {
+        file: "Q02.py", time: "10 minutes", marks: 8, saveAs: "Q02FINISHED.py",
+        context: ["A program uses turtle graphics to draw a coloured triangle.", "The pen colour should be blue and the fill colour should be yellow."],
+        instruction: "Open file Q02. Amend the code to:",
+        tasks: [
+            "set the pen colour to blue",
+            "set the fill colour to yellow",
+            "begin the fill before drawing",
+            "draw an equilateral triangle (3 sides, 120 degree turns)",
+            "end the fill after drawing"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q02 - Coloured Triangle
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+# Set pen colour to blue
+myTurtle.("")
+
+# Set fill colour to yellow
+myTurtle.("")
+
+# Begin filling
+myTurtle.()
+
+# Draw triangle (3 sides, turn 120 degrees each time)
+for i in range(3):
+    myTurtle.forward(100)
+    myTurtle.left()
+
+# End filling
+myTurtle.()
+`,
+        markScheme: [
+            {points: "1", text: "Pen colour: <code>myTurtle.pencolor(\"blue\")</code>"},
+            {points: "1", text: "Fill colour: <code>myTurtle.fillcolor(\"yellow\")</code>"},
+            {points: "1", text: "Begin fill: <code>myTurtle.begin_fill()</code>"},
+            {points: "1", text: "Loop runs 3 times"},
+            {points: "1", text: "Turn angle: <code>left(120)</code>"},
+            {points: "1", text: "End fill: <code>myTurtle.end_fill()</code>"},
+            {points: "2", text: "Triangle drawn with correct colours"}
+        ],
+        modelAnswer: `# Q02 - Coloured Triangle
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+myTurtle.pencolor("blue")
+myTurtle.fillcolor("yellow")
+
+myTurtle.begin_fill()
+
+for i in range(3):
+    myTurtle.forward(100)
+    myTurtle.left(120)
+
+myTurtle.end_fill()`
+    },
+    3: {
+        file: "Q03.py", time: "10 minutes", marks: 8, saveAs: "Q03FINISHED.py",
+        context: ["A program uses turtle to draw a circle and hide the turtle when finished.", "The circle should have a radius of 50 pixels and be coloured red."],
+        instruction: "Open file Q03. Amend the code to:",
+        tasks: [
+            "set the pen colour to red",
+            "set the pen size to 3",
+            "draw a circle with radius 50",
+            "hide the turtle when finished"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q03 - Draw a Circle
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+# Set pen colour to red
+myTurtle.pencolor("")
+
+# Set pen size to 3
+myTurtle.pensize()
+
+# Draw a circle with radius 50
+myTurtle.circle()
+
+# Hide the turtle
+myTurtle.()
+`,
+        markScheme: [
+            {points: "1", text: "Pen colour: <code>pencolor(\"red\")</code>"},
+            {points: "1", text: "Pen size: <code>pensize(3)</code>"},
+            {points: "1", text: "Circle function: <code>circle(50)</code>"},
+            {points: "1", text: "Radius is 50"},
+            {points: "1", text: "Hide turtle: <code>hideturtle()</code>"},
+            {points: "3", text: "Circle drawn correctly with red outline"}
+        ],
+        modelAnswer: `# Q03 - Draw a Circle
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+myTurtle.pencolor("red")
+myTurtle.pensize(3)
+
+myTurtle.circle(50)
+
+myTurtle.hideturtle()`
+    },
+    4: {
+        file: "Q04.py", time: "12 minutes", marks: 10, saveAs: "Q04FINISHED.py",
+        context: ["A program uses penup() and pendown() to move without drawing.", "It should draw two separate squares with a gap between them."],
+        instruction: "Open file Q04. Amend the code to:",
+        tasks: [
+            "draw the first square (50x50)",
+            "lift the pen up to move without drawing",
+            "move forward 100 pixels",
+            "put the pen down",
+            "draw the second square (50x50)"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q04 - Two Squares with Gap
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+# Draw first square
+for i in range(4):
+    myTurtle.forward(50)
+    myTurtle.right(90)
+
+# Lift pen to move without drawing
+myTurtle.()
+
+# Move forward 100 pixels
+myTurtle.forward()
+
+# Put pen down to start drawing again
+myTurtle.()
+
+# Draw second square
+for i in range(4):
+    myTurtle.(50)
+    myTurtle.(90)
+`,
+        markScheme: [
+            {points: "1", text: "First square drawn correctly"},
+            {points: "1", text: "Pen up: <code>penup()</code>"},
+            {points: "1", text: "Move forward: <code>forward(100)</code>"},
+            {points: "1", text: "Pen down: <code>pendown()</code>"},
+            {points: "1", text: "Second square uses forward(50)"},
+            {points: "1", text: "Second square uses right(90)"},
+            {points: "2", text: "Two squares with gap between them"},
+            {points: "2", text: "No line connecting the squares"}
+        ],
+        modelAnswer: `# Q04 - Two Squares with Gap
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+for i in range(4):
+    myTurtle.forward(50)
+    myTurtle.right(90)
+
+myTurtle.penup()
+myTurtle.forward(100)
+myTurtle.pendown()
+
+for i in range(4):
+    myTurtle.forward(50)
+    myTurtle.right(90)`
+    },
+    5: {
+        file: "Q05.py", time: "12 minutes", marks: 10, saveAs: "Q05FINISHED.py",
+        context: ["A program positions the turtle using setposition() before drawing.", "The turtle should move to coordinates (-100, 0) before drawing a line to (100, 0)."],
+        instruction: "Open file Q05. Amend the code to:",
+        tasks: [
+            "lift the pen up before positioning",
+            "move the turtle to position (-100, 0)",
+            "put the pen down",
+            "set the pen colour to green",
+            "draw a line to position (100, 0)"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q05 - Position and Draw Line
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+# Pen up before moving
+myTurtle.penup()
+
+# Move to starting position (-100, 0)
+myTurtle.setposition(, )
+
+# Pen down to start drawing
+myTurtle.()
+
+# Set colour to green
+myTurtle.pencolor("")
+
+# Draw line to (100, 0)
+myTurtle.setposition(, )
+`,
+        markScheme: [
+            {points: "1", text: "Pen up before positioning"},
+            {points: "1", text: "setposition with -100: <code>setposition(-100, 0)</code>"},
+            {points: "1", text: "Pen down after positioning"},
+            {points: "1", text: "Pen colour green: <code>pencolor(\"green\")</code>"},
+            {points: "1", text: "setposition to (100, 0)"},
+            {points: "2", text: "Horizontal line drawn correctly"},
+            {points: "3", text: "Line is green and in correct position"}
+        ],
+        modelAnswer: `# Q05 - Position and Draw Line
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+myTurtle.penup()
+myTurtle.setposition(-100, 0)
+myTurtle.pendown()
+
+myTurtle.pencolor("green")
+
+myTurtle.setposition(100, 0)`
+    },
+    6: {
+        file: "Q06.py", time: "15 minutes", marks: 12, saveAs: "Q06FINISHED.py",
+        context: ["A program uses setheading() to control the turtle's direction.", "Heading 0 = East, 90 = North, 180 = West, 270 = South."],
+        instruction: "Open file Q06. Amend the code to draw a plus sign (+):",
+        tasks: [
+            "draw a vertical line from (0, -50) to (0, 50)",
+            "return to centre (0, 0)",
+            "draw a horizontal line from (-50, 0) to (50, 0)",
+            "use setheading() to set direction before drawing"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q06 - Draw a Plus Sign
+
+import turtle
+
+myTurtle = turtle.Turtle()
+myTurtle.speed("fast")
+
+# Move to start of vertical line
+myTurtle.penup()
+myTurtle.setposition(0, -50)
+myTurtle.pendown()
+
+# Set heading to North (90 degrees)
+myTurtle.setheading()
+
+# Draw vertical line (100 pixels up)
+myTurtle.forward()
+
+# Move to start of horizontal line
+myTurtle.penup()
+myTurtle.setposition(-50, 0)
+myTurtle.pendown()
+
+# Set heading to East (0 degrees)
+myTurtle.setheading()
+
+# Draw horizontal line (100 pixels right)
+myTurtle.forward()
+
+myTurtle.hideturtle()
+`,
+        markScheme: [
+            {points: "1", text: "Vertical line starts at (0, -50)"},
+            {points: "1", text: "setheading(90) for North"},
+            {points: "1", text: "Forward 100 for vertical line"},
+            {points: "1", text: "Horizontal line starts at (-50, 0)"},
+            {points: "1", text: "setheading(0) for East"},
+            {points: "1", text: "Forward 100 for horizontal line"},
+            {points: "1", text: "penup/pendown used correctly"},
+            {points: "2", text: "Plus sign drawn correctly"},
+            {points: "3", text: "Lines centred on origin"}
+        ],
+        modelAnswer: `# Q06 - Draw a Plus Sign
+
+import turtle
+
+myTurtle = turtle.Turtle()
+myTurtle.speed("fast")
+
+myTurtle.penup()
+myTurtle.setposition(0, -50)
+myTurtle.pendown()
+
+myTurtle.setheading(90)
+myTurtle.forward(100)
+
+myTurtle.penup()
+myTurtle.setposition(-50, 0)
+myTurtle.pendown()
+
+myTurtle.setheading(0)
+myTurtle.forward(100)
+
+myTurtle.hideturtle()`
+    },
+    7: {
+        file: "Q07.py", time: "15 minutes", marks: 12, saveAs: "Q07FINISHED.py",
+        context: ["A program has errors in the turtle graphics code.", "The program should draw a red square but contains bugs."],
+        instruction: "Open file Q07. Fix the following errors:",
+        tasks: [
+            "fix the import statement: <code>import turtl</code>",
+            "fix the turtle creation: <code>turtle.turtle()</code>",
+            "fix the pencolor call: <code>pencolour</code>",
+            "fix the forward call: <code>forwad</code>",
+            "fix the range: should draw 4 sides not 3",
+            "fix the turn angle: should be 90 not 80"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q07 - Debug Turtle Code
+
+import turtl
+
+myTurtle = turtle.turtle()
+
+myTurtle.pencolour("red")
+
+for i in range(3):
+    myTurtle.forwad(100)
+    myTurtle.right(80)
+`,
+        markScheme: [
+            {points: "1", text: "Fix import: <code>import turtle</code>"},
+            {points: "1", text: "Fix creation: <code>turtle.Turtle()</code> (capital T)"},
+            {points: "1", text: "Fix pencolor: <code>pencolor</code> (American spelling)"},
+            {points: "1", text: "Fix forward: <code>forward</code>"},
+            {points: "1", text: "Fix range: <code>range(4)</code>"},
+            {points: "1", text: "Fix angle: <code>right(90)</code>"},
+            {points: "3", text: "Program runs without error"},
+            {points: "3", text: "Red square drawn correctly"}
+        ],
+        modelAnswer: `# Q07 - Debug Turtle Code
+
+import turtle
+
+myTurtle = turtle.Turtle()
+
+myTurtle.pencolor("red")
+
+for i in range(4):
+    myTurtle.forward(100)
+    myTurtle.right(90)`
+    },
+    8: {
+        file: "Q08.py", time: "15 minutes", marks: 12, saveAs: "Q08FINISHED.py",
+        context: ["A program draws a regular polygon using a function.", "The number of sides and the colour are passed as parameters."],
+        instruction: "Open file Q08. Complete the function to:",
+        tasks: [
+            "add parameters for sides and colour",
+            "set the pen colour using the parameter",
+            "calculate the turn angle (360 / sides)",
+            "use a loop to draw the polygon",
+            "call the function to draw a red hexagon (6 sides)"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q08 - Polygon Function
+
+import turtle
+
+def drawPolygon():
+    myTurtle = turtle.Turtle()
+    myTurtle.speed("fast")
+    
+    # Set pen colour
+    myTurtle.pencolor()
+    
+    # Calculate turn angle
+    angle = 360 / 
+    
+    # Draw the polygon
+    for i in range():
+        myTurtle.forward(50)
+        myTurtle.right()
+
+# Draw a red hexagon (6 sides)
+drawPolygon()
+`,
+        markScheme: [
+            {points: "1", text: "Parameters added: <code>def drawPolygon(sides, colour):</code>"},
+            {points: "1", text: "pencolor uses parameter: <code>pencolor(colour)</code>"},
+            {points: "1", text: "Angle calculation: <code>360 / sides</code>"},
+            {points: "1", text: "Loop uses sides: <code>range(sides)</code>"},
+            {points: "1", text: "right uses angle: <code>right(angle)</code>"},
+            {points: "1", text: "Function called with 6"},
+            {points: "1", text: "Function called with \"red\""},
+            {points: "2", text: "Hexagon drawn correctly"},
+            {points: "3", text: "Function works for any number of sides"}
+        ],
+        modelAnswer: `# Q08 - Polygon Function
+
+import turtle
+
+def drawPolygon(sides, colour):
+    myTurtle = turtle.Turtle()
+    myTurtle.speed("fast")
+    
+    myTurtle.pencolor(colour)
+    
+    angle = 360 / sides
+    
+    for i in range(sides):
+        myTurtle.forward(50)
+        myTurtle.right(angle)
+
+drawPolygon(6, "red")`
+    },
+    9: {
+        file: "Q09.py", time: "18 minutes", marks: 14, saveAs: "Q09FINISHED.py",
+        context: ["A program draws concentric circles (circles inside circles).", "Each circle should be a different colour from a list."],
+        instruction: "Open file Q09. Amend the code to:",
+        tasks: [
+            "create a list of colours: red, orange, yellow, green, blue",
+            "use a loop to draw 5 circles",
+            "each circle should have a different radius (20, 40, 60, 80, 100)",
+            "each circle should use a colour from the list",
+            "position the turtle correctly for each circle"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q09 - Concentric Circles
+
+import turtle
+
+myTurtle = turtle.Turtle()
+myTurtle.speed("fastest")
+
+colours = ["red", "", "", "", "blue"]
+radius = 20
+
+for i in range(5):
+    # Set colour from list
+    myTurtle.pencolor(colours[])
+    
+    # Position for this circle (move down by radius)
+    myTurtle.penup()
+    myTurtle.setposition(0, -)
+    myTurtle.pendown()
+    
+    # Draw circle
+    myTurtle.circle()
+    
+    # Increase radius for next circle
+    radius = radius + 
+
+myTurtle.hideturtle()
+`,
+        markScheme: [
+            {points: "1", text: "Colours list complete: orange, yellow, green"},
+            {points: "1", text: "Loop index used: <code>colours[i]</code>"},
+            {points: "1", text: "Position uses radius: <code>setposition(0, -radius)</code>"},
+            {points: "1", text: "Circle uses radius variable"},
+            {points: "1", text: "Radius increases by 20"},
+            {points: "1", text: "penup/pendown used correctly"},
+            {points: "2", text: "5 circles drawn"},
+            {points: "2", text: "Circles are concentric (same centre)"},
+            {points: "2", text: "Each circle has different colour"},
+            {points: "2", text: "Radii increase: 20, 40, 60, 80, 100"}
+        ],
+        modelAnswer: `# Q09 - Concentric Circles
+
+import turtle
+
+myTurtle = turtle.Turtle()
+myTurtle.speed("fastest")
+
+colours = ["red", "orange", "yellow", "green", "blue"]
+radius = 20
+
+for i in range(5):
+    myTurtle.pencolor(colours[i])
+    
+    myTurtle.penup()
+    myTurtle.setposition(0, -radius)
+    myTurtle.pendown()
+    
+    myTurtle.circle(radius)
+    
+    radius = radius + 20
+
+myTurtle.hideturtle()`
+    },
+    10: {
+        file: "Q10.py", time: "20 minutes", marks: 15, saveAs: "Q10FINISHED.py",
+        context: ["A program draws a simple house using turtle graphics.", "The house has a square base and a triangular roof."],
+        instruction: "Open file Q10. Complete the program to:",
+        tasks: [
+            "draw a square for the house base (100x100)",
+            "position the turtle at the top-left corner of the square",
+            "draw a triangular roof",
+            "the roof should be filled with red colour",
+            "hide the turtle when finished"
+        ],
+        note: "Do not add any additional functionality.",
+        starterCode: `# Q10 - Draw a House
+
+import turtle
+
+myTurtle = turtle.Turtle()
+myTurtle.speed("fast")
+
+# Draw the square base
+for i in range():
+    myTurtle.forward()
+    myTurtle.right()
+
+# Move to top-left corner for roof
+myTurtle.penup()
+myTurtle.setposition(0, 100)
+myTurtle.pendown()
+
+# Set fill colour for roof
+myTurtle.fillcolor("")
+myTurtle.()
+
+# Draw triangular roof
+myTurtle.setheading(30)
+myTurtle.forward(100)
+myTurtle.setheading()
+myTurtle.forward(100)
+myTurtle.setheading(180)
+myTurtle.forward()
+
+myTurtle.()
+
+# Hide turtle
+myTurtle.()
+`,
+        markScheme: [
+            {points: "1", text: "Square loop: <code>range(4)</code>"},
+            {points: "1", text: "Square side: <code>forward(100)</code>"},
+            {points: "1", text: "Square turn: <code>right(90)</code>"},
+            {points: "1", text: "Fill colour: <code>fillcolor(\"red\")</code>"},
+            {points: "1", text: "Begin fill: <code>begin_fill()</code>"},
+            {points: "1", text: "Second heading: <code>setheading(-30)</code> or <code>setheading(330)</code>"},
+            {points: "1", text: "Third side of roof: <code>forward(100)</code>"},
+            {points: "1", text: "End fill: <code>end_fill()</code>"},
+            {points: "1", text: "Hide turtle: <code>hideturtle()</code>"},
+            {points: "2", text: "Square drawn correctly"},
+            {points: "2", text: "Triangular roof drawn correctly"},
+            {points: "2", text: "Roof filled with red"}
+        ],
+        modelAnswer: `# Q10 - Draw a House
+
+import turtle
+
+myTurtle = turtle.Turtle()
+myTurtle.speed("fast")
+
+for i in range(4):
+    myTurtle.forward(100)
+    myTurtle.right(90)
+
+myTurtle.penup()
+myTurtle.setposition(0, 100)
+myTurtle.pendown()
+
+myTurtle.fillcolor("red")
+myTurtle.begin_fill()
+
+myTurtle.setheading(30)
+myTurtle.forward(100)
+myTurtle.setheading(-30)
+myTurtle.forward(100)
+myTurtle.setheading(180)
+myTurtle.forward(100)
+
+myTurtle.end_fill()
+
+myTurtle.hideturtle()`
+    }
+};
+
+    const keyConcepts = {
+        1: ["import turtle", "Turtle()", "forward()", "right()"],
+        2: ["pencolor()", "fillcolor()", "begin_fill()", "end_fill()"],
+        3: ["circle()", "pensize()", "hideturtle()"],
+        4: ["penup()", "pendown()", "moving without drawing"],
+        5: ["setposition()", "coordinates", "x and y"],
+        6: ["setheading()", "direction angles", "0=East, 90=North"],
+        7: ["debugging", "common errors", "spelling"],
+        8: ["functions", "parameters", "polygon formula"],
+        9: ["loops", "lists", "index", "concentric"],
+        10: ["complex shapes", "house drawing", "combining techniques"]
+    };
+
+    let currentQuestion = 1;
+    let editor;
+    let inputResolve = null;
+    let completedQuestions = new Set();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Sk === 'undefined') {
+            document.getElementById('output').innerHTML = '<span style="color:#ef4444">Error: Python interpreter failed to load. Please refresh.</span>';
+        }
+        
+        editor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+            mode: 'python',
+            theme: 'dracula',
+            lineNumbers: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            lineWrapping: true,
+            autofocus: true
+        });
+        
+        loadQuestion(1);
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                loadQuestion(parseInt(this.dataset.q));
+            });
+        });
+        
+        document.getElementById('input-field').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') submitInput();
+        });
+    });
+
+    function loadQuestion(num) {
+        currentQuestion = num;
+        const q = questions[num];
+        const concepts = keyConcepts[num];
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const n = parseInt(btn.dataset.q);
+            btn.classList.toggle('active', n === num);
+            btn.classList.toggle('completed', completedQuestions.has(n));
+        });
+        
+        const taskItems = q.tasks.map(t => `<li><span class="task-bullet"></span><span class="task-text">${t}</span></li>`).join('');
+        const contextHtml = q.context.map(p => `<p>${p}</p>`).join('');
+        const conceptsHtml = concepts.map(c => `<li>${c}</li>`).join('');
+        
+        document.getElementById('question-display').innerHTML = `
+            <div class="question-header">
+                <div class="question-number">${num}</div>
+                <div class="question-meta">Suggested time: ${q.time}</div>
+            </div>
+            <div class="key-concepts">
+                <h4>Key Turtle Commands</h4>
+                <ul>${conceptsHtml}</ul>
+            </div>
+            <div class="question-context">${contextHtml}</div>
+            <p class="instruction">${q.instruction}</p>
+            <ul class="task-list">${taskItems}</ul>
+            ${q.note ? `<div class="note"><strong>Note:</strong> ${q.note}</div>` : ''}
+            <p style="font-size:.85rem;color:var(--text-muted);margin-top:1rem">Save as <code style="background:var(--bg-tertiary);padding:.15rem .4rem;border-radius:4px;color:var(--accent-orange)">${q.saveAs}</code></p>
+        `;
+        
+        document.getElementById('marks-display').textContent = `${q.marks} marks`;
+        document.getElementById('current-file').textContent = q.file;
+        editor.setValue(q.starterCode);
+        document.getElementById('output').textContent = '';
+        
+        // Clear turtle canvas
+        const canvas = document.getElementById('turtle-canvas');
+        canvas.innerHTML = '';
+    }
+
+    function resetCode() {
+        editor.setValue(questions[currentQuestion].starterCode);
+        document.getElementById('output').textContent = 'Code reset.';
+        document.getElementById('turtle-canvas').innerHTML = '';
+    }
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+            throw "File not found: '" + x + "'";
+        }
+        return Sk.builtinFiles["files"][x];
+    }
+
+    function outf(t) {
+        document.getElementById('output').textContent += t;
+    }
+
+    function inputfun(p) {
+        return new Promise(function(r) {
+            document.getElementById('output').textContent += p;
+            document.getElementById('input-prompt').textContent = p || 'Enter input:';
+            document.getElementById('input-modal').classList.add('active');
+            document.getElementById('input-field').value = '';
+            document.getElementById('input-field').focus();
+            inputResolve = r;
+        });
+    }
+
+    function submitInput() {
+        const v = document.getElementById('input-field').value;
+        document.getElementById('input-modal').classList.remove('active');
+        document.getElementById('output').textContent += v + '\n';
+        if (inputResolve) {
+            inputResolve(v);
+            inputResolve = null;
+        }
+    }
+
+    function runCode() {
+        if (typeof Sk === 'undefined') {
+            document.getElementById('output').innerHTML = '<span style="color:#ef4444">Python interpreter not loaded.</span>';
+            return;
+        }
+        
+        const c = editor.getValue();
+        document.getElementById('output').textContent = '';
+        
+        // Clear and setup turtle canvas
+        const canvasDiv = document.getElementById('turtle-canvas');
+        canvasDiv.innerHTML = '';
+        
+        Sk.configure({
+            output: outf,
+            read: builtinRead,
+            inputfun: inputfun,
+            inputfunTakesPrompt: true,
+            __future__: Sk.python3
+        });
+        
+        // Configure turtle graphics
+        (Sk.TurtleGraphics || (Sk.TurtleGraphics = {})).target = 'turtle-canvas';
+        Sk.TurtleGraphics.width = 400;
+        Sk.TurtleGraphics.height = 300;
+        
+        Sk.misceval.asyncToPromise(function() {
+            return Sk.importMainWithBody("<stdin>", false, c, true);
+        }).then(function() {
+            document.getElementById('output').textContent += '\n✓ Complete';
+        }).catch(function(e) {
+            document.getElementById('output').innerHTML += '<span style="color:#ef4444">\n' + e.toString() + '</span>';
+        });
+    }
+
+    function showMarkScheme() {
+        const q = questions[currentQuestion];
+        completedQuestions.add(currentQuestion);
+        document.querySelector(`.nav-btn[data-q="${currentQuestion}"]`).classList.add('completed');
+        
+        const mi = q.markScheme.map(i => `
+            <div class="mark-item">
+                <span class="mark-points">${i.points}</span>
+                <span class="mark-text">${i.text}</span>
+            </div>
+        `).join('');
+        
+        document.getElementById('ms-question-num').textContent = currentQuestion;
+        document.getElementById('markscheme-content').innerHTML = `
+            ${mi}
+            <div class="model-answer">
+                <h4>Model Answer</h4>
+                <pre>${escapeHtml(q.modelAnswer)}</pre>
+            </div>
+            <div class="total-marks">Total for Question ${currentQuestion} = ${q.marks} marks</div>
+        `;
+        document.getElementById('markscheme-modal').classList.add('active');
+    }
+
+    function closeMarkScheme() {
+        document.getElementById('markscheme-modal').classList.remove('active');
+    }
+
+    function escapeHtml(t) {
+        const d = document.createElement('div');
+        d.textContent = t;
+        return d.innerHTML;
+    }
+
+    document.getElementById('markscheme-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeMarkScheme();
+    });
+    </script>
+</body>
+</html>
