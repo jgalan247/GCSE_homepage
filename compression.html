@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compression Revision | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-teal: #14b8a6;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --accent-violet: #8b5cf6;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --success: #00c853;
+            --error: #ff1744;
+            --gradient-1: linear-gradient(135deg, #14b8a6 0%, #8b5cf6 100%);
+            --gradient-2: linear-gradient(135deg, #f43f5e 0%, #f59e0b 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+            background-image: repeating-linear-gradient(
+                0deg,
+                var(--accent-teal) 0px,
+                var(--accent-teal) 1px,
+                transparent 1px,
+                transparent 20px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                var(--accent-teal) 0px,
+                var(--accent-teal) 1px,
+                transparent 1px,
+                transparent 20px
+            );
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        /* Section Styles */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 30px rgba(20, 184, 166, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        /* Definition Cards */
+        .definition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .definition-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .definition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .definition-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-teal);
+        }
+
+        .definition-card.lossy::before {
+            background: var(--gradient-2);
+        }
+
+        .definition-card.lossy:hover {
+            border-color: var(--accent-rose);
+        }
+
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-teal);
+            margin-bottom: 0.75rem;
+        }
+
+        .definition-card.lossy .definition-term {
+            color: var(--accent-rose);
+        }
+
+        .definition-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Comparison Box */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .comparison-card.lossless {
+            border-color: var(--accent-teal);
+        }
+
+        .comparison-card.lossy {
+            border-color: var(--accent-rose);
+        }
+
+        .comparison-card h4 {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .comparison-card.lossless h4 {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+            color: var(--accent-teal);
+        }
+
+        .comparison-card.lossy h4 {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            color: var(--accent-rose);
+        }
+
+        .comparison-list {
+            list-style: none;
+        }
+
+        .comparison-list li {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .comparison-list li::before {
+            content: '•';
+            font-size: 1.5rem;
+        }
+
+        .comparison-card.lossless .comparison-list li::before {
+            color: var(--accent-teal);
+        }
+
+        .comparison-card.lossy .comparison-list li::before {
+            color: var(--accent-rose);
+        }
+
+        /* RLE Simulator */
+        .rle-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .rle-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .rle-cell:hover {
+            transform: scale(1.1);
+            border-color: var(--text-primary);
+        }
+
+        .rle-palette {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .palette-color {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 3px solid var(--border-color);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .palette-color:hover, .palette-color.selected {
+            transform: scale(1.1);
+            border-color: var(--accent-teal);
+        }
+
+        .rle-output {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 1rem;
+        }
+
+        .rle-output h4 {
+            color: var(--accent-teal);
+            margin-bottom: 1rem;
+        }
+
+        .rle-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .rle-stat {
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .rle-stat-value {
+            font-size: 1.5rem;
+            color: var(--accent-teal);
+            font-weight: 600;
+        }
+
+        .rle-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Dictionary Encoding */
+        .dictionary-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .dictionary-input:focus {
+            outline: none;
+            border-color: var(--accent-teal);
+        }
+
+        .dictionary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .dictionary-table th {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .dictionary-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dictionary-table tr:hover td {
+            background: rgba(20, 184, 166, 0.1);
+        }
+
+        .encoded-output {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            word-wrap: break-word;
+        }
+
+        .encoded-word {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin: 0.1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .encoded-word.replaced {
+            background: var(--accent-teal);
+            color: var(--bg-dark);
+        }
+
+        .encoded-word.original {
+            background: var(--border-color);
+        }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 500px) {
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .memory-card:hover:not(.flipped):not(.matched) {
+            border-color: var(--accent-teal);
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        .memory-card.matched {
+            background: var(--success);
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: default;
+        }
+
+        .memory-card .card-back {
+            font-size: 2rem;
+        }
+
+        .memory-card .card-front {
+            display: none;
+        }
+
+        .memory-card.flipped .card-back,
+        .memory-card.matched .card-back {
+            display: none;
+        }
+
+        .memory-card.flipped .card-front,
+        .memory-card.matched .card-front {
+            display: block;
+        }
+
+        /* Categorization */
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 280px;
+        }
+
+        .category-box h4 {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .category-box.lossless h4 {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+        }
+
+        .category-box.lossy h4 {
+            background: var(--gradient-2);
+            color: var(--bg-dark);
+        }
+
+        .category-items {
+            min-height: 180px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+
+        .category-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .category-item:hover {
+            border-color: var(--accent-violet);
+        }
+
+        .category-item.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .category-item.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .items-bank {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .items-bank h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-amber);
+        }
+
+        .items-bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        /* Quiz */
+        .quiz-question {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question h4 {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--accent-teal);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--accent-violet);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(0, 200, 83, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-teal);
+            background: rgba(20, 184, 166, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+
+        /* File format badges */
+        .format-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .format-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .format-badge.lossless {
+            background: rgba(20, 184, 166, 0.2);
+            color: var(--accent-teal);
+        }
+
+        .format-badge.lossy {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--accent-rose);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .progress-tracker {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .progress-stats {
+                justify-content: center;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <span class="hero-badge">GCSE Computer Science • Data Representation</span>
+            <h1>Compression</h1>
+            <p>Learn why and how we compress files, understand lossy vs lossless compression, and practice RLE and dictionary encoding.</p>
+        </header>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak 🔥</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">📚 Learn</button>
+            <button class="nav-tab" data-section="rle">🔢 RLE Simulator</button>
+            <button class="nav-tab" data-section="dictionary">📖 Dictionary</button>
+            <button class="nav-tab" data-section="memory">🧠 Memory Game</button>
+            <button class="nav-tab" data-section="categorize">📂 Categorize</button>
+            <button class="nav-tab" data-section="quiz">✅ Quiz</button>
+        </nav>
+
+        <!-- Learn Section -->
+        <section id="learn" class="section active">
+            <div class="section-header">
+                <h2>Key Concepts</h2>
+                <p>Understanding why and how we compress data</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">❓</div>
+                    <div class="card-title">Why Compress Files?</div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                        <h4 style="color: var(--accent-teal); margin-bottom: 0.75rem;">💾 Reduce Storage</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Store more files on your device. E.g., compress music to fit more songs on your phone.</p>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                        <h4 style="color: var(--accent-teal); margin-bottom: 0.75rem;">🌐 Faster Transfer</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem;">Reduce transmission time over networks. E.g., upload images faster to social media.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-card lossless">
+                    <h4>🔒 Lossless Compression</h4>
+                    <ul class="comparison-list">
+                        <li>Original file can be perfectly reconstructed</li>
+                        <li>No quality loss at all</li>
+                        <li>Generally smaller compression ratio</li>
+                        <li>Good for text, code, documents</li>
+                        <li>Examples: ZIP, PNG, PDF, FLAC</li>
+                    </ul>
+                    <div class="format-badges">
+                        <span class="format-badge lossless">ZIP</span>
+                        <span class="format-badge lossless">PNG</span>
+                        <span class="format-badge lossless">PDF</span>
+                        <span class="format-badge lossless">FLAC</span>
+                    </div>
+                </div>
+                <div class="comparison-card lossy">
+                    <h4>⚠️ Lossy Compression</h4>
+                    <ul class="comparison-list">
+                        <li>Original file cannot be reconstructed</li>
+                        <li>Removes data imperceptible to humans</li>
+                        <li>Much higher compression ratios</li>
+                        <li>Good for images, audio, video</li>
+                        <li>Repeated compression degrades quality</li>
+                    </ul>
+                    <div class="format-badges">
+                        <span class="format-badge lossy">JPEG</span>
+                        <span class="format-badge lossy">MP3</span>
+                        <span class="format-badge lossy">MP4</span>
+                        <span class="format-badge lossy">WEBP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="definition-grid">
+                <div class="definition-card">
+                    <div class="definition-term">Run Length Encoding (RLE)</div>
+                    <div class="definition-text">Replaces sequences of repeated values with a count and the value. E.g., "AAAABBB" becomes "4A3B". Best for data with long runs of the same value.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Dictionary Encoding</div>
+                    <div class="definition-text">Builds a dictionary of repeated patterns and replaces them with shorter codes. E.g., "the" appearing 10 times gets replaced with "1".</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Negative Compression</div>
+                    <div class="definition-text">When the "compressed" file is actually larger than the original. Happens when data has few repeated patterns.</div>
+                </div>
+                <div class="definition-card lossy">
+                    <div class="definition-term">Quality Degradation</div>
+                    <div class="definition-text">With lossy compression, repeatedly saving a file causes cumulative quality loss. Each save removes more data.</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">File Types and Compression</div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="dictionary-table">
+                        <thead>
+                            <tr>
+                                <th>File Type</th>
+                                <th>Recommended</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Text files</td>
+                                <td style="color: var(--accent-teal);">Lossless</td>
+                                <td>Every character matters</td>
+                            </tr>
+                            <tr>
+                                <td>Executable files</td>
+                                <td style="color: var(--accent-teal);">Lossless</td>
+                                <td>Code must be exact or program won't work</td>
+                            </tr>
+                            <tr>
+                                <td>Documents</td>
+                                <td style="color: var(--accent-teal);">Lossless</td>
+                                <td>Data integrity is essential</td>
+                            </tr>
+                            <tr>
+                                <td>Photos</td>
+                                <td style="color: var(--accent-rose);">Lossy (usually)</td>
+                                <td>Human eye won't notice small changes</td>
+                            </tr>
+                            <tr>
+                                <td>Music</td>
+                                <td style="color: var(--accent-rose);">Lossy (usually)</td>
+                                <td>Human ear won't notice removed frequencies</td>
+                            </tr>
+                            <tr>
+                                <td>Video</td>
+                                <td style="color: var(--accent-rose);">Lossy</td>
+                                <td>Huge files need significant compression</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- RLE Simulator Section -->
+        <section id="rle" class="section">
+            <div class="section-header">
+                <h2>Run Length Encoding</h2>
+                <p>Create pixel art and see how RLE compresses it</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔢</div>
+                    <div class="card-title">RLE Simulator</div>
+                </div>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                    Click cells to paint them. Watch how Run Length Encoding compresses each row by counting consecutive colours.
+                </p>
+
+                <div class="rle-palette" id="rlePalette"></div>
+                <div class="rle-grid" id="rleGrid"></div>
+
+                <div class="rle-output">
+                    <h4>📊 RLE Encoded Output</h4>
+                    <div id="rleEncodedOutput" style="margin-bottom: 1rem; word-wrap: break-word;"></div>
+                    
+                    <div class="rle-stats">
+                        <div class="rle-stat">
+                            <div class="rle-stat-value" id="originalBits">0</div>
+                            <div class="rle-stat-label">Original (bits)</div>
+                        </div>
+                        <div class="rle-stat">
+                            <div class="rle-stat-value" id="compressedBits">0</div>
+                            <div class="rle-stat-label">Compressed (bits)</div>
+                        </div>
+                        <div class="rle-stat">
+                            <div class="rle-stat-value" id="compressionRatio">0%</div>
+                            <div class="rle-stat-label">Compression</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="clearRLE()">🗑️ Clear Grid</button>
+                    <button class="btn btn-secondary" onclick="loadRLEExample()">📥 Load Example</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dictionary Encoding Section -->
+        <section id="dictionary" class="section">
+            <div class="section-header">
+                <h2>Dictionary Encoding</h2>
+                <p>See how repeated words are replaced with shorter codes</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📖</div>
+                    <div class="card-title">Dictionary Encoder</div>
+                </div>
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    Enter text below to see how dictionary encoding compresses it by replacing repeated words.
+                </p>
+
+                <textarea class="dictionary-input" id="dictInput" placeholder="Enter text here... Try: The wheels on the bus go round and round, round and round, round and round.">The wheels on the bus go round and round, round and round, round and round. The wheels on the bus go round and round all day long.</textarea>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="encodeDictionary()">🔐 Encode</button>
+                </div>
+
+                <div id="dictOutput" style="display: none; margin-top: 2rem;">
+                    <h4 style="color: var(--accent-teal); margin-bottom: 1rem;">📚 Dictionary Table</h4>
+                    <div style="overflow-x: auto;">
+                        <table class="dictionary-table" id="dictTable"></table>
+                    </div>
+
+                    <h4 style="color: var(--accent-teal); margin: 1.5rem 0 1rem;">📝 Encoded Text</h4>
+                    <div class="encoded-output" id="encodedText"></div>
+
+                    <div class="rle-stats" style="margin-top: 1.5rem;">
+                        <div class="rle-stat">
+                            <div class="rle-stat-value" id="dictOriginalSize">0</div>
+                            <div class="rle-stat-label">Original (chars)</div>
+                        </div>
+                        <div class="rle-stat">
+                            <div class="rle-stat-value" id="dictEncodedSize">0</div>
+                            <div class="rle-stat-label">Encoded (chars)</div>
+                        </div>
+                        <div class="rle-stat">
+                            <div class="rle-stat-value" id="dictSavings">0%</div>
+                            <div class="rle-stat-label">Space Saved</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Game Section -->
+        <section id="memory" class="section">
+            <div class="section-header">
+                <h2>Memory Match</h2>
+                <p>Match compression concepts with their descriptions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧠</div>
+                    <div class="card-title">Find the Pairs</div>
+                </div>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Match each compression term with its correct description.</p>
+                
+                <div class="memory-grid" id="memoryGrid"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="initMemoryGame()">🔄 Reset Game</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorize Section -->
+        <section id="categorize" class="section">
+            <div class="section-header">
+                <h2>Categorize</h2>
+                <p>Sort file types and characteristics into Lossy or Lossless</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📂</div>
+                    <div class="card-title">Lossy vs Lossless</div>
+                </div>
+
+                <div class="items-bank" id="itemsBank">
+                    <h4>📦 Drag items from here:</h4>
+                    <div class="items-bank-grid" id="itemsBankGrid"></div>
+                </div>
+
+                <div class="category-container" id="categoryContainer"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkCategories()">✓ Check Answer</button>
+                    <button class="btn btn-secondary" onclick="initCategories()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="section">
+            <div class="section-header">
+                <h2>Knowledge Check</h2>
+                <p>Test your understanding with these exam-style questions</p>
+            </div>
+
+            <div id="quizContainer"></div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkAllQuizzes()">✓ Check All Answers</button>
+                <button class="btn btn-secondary" onclick="initQuiz()">🔄 Reset Quiz</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ============ STATE MANAGEMENT ============
+        let state = {
+            activitiesCompleted: 0,
+            correctAnswers: 0,
+            streak: 0,
+            totalActivities: 5
+        };
+
+        function updateProgress() {
+            document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+            document.getElementById('correctAnswers').textContent = state.correctAnswers;
+            document.getElementById('streakCount').textContent = state.streak;
+            const progress = (state.activitiesCompleted / state.totalActivities) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type + ' show';
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============ NAVIGATION ============
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.section).classList.add('active');
+            });
+        });
+
+        // ============ RLE SIMULATOR ============
+        const rleColors = [
+            { name: 'Black', hex: '#000000', code: '0' },
+            { name: 'Blue', hex: '#3b82f6', code: '1' },
+            { name: 'Yellow', hex: '#f59e0b', code: '2' },
+            { name: 'White', hex: '#ffffff', code: '3' }
+        ];
+
+        let selectedRLEColor = rleColors[0];
+        let rleGridData = [];
+        let rleCompleted = false;
+
+        function initRLE() {
+            const palette = document.getElementById('rlePalette');
+            const grid = document.getElementById('rleGrid');
+            
+            palette.innerHTML = '';
+            grid.innerHTML = '';
+            rleGridData = Array(64).fill(rleColors[3]); // Start white
+
+            // Create palette
+            rleColors.forEach((color, index) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'palette-color' + (index === 0 ? ' selected' : '');
+                swatch.style.backgroundColor = color.hex;
+                swatch.style.color = index === 3 ? '#000' : '#fff';
+                swatch.textContent = color.code;
+                swatch.title = `${color.name} (${color.code})`;
+                swatch.addEventListener('click', () => {
+                    document.querySelectorAll('.palette-color').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    selectedRLEColor = color;
+                });
+                palette.appendChild(swatch);
+            });
+
+            // Create grid
+            for (let i = 0; i < 64; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'rle-cell';
+                cell.style.backgroundColor = rleColors[3].hex;
+                cell.addEventListener('click', () => {
+                    cell.style.backgroundColor = selectedRLEColor.hex;
+                    rleGridData[i] = selectedRLEColor;
+                    updateRLEOutput();
+                });
+                grid.appendChild(cell);
+            }
+
+            updateRLEOutput();
+        }
+
+        function updateRLEOutput() {
+            const output = document.getElementById('rleEncodedOutput');
+            let encoded = [];
+            let totalRuns = 0;
+
+            // Encode each row
+            for (let row = 0; row < 8; row++) {
+                let rowEncoded = [];
+                let count = 1;
+                let currentColor = rleGridData[row * 8].code;
+
+                for (let col = 1; col < 8; col++) {
+                    const cellColor = rleGridData[row * 8 + col].code;
+                    if (cellColor === currentColor) {
+                        count++;
+                    } else {
+                        rowEncoded.push(`${count}×${currentColor}`);
+                        totalRuns++;
+                        currentColor = cellColor;
+                        count = 1;
+                    }
+                }
+                rowEncoded.push(`${count}×${currentColor}`);
+                totalRuns++;
+                encoded.push(`Row ${row + 1}: ${rowEncoded.join(', ')}`);
+            }
+
+            output.innerHTML = encoded.join('<br>');
+
+            // Calculate compression
+            const originalBits = 8 * 8 * 2; // 8x8 grid, 2 bits per pixel (4 colors)
+            const compressedBits = totalRuns * (3 + 2); // 3 bits for count (up to 8), 2 bits for color
+            const ratio = ((originalBits - compressedBits) / originalBits * 100);
+
+            document.getElementById('originalBits').textContent = originalBits;
+            document.getElementById('compressedBits').textContent = compressedBits;
+            document.getElementById('compressionRatio').textContent = ratio.toFixed(1) + '%';
+            document.getElementById('compressionRatio').style.color = ratio > 0 ? 'var(--success)' : 'var(--error)';
+
+            if (!rleCompleted && totalRuns > 8) {
+                rleCompleted = true;
+                state.activitiesCompleted++;
+                updateProgress();
+            }
+        }
+
+        function clearRLE() {
+            const cells = document.querySelectorAll('.rle-cell');
+            cells.forEach((cell, i) => {
+                cell.style.backgroundColor = rleColors[3].hex;
+                rleGridData[i] = rleColors[3];
+            });
+            updateRLEOutput();
+        }
+
+        function loadRLEExample() {
+            // Load a simple pattern that compresses well
+            const pattern = [
+                [3,0,0,0,0,0,0,3],
+                [0,3,3,3,3,3,3,0],
+                [0,3,2,3,3,2,3,0],
+                [0,3,3,3,3,3,3,0],
+                [0,3,1,3,3,1,3,0],
+                [0,3,3,1,1,3,3,0],
+                [0,3,3,3,3,3,3,0],
+                [3,0,0,0,0,0,0,3]
+            ];
+
+            const cells = document.querySelectorAll('.rle-cell');
+            pattern.forEach((row, rowIdx) => {
+                row.forEach((colorIdx, colIdx) => {
+                    const i = rowIdx * 8 + colIdx;
+                    cells[i].style.backgroundColor = rleColors[colorIdx].hex;
+                    rleGridData[i] = rleColors[colorIdx];
+                });
+            });
+            updateRLEOutput();
+        }
+
+        // ============ DICTIONARY ENCODING ============
+        let dictCompleted = false;
+
+        function encodeDictionary() {
+            const input = document.getElementById('dictInput').value;
+            if (!input.trim()) return;
+
+            const words = input.match(/[\w]+|[^\w\s]/g) || [];
+            const wordCount = {};
+            
+            // Count word occurrences
+            words.forEach(word => {
+                const lower = word.toLowerCase();
+                wordCount[lower] = (wordCount[lower] || 0) + 1;
+            });
+
+            // Build dictionary of words used more than once
+            const dictionary = {};
+            let dictIndex = 0;
+            Object.keys(wordCount)
+                .filter(word => wordCount[word] > 1 && word.length > 1)
+                .sort((a, b) => wordCount[b] - wordCount[a])
+                .forEach(word => {
+                    dictionary[word] = dictIndex++;
+                });
+
+            // Create dictionary table
+            const tableHtml = `
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Word</th>
+                        <th>Times Used</th>
+                        <th>Bytes Saved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${Object.entries(dictionary).map(([word, code]) => `
+                        <tr>
+                            <td style="color: var(--accent-teal); font-weight: 600;">${code}</td>
+                            <td>${word}</td>
+                            <td>${wordCount[word]}</td>
+                            <td style="color: var(--success);">+${(word.length - 1) * wordCount[word]}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+            document.getElementById('dictTable').innerHTML = tableHtml;
+
+            // Create encoded output
+            let encodedHtml = '';
+            words.forEach((word, i) => {
+                const lower = word.toLowerCase();
+                if (dictionary.hasOwnProperty(lower)) {
+                    encodedHtml += `<span class="encoded-word replaced">${dictionary[lower]}</span>`;
+                } else {
+                    encodedHtml += `<span class="encoded-word original">${word}</span>`;
+                }
+                // Add space after word (not punctuation)
+                if (i < words.length - 1 && /\w/.test(word)) {
+                    encodedHtml += ' ';
+                }
+            });
+            document.getElementById('encodedText').innerHTML = encodedHtml;
+
+            // Calculate stats
+            const originalSize = input.length;
+            let encodedSize = 0;
+            words.forEach(word => {
+                const lower = word.toLowerCase();
+                if (dictionary.hasOwnProperty(lower)) {
+                    encodedSize += String(dictionary[lower]).length;
+                } else {
+                    encodedSize += word.length;
+                }
+            });
+            encodedSize += words.length - 1; // spaces
+
+            const savings = ((originalSize - encodedSize) / originalSize * 100);
+
+            document.getElementById('dictOriginalSize').textContent = originalSize;
+            document.getElementById('dictEncodedSize').textContent = encodedSize;
+            document.getElementById('dictSavings').textContent = savings.toFixed(1) + '%';
+            document.getElementById('dictSavings').style.color = savings > 0 ? 'var(--success)' : 'var(--error)';
+
+            document.getElementById('dictOutput').style.display = 'block';
+
+            if (!dictCompleted) {
+                dictCompleted = true;
+                state.activitiesCompleted++;
+                updateProgress();
+            }
+        }
+
+        // ============ MEMORY GAME ============
+        const memoryPairs = [
+            { term: 'Lossless', definition: 'Original can be restored' },
+            { term: 'Lossy', definition: 'Removes some data' },
+            { term: 'RLE', definition: 'Counts repeated values' },
+            { term: 'Dictionary', definition: 'Replaces repeated words' },
+            { term: 'JPEG', definition: 'Lossy image format' },
+            { term: 'PNG', definition: 'Lossless image format' },
+            { term: 'Negative compression', definition: 'File gets bigger' },
+            { term: 'MP3', definition: 'Lossy audio format' }
+        ];
+
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryCompleted = false;
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            memoryCompleted = false;
+
+            memoryCards = [];
+            memoryPairs.forEach((pair, index) => {
+                memoryCards.push({ id: index + 'a', text: pair.term, pairId: index, type: 'term' });
+                memoryCards.push({ id: index + 'b', text: pair.definition, pairId: index, type: 'definition' });
+            });
+
+            memoryCards.sort(() => Math.random() - 0.5);
+
+            memoryCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.pairId = card.pairId;
+                cardEl.innerHTML = `
+                    <span class="card-back">📦</span>
+                    <span class="card-front">${card.text}</span>
+                `;
+                cardEl.addEventListener('click', () => flipCard(cardEl));
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(cardEl) {
+            if (flippedCards.length >= 2 || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) {
+                return;
+            }
+
+            cardEl.classList.add('flipped');
+            flippedCards.push(cardEl);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 800);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+            const pair1 = card1.dataset.pairId;
+            const pair2 = card2.dataset.pairId;
+
+            if (pair1 === pair2) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                state.correctAnswers++;
+                state.streak++;
+                
+                if (matchedPairs === memoryPairs.length && !memoryCompleted) {
+                    memoryCompleted = true;
+                    state.activitiesCompleted++;
+                    showNotification('🎉 Memory game complete!');
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                state.streak = 0;
+            }
+
+            flippedCards = [];
+            updateProgress();
+        }
+
+        // ============ CATEGORIZATION GAME ============
+        const categories = {
+            'Lossless': ['ZIP', 'PNG', 'Text files', 'Executable files', 'PDF', 'Can reconstruct original'],
+            'Lossy': ['JPEG', 'MP3', 'MP4', 'Photos', 'Music', 'Quality degrades with use']
+        };
+
+        const allCategoryItems = [
+            'ZIP', 'PNG', 'JPEG', 'MP3', 'MP4', 'PDF',
+            'Text files', 'Executable files', 'Photos', 'Music',
+            'Can reconstruct original', 'Quality degrades with use'
+        ];
+
+        let categoriesCompleted = false;
+
+        function initCategories() {
+            const bankGrid = document.getElementById('itemsBankGrid');
+            const container = document.getElementById('categoryContainer');
+            
+            bankGrid.innerHTML = '';
+            container.innerHTML = '';
+            categoriesCompleted = false;
+
+            const shuffledItems = [...allCategoryItems].sort(() => Math.random() - 0.5);
+            shuffledItems.forEach(item => {
+                const itemEl = createCategoryItem(item);
+                bankGrid.appendChild(itemEl);
+            });
+
+            Object.keys(categories).forEach(categoryName => {
+                const categoryBox = document.createElement('div');
+                categoryBox.className = 'category-box ' + categoryName.toLowerCase();
+                categoryBox.innerHTML = `
+                    <h4>${categoryName === 'Lossless' ? '🔒' : '⚠️'} ${categoryName}</h4>
+                    <div class="category-items" data-category="${categoryName}"></div>
+                `;
+                
+                const dropZone = categoryBox.querySelector('.category-items');
+                dropZone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = 'var(--accent-teal)';
+                });
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.style.borderColor = '';
+                });
+                dropZone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = '';
+                    const itemText = e.dataTransfer.getData('text/plain');
+                    const itemEl = document.querySelector(`[data-item-text="${itemText}"]`);
+                    if (itemEl) {
+                        dropZone.appendChild(itemEl);
+                    }
+                });
+                
+                container.appendChild(categoryBox);
+            });
+
+            bankGrid.addEventListener('dragover', e => e.preventDefault());
+            bankGrid.addEventListener('drop', e => {
+                e.preventDefault();
+                const itemText = e.dataTransfer.getData('text/plain');
+                const itemEl = document.querySelector(`[data-item-text="${itemText}"]`);
+                if (itemEl) {
+                    bankGrid.appendChild(itemEl);
+                }
+            });
+        }
+
+        function createCategoryItem(text) {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'category-item';
+            itemEl.draggable = true;
+            itemEl.textContent = text;
+            itemEl.dataset.itemText = text;
+
+            itemEl.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', text);
+            });
+
+            return itemEl;
+        }
+
+        function checkCategories() {
+            let allCorrect = true;
+
+            document.querySelectorAll('.category-items').forEach(dropZone => {
+                const categoryName = dropZone.dataset.category;
+                const correctItems = categories[categoryName];
+                
+                dropZone.querySelectorAll('.category-item').forEach(item => {
+                    const itemText = item.dataset.itemText;
+                    if (correctItems.includes(itemText)) {
+                        item.classList.remove('incorrect');
+                        item.classList.add('correct');
+                    } else {
+                        item.classList.remove('correct');
+                        item.classList.add('incorrect');
+                        allCorrect = false;
+                    }
+                });
+            });
+
+            if (allCorrect && !categoriesCompleted) {
+                categoriesCompleted = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 All items correctly categorized!');
+            } else if (!allCorrect) {
+                state.streak = 0;
+                showNotification('Some items are in the wrong category', 'error');
+            }
+            updateProgress();
+        }
+
+        // ============ QUIZ ============
+        const quizQuestions = [
+            {
+                question: 'What are the TWO main reasons for compressing files?',
+                options: [
+                    'Reduce storage space and faster network transfer',
+                    'Improve quality and add security',
+                    'Make files larger and slower',
+                    'Change file format and add metadata'
+                ],
+                correct: 0,
+                explanation: 'Compression reduces storage requirements and speeds up transmission over networks.'
+            },
+            {
+                question: 'Which type of compression can perfectly reconstruct the original file?',
+                options: [
+                    'Lossy',
+                    'Lossless',
+                    'Both',
+                    'Neither'
+                ],
+                correct: 1,
+                explanation: 'Lossless compression preserves all original data so the file can be perfectly reconstructed.'
+            },
+            {
+                question: 'Which file format uses LOSSY compression?',
+                options: [
+                    'PNG',
+                    'ZIP',
+                    'JPEG',
+                    'PDF'
+                ],
+                correct: 2,
+                explanation: 'JPEG uses lossy compression, removing data the human eye won\'t notice.'
+            },
+            {
+                question: 'Run Length Encoding (RLE) works best on data that:',
+                options: [
+                    'Is completely random',
+                    'Has long runs of repeated values',
+                    'Contains only text',
+                    'Is already compressed'
+                ],
+                correct: 1,
+                explanation: 'RLE compresses by counting consecutive repeated values, so it works best with long runs.'
+            },
+            {
+                question: 'What is "negative compression"?',
+                options: [
+                    'When compression improves quality',
+                    'When the compressed file is larger than the original',
+                    'When files cannot be compressed',
+                    'When compression is reversed'
+                ],
+                correct: 1,
+                explanation: 'Negative compression occurs when compression actually increases file size, often with random data.'
+            },
+            {
+                question: 'Why is lossy compression NOT suitable for text files?',
+                options: [
+                    'Text files are too small',
+                    'Every character in text matters - losing data corrupts meaning',
+                    'Text files compress too well',
+                    'Text files are already compressed'
+                ],
+                correct: 1,
+                explanation: 'In text, every character carries meaning. Lossy compression could remove important data.'
+            },
+            {
+                question: 'What happens if you repeatedly save a JPEG image?',
+                options: [
+                    'Quality improves',
+                    'File size increases',
+                    'Quality degrades further each time',
+                    'Nothing changes'
+                ],
+                correct: 2,
+                explanation: 'Each save applies lossy compression again, removing more data and degrading quality.'
+            },
+            {
+                question: 'Dictionary encoding works by:',
+                options: [
+                    'Counting repeated pixels',
+                    'Replacing repeated words/patterns with shorter codes',
+                    'Removing all spaces',
+                    'Converting to binary'
+                ],
+                correct: 1,
+                explanation: 'Dictionary encoding builds a dictionary of repeated patterns and replaces them with codes.'
+            },
+            {
+                question: 'Which is the correct calculation for bits saved using RLE on "AAAABBBB" with 2-bit colours?',
+                options: [
+                    'Original: 8×2=16 bits',
+                    'Original: 8×8=64 bits',
+                    'Original: 4×2=8 bits',
+                    'Original: 2×2=4 bits'
+                ],
+                correct: 0,
+                explanation: '8 pixels × 2 bits per pixel = 16 bits for the original uncompressed data.'
+            },
+            {
+                question: 'Which file types should ALWAYS use lossless compression?',
+                options: [
+                    'Music and videos',
+                    'Photos and graphics',
+                    'Executable programs and text documents',
+                    'Streaming media'
+                ],
+                correct: 2,
+                explanation: 'Executables must be exact to work, and text documents need every character preserved.'
+            }
+        ];
+
+        let quizAnswered = [];
+        let quizCompleted = false;
+
+        function initQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            quizAnswered = Array(quizQuestions.length).fill(false);
+            quizCompleted = false;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'quiz-question';
+                questionEl.innerHTML = `
+                    <h4>Q${qIndex + 1}. ${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, oIndex) => `
+                            <div class="quiz-option" data-question="${qIndex}" data-option="${oIndex}">
+                                <span class="option-letter">${String.fromCharCode(65 + oIndex)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback" id="feedback-${qIndex}"></div>
+                `;
+                container.appendChild(questionEl);
+            });
+
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', () => selectQuizOption(option));
+            });
+        }
+
+        function selectQuizOption(optionEl) {
+            if (optionEl.classList.contains('disabled')) return;
+
+            const qIndex = parseInt(optionEl.dataset.question);
+            
+            document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            optionEl.classList.add('selected');
+        }
+
+        function checkAllQuizzes() {
+            let correctCount = 0;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`[data-question="${qIndex}"].selected`);
+                const feedback = document.getElementById(`feedback-${qIndex}`);
+                
+                document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(opt => {
+                    opt.classList.add('disabled');
+                });
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.dataset.option);
+                    
+                    if (selectedIndex === q.correct) {
+                        selectedOption.classList.add('correct');
+                        feedback.className = 'quiz-feedback correct show';
+                        feedback.textContent = '✓ Correct! ' + q.explanation;
+                        correctCount++;
+                        if (!quizAnswered[qIndex]) {
+                            state.correctAnswers++;
+                        }
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        document.querySelector(`[data-question="${qIndex}"][data-option="${q.correct}"]`).classList.add('correct');
+                        feedback.className = 'quiz-feedback incorrect show';
+                        feedback.textContent = '✗ ' + q.explanation;
+                    }
+                    quizAnswered[qIndex] = true;
+                } else {
+                    feedback.className = 'quiz-feedback incorrect show';
+                    feedback.textContent = 'No answer selected. The correct answer was ' + String.fromCharCode(65 + q.correct) + '.';
+                    document.querySelector(`[data-question="${qIndex}"][data-option="${q.correct}"]`).classList.add('correct');
+                }
+            });
+
+            if (!quizCompleted) {
+                quizCompleted = true;
+                state.activitiesCompleted++;
+                if (correctCount === quizQuestions.length) {
+                    state.streak += correctCount;
+                    showNotification(`🎉 Perfect score! ${correctCount}/${quizQuestions.length}`);
+                } else {
+                    state.streak = 0;
+                    showNotification(`Score: ${correctCount}/${quizQuestions.length}`, correctCount >= quizQuestions.length / 2 ? 'success' : 'error');
+                }
+            }
+            updateProgress();
+        }
+
+        // ============ INITIALIZATION ============
+        document.addEventListener('DOMContentLoaded', () => {
+            initRLE();
+            initMemoryGame();
+            initCategories();
+            initQuiz();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

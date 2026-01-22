@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitmap Images Revision | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-cyan: #00f5d4;
+            --accent-magenta: #f72585;
+            --accent-yellow: #fee440;
+            --accent-blue: #4361ee;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --success: #00c853;
+            --error: #ff1744;
+            --gradient-1: linear-gradient(135deg, #00f5d4 0%, #4361ee 100%);
+            --gradient-2: linear-gradient(135deg, #f72585 0%, #fee440 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 245, 212, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        /* Section Styles */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        /* Learn Section - Definition Cards */
+        .definition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .definition-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .definition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .definition-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-cyan);
+        }
+
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .definition-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .formula-box h3 {
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .memory-card:hover:not(.flipped):not(.matched) {
+            border-color: var(--accent-cyan);
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        .memory-card.matched {
+            background: var(--success);
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: default;
+        }
+
+        .memory-card .card-back {
+            font-size: 2rem;
+        }
+
+        .memory-card .card-front {
+            display: none;
+        }
+
+        .memory-card.flipped .card-back,
+        .memory-card.matched .card-back {
+            display: none;
+        }
+
+        .memory-card.flipped .card-front,
+        .memory-card.matched .card-front {
+            display: block;
+        }
+
+        /* Parsons Puzzle */
+        .parsons-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .parsons-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .parsons-bank, .parsons-solution {
+            min-height: 400px;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        .parsons-bank h4, .parsons-solution h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .parsons-block {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .parsons-block:hover {
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .parsons-block.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .parsons-block.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .parsons-block.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        /* Categorization Game */
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 300px;
+        }
+
+        .category-box h4 {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .category-items {
+            min-height: 200px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+
+        .category-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .category-item:hover {
+            border-color: var(--accent-magenta);
+        }
+
+        .category-item.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .category-item.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .items-bank {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .items-bank h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-yellow);
+        }
+
+        .items-bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        /* Pixel Art Builder */
+        .pixel-builder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .pixel-grid-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pixel-grid {
+            display: grid;
+            gap: 2px;
+            background: var(--border-color);
+            padding: 2px;
+            border-radius: 8px;
+        }
+
+        .pixel {
+            width: 40px;
+            height: 40px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .pixel:hover {
+            opacity: 0.8;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .color-swatch {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-swatch:hover, .color-swatch.selected {
+            transform: scale(1.1);
+            border-color: var(--accent-cyan);
+        }
+
+        .binary-output {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Calculator */
+        .calculator-form {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group select {
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.1) 0%, rgba(67, 97, 238, 0.1) 100%);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .result-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-expression {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 245, 212, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 245, 212, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Quiz Section */
+        .quiz-question {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question h4 {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--accent-cyan);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--accent-blue);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(0, 200, 83, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Trade-off Section */
+        .tradeoff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tradeoff-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .tradeoff-card:hover {
+            border-color: var(--accent-magenta);
+        }
+
+        .tradeoff-scenario {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tradeoff-impacts {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .impact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .impact-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .progress-tracker {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .progress-stats {
+                justify-content: center;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Binary Display Animation */
+        @keyframes binaryPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .binary-bit {
+            display: inline-block;
+            animation: binaryPulse 2s ease infinite;
+        }
+
+        .binary-bit:nth-child(odd) {
+            animation-delay: 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <span class="hero-badge">GCSE Computer Science • Data Representation</span>
+            <h1>Bitmap Images</h1>
+            <p>Master how images are stored in binary, calculate file sizes, and understand the trade-offs between quality and storage.</p>
+        </header>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak 🔥</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">📚 Learn</button>
+            <button class="nav-tab" data-section="memory">🧠 Memory Game</button>
+            <button class="nav-tab" data-section="parsons">🧩 Parsons Puzzle</button>
+            <button class="nav-tab" data-section="categorize">📂 Categorize</button>
+            <button class="nav-tab" data-section="pixel">🎨 Pixel Builder</button>
+            <button class="nav-tab" data-section="calculator">🧮 Calculator</button>
+            <button class="nav-tab" data-section="quiz">✅ Quiz</button>
+        </nav>
+
+        <!-- Learn Section -->
+        <section id="learn" class="section active">
+            <div class="section-header">
+                <h2>Key Concepts</h2>
+                <p>Click on each card to review the essential definitions</p>
+            </div>
+
+            <div class="definition-grid">
+                <div class="definition-card">
+                    <div class="definition-term">Pixel</div>
+                    <div class="definition-text">A picture element – the smallest addressable unit of a bitmap image. Each pixel represents a single point of colour.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Bitmap</div>
+                    <div class="definition-text">A method for storing images by 'mapping' binary data to pixels. Each pixel's colour is stored as binary values in sequence.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Resolution</div>
+                    <div class="definition-text">The density of pixels in an image, typically measured in pixels per inch (PPI) or dots per inch (DPI). Higher resolution = more detail.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Colour Depth</div>
+                    <div class="definition-text">The number of bits used to encode the colour of each pixel. More bits = more possible colours. Common values: 1-bit, 8-bit, 24-bit.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Metadata</div>
+                    <div class="definition-text">'Data about data' – information stored with the image such as width, height, colour depth, resolution, and creation date.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Colour Table</div>
+                    <div class="definition-text">A lookup table that maps binary codes to specific colours. Used in indexed colour images to reduce file size.</div>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <h3>📐 File Size Formula</h3>
+                <div class="formula">File Size (bits) = Width × Height × Colour Depth</div>
+                <p style="margin-top: 1rem; color: var(--text-secondary);">
+                    To convert: ÷8 for bytes, ÷1024 for KiB, ÷1024 again for MiB
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔢</div>
+                    <div class="card-title">Colour Depth Quick Reference</div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color);">
+                                <th style="padding: 1rem; text-align: left; color: var(--accent-cyan);">Colour Depth</th>
+                                <th style="padding: 1rem; text-align: left; color: var(--accent-cyan);">Max Colours (2<sup>n</sup>)</th>
+                                <th style="padding: 1rem; text-align: left; color: var(--accent-cyan);">Typical Use</th>
+                            </tr>
+                        </thead>
+                        <tbody style="font-family: 'JetBrains Mono', monospace;">
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem;">1-bit</td>
+                                <td style="padding: 1rem;">2 colours</td>
+                                <td style="padding: 1rem;">Black & white</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem;">8-bit</td>
+                                <td style="padding: 1rem;">256 colours</td>
+                                <td style="padding: 1rem;">Greyscale, GIF</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem;">16-bit</td>
+                                <td style="padding: 1rem;">65,536 colours</td>
+                                <td style="padding: 1rem;">High colour</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem;">24-bit</td>
+                                <td style="padding: 1rem;">16.7 million colours</td>
+                                <td style="padding: 1rem;">True colour (RGB photos)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 3rem;">
+                <h2>Trade-offs: Quality vs Storage</h2>
+                <p>Understand how changing image properties affects file size and quality</p>
+            </div>
+
+            <div class="tradeoff-grid">
+                <div class="tradeoff-card">
+                    <div class="tradeoff-scenario">📐 Doubling width AND height</div>
+                    <div class="tradeoff-impacts">
+                        <div class="impact-item">
+                            <span class="impact-icon">📊</span>
+                            <span>Resolution: No change to PPI</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">💾</span>
+                            <span>Storage: <strong style="color: var(--error);">4× larger</strong> (quadrupled)</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">🌐</span>
+                            <span>Network: Takes 4× longer to transmit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tradeoff-card">
+                    <div class="tradeoff-scenario">🔍 Tripling pixels per inch</div>
+                    <div class="tradeoff-impacts">
+                        <div class="impact-item">
+                            <span class="impact-icon">📊</span>
+                            <span>Resolution: <strong style="color: var(--success);">3× higher</strong></span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">💾</span>
+                            <span>Storage: <strong style="color: var(--error);">9× larger</strong></span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">🌐</span>
+                            <span>Network: Takes 9× longer to transmit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tradeoff-card">
+                    <div class="tradeoff-scenario">🎨 Reducing colour depth 24-bit → 8-bit</div>
+                    <div class="tradeoff-impacts">
+                        <div class="impact-item">
+                            <span class="impact-icon">📊</span>
+                            <span>Resolution: No change</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">💾</span>
+                            <span>Storage: <strong style="color: var(--success);">3× smaller</strong></span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">🌐</span>
+                            <span>Network: Transmits 3× faster</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Game Section -->
+        <section id="memory" class="section">
+            <div class="section-header">
+                <h2>Memory Match</h2>
+                <p>Match the terms with their definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧠</div>
+                    <div class="card-title">Find the Pairs</div>
+                </div>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Click on cards to flip them. Match each term with its correct definition.</p>
+                
+                <div class="memory-grid" id="memoryGrid"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="initMemoryGame()">🔄 Reset Game</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parsons Puzzle Section -->
+        <section id="parsons" class="section">
+            <div class="section-header">
+                <h2>Parsons Puzzle</h2>
+                <p>Arrange the steps in the correct order to calculate file size</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧩</div>
+                    <div class="card-title">Calculate file size in KiB for a 640×480 image with 24-bit colour</div>
+                </div>
+                
+                <div class="parsons-container">
+                    <div class="parsons-bank" id="parsonsBank">
+                        <h4>📦 Code Blocks</h4>
+                    </div>
+                    <div class="parsons-solution" id="parsonsSolution">
+                        <h4>📝 Your Solution</h4>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkParsons()">✓ Check Answer</button>
+                    <button class="btn btn-secondary" onclick="initParsons()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorize Section -->
+        <section id="categorize" class="section">
+            <div class="section-header">
+                <h2>Categorize</h2>
+                <p>Drag items into the correct categories</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📂</div>
+                    <div class="card-title">Sort These Image Concepts</div>
+                </div>
+
+                <div class="items-bank" id="itemsBank">
+                    <h4>📦 Drag items from here:</h4>
+                    <div class="items-bank-grid" id="itemsBankGrid"></div>
+                </div>
+
+                <div class="category-container" id="categoryContainer"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkCategories()">✓ Check Answer</button>
+                    <button class="btn btn-secondary" onclick="initCategories()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pixel Builder Section -->
+        <section id="pixel" class="section">
+            <div class="section-header">
+                <h2>Pixel Art Builder</h2>
+                <p>Create pixel art and see the binary representation</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎨</div>
+                    <div class="card-title">Draw Your Image</div>
+                </div>
+
+                <div class="pixel-builder">
+                    <div class="color-palette" id="colorPalette"></div>
+                    
+                    <div class="pixel-grid-container">
+                        <div>
+                            <h4 style="text-align: center; margin-bottom: 1rem; color: var(--accent-cyan);">Your Canvas (8×8)</h4>
+                            <div class="pixel-grid" id="pixelGrid" style="grid-template-columns: repeat(8, 1fr);"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="width: 100%;">
+                        <h4 style="margin-bottom: 1rem; color: var(--accent-cyan);">📊 Image Metadata</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                            <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Width</div>
+                                <div style="font-family: 'JetBrains Mono'; font-size: 1.2rem;">8 pixels</div>
+                            </div>
+                            <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Height</div>
+                                <div style="font-family: 'JetBrains Mono'; font-size: 1.2rem;">8 pixels</div>
+                            </div>
+                            <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Colour Depth</div>
+                                <div style="font-family: 'JetBrains Mono'; font-size: 1.2rem;" id="colourDepthDisplay">3 bits</div>
+                            </div>
+                            <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">File Size</div>
+                                <div style="font-family: 'JetBrains Mono'; font-size: 1.2rem;" id="fileSizeDisplay">192 bits</div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin-bottom: 1rem; color: var(--accent-cyan);">🔢 Binary Data (Colour Table)</h4>
+                        <div class="binary-output" id="colorTableOutput"></div>
+                        
+                        <h4 style="margin: 1.5rem 0 1rem; color: var(--accent-cyan);">📄 Binary Data (File Contents)</h4>
+                        <div class="binary-output" id="binaryOutput"></div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="clearPixelGrid()">🗑️ Clear Canvas</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator Section -->
+        <section id="calculator" class="section">
+            <div class="section-header">
+                <h2>File Size Calculator</h2>
+                <p>Calculate image file sizes and practice conversions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧮</div>
+                    <div class="card-title">Calculate File Size</div>
+                </div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label>Width (pixels)</label>
+                        <input type="number" id="calcWidth" placeholder="e.g. 640" value="640">
+                    </div>
+                    <div class="form-group">
+                        <label>Height (pixels)</label>
+                        <input type="number" id="calcHeight" placeholder="e.g. 480" value="480">
+                    </div>
+                    <div class="form-group">
+                        <label>Colour Depth (bits)</label>
+                        <select id="calcColourDepth">
+                            <option value="1">1-bit (2 colours)</option>
+                            <option value="8">8-bit (256 colours)</option>
+                            <option value="16">16-bit (65,536 colours)</option>
+                            <option value="24" selected>24-bit (16.7M colours)</option>
+                            <option value="32">32-bit (with alpha)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Output Unit</label>
+                        <select id="calcUnit">
+                            <option value="bits">Bits</option>
+                            <option value="bytes">Bytes</option>
+                            <option value="kib" selected>Kibibytes (KiB)</option>
+                            <option value="mib">Mebibytes (MiB)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="calculateFileSize()">Calculate</button>
+                </div>
+
+                <div class="result-box" id="calculatorResult" style="margin-top: 2rem; display: none;">
+                    <div class="result-value" id="resultValue"></div>
+                    <div class="result-expression" id="resultExpression"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">❓</div>
+                    <div class="card-title">Practice Problems</div>
+                </div>
+                <div id="practiceProblems"></div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="section">
+            <div class="section-header">
+                <h2>Knowledge Check</h2>
+                <p>Test your understanding with these exam-style questions</p>
+            </div>
+
+            <div id="quizContainer"></div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkAllQuizzes()">✓ Check All Answers</button>
+                <button class="btn btn-secondary" onclick="initQuiz()">🔄 Reset Quiz</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ============ STATE MANAGEMENT ============
+        let state = {
+            activitiesCompleted: 0,
+            correctAnswers: 0,
+            streak: 0,
+            totalActivities: 7
+        };
+
+        function updateProgress() {
+            document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+            document.getElementById('correctAnswers').textContent = state.correctAnswers;
+            document.getElementById('streakCount').textContent = state.streak;
+            const progress = (state.activitiesCompleted / state.totalActivities) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type + ' show';
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============ NAVIGATION ============
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.section).classList.add('active');
+            });
+        });
+
+        // ============ MEMORY GAME ============
+        const memoryPairs = [
+            { term: 'Pixel', definition: 'Smallest unit of a bitmap image' },
+            { term: 'Resolution', definition: 'Pixels per inch (PPI)' },
+            { term: 'Colour Depth', definition: 'Bits per pixel' },
+            { term: 'Bitmap', definition: 'Maps binary to pixels' },
+            { term: 'Metadata', definition: 'Data about the image' },
+            { term: '24-bit', definition: '16.7 million colours' }
+        ];
+
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryCompleted = false;
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            memoryCompleted = false;
+
+            // Create card data
+            memoryCards = [];
+            memoryPairs.forEach((pair, index) => {
+                memoryCards.push({ id: index + 'a', text: pair.term, pairId: index, type: 'term' });
+                memoryCards.push({ id: index + 'b', text: pair.definition, pairId: index, type: 'definition' });
+            });
+
+            // Shuffle
+            memoryCards.sort(() => Math.random() - 0.5);
+
+            // Create DOM elements
+            memoryCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.pairId = card.pairId;
+                cardEl.innerHTML = `
+                    <span class="card-back">?</span>
+                    <span class="card-front">${card.text}</span>
+                `;
+                cardEl.addEventListener('click', () => flipCard(cardEl));
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(cardEl) {
+            if (flippedCards.length >= 2 || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) {
+                return;
+            }
+
+            cardEl.classList.add('flipped');
+            flippedCards.push(cardEl);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 800);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+            const pair1 = card1.dataset.pairId;
+            const pair2 = card2.dataset.pairId;
+
+            if (pair1 === pair2) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                state.correctAnswers++;
+                state.streak++;
+                
+                if (matchedPairs === memoryPairs.length && !memoryCompleted) {
+                    memoryCompleted = true;
+                    state.activitiesCompleted++;
+                    showNotification('🎉 Memory game complete!');
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                state.streak = 0;
+            }
+
+            flippedCards = [];
+            updateProgress();
+        }
+
+        // ============ PARSONS PUZZLE ============
+        const parsonsBlocks = [
+            { id: 1, text: 'width = 640', order: 1 },
+            { id: 2, text: 'height = 480', order: 2 },
+            { id: 3, text: 'colour_depth = 24', order: 3 },
+            { id: 4, text: 'file_size_bits = width × height × colour_depth', order: 4 },
+            { id: 5, text: 'file_size_bytes = file_size_bits ÷ 8', order: 5 },
+            { id: 6, text: 'file_size_kib = file_size_bytes ÷ 1024', order: 6 },
+            { id: 7, text: '// Result: 900 KiB', order: 7 }
+        ];
+
+        let parsonsCompleted = false;
+
+        function initParsons() {
+            const bank = document.getElementById('parsonsBank');
+            const solution = document.getElementById('parsonsSolution');
+            
+            bank.innerHTML = '<h4>📦 Code Blocks</h4>';
+            solution.innerHTML = '<h4>📝 Your Solution</h4>';
+            parsonsCompleted = false;
+
+            const shuffled = [...parsonsBlocks].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(block => {
+                const blockEl = createParsonsBlock(block);
+                bank.appendChild(blockEl);
+            });
+
+            // Make droppable
+            [bank, solution].forEach(container => {
+                container.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    container.style.background = 'rgba(0, 245, 212, 0.05)';
+                });
+                container.addEventListener('dragleave', () => {
+                    container.style.background = '';
+                });
+                container.addEventListener('drop', e => {
+                    e.preventDefault();
+                    container.style.background = '';
+                    const blockId = e.dataTransfer.getData('text/plain');
+                    const blockEl = document.querySelector(`[data-block-id="${blockId}"]`);
+                    if (blockEl) {
+                        container.appendChild(blockEl);
+                    }
+                });
+            });
+        }
+
+        function createParsonsBlock(block) {
+            const blockEl = document.createElement('div');
+            blockEl.className = 'parsons-block';
+            blockEl.draggable = true;
+            blockEl.dataset.blockId = block.id;
+            blockEl.dataset.order = block.order;
+            blockEl.textContent = block.text;
+
+            blockEl.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', block.id);
+                blockEl.classList.add('dragging');
+            });
+            blockEl.addEventListener('dragend', () => {
+                blockEl.classList.remove('dragging');
+            });
+
+            return blockEl;
+        }
+
+        function checkParsons() {
+            const solution = document.getElementById('parsonsSolution');
+            const blocks = solution.querySelectorAll('.parsons-block');
+            let correct = true;
+
+            blocks.forEach((block, index) => {
+                const expectedOrder = index + 1;
+                const actualOrder = parseInt(block.dataset.order);
+                
+                if (actualOrder === expectedOrder) {
+                    block.classList.remove('incorrect');
+                    block.classList.add('correct');
+                } else {
+                    block.classList.remove('correct');
+                    block.classList.add('incorrect');
+                    correct = false;
+                }
+            });
+
+            if (blocks.length !== parsonsBlocks.length) {
+                correct = false;
+            }
+
+            if (correct && !parsonsCompleted) {
+                parsonsCompleted = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 Correct order!');
+            } else if (!correct) {
+                state.streak = 0;
+                showNotification('Not quite right. Check the order!', 'error');
+            }
+            updateProgress();
+        }
+
+        // ============ CATEGORIZATION GAME ============
+        const categories = {
+            'Metadata': ['Width', 'Height', 'Colour depth', 'Resolution', 'File name'],
+            'Affects File Size': ['Width', 'Height', 'Colour depth'],
+            'Quality Factors': ['Resolution', 'Colour depth', 'Pixels per inch']
+        };
+
+        const allCategoryItems = [
+            'Width', 'Height', 'Colour depth', 'Resolution', 
+            'File name', 'Pixels per inch', 'Creation date', 'RGB values'
+        ];
+
+        let categoriesCompleted = false;
+
+        function initCategories() {
+            const bankGrid = document.getElementById('itemsBankGrid');
+            const container = document.getElementById('categoryContainer');
+            
+            bankGrid.innerHTML = '';
+            container.innerHTML = '';
+            categoriesCompleted = false;
+
+            // Create items in bank
+            const shuffledItems = [...allCategoryItems].sort(() => Math.random() - 0.5);
+            shuffledItems.forEach(item => {
+                const itemEl = createCategoryItem(item);
+                bankGrid.appendChild(itemEl);
+            });
+
+            // Create category boxes
+            Object.keys(categories).forEach(categoryName => {
+                const categoryBox = document.createElement('div');
+                categoryBox.className = 'category-box';
+                categoryBox.innerHTML = `
+                    <h4>${categoryName}</h4>
+                    <div class="category-items" data-category="${categoryName}"></div>
+                `;
+                
+                const dropZone = categoryBox.querySelector('.category-items');
+                dropZone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = 'var(--accent-cyan)';
+                });
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.style.borderColor = '';
+                });
+                dropZone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = '';
+                    const itemText = e.dataTransfer.getData('text/plain');
+                    const itemEl = document.querySelector(`[data-item-text="${itemText}"]`);
+                    if (itemEl) {
+                        dropZone.appendChild(itemEl);
+                    }
+                });
+                
+                container.appendChild(categoryBox);
+            });
+
+            // Make bank droppable too
+            bankGrid.addEventListener('dragover', e => e.preventDefault());
+            bankGrid.addEventListener('drop', e => {
+                e.preventDefault();
+                const itemText = e.dataTransfer.getData('text/plain');
+                const itemEl = document.querySelector(`[data-item-text="${itemText}"]`);
+                if (itemEl) {
+                    bankGrid.appendChild(itemEl);
+                }
+            });
+        }
+
+        function createCategoryItem(text) {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'category-item';
+            itemEl.draggable = true;
+            itemEl.textContent = text;
+            itemEl.dataset.itemText = text;
+
+            itemEl.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', text);
+            });
+
+            return itemEl;
+        }
+
+        function checkCategories() {
+            let allCorrect = true;
+
+            document.querySelectorAll('.category-items').forEach(dropZone => {
+                const categoryName = dropZone.dataset.category;
+                const correctItems = categories[categoryName];
+                
+                dropZone.querySelectorAll('.category-item').forEach(item => {
+                    const itemText = item.dataset.itemText;
+                    if (correctItems.includes(itemText)) {
+                        item.classList.remove('incorrect');
+                        item.classList.add('correct');
+                    } else {
+                        item.classList.remove('correct');
+                        item.classList.add('incorrect');
+                        allCorrect = false;
+                    }
+                });
+            });
+
+            if (allCorrect && !categoriesCompleted) {
+                categoriesCompleted = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 All items correctly categorized!');
+            } else if (!allCorrect) {
+                state.streak = 0;
+                showNotification('Some items are in the wrong category', 'error');
+            }
+            updateProgress();
+        }
+
+        // ============ PIXEL ART BUILDER ============
+        const pixelColors = [
+            { name: 'Black', hex: '#000000', binary: '000' },
+            { name: 'Red', hex: '#ff0000', binary: '001' },
+            { name: 'Green', hex: '#00ff00', binary: '010' },
+            { name: 'Yellow', hex: '#ffff00', binary: '011' },
+            { name: 'Blue', hex: '#0000ff', binary: '100' },
+            { name: 'Magenta', hex: '#ff00ff', binary: '101' },
+            { name: 'Cyan', hex: '#00ffff', binary: '110' },
+            { name: 'White', hex: '#ffffff', binary: '111' }
+        ];
+
+        let selectedColor = pixelColors[0];
+        let pixelGridData = [];
+
+        function initPixelBuilder() {
+            const palette = document.getElementById('colorPalette');
+            const grid = document.getElementById('pixelGrid');
+            
+            palette.innerHTML = '';
+            grid.innerHTML = '';
+            pixelGridData = Array(64).fill(pixelColors[7]); // Start with white
+
+            // Create palette
+            pixelColors.forEach((color, index) => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch' + (index === 0 ? ' selected' : '');
+                swatch.style.backgroundColor = color.hex;
+                swatch.title = `${color.name} (${color.binary})`;
+                swatch.addEventListener('click', () => {
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    selectedColor = color;
+                });
+                palette.appendChild(swatch);
+            });
+
+            // Create grid
+            for (let i = 0; i < 64; i++) {
+                const pixel = document.createElement('div');
+                pixel.className = 'pixel';
+                pixel.style.backgroundColor = pixelColors[7].hex;
+                pixel.addEventListener('click', () => {
+                    pixel.style.backgroundColor = selectedColor.hex;
+                    pixelGridData[i] = selectedColor;
+                    updateBinaryOutput();
+                });
+                grid.appendChild(pixel);
+            }
+
+            updateBinaryOutput();
+        }
+
+        function updateBinaryOutput() {
+            // Color table
+            const colorTableOutput = document.getElementById('colorTableOutput');
+            let colorTable = 'Colour Table:\n';
+            pixelColors.forEach(color => {
+                colorTable += `${color.binary} = ${color.name}\n`;
+            });
+            colorTableOutput.textContent = colorTable;
+
+            // Binary data
+            const binaryOutput = document.getElementById('binaryOutput');
+            let binary = '';
+            pixelGridData.forEach((color, i) => {
+                binary += color.binary;
+                if ((i + 1) % 8 === 0) {
+                    binary += '\n';
+                } else {
+                    binary += ', ';
+                }
+            });
+            binaryOutput.textContent = binary.trim();
+
+            // Update metadata display
+            const colourDepth = 3; // 3 bits for 8 colors
+            const fileSize = 8 * 8 * colourDepth;
+            document.getElementById('colourDepthDisplay').textContent = colourDepth + ' bits';
+            document.getElementById('fileSizeDisplay').textContent = fileSize + ' bits';
+        }
+
+        function clearPixelGrid() {
+            const pixels = document.querySelectorAll('.pixel');
+            pixels.forEach((pixel, i) => {
+                pixel.style.backgroundColor = pixelColors[7].hex;
+                pixelGridData[i] = pixelColors[7];
+            });
+            updateBinaryOutput();
+        }
+
+        // ============ CALCULATOR ============
+        let calculatorCompleted = false;
+
+        function calculateFileSize() {
+            const width = parseInt(document.getElementById('calcWidth').value) || 0;
+            const height = parseInt(document.getElementById('calcHeight').value) || 0;
+            const colourDepth = parseInt(document.getElementById('calcColourDepth').value) || 0;
+            const unit = document.getElementById('calcUnit').value;
+
+            let fileSizeBits = width * height * colourDepth;
+            let result, expression;
+
+            switch (unit) {
+                case 'bits':
+                    result = fileSizeBits;
+                    expression = `${width} × ${height} × ${colourDepth} = ${result.toLocaleString()} bits`;
+                    break;
+                case 'bytes':
+                    result = fileSizeBits / 8;
+                    expression = `(${width} × ${height} × ${colourDepth}) ÷ 8 = ${result.toLocaleString()} bytes`;
+                    break;
+                case 'kib':
+                    result = fileSizeBits / 8 / 1024;
+                    expression = `(${width} × ${height} × ${colourDepth}) ÷ 8 ÷ 1024 = ${result.toFixed(2)} KiB`;
+                    break;
+                case 'mib':
+                    result = fileSizeBits / 8 / 1024 / 1024;
+                    expression = `(${width} × ${height} × ${colourDepth}) ÷ 8 ÷ 1024 ÷ 1024 = ${result.toFixed(4)} MiB`;
+                    break;
+            }
+
+            document.getElementById('calculatorResult').style.display = 'block';
+            document.getElementById('resultValue').textContent = unit === 'bits' || unit === 'bytes' 
+                ? result.toLocaleString() + ' ' + unit 
+                : result.toFixed(unit === 'mib' ? 4 : 2) + ' ' + unit.toUpperCase();
+            document.getElementById('resultExpression').textContent = expression;
+
+            if (!calculatorCompleted) {
+                calculatorCompleted = true;
+                state.activitiesCompleted++;
+                updateProgress();
+            }
+        }
+
+        function initPracticeProblems() {
+            const container = document.getElementById('practiceProblems');
+            const problems = [
+                {
+                    question: 'An image is 884 pixels wide and 1164 pixels high with 24-bit colour. Write the expression for file size in bits.',
+                    answer: '884 × 1164 × 24',
+                    hint: 'Use the formula: Width × Height × Colour Depth'
+                },
+                {
+                    question: 'Calculate the file size in MiB for an image that is 5184×3456 pixels with 24-bit colour depth.',
+                    answer: '(5184 × 3456 × 24) ÷ (8 × 1024 × 1024) ≈ 51.5 MiB',
+                    hint: 'Divide bits by 8, then by 1024 twice'
+                },
+                {
+                    question: 'An image file is 40,612 KiB. The colour depth is 24 bits and height is 3040 pixels. Find the width.',
+                    answer: '(40612 × 8 × 1024) ÷ (3040 × 24) ≈ 4555 pixels',
+                    hint: 'Rearrange: Width = (FileSize × 8 × 1024) ÷ (Height × ColourDepth)'
+                }
+            ];
+
+            problems.forEach((problem, index) => {
+                const problemEl = document.createElement('div');
+                problemEl.className = 'quiz-question';
+                problemEl.innerHTML = `
+                    <h4>Problem ${index + 1}: ${problem.question}</h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">💡 Hint: ${problem.hint}</p>
+                    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                        <strong style="color: var(--accent-cyan);">Answer:</strong>
+                        <span style="font-family: 'JetBrains Mono', monospace; margin-left: 0.5rem;">${problem.answer}</span>
+                    </div>
+                `;
+                container.appendChild(problemEl);
+            });
+        }
+
+        // ============ QUIZ ============
+        const quizQuestions = [
+            {
+                question: 'What is the formula for calculating the file size of a bitmap image in bits?',
+                options: [
+                    'Width + Height + Colour Depth',
+                    'Width × Height × Colour Depth',
+                    'Width × Height ÷ Colour Depth',
+                    '(Width + Height) × Colour Depth'
+                ],
+                correct: 1,
+                explanation: 'File size = Width × Height × Colour Depth gives you the total number of bits needed.'
+            },
+            {
+                question: 'How many colours can be represented with 8-bit colour depth?',
+                options: [
+                    '8 colours',
+                    '16 colours',
+                    '256 colours',
+                    '65,536 colours'
+                ],
+                correct: 2,
+                explanation: '2^8 = 256 different colours can be represented.'
+            },
+            {
+                question: 'What happens to the file size if you double both the width AND height of an image?',
+                options: [
+                    'It doubles',
+                    'It triples',
+                    'It quadruples (×4)',
+                    'It stays the same'
+                ],
+                correct: 2,
+                explanation: 'Doubling both dimensions means 2×2 = 4 times as many pixels, so 4× the file size.'
+            },
+            {
+                question: 'Which of the following is NOT typically stored as image metadata?',
+                options: [
+                    'Width and height',
+                    'Colour depth',
+                    'The actual pixel colour values',
+                    'Resolution (PPI)'
+                ],
+                correct: 2,
+                explanation: 'Pixel colour values are the main image data, not metadata. Metadata is "data about data".'
+            },
+            {
+                question: 'How many bits are used for TRUE COLOUR (photographic quality) images?',
+                options: [
+                    '8 bits',
+                    '16 bits',
+                    '24 bits',
+                    '32 bits'
+                ],
+                correct: 2,
+                explanation: '24-bit colour (8 bits each for R, G, B) gives 16.7 million colours - true colour.'
+            },
+            {
+                question: 'To convert from bits to Kibibytes, you need to:',
+                options: [
+                    'Divide by 1000',
+                    'Divide by 1024',
+                    'Divide by 8, then by 1024',
+                    'Divide by 8, then by 1000'
+                ],
+                correct: 2,
+                explanation: 'bits ÷ 8 = bytes, then bytes ÷ 1024 = Kibibytes (KiB).'
+            },
+            {
+                question: 'What is the relationship between resolution and file size?',
+                options: [
+                    'Higher resolution = smaller file size',
+                    'Higher resolution = larger file size',
+                    'Resolution does not affect file size',
+                    'Resolution only affects colour depth'
+                ],
+                correct: 1,
+                explanation: 'Higher resolution means more pixels per inch, which means more data to store.'
+            },
+            {
+                question: 'In a colour table, the binary value 011 might represent:',
+                options: [
+                    'The pixel position',
+                    'The file size',
+                    'A specific colour (e.g., green)',
+                    'The resolution'
+                ],
+                correct: 2,
+                explanation: 'Colour tables map binary codes to specific colours - 011 could map to any colour defined in the table.'
+            }
+        ];
+
+        let quizAnswered = [];
+        let quizCompleted = false;
+
+        function initQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            quizAnswered = Array(quizQuestions.length).fill(false);
+            quizCompleted = false;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'quiz-question';
+                questionEl.innerHTML = `
+                    <h4>Q${qIndex + 1}. ${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, oIndex) => `
+                            <div class="quiz-option" data-question="${qIndex}" data-option="${oIndex}">
+                                <span class="option-letter">${String.fromCharCode(65 + oIndex)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback" id="feedback-${qIndex}"></div>
+                `;
+                container.appendChild(questionEl);
+            });
+
+            // Add click handlers
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', () => selectQuizOption(option));
+            });
+        }
+
+        function selectQuizOption(optionEl) {
+            if (optionEl.classList.contains('disabled')) return;
+
+            const qIndex = parseInt(optionEl.dataset.question);
+            
+            // Remove previous selection for this question
+            document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            optionEl.classList.add('selected');
+        }
+
+        function checkAllQuizzes() {
+            let correctCount = 0;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`[data-question="${qIndex}"].selected`);
+                const feedback = document.getElementById(`feedback-${qIndex}`);
+                
+                // Disable all options for this question
+                document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(opt => {
+                    opt.classList.add('disabled');
+                });
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.dataset.option);
+                    
+                    if (selectedIndex === q.correct) {
+                        selectedOption.classList.add('correct');
+                        feedback.className = 'quiz-feedback correct show';
+                        feedback.textContent = '✓ Correct! ' + q.explanation;
+                        correctCount++;
+                        if (!quizAnswered[qIndex]) {
+                            state.correctAnswers++;
+                        }
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        // Show correct answer
+                        document.querySelector(`[data-question="${qIndex}"][data-option="${q.correct}"]`).classList.add('correct');
+                        feedback.className = 'quiz-feedback incorrect show';
+                        feedback.textContent = '✗ ' + q.explanation;
+                    }
+                    quizAnswered[qIndex] = true;
+                } else {
+                    feedback.className = 'quiz-feedback incorrect show';
+                    feedback.textContent = 'No answer selected. The correct answer was ' + String.fromCharCode(65 + q.correct) + '.';
+                    document.querySelector(`[data-question="${qIndex}"][data-option="${q.correct}"]`).classList.add('correct');
+                }
+            });
+
+            if (!quizCompleted) {
+                quizCompleted = true;
+                state.activitiesCompleted++;
+                if (correctCount === quizQuestions.length) {
+                    state.streak += correctCount;
+                    showNotification(`🎉 Perfect score! ${correctCount}/${quizQuestions.length}`);
+                } else {
+                    state.streak = 0;
+                    showNotification(`Score: ${correctCount}/${quizQuestions.length}`, correctCount >= quizQuestions.length / 2 ? 'success' : 'error');
+                }
+            }
+            updateProgress();
+        }
+
+        // ============ INITIALIZATION ============
+        document.addEventListener('DOMContentLoaded', () => {
+            initMemoryGame();
+            initParsons();
+            initCategories();
+            initPixelBuilder();
+            initPracticeProblems();
+            initQuiz();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

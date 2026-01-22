@@ -1,0 +1,2263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound Representation Revision | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-orange: #ff6b35;
+            --accent-purple: #a855f7;
+            --accent-green: #22c55e;
+            --accent-blue: #3b82f6;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --success: #00c853;
+            --error: #ff1744;
+            --gradient-1: linear-gradient(135deg, #ff6b35 0%, #a855f7 100%);
+            --gradient-2: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated sound wave background */
+        .bg-waves {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.05;
+        }
+
+        .bg-waves svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .wave-path {
+            fill: none;
+            stroke: var(--accent-orange);
+            stroke-width: 2;
+            animation: waveMove 3s ease-in-out infinite;
+        }
+
+        .wave-path:nth-child(2) {
+            stroke: var(--accent-purple);
+            animation-delay: 0.5s;
+        }
+
+        .wave-path:nth-child(3) {
+            stroke: var(--accent-green);
+            animation-delay: 1s;
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab.active {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        /* Section Styles */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        /* Learn Section - Definition Cards */
+        .definition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .definition-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .definition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .definition-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-orange);
+        }
+
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+            margin-bottom: 0.75rem;
+        }
+
+        .definition-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Formula Box */
+        .formula-box {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 2px solid var(--accent-orange);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .formula-box h3 {
+            margin-bottom: 1rem;
+            color: var(--accent-orange);
+        }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* Sound Wave Visualizer */
+        .wave-visualizer {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .wave-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(180deg, rgba(255,107,53,0.05) 0%, transparent 50%, rgba(168,85,247,0.05) 100%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .wave-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .wave-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient-1);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .control-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-orange);
+            font-size: 0.9rem;
+        }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .memory-card:hover:not(.flipped):not(.matched) {
+            border-color: var(--accent-orange);
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+
+        .memory-card.matched {
+            background: var(--success);
+            color: var(--bg-dark);
+            font-weight: 600;
+            cursor: default;
+        }
+
+        .memory-card .card-back {
+            font-size: 2rem;
+        }
+
+        .memory-card .card-front {
+            display: none;
+        }
+
+        .memory-card.flipped .card-back,
+        .memory-card.matched .card-back {
+            display: none;
+        }
+
+        .memory-card.flipped .card-front,
+        .memory-card.matched .card-front {
+            display: block;
+        }
+
+        /* Parsons Puzzle */
+        .parsons-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .parsons-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .parsons-bank, .parsons-solution {
+            min-height: 400px;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        .parsons-bank h4, .parsons-solution h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--accent-orange);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .parsons-block {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .parsons-block:hover {
+            border-color: var(--accent-orange);
+            transform: translateX(5px);
+        }
+
+        .parsons-block.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .parsons-block.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .parsons-block.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        /* Categorization Game */
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .category-box {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 280px;
+        }
+
+        .category-box h4 {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .category-items {
+            min-height: 180px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+
+        .category-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            cursor: grab;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+        }
+
+        .category-item:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .category-item.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .category-item.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .items-bank {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .items-bank h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-purple);
+        }
+
+        .items-bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        /* Sampling Simulator */
+        .sampling-sim {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sampling-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .sampling-display {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sample-info {
+            background: var(--bg-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .sample-info h4 {
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+        }
+
+        .sample-data {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .sample-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Calculator */
+        .calculator-form {
+            display: grid;
+            gap: 1.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group select {
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border: 2px solid var(--accent-orange);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .result-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            color: var(--accent-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-expression {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-orange);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Quiz Section */
+        .quiz-question {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quiz-question h4 {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--accent-orange);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(0, 200, 83, 0.1);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error);
+            background: rgba(255, 23, 68, 0.1);
+        }
+
+        .quiz-option.disabled {
+            cursor: default;
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback.correct {
+            background: rgba(0, 200, 83, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .quiz-feedback.incorrect {
+            background: rgba(255, 23, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Reference Table */
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .reference-table th {
+            padding: 1rem;
+            text-align: left;
+            color: var(--accent-orange);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .reference-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: var(--bg-dark);
+        }
+
+        .notification.error {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 2rem 1rem;
+            }
+
+            .progress-tracker {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .progress-stats {
+                justify-content: center;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Analogue vs Digital comparison */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .comparison-card.analogue {
+            border-color: var(--accent-orange);
+        }
+
+        .comparison-card.digital {
+            border-color: var(--accent-purple);
+        }
+
+        .comparison-card h4 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .comparison-card.analogue h4 {
+            color: var(--accent-orange);
+        }
+
+        .comparison-card.digital h4 {
+            color: var(--accent-purple);
+        }
+
+        .comparison-visual {
+            height: 100px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-visual svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-waves">
+        <svg viewBox="0 0 1200 400" preserveAspectRatio="none">
+            <path class="wave-path" d="M0,200 Q150,100 300,200 T600,200 T900,200 T1200,200" />
+            <path class="wave-path" d="M0,200 Q150,300 300,200 T600,200 T900,200 T1200,200" />
+            <path class="wave-path" d="M0,200 Q150,150 300,200 T600,200 T900,200 T1200,200" />
+        </svg>
+    </div>
+    
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <span class="hero-badge">GCSE Computer Science • Data Representation</span>
+            <h1>Sound Representation</h1>
+            <p>Master how sound is digitised, understand sampling and bit depth, and calculate audio file sizes.</p>
+        </header>
+
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak 🔥</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">📚 Learn</button>
+            <button class="nav-tab" data-section="visualizer">🎵 Visualizer</button>
+            <button class="nav-tab" data-section="memory">🧠 Memory Game</button>
+            <button class="nav-tab" data-section="parsons">🧩 Parsons Puzzle</button>
+            <button class="nav-tab" data-section="categorize">📂 Categorize</button>
+            <button class="nav-tab" data-section="calculator">🧮 Calculator</button>
+            <button class="nav-tab" data-section="quiz">✅ Quiz</button>
+        </nav>
+
+        <!-- Learn Section -->
+        <section id="learn" class="section active">
+            <div class="section-header">
+                <h2>Key Concepts</h2>
+                <p>Understanding how sound is converted from analogue to digital</p>
+            </div>
+
+            <!-- Analogue vs Digital Comparison -->
+            <div class="comparison-grid">
+                <div class="comparison-card analogue">
+                    <h4>🔊 Analogue Signal</h4>
+                    <div class="comparison-visual">
+                        <svg viewBox="0 0 200 80">
+                            <path d="M0,40 Q25,10 50,40 T100,40 T150,40 T200,40" 
+                                  fill="none" stroke="#ff6b35" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        Continuous wave with infinite possible values. Found naturally in the real world.
+                    </p>
+                </div>
+                <div class="comparison-card digital">
+                    <h4>💾 Digital Signal</h4>
+                    <div class="comparison-visual">
+                        <svg viewBox="0 0 200 80">
+                            <path d="M0,40 L20,40 L20,20 L40,20 L40,50 L60,50 L60,30 L80,30 L80,60 L100,60 L100,25 L120,25 L120,45 L140,45 L140,35 L160,35 L160,55 L180,55 L180,40 L200,40" 
+                                  fill="none" stroke="#a855f7" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        Discrete steps with finite values. Stored as binary data on computers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="definition-grid">
+                <div class="definition-card">
+                    <div class="definition-term">Analogue Signal</div>
+                    <div class="definition-text">A continuously changing signal that can be found in nature. Has infinite possible values between any two points.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Digital Data</div>
+                    <div class="definition-text">The binary representation of an analogue signal. Consists of discrete values that can be stored on a computer.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Sampling</div>
+                    <div class="definition-text">Taking a snapshot of an analogue signal at one single point in time. The amplitude is measured and recorded.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Sample Rate</div>
+                    <div class="definition-text">The number of sound samples taken per second, measured in Hertz (Hz). CD quality = 44,100 Hz (44.1 kHz).</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Sample Interval</div>
+                    <div class="definition-text">The time between samples, measured in seconds. Calculated as 1 ÷ sample rate.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Bit Depth</div>
+                    <div class="definition-text">The number of bits used to represent the value (amplitude) of each sample. More bits = more precision. CD = 16-bit.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Quantisation</div>
+                    <div class="definition-text">Mapping a sampled reading/snapshot to the nearest available binary value based on the bit depth.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Amplitude</div>
+                    <div class="definition-text">The value of the wave (y-axis) at a given point in time. Represents the loudness of the sound.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">ADC</div>
+                    <div class="definition-text">Analogue to Digital Conversion - the process of converting an analogue sound wave so it can be stored on a computer.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">DAC</div>
+                    <div class="definition-text">Digital to Analogue Conversion - the process of converting digital data back to an analogue signal for playback.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Nyquist Theorem</div>
+                    <div class="definition-text">The sample rate should be at least twice the highest frequency in the sound to accurately reproduce it.</div>
+                </div>
+                <div class="definition-card">
+                    <div class="definition-term">Stereo</div>
+                    <div class="definition-text">Two audio channels (left and right) that create a spatial sound effect. Doubles the file size compared to mono.</div>
+                </div>
+            </div>
+
+            <div class="formula-box">
+                <h3>📐 Sound File Size Formula</h3>
+                <div class="formula">File Size (bits) = Sample Rate × Bit Depth × Duration (seconds)</div>
+                <p style="margin-top: 1rem; color: var(--text-secondary);">
+                    For stereo: multiply by 2 (for two channels)<br>
+                    To convert: ÷8 for bytes, ÷1024 for KiB, ÷1024 again for MiB
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎧</div>
+                    <div class="card-title">Audio Quality Reference</div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="reference-table">
+                        <thead>
+                            <tr>
+                                <th>Format</th>
+                                <th>Sample Rate</th>
+                                <th>Bit Depth</th>
+                                <th>Quality</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Telephone</td>
+                                <td>8,000 Hz</td>
+                                <td>8-bit</td>
+                                <td>Low</td>
+                            </tr>
+                            <tr>
+                                <td>CD Audio</td>
+                                <td>44,100 Hz</td>
+                                <td>16-bit</td>
+                                <td>High</td>
+                            </tr>
+                            <tr>
+                                <td>DVD Audio</td>
+                                <td>48,000 Hz</td>
+                                <td>24-bit</td>
+                                <td>Very High</td>
+                            </tr>
+                            <tr>
+                                <td>Studio</td>
+                                <td>192,000 Hz</td>
+                                <td>24-bit</td>
+                                <td>Professional</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">👂</div>
+                    <div class="card-title">Human Hearing Facts</div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">20 Hz</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Lowest frequency humans can hear</div>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">20,000 Hz</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">Highest frequency humans can hear</div>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">44.1 kHz</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">CD sample rate (Nyquist: 2 × 20kHz)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visualizer Section -->
+        <section id="visualizer" class="section">
+            <div class="section-header">
+                <h2>Sound Wave Visualizer</h2>
+                <p>See how sampling and bit depth affect sound representation</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎵</div>
+                    <div class="card-title">Interactive Sampling Demonstration</div>
+                </div>
+
+                <div class="wave-visualizer">
+                    <div class="wave-canvas-container">
+                        <canvas id="waveCanvas" class="wave-canvas"></canvas>
+                    </div>
+                    <div class="wave-controls">
+                        <div class="control-group">
+                            <label>Sample Rate: <span class="control-value" id="sampleRateValue">10 Hz</span></label>
+                            <input type="range" id="sampleRateSlider" min="2" max="30" value="10">
+                        </div>
+                        <div class="control-group">
+                            <label>Bit Depth: <span class="control-value" id="bitDepthValue">4 bits (16 levels)</span></label>
+                            <input type="range" id="bitDepthSlider" min="1" max="8" value="4">
+                        </div>
+                        <div class="control-group">
+                            <label>Frequency: <span class="control-value" id="frequencyValue">2 Hz</span></label>
+                            <input type="range" id="frequencySlider" min="1" max="5" value="2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sampling-display">
+                    <div class="sample-info">
+                        <h4>📊 Sample Data</h4>
+                        <div class="sample-data" id="sampleData"></div>
+                    </div>
+                    <div class="sample-info">
+                        <h4>📈 Statistics</h4>
+                        <div class="sample-data">
+                            <div class="sample-row">
+                                <span>Sample Interval:</span>
+                                <span id="sampleIntervalDisplay">0.1s</span>
+                            </div>
+                            <div class="sample-row">
+                                <span>Quantisation Levels:</span>
+                                <span id="quantLevelsDisplay">16</span>
+                            </div>
+                            <div class="sample-row">
+                                <span>Max Amplitude Value:</span>
+                                <span id="maxAmpDisplay">15</span>
+                            </div>
+                            <div class="sample-row">
+                                <span>Binary Range:</span>
+                                <span id="binaryRangeDisplay">0000 - 1111</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Memory Game Section -->
+        <section id="memory" class="section">
+            <div class="section-header">
+                <h2>Memory Match</h2>
+                <p>Match the terms with their definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧠</div>
+                    <div class="card-title">Find the Pairs</div>
+                </div>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Click on cards to flip them. Match each term with its correct definition.</p>
+                
+                <div class="memory-grid" id="memoryGrid"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="initMemoryGame()">🔄 Reset Game</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parsons Puzzle Section -->
+        <section id="parsons" class="section">
+            <div class="section-header">
+                <h2>Parsons Puzzle</h2>
+                <p>Arrange the steps in the correct order to calculate file size</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧩</div>
+                    <div class="card-title">Calculate file size in KiB for a 90-second audio at 44.1kHz, 16-bit</div>
+                </div>
+                
+                <div class="parsons-container">
+                    <div class="parsons-bank" id="parsonsBank">
+                        <h4>📦 Code Blocks</h4>
+                    </div>
+                    <div class="parsons-solution" id="parsonsSolution">
+                        <h4>📝 Your Solution</h4>
+                    </div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkParsons()">✓ Check Answer</button>
+                    <button class="btn btn-secondary" onclick="initParsons()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categorize Section -->
+        <section id="categorize" class="section">
+            <div class="section-header">
+                <h2>Categorize</h2>
+                <p>Drag items into the correct categories</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📂</div>
+                    <div class="card-title">Sort These Sound Concepts</div>
+                </div>
+
+                <div class="items-bank" id="itemsBank">
+                    <h4>📦 Drag items from here:</h4>
+                    <div class="items-bank-grid" id="itemsBankGrid"></div>
+                </div>
+
+                <div class="category-container" id="categoryContainer"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkCategories()">✓ Check Answer</button>
+                    <button class="btn btn-secondary" onclick="initCategories()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator Section -->
+        <section id="calculator" class="section">
+            <div class="section-header">
+                <h2>File Size Calculator</h2>
+                <p>Calculate audio file sizes and practice conversions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧮</div>
+                    <div class="card-title">Calculate Audio File Size</div>
+                </div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label>Sample Rate</label>
+                        <select id="calcSampleRate">
+                            <option value="8000">8,000 Hz (Telephone)</option>
+                            <option value="22050">22,050 Hz (Low quality)</option>
+                            <option value="44100" selected>44,100 Hz (CD Quality)</option>
+                            <option value="48000">48,000 Hz (DVD Quality)</option>
+                            <option value="96000">96,000 Hz (High-res)</option>
+                            <option value="192000">192,000 Hz (Studio)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bit Depth</label>
+                        <select id="calcBitDepth">
+                            <option value="8">8-bit (256 levels)</option>
+                            <option value="16" selected>16-bit (65,536 levels)</option>
+                            <option value="24">24-bit (16.7M levels)</option>
+                            <option value="32">32-bit (4.3B levels)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (seconds)</label>
+                        <input type="number" id="calcDuration" placeholder="e.g. 180" value="90">
+                    </div>
+                    <div class="form-group">
+                        <label>Channels</label>
+                        <select id="calcChannels">
+                            <option value="1">Mono (1 channel)</option>
+                            <option value="2" selected>Stereo (2 channels)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Output Unit</label>
+                        <select id="calcUnit">
+                            <option value="bits">Bits</option>
+                            <option value="bytes">Bytes</option>
+                            <option value="kib">Kibibytes (KiB)</option>
+                            <option value="mib" selected>Mebibytes (MiB)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="calculateFileSize()">Calculate</button>
+                </div>
+
+                <div class="result-box" id="calculatorResult" style="margin-top: 2rem; display: none;">
+                    <div class="result-value" id="resultValue"></div>
+                    <div class="result-expression" id="resultExpression"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">❓</div>
+                    <div class="card-title">Practice Problems</div>
+                </div>
+                <div id="practiceProblems"></div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="section">
+            <div class="section-header">
+                <h2>Knowledge Check</h2>
+                <p>Test your understanding with these exam-style questions</p>
+            </div>
+
+            <div id="quizContainer"></div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkAllQuizzes()">✓ Check All Answers</button>
+                <button class="btn btn-secondary" onclick="initQuiz()">🔄 Reset Quiz</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // ============ STATE MANAGEMENT ============
+        let state = {
+            activitiesCompleted: 0,
+            correctAnswers: 0,
+            streak: 0,
+            totalActivities: 6
+        };
+
+        function updateProgress() {
+            document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+            document.getElementById('correctAnswers').textContent = state.correctAnswers;
+            document.getElementById('streakCount').textContent = state.streak;
+            const progress = (state.activitiesCompleted / state.totalActivities) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type + ' show';
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============ NAVIGATION ============
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.section).classList.add('active');
+                
+                // Initialize visualizer when tab is clicked
+                if (tab.dataset.section === 'visualizer') {
+                    setTimeout(initVisualizer, 100);
+                }
+            });
+        });
+
+        // ============ WAVE VISUALIZER ============
+        let visualizerInitialized = false;
+
+        function initVisualizer() {
+            const canvas = document.getElementById('waveCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+
+            const sampleRateSlider = document.getElementById('sampleRateSlider');
+            const bitDepthSlider = document.getElementById('bitDepthSlider');
+            const frequencySlider = document.getElementById('frequencySlider');
+
+            function drawWave() {
+                const width = canvas.width;
+                const height = canvas.height;
+                const sampleRate = parseInt(sampleRateSlider.value);
+                const bitDepth = parseInt(bitDepthSlider.value);
+                const frequency = parseInt(frequencySlider.value);
+
+                // Update displays
+                document.getElementById('sampleRateValue').textContent = sampleRate + ' Hz';
+                document.getElementById('bitDepthValue').textContent = bitDepth + ' bits (' + Math.pow(2, bitDepth) + ' levels)';
+                document.getElementById('frequencyValue').textContent = frequency + ' Hz';
+                
+                const quantLevels = Math.pow(2, bitDepth);
+                const sampleInterval = 1 / sampleRate;
+                document.getElementById('sampleIntervalDisplay').textContent = sampleInterval.toFixed(3) + 's';
+                document.getElementById('quantLevelsDisplay').textContent = quantLevels;
+                document.getElementById('maxAmpDisplay').textContent = quantLevels - 1;
+                document.getElementById('binaryRangeDisplay').textContent = '0'.repeat(bitDepth) + ' - ' + '1'.repeat(bitDepth);
+
+                ctx.clearRect(0, 0, width, height);
+                
+                const centerY = height / 2;
+                const amplitude = height * 0.35;
+                const duration = 2; // 2 seconds shown
+                
+                // Draw grid lines
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= 10; i++) {
+                    const y = (height / 10) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Draw center line (zero amplitude)
+                ctx.strokeStyle = 'rgba(255, 107, 53, 0.3)';
+                ctx.beginPath();
+                ctx.moveTo(0, centerY);
+                ctx.lineTo(width, centerY);
+                ctx.stroke();
+
+                // Draw analogue wave
+                ctx.strokeStyle = '#ff6b35';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let x = 0; x <= width; x++) {
+                    const t = (x / width) * duration;
+                    const y = centerY - amplitude * Math.sin(2 * Math.PI * frequency * t);
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Draw samples and digital representation
+                const samples = [];
+                const numSamples = Math.floor(sampleRate * duration);
+                
+                ctx.fillStyle = '#a855f7';
+                ctx.strokeStyle = '#a855f7';
+                ctx.lineWidth = 2;
+                
+                let prevQuantizedY = null;
+                
+                for (let i = 0; i <= numSamples; i++) {
+                    const t = i / sampleRate;
+                    const x = (t / duration) * width;
+                    
+                    // Get actual amplitude (-1 to 1)
+                    const actualAmp = Math.sin(2 * Math.PI * frequency * t);
+                    
+                    // Quantize to bit depth levels
+                    const normalizedAmp = (actualAmp + 1) / 2; // 0 to 1
+                    const quantLevel = Math.round(normalizedAmp * (quantLevels - 1));
+                    const quantizedAmp = (quantLevel / (quantLevels - 1)) * 2 - 1;
+                    
+                    const y = centerY - amplitude * quantizedAmp;
+                    
+                    // Draw sample point
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw vertical line to sample point
+                    ctx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+                    ctx.beginPath();
+                    ctx.moveTo(x, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    
+                    // Draw stepped digital signal
+                    if (prevQuantizedY !== null) {
+                        ctx.strokeStyle = '#22c55e';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        const prevX = ((i - 1) / sampleRate / duration) * width;
+                        ctx.moveTo(prevX, prevQuantizedY);
+                        ctx.lineTo(x, prevQuantizedY);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                    }
+                    
+                    prevQuantizedY = y;
+                    
+                    // Store sample data
+                    if (i < 8) {
+                        const binaryValue = quantLevel.toString(2).padStart(bitDepth, '0');
+                        samples.push({
+                            time: t.toFixed(2),
+                            amplitude: quantLevel,
+                            binary: binaryValue
+                        });
+                    }
+                }
+                
+                // Update sample data display
+                const sampleDataDiv = document.getElementById('sampleData');
+                sampleDataDiv.innerHTML = samples.map(s => `
+                    <div class="sample-row">
+                        <span>t=${s.time}s</span>
+                        <span>${s.amplitude} (${s.binary})</span>
+                    </div>
+                `).join('');
+            }
+
+            sampleRateSlider.addEventListener('input', drawWave);
+            bitDepthSlider.addEventListener('input', drawWave);
+            frequencySlider.addEventListener('input', drawWave);
+
+            drawWave();
+            visualizerInitialized = true;
+            
+            if (!state.activitiesCompleted) {
+                state.activitiesCompleted++;
+                updateProgress();
+            }
+        }
+
+        // ============ MEMORY GAME ============
+        const memoryPairs = [
+            { term: 'Sample Rate', definition: 'Samples per second (Hz)' },
+            { term: 'Bit Depth', definition: 'Bits per sample' },
+            { term: 'Sampling', definition: 'Taking amplitude snapshots' },
+            { term: 'Quantisation', definition: 'Mapping to binary values' },
+            { term: 'Amplitude', definition: 'Wave height (loudness)' },
+            { term: 'ADC', definition: 'Analogue to Digital' },
+            { term: '44.1 kHz', definition: 'CD sample rate' },
+            { term: 'Nyquist', definition: '2× highest frequency' }
+        ];
+
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryCompleted = false;
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            memoryCompleted = false;
+
+            memoryCards = [];
+            memoryPairs.forEach((pair, index) => {
+                memoryCards.push({ id: index + 'a', text: pair.term, pairId: index, type: 'term' });
+                memoryCards.push({ id: index + 'b', text: pair.definition, pairId: index, type: 'definition' });
+            });
+
+            memoryCards.sort(() => Math.random() - 0.5);
+
+            memoryCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.dataset.id = card.id;
+                cardEl.dataset.pairId = card.pairId;
+                cardEl.innerHTML = `
+                    <span class="card-back">🎵</span>
+                    <span class="card-front">${card.text}</span>
+                `;
+                cardEl.addEventListener('click', () => flipCard(cardEl));
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(cardEl) {
+            if (flippedCards.length >= 2 || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) {
+                return;
+            }
+
+            cardEl.classList.add('flipped');
+            flippedCards.push(cardEl);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMemoryMatch, 800);
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+            const pair1 = card1.dataset.pairId;
+            const pair2 = card2.dataset.pairId;
+
+            if (pair1 === pair2) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                state.correctAnswers++;
+                state.streak++;
+                
+                if (matchedPairs === memoryPairs.length && !memoryCompleted) {
+                    memoryCompleted = true;
+                    state.activitiesCompleted++;
+                    showNotification('🎉 Memory game complete!');
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                state.streak = 0;
+            }
+
+            flippedCards = [];
+            updateProgress();
+        }
+
+        // ============ PARSONS PUZZLE ============
+        const parsonsBlocks = [
+            { id: 1, text: 'sample_rate = 44100', order: 1 },
+            { id: 2, text: 'bit_depth = 16', order: 2 },
+            { id: 3, text: 'duration = 90', order: 3 },
+            { id: 4, text: 'file_size_bits = sample_rate × bit_depth × duration', order: 4 },
+            { id: 5, text: 'file_size_bytes = file_size_bits ÷ 8', order: 5 },
+            { id: 6, text: 'file_size_kib = file_size_bytes ÷ 1024', order: 6 },
+            { id: 7, text: '// Result: 7,716 KiB (mono)', order: 7 }
+        ];
+
+        let parsonsCompleted = false;
+
+        function initParsons() {
+            const bank = document.getElementById('parsonsBank');
+            const solution = document.getElementById('parsonsSolution');
+            
+            bank.innerHTML = '<h4>📦 Code Blocks</h4>';
+            solution.innerHTML = '<h4>📝 Your Solution</h4>';
+            parsonsCompleted = false;
+
+            const shuffled = [...parsonsBlocks].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(block => {
+                const blockEl = createParsonsBlock(block);
+                bank.appendChild(blockEl);
+            });
+
+            [bank, solution].forEach(container => {
+                container.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    container.style.background = 'rgba(255, 107, 53, 0.05)';
+                });
+                container.addEventListener('dragleave', () => {
+                    container.style.background = '';
+                });
+                container.addEventListener('drop', e => {
+                    e.preventDefault();
+                    container.style.background = '';
+                    const blockId = e.dataTransfer.getData('text/plain');
+                    const blockEl = document.querySelector(`[data-block-id="${blockId}"]`);
+                    if (blockEl) {
+                        container.appendChild(blockEl);
+                    }
+                });
+            });
+        }
+
+        function createParsonsBlock(block) {
+            const blockEl = document.createElement('div');
+            blockEl.className = 'parsons-block';
+            blockEl.draggable = true;
+            blockEl.dataset.blockId = block.id;
+            blockEl.dataset.order = block.order;
+            blockEl.textContent = block.text;
+
+            blockEl.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', block.id);
+                blockEl.classList.add('dragging');
+            });
+            blockEl.addEventListener('dragend', () => {
+                blockEl.classList.remove('dragging');
+            });
+
+            return blockEl;
+        }
+
+        function checkParsons() {
+            const solution = document.getElementById('parsonsSolution');
+            const blocks = solution.querySelectorAll('.parsons-block');
+            let correct = true;
+
+            blocks.forEach((block, index) => {
+                const expectedOrder = index + 1;
+                const actualOrder = parseInt(block.dataset.order);
+                
+                if (actualOrder === expectedOrder) {
+                    block.classList.remove('incorrect');
+                    block.classList.add('correct');
+                } else {
+                    block.classList.remove('correct');
+                    block.classList.add('incorrect');
+                    correct = false;
+                }
+            });
+
+            if (blocks.length !== parsonsBlocks.length) {
+                correct = false;
+            }
+
+            if (correct && !parsonsCompleted) {
+                parsonsCompleted = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 Correct order!');
+            } else if (!correct) {
+                state.streak = 0;
+                showNotification('Not quite right. Check the order!', 'error');
+            }
+            updateProgress();
+        }
+
+        // ============ CATEGORIZATION GAME ============
+        const categories = {
+            'Affects Quality': ['Sample rate', 'Bit depth', 'Quantisation levels'],
+            'Affects File Size': ['Sample rate', 'Bit depth', 'Duration', 'Channels'],
+            'Measured in Hz': ['Sample rate', 'Frequency', '44.1 kHz']
+        };
+
+        const allCategoryItems = [
+            'Sample rate', 'Bit depth', 'Duration', 'Channels',
+            'Frequency', 'Quantisation levels', '44.1 kHz', 'Amplitude'
+        ];
+
+        let categoriesCompleted = false;
+
+        function initCategories() {
+            const bankGrid = document.getElementById('itemsBankGrid');
+            const container = document.getElementById('categoryContainer');
+            
+            bankGrid.innerHTML = '';
+            container.innerHTML = '';
+            categoriesCompleted = false;
+
+            const shuffledItems = [...allCategoryItems].sort(() => Math.random() - 0.5);
+            shuffledItems.forEach(item => {
+                const itemEl = createCategoryItem(item);
+                bankGrid.appendChild(itemEl);
+            });
+
+            Object.keys(categories).forEach(categoryName => {
+                const categoryBox = document.createElement('div');
+                categoryBox.className = 'category-box';
+                categoryBox.innerHTML = `
+                    <h4>${categoryName}</h4>
+                    <div class="category-items" data-category="${categoryName}"></div>
+                `;
+                
+                const dropZone = categoryBox.querySelector('.category-items');
+                dropZone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = 'var(--accent-orange)';
+                });
+                dropZone.addEventListener('dragleave', () => {
+                    dropZone.style.borderColor = '';
+                });
+                dropZone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    dropZone.style.borderColor = '';
+                    const itemText = e.dataTransfer.getData('text/plain');
+                    const itemEl = document.querySelector(`[data-item-text="${itemText}"]`);
+                    if (itemEl) {
+                        dropZone.appendChild(itemEl);
+                    }
+                });
+                
+                container.appendChild(categoryBox);
+            });
+
+            bankGrid.addEventListener('dragover', e => e.preventDefault());
+            bankGrid.addEventListener('drop', e => {
+                e.preventDefault();
+                const itemText = e.dataTransfer.getData('text/plain');
+                const itemEl = document.querySelector(`[data-item-text="${itemText}"]`);
+                if (itemEl) {
+                    bankGrid.appendChild(itemEl);
+                }
+            });
+        }
+
+        function createCategoryItem(text) {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'category-item';
+            itemEl.draggable = true;
+            itemEl.textContent = text;
+            itemEl.dataset.itemText = text;
+
+            itemEl.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', text);
+            });
+
+            return itemEl;
+        }
+
+        function checkCategories() {
+            let allCorrect = true;
+
+            document.querySelectorAll('.category-items').forEach(dropZone => {
+                const categoryName = dropZone.dataset.category;
+                const correctItems = categories[categoryName];
+                
+                dropZone.querySelectorAll('.category-item').forEach(item => {
+                    const itemText = item.dataset.itemText;
+                    if (correctItems.includes(itemText)) {
+                        item.classList.remove('incorrect');
+                        item.classList.add('correct');
+                    } else {
+                        item.classList.remove('correct');
+                        item.classList.add('incorrect');
+                        allCorrect = false;
+                    }
+                });
+            });
+
+            if (allCorrect && !categoriesCompleted) {
+                categoriesCompleted = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 All items correctly categorized!');
+            } else if (!allCorrect) {
+                state.streak = 0;
+                showNotification('Some items are in the wrong category', 'error');
+            }
+            updateProgress();
+        }
+
+        // ============ CALCULATOR ============
+        let calculatorCompleted = false;
+
+        function calculateFileSize() {
+            const sampleRate = parseInt(document.getElementById('calcSampleRate').value);
+            const bitDepth = parseInt(document.getElementById('calcBitDepth').value);
+            const duration = parseFloat(document.getElementById('calcDuration').value) || 0;
+            const channels = parseInt(document.getElementById('calcChannels').value);
+            const unit = document.getElementById('calcUnit').value;
+
+            let fileSizeBits = sampleRate * bitDepth * duration * channels;
+            let result, expression;
+
+            const channelText = channels === 1 ? 'mono' : 'stereo';
+
+            switch (unit) {
+                case 'bits':
+                    result = fileSizeBits;
+                    expression = `${sampleRate} × ${bitDepth} × ${duration} × ${channels} = ${result.toLocaleString()} bits`;
+                    break;
+                case 'bytes':
+                    result = fileSizeBits / 8;
+                    expression = `(${sampleRate} × ${bitDepth} × ${duration} × ${channels}) ÷ 8 = ${result.toLocaleString()} bytes`;
+                    break;
+                case 'kib':
+                    result = fileSizeBits / 8 / 1024;
+                    expression = `(${sampleRate} × ${bitDepth} × ${duration} × ${channels}) ÷ (8 × 1024) = ${result.toFixed(2)} KiB`;
+                    break;
+                case 'mib':
+                    result = fileSizeBits / 8 / 1024 / 1024;
+                    expression = `(${sampleRate} × ${bitDepth} × ${duration} × ${channels}) ÷ (8 × 1024 × 1024) = ${result.toFixed(2)} MiB`;
+                    break;
+            }
+
+            document.getElementById('calculatorResult').style.display = 'block';
+            document.getElementById('resultValue').textContent = unit === 'bits' || unit === 'bytes' 
+                ? result.toLocaleString() + ' ' + unit 
+                : result.toFixed(2) + ' ' + unit.toUpperCase();
+            document.getElementById('resultExpression').textContent = expression + ` (${channelText})`;
+
+            if (!calculatorCompleted) {
+                calculatorCompleted = true;
+                state.activitiesCompleted++;
+                updateProgress();
+            }
+        }
+
+        function initPracticeProblems() {
+            const container = document.getElementById('practiceProblems');
+            const problems = [
+                {
+                    question: 'A 90-second audio file has a sample rate of 44.1kHz and 16-bit depth. Write the expression for file size in KiB (mono).',
+                    answer: '(44100 × 16 × 90) ÷ (8 × 1024) = 7,716 KiB',
+                    hint: 'Use the formula: (Sample Rate × Bit Depth × Duration) ÷ (8 × 1024)'
+                },
+                {
+                    question: 'Calculate the file size in MiB of a 3-minute recording at 44100 Hz sample rate with 24-bit depth (mono).',
+                    answer: '(44100 × 24 × 180) ÷ (8 × 1024 × 1024) = 22.7 MiB',
+                    hint: 'Convert 3 minutes to 180 seconds first'
+                },
+                {
+                    question: 'A stereo soundtrack is 2.5 minutes long at CD quality (44.1kHz, 16-bit). Calculate the file size in MiB.',
+                    answer: '(44100 × 16 × 150 × 2) ÷ (8 × 1024 × 1024) = 25.2 MiB',
+                    hint: 'Remember to multiply by 2 for stereo!'
+                },
+                {
+                    question: 'A file is 3 MiB, 10 kHz sample rate, 16-bit depth. How long does it play?',
+                    answer: '(3 × 1024 × 1024 × 8) ÷ (10000 × 16) = 157.3 seconds',
+                    hint: 'Rearrange: Duration = (FileSize × 8 × 1024 × 1024) ÷ (SampleRate × BitDepth)'
+                }
+            ];
+
+            problems.forEach((problem, index) => {
+                const problemEl = document.createElement('div');
+                problemEl.className = 'quiz-question';
+                problemEl.innerHTML = `
+                    <h4>Problem ${index + 1}: ${problem.question}</h4>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">💡 Hint: ${problem.hint}</p>
+                    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                        <strong style="color: var(--accent-orange);">Answer:</strong>
+                        <span style="font-family: 'JetBrains Mono', monospace; margin-left: 0.5rem;">${problem.answer}</span>
+                    </div>
+                `;
+                container.appendChild(problemEl);
+            });
+        }
+
+        // ============ QUIZ ============
+        const quizQuestions = [
+            {
+                question: 'What is the formula for calculating the file size of an audio file in bits?',
+                options: [
+                    'Sample Rate + Bit Depth + Duration',
+                    'Sample Rate × Bit Depth × Duration',
+                    'Sample Rate × Bit Depth ÷ Duration',
+                    '(Sample Rate + Bit Depth) × Duration'
+                ],
+                correct: 1,
+                explanation: 'File size (bits) = Sample Rate × Bit Depth × Duration gives you the total bits needed.'
+            },
+            {
+                question: 'What is the standard sample rate for CD quality audio?',
+                options: [
+                    '22,050 Hz',
+                    '44,100 Hz',
+                    '48,000 Hz',
+                    '96,000 Hz'
+                ],
+                correct: 1,
+                explanation: 'CD quality audio uses 44,100 Hz (44.1 kHz), which satisfies the Nyquist theorem for human hearing (2 × 20kHz).'
+            },
+            {
+                question: 'According to the Nyquist theorem, the sample rate should be:',
+                options: [
+                    'Equal to the highest frequency',
+                    'At least twice the highest frequency',
+                    'Half the highest frequency',
+                    'Four times the highest frequency'
+                ],
+                correct: 1,
+                explanation: 'Nyquist states the sample rate must be at least twice the highest frequency to accurately reproduce the sound.'
+            },
+            {
+                question: 'What happens to file size when you change from mono to stereo?',
+                options: [
+                    'It stays the same',
+                    'It doubles',
+                    'It halves',
+                    'It quadruples'
+                ],
+                correct: 1,
+                explanation: 'Stereo has two channels instead of one, so the file size doubles.'
+            },
+            {
+                question: 'What is quantisation in the context of digital audio?',
+                options: [
+                    'Measuring the frequency of sound',
+                    'Mapping sampled values to binary values',
+                    'Counting the number of samples',
+                    'Compressing the audio file'
+                ],
+                correct: 1,
+                explanation: 'Quantisation is the process of mapping each sampled amplitude value to the nearest available binary value.'
+            },
+            {
+                question: 'How many different amplitude levels can be represented with 8-bit depth?',
+                options: [
+                    '8 levels',
+                    '16 levels',
+                    '256 levels',
+                    '65,536 levels'
+                ],
+                correct: 2,
+                explanation: '2^8 = 256 different amplitude levels can be represented with 8-bit depth.'
+            },
+            {
+                question: 'What is the sample interval if the sample rate is 1000 Hz?',
+                options: [
+                    '1000 seconds',
+                    '0.1 seconds',
+                    '0.01 seconds',
+                    '0.001 seconds'
+                ],
+                correct: 3,
+                explanation: 'Sample interval = 1 ÷ sample rate = 1 ÷ 1000 = 0.001 seconds (1 millisecond).'
+            },
+            {
+                question: 'Why can an analogue sound never be perfectly reproduced digitally?',
+                options: [
+                    'Computers are too slow',
+                    'Speakers cannot produce analogue sound',
+                    'Sampling captures discrete points, not the continuous wave',
+                    'Digital files are always compressed'
+                ],
+                correct: 2,
+                explanation: 'Sampling captures the wave at discrete intervals, so values between samples are lost. Bit depth also limits precision.'
+            },
+            {
+                question: 'What does DAC stand for?',
+                options: [
+                    'Digital Audio Compression',
+                    'Digital to Analogue Conversion',
+                    'Data Audio Channel',
+                    'Direct Audio Connection'
+                ],
+                correct: 1,
+                explanation: 'DAC = Digital to Analogue Conversion - the process of converting digital data back to analogue for playback.'
+            },
+            {
+                question: 'Which of the following increases audio quality but also increases file size?',
+                options: [
+                    'Lower sample rate',
+                    'Lower bit depth',
+                    'Higher sample rate and bit depth',
+                    'Mono instead of stereo'
+                ],
+                correct: 2,
+                explanation: 'Higher sample rate captures more samples per second, and higher bit depth gives more precision - both improve quality but increase file size.'
+            }
+        ];
+
+        let quizAnswered = [];
+        let quizCompleted = false;
+
+        function initQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            quizAnswered = Array(quizQuestions.length).fill(false);
+            quizCompleted = false;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const questionEl = document.createElement('div');
+                questionEl.className = 'quiz-question';
+                questionEl.innerHTML = `
+                    <h4>Q${qIndex + 1}. ${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, oIndex) => `
+                            <div class="quiz-option" data-question="${qIndex}" data-option="${oIndex}">
+                                <span class="option-letter">${String.fromCharCode(65 + oIndex)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback" id="feedback-${qIndex}"></div>
+                `;
+                container.appendChild(questionEl);
+            });
+
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.addEventListener('click', () => selectQuizOption(option));
+            });
+        }
+
+        function selectQuizOption(optionEl) {
+            if (optionEl.classList.contains('disabled')) return;
+
+            const qIndex = parseInt(optionEl.dataset.question);
+            
+            document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            optionEl.classList.add('selected');
+        }
+
+        function checkAllQuizzes() {
+            let correctCount = 0;
+
+            quizQuestions.forEach((q, qIndex) => {
+                const selectedOption = document.querySelector(`[data-question="${qIndex}"].selected`);
+                const feedback = document.getElementById(`feedback-${qIndex}`);
+                
+                document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(opt => {
+                    opt.classList.add('disabled');
+                });
+
+                if (selectedOption) {
+                    const selectedIndex = parseInt(selectedOption.dataset.option);
+                    
+                    if (selectedIndex === q.correct) {
+                        selectedOption.classList.add('correct');
+                        feedback.className = 'quiz-feedback correct show';
+                        feedback.textContent = '✓ Correct! ' + q.explanation;
+                        correctCount++;
+                        if (!quizAnswered[qIndex]) {
+                            state.correctAnswers++;
+                        }
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        document.querySelector(`[data-question="${qIndex}"][data-option="${q.correct}"]`).classList.add('correct');
+                        feedback.className = 'quiz-feedback incorrect show';
+                        feedback.textContent = '✗ ' + q.explanation;
+                    }
+                    quizAnswered[qIndex] = true;
+                } else {
+                    feedback.className = 'quiz-feedback incorrect show';
+                    feedback.textContent = 'No answer selected. The correct answer was ' + String.fromCharCode(65 + q.correct) + '.';
+                    document.querySelector(`[data-question="${qIndex}"][data-option="${q.correct}"]`).classList.add('correct');
+                }
+            });
+
+            if (!quizCompleted) {
+                quizCompleted = true;
+                state.activitiesCompleted++;
+                if (correctCount === quizQuestions.length) {
+                    state.streak += correctCount;
+                    showNotification(`🎉 Perfect score! ${correctCount}/${quizQuestions.length}`);
+                } else {
+                    state.streak = 0;
+                    showNotification(`Score: ${correctCount}/${quizQuestions.length}`, correctCount >= quizQuestions.length / 2 ? 'success' : 'error');
+                }
+            }
+            updateProgress();
+        }
+
+        // ============ INITIALIZATION ============
+        document.addEventListener('DOMContentLoaded', () => {
+            initMemoryGame();
+            initParsons();
+            initCategories();
+            initPracticeProblems();
+            initQuiz();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
