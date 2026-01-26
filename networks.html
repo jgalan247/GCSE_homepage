@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Networks Revision | Edexcel GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --accent-blue: #0ea5e9;
+            --accent-indigo: #6366f1;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --success: #00c853;
+            --error: #ff1744;
+            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: var(--bg-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
+
+        .progress-tracker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 600; color: var(--accent-blue); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; }
+
+        .progress-bar-container { flex: 1; min-width: 200px; max-width: 400px; }
+        .progress-bar { height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-1); border-radius: 10px; transition: width 0.5s; width: 0%; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-tab.active { background: var(--gradient-1); color: var(--bg-dark); font-weight: 600; }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        .card:hover { border-color: var(--accent-blue); box-shadow: 0 0 30px rgba(14,165,233,0.1); }
+
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .card-icon { width: 50px; height: 50px; background: var(--gradient-1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .card-title { font-size: 1.3rem; font-weight: 600; }
+
+        .definition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+
+        .definition-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .definition-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gradient-1); }
+        .definition-card:hover { transform: translateY(-5px); border-color: var(--accent-blue); }
+        .definition-term { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 0.75rem; }
+        .definition-text { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        .protocol-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        .protocol-table th { background: var(--gradient-1); color: var(--bg-dark); padding: 1rem; text-align: left; font-weight: 600; }
+        .protocol-table td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
+        .protocol-table tr:hover td { background: rgba(14,165,233,0.1); }
+
+        .protocol-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; }
+        .protocol-badge.app { background: rgba(99,102,241,0.2); color: #818cf8; }
+        .protocol-badge.transport { background: rgba(16,185,129,0.2); color: #34d399; }
+        .protocol-badge.internet { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .protocol-badge.link { background: rgba(244,63,94,0.2); color: #fb7185; }
+
+        .tcp-layers { display: flex; flex-direction: column; gap: 0.5rem; max-width: 600px; margin: 2rem auto; }
+        .tcp-layer { padding: 1.5rem; border-radius: 12px; text-align: center; font-weight: 600; position: relative; }
+        .tcp-layer::after { content: '↓'; position: absolute; bottom: -1.2rem; left: 50%; transform: translateX(-50%); font-size: 1.2rem; color: var(--text-secondary); }
+        .tcp-layer:last-child::after { display: none; }
+        .tcp-layer.application { background: linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(99,102,241,0.1) 100%); border: 2px solid #6366f1; }
+        .tcp-layer.transport { background: linear-gradient(135deg, rgba(16,185,129,0.3) 0%, rgba(16,185,129,0.1) 100%); border: 2px solid #10b981; }
+        .tcp-layer.internet { background: linear-gradient(135deg, rgba(245,158,11,0.3) 0%, rgba(245,158,11,0.1) 100%); border: 2px solid #f59e0b; }
+        .tcp-layer.link { background: linear-gradient(135deg, rgba(244,63,94,0.3) 0%, rgba(244,63,94,0.1) 100%); border: 2px solid #f43f5e; }
+        .tcp-layer-name { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .tcp-layer-desc { font-size: 0.85rem; color: var(--text-secondary); font-weight: 400; }
+
+        .topology-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .topology-card { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; text-align: center; }
+        .topology-card h4 { color: var(--accent-blue); margin-bottom: 1rem; }
+        .topology-diagram { height: 150px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; }
+        .topology-diagram svg { width: 100%; height: 100%; }
+        .topology-pros, .topology-cons { text-align: left; font-size: 0.85rem; margin-top: 0.5rem; list-style: none; }
+        .topology-pros li { color: var(--success); padding: 0.25rem 0; }
+        .topology-cons li { color: var(--error); padding: 0.25rem 0; }
+
+        .calculator-form { display: grid; gap: 1.5rem; max-width: 500px; margin: 0 auto; }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group label { font-weight: 500; color: var(--text-secondary); }
+        .form-group input, .form-group select { padding: 1rem; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent-blue); }
+
+        .result-box { background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(99,102,241,0.1) 100%); border: 2px solid var(--accent-blue); border-radius: 16px; padding: 1.5rem; text-align: center; }
+        .result-value { font-family: 'JetBrains Mono', monospace; font-size: 2rem; color: var(--accent-blue); margin-bottom: 0.5rem; }
+        .result-expression { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-secondary); }
+
+        .security-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .security-card { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; }
+        .security-card.threat { border-color: var(--accent-rose); }
+        .security-card.protection { border-color: var(--accent-emerald); }
+        .security-card h4 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .security-card.threat h4 { color: var(--accent-rose); }
+        .security-card.protection h4 { color: var(--accent-emerald); }
+
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 700px; margin: 0 auto; }
+        @media (max-width: 600px) { .memory-grid { grid-template-columns: repeat(3, 1fr); } }
+        .memory-card { aspect-ratio: 1; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; text-align: center; padding: 0.5rem; transition: all 0.3s; user-select: none; }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-blue); transform: scale(1.05); }
+        .memory-card.flipped { background: var(--gradient-1); color: var(--bg-dark); font-weight: 600; }
+        .memory-card.matched { background: var(--success); color: var(--bg-dark); font-weight: 600; cursor: default; }
+        .memory-card .card-back { font-size: 2rem; }
+        .memory-card .card-front { display: none; }
+        .memory-card.flipped .card-back, .memory-card.matched .card-back { display: none; }
+        .memory-card.flipped .card-front, .memory-card.matched .card-front { display: block; }
+
+        .category-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+        .category-box { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.25rem; min-height: 220px; }
+        .category-box h4 { text-align: center; padding: 0.75rem; background: var(--gradient-1); color: var(--bg-dark); border-radius: 10px; margin-bottom: 1rem; font-weight: 600; font-size: 0.85rem; }
+        .category-items { min-height: 120px; border: 2px dashed var(--border-color); border-radius: 10px; padding: 0.5rem; }
+        .category-item { background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 8px; padding: 0.5rem 0.75rem; margin-bottom: 0.4rem; cursor: grab; transition: all 0.2s; font-size: 0.8rem; }
+        .category-item:hover { border-color: var(--accent-indigo); }
+        .category-item.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .category-item.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+
+        .items-bank { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; }
+        .items-bank h4 { margin-bottom: 1rem; color: var(--accent-amber); }
+        .items-bank-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+        .parsons-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 768px) { .parsons-container { grid-template-columns: 1fr; } }
+        .parsons-bank, .parsons-solution { min-height: 300px; background: var(--bg-card); border: 2px dashed var(--border-color); border-radius: 16px; padding: 1rem; }
+        .parsons-bank h4, .parsons-solution h4 { text-align: center; margin-bottom: 1rem; color: var(--accent-blue); font-family: 'JetBrains Mono', monospace; }
+        .parsons-block { background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 0.5rem; cursor: grab; transition: all 0.2s; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+        .parsons-block:hover { border-color: var(--accent-blue); }
+        .parsons-block.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .parsons-block.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+
+        .quiz-question { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .quiz-question h4 { margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.6; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .quiz-option { padding: 1rem 1.25rem; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 1rem; }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-blue); transform: translateX(5px); }
+        .quiz-option.selected { border-color: var(--accent-indigo); background: rgba(99,102,241,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+        .quiz-option.disabled { cursor: default; }
+        .option-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+        .quiz-feedback { margin-top: 1rem; padding: 1rem; border-radius: 10px; display: none; font-size: 0.9rem; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(0,200,83,0.1); border: 1px solid var(--success); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(255,23,68,0.1); border: 1px solid var(--error); color: var(--error); }
+
+        .btn { padding: 1rem 2rem; border: none; border-radius: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: var(--gradient-1); color: var(--bg-dark); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(14,165,233,0.3); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border: 2px solid var(--border-color); }
+        .btn-secondary:hover { border-color: var(--accent-blue); background: rgba(14,165,233,0.1); }
+        .btn-group { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; }
+
+        .notification { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 500; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 100; }
+        .notification.show { transform: translateY(0); opacity: 1; }
+        .notification.success { background: var(--success); color: var(--bg-dark); }
+        .notification.error { background: var(--error); color: white; }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .hero { padding: 2rem 1rem; }
+            .progress-tracker { flex-direction: column; text-align: center; }
+            .progress-stats { justify-content: center; }
+            .card { padding: 1.5rem; }
+            .nav-tab { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <span class="hero-badge">Edexcel GCSE Computer Science • Topic 4</span>
+            <h1>Computer Networks</h1>
+            <p>Master network types, topologies, protocols, TCP/IP model, and security for your GCSE exam.</p>
+        </header>
+
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat"><div class="stat-value" id="activitiesCompleted">0</div><div class="stat-label">Activities</div></div>
+                <div class="stat"><div class="stat-value" id="correctAnswers">0</div><div class="stat-label">Correct</div></div>
+                <div class="stat"><div class="stat-value" id="streakCount">0</div><div class="stat-label">Streak 🔥</div></div>
+            </div>
+            <div class="progress-bar-container"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">📚 Learn</button>
+            <button class="nav-tab" data-section="topologies">🔗 Topologies</button>
+            <button class="nav-tab" data-section="protocols">📡 Protocols</button>
+            <button class="nav-tab" data-section="calculator">🧮 Calculator</button>
+            <button class="nav-tab" data-section="security">🔒 Security</button>
+            <button class="nav-tab" data-section="memory">🧠 Memory</button>
+            <button class="nav-tab" data-section="categorize">📂 Categorize</button>
+            <button class="nav-tab" data-section="quiz">✅ Quiz</button>
+        </nav>
+
+        <!-- LEARN SECTION -->
+        <section id="learn" class="section active">
+            <div class="section-header">
+                <h2>Network Fundamentals</h2>
+                <p>Complete theory covering specification points 4.1.1 - 4.1.8</p>
+            </div>
+
+            <!-- 4.1.1 Why computers are connected -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🔗</div><div class="card-title">4.1.1 Why Computers Are Connected in Networks</div></div>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    A <strong style="color: var(--accent-blue);">computer network</strong> is two or more computers connected together so they can communicate and share resources. Before networks existed, if you wanted to share a file with a colleague, you would need to copy it onto a floppy disk and physically carry it to their computer. Networks have transformed how we work, learn, and communicate.
+                </p>
+                
+                <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">Key Benefits of Networking:</h4>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">📁 File Sharing</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Users can access documents, images, and other files stored on any computer in the network without needing to physically transfer them. In a school, this means students can access their work from any computer in the building, and teachers can distribute resources to all students instantly.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">🖨️ Sharing Hardware Resources</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Expensive hardware like printers, scanners, and storage devices can be shared among many users. Instead of buying a printer for every computer, an organisation might have just a few networked printers that everyone can use. This reduces costs significantly.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">🌐 Internet Access</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">A single internet connection can be shared across all devices on the network through a router. This is far more cost-effective than having separate internet connections for each device.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">💬 Communication</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Networks enable email, instant messaging, video conferencing, and collaborative tools. Teams can work together on documents in real-time, even if they're in different buildings or countries.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">💾 Centralised Data Storage and Backup</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Data can be stored on a central server rather than on individual computers. This makes it easier to back up important files, ensures everyone has access to the latest version, and means data isn't lost if a single computer fails.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">👤 Centralised User Management</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Network administrators can manage user accounts, permissions, and software installations from one central location. When a new employee joins, their account can be set up once and they can log in from any networked computer.</p>
+                </div>
+            </div>
+
+            <!-- 4.1.2 Types of Networks -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🌍</div><div class="card-title">4.1.2 Types of Networks: LAN and WAN</div></div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 1.5rem;">
+                    <div style="background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(14,165,233,0.05) 100%); border: 2px solid var(--accent-blue); padding: 1.5rem; border-radius: 16px;">
+                        <h4 style="color: var(--accent-blue); margin-bottom: 1rem; font-size: 1.2rem;">🏢 LAN - Local Area Network</h4>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                            A LAN covers a <strong>small geographical area</strong> such as a single building, school, office, or home. All the hardware (cables, switches, routers) is typically owned and maintained by the organisation that uses it.
+                        </p>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                            LANs typically use <strong>Ethernet cables</strong> or <strong>Wi-Fi</strong> to connect devices. Because the distances are short, LANs offer high speeds (often 1 Gbps or faster) and low latency.
+                        </p>
+                        <p style="color: var(--text-secondary); line-height: 1.7;"><strong>Examples:</strong> School computer network, office network, home network with multiple devices</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(99,102,241,0.05) 100%); border: 2px solid var(--accent-indigo); padding: 1.5rem; border-radius: 16px;">
+                        <h4 style="color: var(--accent-indigo); margin-bottom: 1rem; font-size: 1.2rem;">🌐 WAN - Wide Area Network</h4>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                            A WAN covers a <strong>large geographical area</strong>, potentially spanning cities, countries, or even the entire world. WANs connect multiple LANs together, allowing communication across vast distances.
+                        </p>
+                        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                            WANs often use infrastructure owned by <strong>third parties</strong> such as telecommunications companies. The connections might use fibre optic cables, telephone lines, or satellite links.
+                        </p>
+                        <p style="color: var(--text-secondary); line-height: 1.7;"><strong>The Internet is the largest WAN</strong> - it connects billions of devices across the entire planet.</p>
+                    </div>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                    <h5 style="color: var(--accent-amber); margin-bottom: 1rem;">💡 Key Differences to Remember:</h5>
+                    <ul style="color: var(--text-secondary); line-height: 2; padding-left: 1.5rem;">
+                        <li><strong>Size:</strong> LAN = small area (building), WAN = large area (cities/countries)</li>
+                        <li><strong>Ownership:</strong> LAN = usually owned by one organisation, WAN = often uses third-party infrastructure</li>
+                        <li><strong>Speed:</strong> LAN = typically faster, WAN = typically slower due to distance</li>
+                        <li><strong>Cost:</strong> LAN = cheaper to set up and maintain, WAN = more expensive</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 4.1.3 How the Internet is Structured -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🌐</div><div class="card-title">4.1.3 How the Internet is Structured</div></div>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    The Internet is a global network of interconnected networks. It's not controlled by any single organisation - instead, it's a collaborative system where thousands of different networks agree to connect and share data using common protocols.
+                </p>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--accent-blue); margin-bottom: 1rem;">🔢 IP Addressing</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        Every device connected to the Internet needs a unique identifier so that data can be sent to the correct destination. This identifier is called an <strong>IP (Internet Protocol) address</strong>.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        Think of an IP address like a postal address for your computer. Just as the postal service needs your address to deliver a letter, the Internet needs your IP address to deliver data to your device.
+                    </p>
+                    <div style="background: var(--bg-card); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <p style="color: var(--text-secondary); margin-bottom: 0.5rem;"><strong>IPv4 example:</strong> <span style="font-family: 'JetBrains Mono'; color: var(--accent-blue);">192.168.1.1</span> (four numbers 0-255, separated by dots)</p>
+                        <p style="color: var(--text-secondary);"><strong>IPv6 example:</strong> <span style="font-family: 'JetBrains Mono'; color: var(--accent-blue);">2001:0db8:85a3:0000:0000:8a2e:0370:7334</span> (longer format to allow more addresses)</p>
+                    </div>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                    <h5 style="color: var(--accent-blue); margin-bottom: 1rem;">🔀 Routers</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Routers</strong> are the traffic directors of the Internet. When you send data across the Internet, it doesn't travel in one piece - it's broken into small chunks called <strong>packets</strong>. Each packet contains the destination IP address.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        Routers examine each packet's destination IP address and decide the best path to forward it. They maintain <strong>routing tables</strong> that contain information about which networks can be reached through which connections.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        A single packet might pass through many routers on its journey across the Internet. If one route is congested or unavailable, routers can redirect packets along alternative paths - this makes the Internet resilient and reliable.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4.1.4 Wired vs Wireless -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📶</div><div class="card-title">4.1.4 Wired vs Wireless Connectivity</div></div>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    Devices can connect to networks either through physical cables (wired) or through radio signals (wireless). Each method has advantages and disadvantages that affect network performance.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">🔌 Wired (Ethernet)</h4>
+                        <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 12px;">
+                            <p style="color: var(--text-secondary); line-height: 1.7;">
+                                Wired connections use <strong>Ethernet cables</strong> (typically Cat5e or Cat6) to physically connect devices. The electrical signals travel through copper wires, or in high-performance networks, light pulses travel through fibre optic cables.
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-indigo); margin-bottom: 1rem;">📡 Wireless (Wi-Fi)</h4>
+                        <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 12px;">
+                            <p style="color: var(--text-secondary); line-height: 1.7;">
+                                Wireless connections use <strong>radio waves</strong> to transmit data through the air. Devices connect to a wireless access point (often built into a router) which then connects to the wired network.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 style="color: var(--accent-amber); margin-bottom: 1rem;">Performance Characteristics:</h4>
+                
+                <div style="overflow-x: auto;">
+                    <table class="protocol-table">
+                        <thead><tr><th>Characteristic</th><th>Wired (Ethernet)</th><th>Wireless (Wi-Fi)</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Speed</strong></td>
+                                <td>Generally faster and more consistent. Modern Ethernet supports 1 Gbps to 10 Gbps. The cable provides a dedicated connection.</td>
+                                <td>Generally slower. Wi-Fi 6 can reach around 1 Gbps in ideal conditions, but speeds vary based on signal strength and interference.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bandwidth</strong></td>
+                                <td>Full bandwidth available to each connected device through its dedicated cable.</td>
+                                <td>Bandwidth is shared among all devices connected to the same access point. More devices = less bandwidth each.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Latency</strong></td>
+                                <td>Very low latency (delay). Signals travel directly through the cable with minimal processing. Ideal for gaming and video calls.</td>
+                                <td>Higher latency due to radio transmission, signal processing, and potential interference. Can cause lag in real-time applications.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Range</strong></td>
+                                <td>Limited by cable length - typically up to 100 metres for Ethernet before signal degrades.</td>
+                                <td>Limited by signal strength - typically 30-50 metres indoors. Walls and obstacles reduce range significantly.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Security</strong></td>
+                                <td>More secure - an attacker would need physical access to the cable or network equipment to intercept data.</td>
+                                <td>Less secure - radio signals can be intercepted by anyone within range. Requires encryption (WPA2/WPA3) to protect data.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reliability</strong></td>
+                                <td>Very reliable. Not affected by interference from other devices or environmental factors.</td>
+                                <td>Can be affected by interference from other Wi-Fi networks, microwaves, Bluetooth devices, and physical obstacles.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mobility</strong></td>
+                                <td>No mobility - devices must stay connected to their cable.</td>
+                                <td>Full mobility - users can move freely within range while staying connected.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 4.1.5 Network Speeds -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">⚡</div><div class="card-title">4.1.5 Network Speeds and Transmission Calculations</div></div>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    Network speeds are measured in <strong>bits per second</strong> (not bytes). This is because data is transmitted as a stream of individual bits (0s and 1s) across the network. Understanding the units and being able to calculate transmission times is essential.
+                </p>
+                
+                <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">Speed Units:</h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--accent-blue);">1 bps</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">1 bit per second</div>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--accent-blue);">1 Kbps</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">1,000 bits per second</div>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--accent-blue);">1 Mbps</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">1,000,000 bits per second</div>
+                    </div>
+                    <div style="background: var(--bg-dark); padding: 1.25rem; border-radius: 12px; text-align: center;">
+                        <div style="font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--accent-blue);">1 Gbps</div>
+                        <div style="color: var(--text-secondary); font-size: 0.9rem;">1,000,000,000 bits per second</div>
+                    </div>
+                </div>
+                
+                <div class="result-box" style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.75rem;">📐 The Key Formula</h4>
+                    <div style="font-family: 'JetBrains Mono'; font-size: 1.3rem; margin-bottom: 0.5rem;">Time (seconds) = File Size (bits) ÷ Transfer Rate (bps)</div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">This can be rearranged to find file size or transfer rate if you know the other values.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--accent-amber); margin-bottom: 1rem;">⚠️ Critical: Converting Between Bits and Bytes</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        File sizes are usually given in <strong>bytes</strong> (KB, MB, GB), but network speeds are in <strong>bits</strong> per second. Since there are <strong>8 bits in 1 byte</strong>, you must convert:
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 2; padding-left: 1.5rem;">
+                        <li>To convert bytes to bits: <strong>multiply by 8</strong></li>
+                        <li>To convert bits to bytes: <strong>divide by 8</strong></li>
+                        <li>500 MB = 500 × 8 = 4,000 Mb (megabits)</li>
+                    </ul>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 1rem;">📝 Worked Example</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Question:</strong> How long does it take to download a 240 MB file with a 60 Mbps connection?
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        <strong>Step 1:</strong> Convert file size to megabits: 240 MB × 8 = 1,920 Mb<br>
+                        <strong>Step 2:</strong> Apply the formula: Time = 1,920 ÷ 60 = <strong style="color: var(--accent-blue);">32 seconds</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4.1.6 Network Protocols -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📋</div><div class="card-title">4.1.6 Network Protocols</div></div>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    A <strong style="color: var(--accent-blue);">protocol</strong> is a set of rules that govern how data is transmitted across a network. Without agreed protocols, devices from different manufacturers wouldn't be able to communicate - it would be like people trying to have a conversation when they speak different languages.
+                </p>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    Protocols define things like: how a connection is established, how data is formatted, how errors are detected and corrected, and how the connection is terminated. Different protocols handle different tasks.
+                </p>
+                
+                <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">Physical/Link Layer Protocols:</h4>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">Ethernet</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">The most common protocol for wired local area networks. It defines how data is formatted into frames, how devices are addressed using MAC addresses, and how devices share access to the network cable. When you plug an Ethernet cable into your computer, you're using this protocol.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">Wi-Fi (IEEE 802.11)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">A family of protocols for wireless networking. Wi-Fi defines how devices connect to wireless access points, how data is transmitted over radio waves, and how to handle interference and security. Different versions (Wi-Fi 4, 5, 6) offer increasing speeds and capabilities.</p>
+                </div>
+                
+                <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">Internet Protocols:</h4>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">TCP/IP (Transmission Control Protocol / Internet Protocol)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        The fundamental protocol suite of the Internet. <strong>IP</strong> handles addressing and routing - it ensures packets are sent to the correct destination using IP addresses. <strong>TCP</strong> handles reliable delivery - it breaks data into packets, numbers them, checks they all arrive, and reassembles them in the correct order.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        Together, TCP/IP ensures that when you request a web page, all the data arrives complete and in order, even though it may have taken different routes across the Internet.
+                    </p>
+                </div>
+                
+                <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">Application Layer Protocols:</h4>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">HTTP (HyperText Transfer Protocol)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Used to transfer web pages from web servers to browsers. When you type a URL into your browser, it sends an HTTP request to the server, which responds with the HTML, images, and other content that make up the page. HTTP is unencrypted - data is sent in plain text.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">HTTPS (HTTP Secure)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">The secure version of HTTP. All data is encrypted before transmission, so even if someone intercepts it, they cannot read it. Essential for banking, shopping, and any site handling sensitive information. Look for the padlock icon in your browser's address bar.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">FTP (File Transfer Protocol)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Designed specifically for transferring files between computers. It's commonly used by web developers to upload website files to a web server. FTP allows browsing directories, uploading, downloading, and managing files on a remote computer.</p>
+                </div>
+                
+                <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">Email Protocols:</h4>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">SMTP (Simple Mail Transfer Protocol)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Used for <strong>sending</strong> outgoing emails. When you click "Send" in your email client, SMTP handles delivering your message to the recipient's mail server. Think of it as the postal service that carries your letter away.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">POP3 (Post Office Protocol version 3)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">Used for <strong>receiving</strong> emails. POP3 downloads emails from the server to your device and typically <strong>deletes them from the server</strong>. This means your emails are only stored locally on one device - if that device fails, the emails are lost.</p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                    <h5 style="color: var(--accent-emerald); margin-bottom: 0.5rem;">IMAP (Internet Message Access Protocol)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">A more modern protocol for <strong>receiving</strong> emails. Unlike POP3, IMAP <strong>keeps emails on the server</strong> and synchronises them across all your devices. Read an email on your phone, and it's marked as read on your laptop too. This is how most modern email services work.</p>
+                </div>
+            </div>
+
+            <!-- 4.1.7 TCP/IP Model -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📚</div><div class="card-title">4.1.7 The TCP/IP 4-Layer Model</div></div>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    The TCP/IP model describes how data is transmitted across the Internet by dividing the process into four layers. Each layer has a specific job and passes data to the layer below it (when sending) or above it (when receiving). This layered approach means that changes to one layer don't affect the others.
+                </p>
+                
+                <div class="tcp-layers">
+                    <div class="tcp-layer application">
+                        <div class="tcp-layer-name">Layer 4: Application Layer</div>
+                        <div class="tcp-layer-desc">HTTP, HTTPS, FTP, SMTP, POP3, IMAP</div>
+                    </div>
+                    <div class="tcp-layer transport">
+                        <div class="tcp-layer-name">Layer 3: Transport Layer</div>
+                        <div class="tcp-layer-desc">TCP, UDP</div>
+                    </div>
+                    <div class="tcp-layer internet">
+                        <div class="tcp-layer-name">Layer 2: Internet Layer</div>
+                        <div class="tcp-layer-desc">IP (Internet Protocol)</div>
+                    </div>
+                    <div class="tcp-layer link">
+                        <div class="tcp-layer-name">Layer 1: Link Layer</div>
+                        <div class="tcp-layer-desc">Ethernet, Wi-Fi</div>
+                    </div>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: #818cf8; margin-bottom: 0.75rem;">Layer 4: Application Layer</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        This is where user applications operate. When you browse the web, your browser uses HTTP/HTTPS at this layer. When you send email, your mail client uses SMTP. The application layer formats the data appropriately for the service being used and passes it down to the transport layer.
+                    </p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: #34d399; margin-bottom: 0.75rem;">Layer 3: Transport Layer</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        The transport layer is responsible for <strong>end-to-end communication</strong>. TCP breaks data into smaller segments, adds sequence numbers so they can be reassembled in order, and ensures reliable delivery by requesting retransmission of any lost packets. It also uses port numbers to direct data to the correct application on the receiving device.
+                    </p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <h5 style="color: #fbbf24; margin-bottom: 0.75rem;">Layer 2: Internet Layer</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        The internet layer handles <strong>addressing and routing</strong>. It wraps each segment from the transport layer into a packet and adds source and destination IP addresses. Routers operate at this layer - they read the destination IP address and forward the packet towards its destination, potentially across many different networks.
+                    </p>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h5 style="color: #fb7185; margin-bottom: 0.75rem;">Layer 1: Link Layer (Network Access Layer)</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.7;">
+                        The link layer handles the <strong>physical transmission</strong> of data over the network hardware. It wraps packets into frames, adds MAC addresses for local delivery, and manages access to the physical network medium (whether that's an Ethernet cable or Wi-Fi). This layer deals with the actual electrical signals or radio waves that carry the data.
+                    </p>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, rgba(14,165,233,0.1) 0%, rgba(99,102,241,0.1) 100%); border: 2px solid var(--accent-blue); padding: 1.5rem; border-radius: 16px;">
+                    <h5 style="color: var(--accent-blue); margin-bottom: 1rem;">📧 Example: Sending an Email</h5>
+                    <p style="color: var(--text-secondary); line-height: 1.8;">
+                        <strong>Application:</strong> You compose an email and click send. Your email client uses SMTP to format the message.<br><br>
+                        <strong>Transport:</strong> TCP breaks your email into segments, adds sequence numbers and port 25 (SMTP's port).<br><br>
+                        <strong>Internet:</strong> IP adds your computer's IP address and the mail server's IP address to create packets.<br><br>
+                        <strong>Link:</strong> Ethernet/Wi-Fi adds MAC addresses and transmits the frames over the physical network.<br><br>
+                        At the receiving end, the process reverses - each layer strips off its header and passes the data up until the email appears in the recipient's inbox.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4.1.8 Network Topologies -->
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🔗</div><div class="card-title">4.1.8 Network Topologies</div></div>
+                
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                    A <strong style="color: var(--accent-blue);">network topology</strong> describes the arrangement of devices (nodes) and connections (links) in a network. The topology affects performance, reliability, cost, and ease of maintenance. The three main topologies you need to know are Star, Bus, and Mesh.
+                </p>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--accent-blue); margin-bottom: 1rem;">⭐ Star Topology</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        In a star topology, every device connects to a <strong>central hub or switch</strong>. All communication passes through this central device. If Computer A wants to send data to Computer B, the data goes from A to the hub, then from the hub to B.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong style="color: var(--success);">Advantages:</strong>
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>If one cable or device fails, only that device is affected - the rest of the network continues working</li>
+                        <li>Easy to add new devices - just connect them to the hub</li>
+                        <li>Easy to detect and fix faults - problems are isolated to individual connections</li>
+                        <li>Good performance - each device has its own dedicated connection to the hub</li>
+                    </ul>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong style="color: var(--error);">Disadvantages:</strong>
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem;">
+                        <li>The central hub is a <strong>single point of failure</strong> - if it fails, the entire network goes down</li>
+                        <li>Requires more cabling than bus topology (each device needs its own cable to the hub)</li>
+                        <li>The hub can be expensive, especially for large networks</li>
+                    </ul>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <h4 style="color: var(--accent-amber); margin-bottom: 1rem;">🚌 Bus Topology</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        In a bus topology, all devices connect to a single <strong>main cable (the "bus" or "backbone")</strong>. Data sent by any device travels along the entire cable, and all devices receive it, but only the intended recipient processes it. The cable has terminators at both ends to absorb signals and prevent them from bouncing back.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong style="color: var(--success);">Advantages:</strong>
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Cheap to install - uses less cable than star topology</li>
+                        <li>Simple to set up for small networks</li>
+                        <li>Easy to extend - new devices just tap into the cable</li>
+                    </ul>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong style="color: var(--error);">Disadvantages:</strong>
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem;">
+                        <li>If the main cable fails, the <strong>entire network fails</strong></li>
+                        <li>Difficult to identify faults - problems could be anywhere along the cable</li>
+                        <li>Performance decreases as more devices are added (more chance of collisions)</li>
+                        <li>Limited cable length restricts network size</li>
+                        <li>Security risk - all data passes all devices</li>
+                    </ul>
+                </div>
+                
+                <div style="background: var(--bg-dark); padding: 1.5rem; border-radius: 12px;">
+                    <h4 style="color: var(--accent-emerald); margin-bottom: 1rem;">🕸️ Mesh Topology</h4>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        In a mesh topology, every device is connected to <strong>every other device</strong> (full mesh) or to several other devices (partial mesh). This creates multiple paths for data to travel between any two points. If one connection fails, data can take an alternative route.
+                    </p>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong style="color: var(--success);">Advantages:</strong>
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li><strong>No single point of failure</strong> - the network is highly resilient</li>
+                        <li>Data can take the fastest available route</li>
+                        <li>Easy to identify faults</li>
+                        <li>Can handle high traffic volumes - multiple paths prevent congestion</li>
+                    </ul>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem;">
+                        <strong style="color: var(--error);">Disadvantages:</strong>
+                    </p>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; padding-left: 1.5rem;">
+                        <li><strong>Very expensive</strong> - requires large amounts of cabling</li>
+                        <li>Complex to set up and manage</li>
+                        <li>Each device needs multiple network ports</li>
+                        <li>Impractical for large networks (the number of connections grows exponentially)</li>
+                    </ul>
+                    <p style="color: var(--text-secondary); line-height: 1.7; margin-top: 1rem;">
+                        <strong>Use case:</strong> Mesh topology is commonly used in the <strong>backbone of the Internet</strong> and for critical systems where reliability is paramount.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOPOLOGIES SECTION -->
+        <section id="topologies" class="section">
+            <div class="section-header">
+                <h2>Network Topologies</h2>
+                <p>How devices are arranged in a network (Spec 4.1.8)</p>
+            </div>
+
+            <div class="topology-grid">
+                <div class="topology-card">
+                    <h4>⭐ Star Topology</h4>
+                    <div class="topology-diagram">
+                        <svg viewBox="0 0 200 150">
+                            <rect x="85" y="55" width="30" height="30" fill="#6366f1" rx="5"/>
+                            <text x="100" y="75" fill="white" font-size="10" text-anchor="middle">Hub</text>
+                            <circle cx="100" cy="20" r="12" fill="#0ea5e9"/>
+                            <circle cx="30" cy="70" r="12" fill="#0ea5e9"/>
+                            <circle cx="170" cy="70" r="12" fill="#0ea5e9"/>
+                            <circle cx="50" cy="130" r="12" fill="#0ea5e9"/>
+                            <circle cx="150" cy="130" r="12" fill="#0ea5e9"/>
+                            <line x1="100" y1="55" x2="100" y2="32" stroke="#0ea5e9" stroke-width="2"/>
+                            <line x1="85" y1="70" x2="42" y2="70" stroke="#0ea5e9" stroke-width="2"/>
+                            <line x1="115" y1="70" x2="158" y2="70" stroke="#0ea5e9" stroke-width="2"/>
+                            <line x1="88" y1="82" x2="58" y2="122" stroke="#0ea5e9" stroke-width="2"/>
+                            <line x1="112" y1="82" x2="142" y2="122" stroke="#0ea5e9" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <ul class="topology-pros">
+                        <li>✓ One failure doesn't affect others</li>
+                        <li>✓ Easy to add devices</li>
+                    </ul>
+                    <ul class="topology-cons">
+                        <li>✗ Hub is single point of failure</li>
+                        <li>✗ More cabling needed</li>
+                    </ul>
+                </div>
+
+                <div class="topology-card">
+                    <h4>🚌 Bus Topology</h4>
+                    <div class="topology-diagram">
+                        <svg viewBox="0 0 200 150">
+                            <line x1="20" y1="75" x2="180" y2="75" stroke="#f59e0b" stroke-width="4"/>
+                            <circle cx="50" cy="75" r="12" fill="#0ea5e9"/>
+                            <circle cx="100" cy="75" r="12" fill="#0ea5e9"/>
+                            <circle cx="150" cy="75" r="12" fill="#0ea5e9"/>
+                            <rect x="15" y="70" width="10" height="10" fill="#f59e0b"/>
+                            <rect x="175" y="70" width="10" height="10" fill="#f59e0b"/>
+                        </svg>
+                    </div>
+                    <ul class="topology-pros">
+                        <li>✓ Cheap - less cabling</li>
+                        <li>✓ Easy to set up</li>
+                    </ul>
+                    <ul class="topology-cons">
+                        <li>✗ Main cable failure = network down</li>
+                        <li>✗ Data collisions</li>
+                    </ul>
+                </div>
+
+                <div class="topology-card">
+                    <h4>🕸️ Mesh Topology</h4>
+                    <div class="topology-diagram">
+                        <svg viewBox="0 0 200 150">
+                            <circle cx="100" cy="25" r="12" fill="#0ea5e9"/>
+                            <circle cx="40" cy="75" r="12" fill="#0ea5e9"/>
+                            <circle cx="160" cy="75" r="12" fill="#0ea5e9"/>
+                            <circle cx="70" cy="125" r="12" fill="#0ea5e9"/>
+                            <circle cx="130" cy="125" r="12" fill="#0ea5e9"/>
+                            <line x1="100" y1="37" x2="40" y2="63" stroke="#10b981" stroke-width="2"/>
+                            <line x1="100" y1="37" x2="160" y2="63" stroke="#10b981" stroke-width="2"/>
+                            <line x1="40" y1="87" x2="70" y2="113" stroke="#10b981" stroke-width="2"/>
+                            <line x1="160" y1="87" x2="130" y2="113" stroke="#10b981" stroke-width="2"/>
+                            <line x1="52" y1="75" x2="148" y2="75" stroke="#10b981" stroke-width="2"/>
+                            <line x1="82" y1="125" x2="118" y2="125" stroke="#10b981" stroke-width="2"/>
+                            <line x1="100" y1="37" x2="70" y2="113" stroke="#10b981" stroke-width="1" stroke-dasharray="4"/>
+                            <line x1="100" y1="37" x2="130" y2="113" stroke="#10b981" stroke-width="1" stroke-dasharray="4"/>
+                        </svg>
+                    </div>
+                    <ul class="topology-pros">
+                        <li>✓ Very reliable - multiple paths</li>
+                        <li>✓ No single point of failure</li>
+                    </ul>
+                    <ul class="topology-cons">
+                        <li>✗ Very expensive</li>
+                        <li>✗ Complex to manage</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROTOCOLS SECTION -->
+        <section id="protocols" class="section">
+            <div class="section-header">
+                <h2>Network Protocols & TCP/IP</h2>
+                <p>How data is transmitted (Spec 4.1.6 - 4.1.7)</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📋</div><div class="card-title">What is a Protocol?</div></div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">A <strong style="color: var(--accent-blue);">protocol</strong> is a set of rules governing data transmission. Protocols ensure devices can communicate even if made by different manufacturers.</p>
+
+                <div style="overflow-x: auto;">
+                    <table class="protocol-table">
+                        <thead><tr><th>Protocol</th><th>Layer</th><th>Purpose</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>HTTP</strong></td><td><span class="protocol-badge app">Application</span></td><td>Transfer web pages (unencrypted)</td></tr>
+                            <tr><td><strong>HTTPS</strong></td><td><span class="protocol-badge app">Application</span></td><td>Transfer web pages (encrypted)</td></tr>
+                            <tr><td><strong>FTP</strong></td><td><span class="protocol-badge app">Application</span></td><td>Transfer files between computers</td></tr>
+                            <tr><td><strong>SMTP</strong></td><td><span class="protocol-badge app">Application</span></td><td>Send outgoing emails</td></tr>
+                            <tr><td><strong>POP3</strong></td><td><span class="protocol-badge app">Application</span></td><td>Receive emails (downloads from server)</td></tr>
+                            <tr><td><strong>IMAP</strong></td><td><span class="protocol-badge app">Application</span></td><td>Receive emails (stays on server)</td></tr>
+                            <tr><td><strong>TCP/IP</strong></td><td><span class="protocol-badge transport">Transport</span>/<span class="protocol-badge internet">Internet</span></td><td>Core internet protocols</td></tr>
+                            <tr><td><strong>Ethernet</strong></td><td><span class="protocol-badge link">Link</span></td><td>Wired LAN communication</td></tr>
+                            <tr><td><strong>Wi-Fi</strong></td><td><span class="protocol-badge link">Link</span></td><td>Wireless LAN communication</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📚</div><div class="card-title">TCP/IP 4-Layer Model</div></div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Data moves DOWN through layers when sending, UP when receiving.</p>
+
+                <div class="tcp-layers">
+                    <div class="tcp-layer application">
+                        <div class="tcp-layer-name">4. Application Layer</div>
+                        <div class="tcp-layer-desc">HTTP, FTP, SMTP, POP3, IMAP</div>
+                    </div>
+                    <div class="tcp-layer transport">
+                        <div class="tcp-layer-name">3. Transport Layer</div>
+                        <div class="tcp-layer-desc">Splits data into packets (TCP)</div>
+                    </div>
+                    <div class="tcp-layer internet">
+                        <div class="tcp-layer-name">2. Internet Layer</div>
+                        <div class="tcp-layer-desc">Adds IP addresses, routes packets (IP)</div>
+                    </div>
+                    <div class="tcp-layer link">
+                        <div class="tcp-layer-name">1. Link Layer</div>
+                        <div class="tcp-layer-desc">Physical transmission (Ethernet, Wi-Fi)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🧩</div><div class="card-title">Order the TCP/IP Layers</div></div>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Arrange layers from TOP (4) to BOTTOM (1):</p>
+                
+                <div class="parsons-container">
+                    <div class="parsons-bank" id="tcpParsonsBank"><h4>📦 Layers</h4></div>
+                    <div class="parsons-solution" id="tcpParsonsSolution"><h4>📝 Your Order</h4></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkTCPParsons()">✓ Check</button>
+                    <button class="btn btn-secondary" onclick="initTCPParsons()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CALCULATOR SECTION -->
+        <section id="calculator" class="section">
+            <div class="section-header">
+                <h2>Network Speed Calculator</h2>
+                <p>Calculate transmission times (Spec 4.1.5)</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🧮</div><div class="card-title">Calculate Transmission Time</div></div>
+
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label>File Size</label>
+                        <input type="number" id="calcFileSize" value="500">
+                    </div>
+                    <div class="form-group">
+                        <label>File Size Unit</label>
+                        <select id="calcFileSizeUnit">
+                            <option value="bits">Bits</option>
+                            <option value="bytes">Bytes</option>
+                            <option value="kb">KB</option>
+                            <option value="mb" selected>MB</option>
+                            <option value="gb">GB</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Speed</label>
+                        <input type="number" id="calcSpeed" value="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Speed Unit</label>
+                        <select id="calcSpeedUnit">
+                            <option value="bps">bps</option>
+                            <option value="kbps">Kbps</option>
+                            <option value="mbps" selected>Mbps</option>
+                            <option value="gbps">Gbps</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateTime()">Calculate</button>
+                </div>
+
+                <div class="result-box" id="calcResult" style="margin-top: 2rem; display: none;">
+                    <div class="result-value" id="calcResultValue"></div>
+                    <div class="result-expression" id="calcResultExpression"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📝</div><div class="card-title">Practice Problems</div></div>
+                <div id="speedProblems"></div>
+            </div>
+        </section>
+
+        <!-- SECURITY SECTION -->
+        <section id="security" class="section">
+            <div class="section-header">
+                <h2>Network Security</h2>
+                <p>Threats and protection methods (Spec 4.2.1)</p>
+            </div>
+
+            <div class="security-grid">
+                <div class="security-card threat">
+                    <h4>🔍 Penetration Testing</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Authorised simulated attacks to find security vulnerabilities before real hackers do.</p>
+                </div>
+                <div class="security-card threat">
+                    <h4>🎭 Ethical Hacking</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Hiring professional hackers to test system security legally and report weaknesses.</p>
+                </div>
+                <div class="security-card protection">
+                    <h4>🚪 Access Control</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Usernames, passwords, permissions limiting who can access the network.</p>
+                </div>
+                <div class="security-card protection">
+                    <h4>🏢 Physical Security</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Locks, CCTV, biometrics preventing unauthorised physical access.</p>
+                </div>
+                <div class="security-card protection">
+                    <h4>🧱 Firewalls</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Monitor and block suspicious network traffic based on security rules.</p>
+                </div>
+                <div class="security-card protection">
+                    <h4>🔐 Encryption</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Converting data to coded format readable only with correct key (HTTPS).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEMORY SECTION -->
+        <section id="memory" class="section">
+            <div class="section-header">
+                <h2>Memory Match</h2>
+                <p>Match terms with definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🧠</div><div class="card-title">Find the Pairs</div></div>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="btn-group"><button class="btn btn-secondary" onclick="initMemoryGame()">🔄 Reset</button></div>
+            </div>
+        </section>
+
+        <!-- CATEGORIZE SECTION -->
+        <section id="categorize" class="section">
+            <div class="section-header">
+                <h2>Categorize Protocols</h2>
+                <p>Sort protocols by TCP/IP layer</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📂</div><div class="card-title">Sort by Layer</div></div>
+
+                <div class="items-bank" id="protocolItemsBank">
+                    <h4>📦 Protocols:</h4>
+                    <div class="items-bank-grid" id="protocolItemsBankGrid"></div>
+                </div>
+
+                <div class="category-container" id="protocolCategoryContainer"></div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkProtocolCategories()">✓ Check</button>
+                    <button class="btn btn-secondary" onclick="initProtocolCategories()">🔄 Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ SECTION -->
+        <section id="quiz" class="section">
+            <div class="section-header">
+                <h2>Knowledge Check</h2>
+                <p>Exam-style questions</p>
+            </div>
+
+            <div id="quizContainer"></div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkAllQuizzes()">✓ Check All</button>
+                <button class="btn btn-secondary" onclick="initQuiz()">🔄 Reset</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // STATE
+        let state = { activitiesCompleted: 0, correctAnswers: 0, streak: 0, totalActivities: 5 };
+
+        function updateProgress() {
+            document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+            document.getElementById('correctAnswers').textContent = state.correctAnswers;
+            document.getElementById('streakCount').textContent = state.streak;
+            document.getElementById('progressFill').style.width = (state.activitiesCompleted / state.totalActivities * 100) + '%';
+        }
+
+        function showNotification(msg, type = 'success') {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.className = 'notification ' + type + ' show';
+            setTimeout(() => n.classList.remove('show'), 3000);
+        }
+
+        // NAV
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.section).classList.add('active');
+            });
+        });
+
+        // CALCULATOR
+        let calcDone = false;
+        function calculateTime() {
+            const size = parseFloat(document.getElementById('calcFileSize').value) || 0;
+            const sizeUnit = document.getElementById('calcFileSizeUnit').value;
+            const speed = parseFloat(document.getElementById('calcSpeed').value) || 0;
+            const speedUnit = document.getElementById('calcSpeedUnit').value;
+
+            let bits = size;
+            if (sizeUnit === 'bytes') bits = size * 8;
+            else if (sizeUnit === 'kb') bits = size * 8000;
+            else if (sizeUnit === 'mb') bits = size * 8000000;
+            else if (sizeUnit === 'gb') bits = size * 8000000000;
+
+            let bps = speed;
+            if (speedUnit === 'kbps') bps = speed * 1000;
+            else if (speedUnit === 'mbps') bps = speed * 1000000;
+            else if (speedUnit === 'gbps') bps = speed * 1000000000;
+
+            const secs = bits / bps;
+            let display, unit;
+            if (secs < 1) { display = (secs * 1000).toFixed(2); unit = 'ms'; }
+            else if (secs < 60) { display = secs.toFixed(2); unit = 'seconds'; }
+            else if (secs < 3600) { display = (secs / 60).toFixed(2); unit = 'minutes'; }
+            else { display = (secs / 3600).toFixed(2); unit = 'hours'; }
+
+            document.getElementById('calcResult').style.display = 'block';
+            document.getElementById('calcResultValue').textContent = display + ' ' + unit;
+            document.getElementById('calcResultExpression').textContent = bits.toLocaleString() + ' bits ÷ ' + bps.toLocaleString() + ' bps';
+
+            if (!calcDone) { calcDone = true; state.activitiesCompleted++; updateProgress(); }
+        }
+
+        function initSpeedProblems() {
+            const problems = [
+                { q: 'A 250 MB file at 50 Mbps?', a: '(250 × 8) ÷ 50 = 40 seconds' },
+                { q: 'A 2 GB file at 100 Mbps?', a: '(2000 × 8) ÷ 100 = 160 seconds' },
+                { q: '25 secs at 20 Mbps = ? MB', a: '(25 × 20) ÷ 8 = 62.5 MB' }
+            ];
+            document.getElementById('speedProblems').innerHTML = problems.map((p, i) => `
+                <div class="quiz-question">
+                    <h4>Problem ${i + 1}: ${p.q}</h4>
+                    <div style="background: var(--bg-dark); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                        <strong style="color: var(--accent-blue);">Answer:</strong>
+                        <span style="font-family: 'JetBrains Mono', monospace;">${p.a}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // TCP PARSONS
+        const tcpLayers = [
+            { id: 1, text: 'Application (HTTP, FTP, SMTP)', order: 1 },
+            { id: 2, text: 'Transport (TCP)', order: 2 },
+            { id: 3, text: 'Internet (IP)', order: 3 },
+            { id: 4, text: 'Link (Ethernet, Wi-Fi)', order: 4 }
+        ];
+        let tcpDone = false;
+
+        function initTCPParsons() {
+            const bank = document.getElementById('tcpParsonsBank');
+            const sol = document.getElementById('tcpParsonsSolution');
+            bank.innerHTML = '<h4>📦 Layers</h4>';
+            sol.innerHTML = '<h4>📝 Your Order</h4>';
+            tcpDone = false;
+
+            [...tcpLayers].sort(() => Math.random() - 0.5).forEach(l => {
+                const b = document.createElement('div');
+                b.className = 'parsons-block';
+                b.draggable = true;
+                b.textContent = l.text;
+                b.dataset.order = l.order;
+                b.addEventListener('dragstart', e => e.dataTransfer.setData('text', l.order));
+                bank.appendChild(b);
+            });
+
+            [bank, sol].forEach(c => {
+                c.addEventListener('dragover', e => e.preventDefault());
+                c.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const order = e.dataTransfer.getData('text');
+                    const block = document.querySelector(`.parsons-block[data-order="${order}"]`);
+                    if (block) c.appendChild(block);
+                });
+            });
+        }
+
+        function checkTCPParsons() {
+            const sol = document.getElementById('tcpParsonsSolution');
+            const blocks = sol.querySelectorAll('.parsons-block');
+            let correct = blocks.length === 4;
+
+            blocks.forEach((b, i) => {
+                b.classList.remove('correct', 'incorrect');
+                if (parseInt(b.dataset.order) === i + 1) b.classList.add('correct');
+                else { b.classList.add('incorrect'); correct = false; }
+            });
+
+            if (correct && !tcpDone) {
+                tcpDone = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 Correct order!');
+            } else if (!correct) {
+                state.streak = 0;
+                showNotification('Application at top, Link at bottom', 'error');
+            }
+            updateProgress();
+        }
+
+        // PROTOCOL CATEGORIES
+        const protocolCats = {
+            'Application': ['HTTP', 'HTTPS', 'FTP', 'SMTP', 'POP3', 'IMAP'],
+            'Transport': ['TCP'],
+            'Internet': ['IP'],
+            'Link': ['Ethernet', 'Wi-Fi']
+        };
+        const allProtos = ['HTTP', 'HTTPS', 'FTP', 'SMTP', 'POP3', 'IMAP', 'TCP', 'IP', 'Ethernet', 'Wi-Fi'];
+        let protoDone = false;
+
+        function initProtocolCategories() {
+            const bank = document.getElementById('protocolItemsBankGrid');
+            const cont = document.getElementById('protocolCategoryContainer');
+            bank.innerHTML = '';
+            cont.innerHTML = '';
+            protoDone = false;
+
+            [...allProtos].sort(() => Math.random() - 0.5).forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.draggable = true;
+                item.textContent = p;
+                item.dataset.item = p;
+                item.addEventListener('dragstart', e => e.dataTransfer.setData('text', p));
+                bank.appendChild(item);
+            });
+
+            Object.keys(protocolCats).forEach(cat => {
+                const box = document.createElement('div');
+                box.className = 'category-box';
+                box.innerHTML = `<h4>${cat}</h4><div class="category-items" data-cat="${cat}"></div>`;
+                const zone = box.querySelector('.category-items');
+                zone.addEventListener('dragover', e => e.preventDefault());
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const p = e.dataTransfer.getData('text');
+                    const item = document.querySelector(`.category-item[data-item="${p}"]`);
+                    if (item) zone.appendChild(item);
+                });
+                cont.appendChild(box);
+            });
+
+            bank.addEventListener('dragover', e => e.preventDefault());
+            bank.addEventListener('drop', e => {
+                e.preventDefault();
+                const p = e.dataTransfer.getData('text');
+                const item = document.querySelector(`.category-item[data-item="${p}"]`);
+                if (item) bank.appendChild(item);
+            });
+        }
+
+        function checkProtocolCategories() {
+            let correct = true;
+            document.querySelectorAll('.category-items[data-cat]').forEach(zone => {
+                const cat = zone.dataset.cat;
+                zone.querySelectorAll('.category-item').forEach(item => {
+                    item.classList.remove('correct', 'incorrect');
+                    if (protocolCats[cat].includes(item.dataset.item)) item.classList.add('correct');
+                    else { item.classList.add('incorrect'); correct = false; }
+                });
+            });
+
+            if (correct && !protoDone) {
+                protoDone = true;
+                state.activitiesCompleted++;
+                state.correctAnswers++;
+                state.streak++;
+                showNotification('🎉 All correct!');
+            } else if (!correct) {
+                state.streak = 0;
+                showNotification('Some incorrect', 'error');
+            }
+            updateProgress();
+        }
+
+        // MEMORY GAME
+        const memPairs = [
+            { term: 'LAN', def: 'Local network' },
+            { term: 'WAN', def: 'Wide network' },
+            { term: 'Router', def: 'Forwards packets' },
+            { term: 'IP Address', def: 'Device ID' },
+            { term: 'Bandwidth', def: 'Max data rate' },
+            { term: 'Latency', def: 'Delay time' },
+            { term: 'Firewall', def: 'Blocks threats' },
+            { term: 'Protocol', def: 'Communication rules' }
+        ];
+        let flipped = [], matched = 0, memDone = false;
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            flipped = [];
+            matched = 0;
+            memDone = false;
+
+            const cards = [];
+            memPairs.forEach((p, i) => {
+                cards.push({ text: p.term, pair: i });
+                cards.push({ text: p.def, pair: i });
+            });
+            cards.sort(() => Math.random() - 0.5);
+
+            cards.forEach(c => {
+                const el = document.createElement('div');
+                el.className = 'memory-card';
+                el.dataset.pair = c.pair;
+                el.innerHTML = `<span class="card-back">🌐</span><span class="card-front">${c.text}</span>`;
+                el.addEventListener('click', () => flipCard(el));
+                grid.appendChild(el);
+            });
+        }
+
+        function flipCard(el) {
+            if (flipped.length >= 2 || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+            el.classList.add('flipped');
+            flipped.push(el);
+            if (flipped.length === 2) setTimeout(checkMatch, 800);
+        }
+
+        function checkMatch() {
+            if (flipped[0].dataset.pair === flipped[1].dataset.pair) {
+                flipped.forEach(c => c.classList.add('matched'));
+                matched++;
+                state.correctAnswers++;
+                state.streak++;
+                if (matched === memPairs.length && !memDone) {
+                    memDone = true;
+                    state.activitiesCompleted++;
+                    showNotification('🎉 Memory complete!');
+                }
+            } else {
+                flipped.forEach(c => c.classList.remove('flipped'));
+                state.streak = 0;
+            }
+            flipped = [];
+            updateProgress();
+        }
+
+        // QUIZ
+        const quizQs = [
+            { q: 'Which network covers a small area like a school?', o: ['WAN', 'LAN', 'MAN', 'PAN'], c: 1, e: 'LAN = Local Area Network' },
+            { q: 'What forwards packets between networks?', o: ['Switch', 'Hub', 'Router', 'Modem'], c: 2, e: 'Routers use IP addresses to route packets' },
+            { q: 'Which protocol sends emails?', o: ['POP3', 'IMAP', 'SMTP', 'FTP'], c: 2, e: 'SMTP = Simple Mail Transfer Protocol' },
+            { q: 'Star topology advantage?', o: ['Cheapest', 'One failure doesn\'t affect others', 'Least cabling', 'Fastest'], c: 1, e: 'Each device connects to central hub independently' },
+            { q: 'TCP/IP layer for web browsers?', o: ['Link', 'Internet', 'Transport', 'Application'], c: 3, e: 'Application layer runs user applications' },
+            { q: '400 MB at 80 Mbps?', o: ['5 secs', '40 secs', '50 secs', '320 secs'], c: 1, e: '400×8÷80 = 40 seconds' },
+            { q: 'What does a firewall do?', o: ['Speed up network', 'Block suspicious traffic', 'Connect Wi-Fi', 'Store backups'], c: 1, e: 'Firewalls filter network traffic' },
+            { q: 'Which email protocol syncs across devices?', o: ['SMTP', 'POP3', 'IMAP', 'HTTP'], c: 2, e: 'IMAP keeps emails on server for sync' },
+            { q: 'What is latency?', o: ['Max speed', 'Delay in data transfer', 'Number of devices', 'Cable length'], c: 1, e: 'Latency = time delay' },
+            { q: 'No single point of failure topology?', o: ['Star', 'Bus', 'Mesh', 'Ring'], c: 2, e: 'Mesh has multiple paths between devices' }
+        ];
+        let quizDone = false;
+
+        function initQuiz() {
+            document.getElementById('quizContainer').innerHTML = quizQs.map((q, qi) => `
+                <div class="quiz-question">
+                    <h4>Q${qi + 1}. ${q.q}</h4>
+                    <div class="quiz-options">
+                        ${q.o.map((opt, oi) => `
+                            <div class="quiz-option" data-q="${qi}" data-o="${oi}">
+                                <span class="option-letter">${String.fromCharCode(65 + oi)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback" id="fb-${qi}"></div>
+                </div>
+            `).join('');
+            quizDone = false;
+
+            document.querySelectorAll('.quiz-option').forEach(o => {
+                o.addEventListener('click', () => {
+                    if (o.classList.contains('disabled')) return;
+                    document.querySelectorAll(`[data-q="${o.dataset.q}"]`).forEach(x => x.classList.remove('selected'));
+                    o.classList.add('selected');
+                });
+            });
+        }
+
+        function checkAllQuizzes() {
+            let score = 0;
+            quizQs.forEach((q, qi) => {
+                const sel = document.querySelector(`[data-q="${qi}"].selected`);
+                const fb = document.getElementById(`fb-${qi}`);
+                document.querySelectorAll(`[data-q="${qi}"]`).forEach(o => o.classList.add('disabled'));
+
+                if (sel && parseInt(sel.dataset.o) === q.c) {
+                    sel.classList.add('correct');
+                    fb.className = 'quiz-feedback correct show';
+                    fb.textContent = '✓ ' + q.e;
+                    score++;
+                    state.correctAnswers++;
+                } else {
+                    if (sel) sel.classList.add('incorrect');
+                    document.querySelector(`[data-q="${qi}"][data-o="${q.c}"]`).classList.add('correct');
+                    fb.className = 'quiz-feedback incorrect show';
+                    fb.textContent = '✗ ' + q.e;
+                }
+            });
+
+            if (!quizDone) {
+                quizDone = true;
+                state.activitiesCompleted++;
+                state.streak = score === quizQs.length ? state.streak + score : 0;
+                showNotification(`Score: ${score}/${quizQs.length}`, score >= 5 ? 'success' : 'error');
+            }
+            updateProgress();
+        }
+
+        // INIT
+        document.addEventListener('DOMContentLoaded', () => {
+            initTCPParsons();
+            initProtocolCategories();
+            initMemoryGame();
+            initSpeedProblems();
+            initQuiz();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
