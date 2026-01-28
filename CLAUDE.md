@@ -4,54 +4,58 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-CS Hub - A collection of educational web resources for GCSE Computer Science (Edexcel 1CP2 specification). The site provides interactive learning tools for students and teachers.
-
-## Architecture
-
-This is a static HTML website with no build system or package manager. All files are standalone HTML pages that use:
-
-- **Tailwind CSS** via CDN (`cdn.tailwindcss.com`)
-- **Google Fonts** (Poppins, Plus Jakarta Sans, JetBrains Mono)
-- **CodeMirror** for code editors (via cdnjs)
-- **Skulpt** for in-browser Python execution (via jsDelivr)
-
-### File Structure
-
-- `index.html` - Main landing page/hub linking to external CS Hub resources
-- `paper2.html` - Interactive Paper 2 practice environment with 10 Python coding questions
-- `subroutines.html` - Topic 6.6 practice focused on procedures, functions, and parameters
-
-### Interactive Practice Pages Pattern
-
-Both `paper2.html` and `subroutines.html` follow the same structure:
-- Questions stored in a JavaScript `questions` object with properties: `file`, `time`, `marks`, `context`, `instruction`, `tasks`, `starterCode`, `markScheme`, `modelAnswer`
-- CodeMirror editor with Dracula theme for code input
-- Skulpt interpreter for running Python code in-browser
-- Modal dialogs for mark schemes and user input
-- Navigation bar with question buttons showing completion status
+CS Hub - Educational web resources for GCSE Computer Science (Edexcel 1CP2). Static HTML site with interactive learning tools.
 
 ## Development
 
-No build commands required. Open HTML files directly in a browser or serve with any static file server.
+No build system. Open HTML files directly or serve locally:
 
-To test changes:
 ```bash
-open index.html
-# or use a local server
 python -m http.server 8000
 ```
 
-## External Resources
+## Architecture
 
-The hub links to external sites on the `cshub.org.je` domain:
-- `hvgcsecs.cshub.org.je` - Main GCSE CS revision site
-- `hvgcseactivities.cshub.org.je` - Revision games
-- `hvinclusion.cshub.org.je` - Paper 2 Quest (gamified learning)
-- `lrsinclusion.cshub.org.je` - Worksheet generator for teachers
+Static HTML pages with no framework. All pages are self-contained single files.
+
+**Entry point**: `index.html` - Landing page using Tailwind CSS (CDN)
+
+### Page Types
+
+**1. Python Practice Pages** (`paper2.html`, `subroutines.html`, `turtle.html`)
+- Questions in JavaScript `questions` object: `file`, `time`, `marks`, `context`, `instruction`, `tasks`, `starterCode`, `markScheme`, `modelAnswer`
+- CodeMirror editor (Dracula theme) + Skulpt interpreter for in-browser Python
+- Turtle pages configure `Sk.TurtleGraphics = { target: 'turtle-canvas' }` for canvas rendering
+
+**2. Revision Pages** (`bitmap.html`, `sound.html`, `compression.html`, `networks.html`)
+- Interactive activities: memory games, Parsons puzzles, categorization, calculators, quizzes
+- Tab-based navigation, drag-and-drop exercises
+- Progress tracking via state management
+- Each page has unique color theme via CSS variables in `:root`
+
+**3. Forecast Exam Pages** (`Paper2_Forecast01.html`, `Paper2_Forecast02.html`)
+- Three modes: Practice (with hints), Exam (timed, no help), Marking (shows mark schemes)
+- Line-numbered code editor with Skulpt execution
+- Mark schemes, model answers, and examiner comments per question
+
+**4. Mindmap Page** (`ProgrammingMindmap.html`)
+- Uses Markmap library for interactive mindmap visualization
+
+### Scheme of Work (`/scheme-of-work/`)
+
+Markdown documents for 3-year course delivery (Craig'n'Dave resources):
+- `year-9-sow.md`, `year-10-sow.md`, `year-11-sow.md` - Week-by-week plans
+- `assessment-calendar.md`, `programming-skills-progression.md`, `homework-schedule.md`, `resource-links.md`
+
+## External Dependencies (CDN)
+
+- **CodeMirror 5.65.16**: Code editor with Python syntax highlighting (Dracula theme)
+- **Skulpt 1.2.0**: In-browser Python interpreter
+- **Tailwind CSS**: Styling for `index.html` only
+- **Markmap**: Mindmap visualization for `ProgrammingMindmap.html`
 
 ## Code Style
 
-- CSS uses custom properties (CSS variables) defined in `:root`
-- Tailwind config extended inline via `<script>` tag
-- JavaScript is vanilla ES6+ with no framework
-- Python code examples follow Edexcel GCSE conventions (e.g., `pPrefix` for parameters)
+- CSS custom properties in `:root` for theming
+- Vanilla ES6+ JavaScript
+- Python examples use Edexcel GCSE conventions (e.g., `pPrefix` for parameters)
