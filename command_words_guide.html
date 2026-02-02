@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edexcel GCSE Computer Science - Command Words Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#0a0a0f;--bg2:#12121a;--card:#1a1a25;--el:#22222f;--t1:#f0f0f5;--t2:#a0a0b0;--t3:#707080;--blue:#4a9eff;--purple:#a855f7;--green:#22c55e;--orange:#f97316;--cyan:#06b6d4;--yellow:#eab308}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);line-height:1.6}
+        .container{max-width:1200px;margin:0 auto;padding:2rem}
+        header{text-align:center;padding:3rem 0;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:2rem}
+        header h1{font-family:'Playfair Display',serif;font-size:2.8rem;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+        .subtitle{color:var(--t2);font-size:1.1rem;margin-bottom:1rem}
+        .badge{display:inline-block;background:var(--el);border:1px solid var(--purple);padding:.5rem 1.5rem;border-radius:50px;font-family:'Space Mono',monospace;font-size:.85rem;color:var(--purple)}
+        .year{font-size:.7rem;background:var(--purple);color:#fff;padding:.15rem .5rem;border-radius:4px;margin-left:.5rem}
+        .stats{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem;flex-wrap:wrap}
+        .stat{text-align:center;padding:1rem 1.5rem;background:var(--card);border-radius:12px}
+        .stat-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--blue)}
+        .stat-label{font-size:.8rem;color:var(--t3)}
+        .tab-nav{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:2rem;padding:1rem;background:var(--bg2);border-radius:16px}
+        .tab-btn{background:0;border:1px solid rgba(255,255,255,.1);color:var(--t2);padding:.6rem 1rem;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;transition:.3s;display:flex;align-items:center;gap:.5rem}
+        .tab-btn:hover{background:var(--el);border-color:var(--blue);color:var(--t1)}
+        .tab-btn.active{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;color:#fff}
+        .mark-badge{font-family:'Space Mono',monospace;font-size:.7rem;background:rgba(0,0,0,.3);padding:.15rem .4rem;border-radius:4px}
+        .tab-content{display:none;animation:fadeIn .4s}
+        .tab-content.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .cmd-header{background:var(--card);border-radius:16px;padding:2rem;margin-bottom:2rem;box-shadow:0 0 40px rgba(74,158,255,.15)}
+        .cmd-header h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+        .mark-ind{font-family:'Space Mono',monospace;font-size:.9rem;background:linear-gradient(135deg,var(--green),var(--cyan));padding:.4rem 1rem;border-radius:50px;color:#fff}
+        .def{color:var(--t2);font-size:1.1rem;padding-left:1rem;border-left:3px solid var(--purple)}
+        .strat{background:var(--bg2);border-radius:12px;padding:1.5rem;margin-bottom:2rem}
+        .strat h3{color:var(--cyan);font-size:1.1rem;margin-bottom:1rem}
+        .strat h3::before{content:"⚡ "}
+        .tips{display:grid;gap:.75rem}
+        .tip{display:flex;gap:.75rem;color:var(--t2)}
+        .tip .n{font-family:'Space Mono',monospace;font-size:.8rem;background:var(--el);color:var(--cyan);width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;flex-shrink:0}
+        .ex{background:var(--card);border-radius:16px;padding:2rem;margin-bottom:2rem}
+        .ex-h{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.1)}
+        .ctx{background:var(--el);border-radius:8px;padding:1rem;margin-bottom:1.5rem;border-left:3px solid var(--purple)}
+        .ctx .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:.5rem}
+        .ctx p{color:var(--t2);font-style:italic}
+        .q{background:linear-gradient(135deg,rgba(74,158,255,.1),rgba(168,85,247,.1));border:1px solid var(--blue);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+        .q .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);margin-bottom:.75rem;display:flex;justify-content:space-between}
+        .q .m{font-family:'Space Mono',monospace;background:var(--blue);color:#fff;padding:.2rem .6rem;border-radius:4px;font-size:.7rem}
+        .q p{color:var(--t1);font-weight:500}
+        .brk{background:var(--bg2);border-radius:8px;padding:1rem;margin-bottom:1.5rem}
+        .brk .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);margin-bottom:.5rem}
+        .brk p{color:var(--t2)}
+        .ms{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(6,182,212,.1));border:1px solid var(--green);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+        .ms .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:.75rem}
+        .ms p,.ms ul{color:var(--t2)}
+        .ms ul{margin-left:1.5rem;margin-top:.5rem}
+        .ans{background:linear-gradient(135deg,rgba(249,115,22,.1),rgba(236,72,153,.1));border:1px solid var(--orange);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+        .ans .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:.75rem}
+        .ans p{color:var(--t1);font-weight:500}
+        .ans pre{font-family:'Space Mono',monospace;font-size:.9rem;color:var(--t1);white-space:pre-wrap;margin-top:.5rem}
+        .tt{background:var(--el);border-radius:8px;padding:1rem;border-left:3px solid var(--yellow)}
+        .tt .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--yellow);margin-bottom:.5rem}
+        .tt .l::before{content:"💡 "}
+        .tt p{color:var(--t2)}
+        code{font-family:'Space Mono',monospace;background:var(--el);padding:.15rem .4rem;border-radius:4px;font-size:.9em;color:var(--cyan)}
+        pre code{display:block;padding:1rem;background:var(--bg);border-radius:8px;border:1px solid rgba(255,255,255,.1)}
+        footer{text-align:center;padding:2rem;margin-top:2rem;border-top:1px solid rgba(255,255,255,.1);color:var(--t3)}
+        @media(max-width:768px){.container{padding:1rem}header h1{font-size:2rem}.tab-btn{font-size:.75rem;padding:.5rem .75rem}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Command Words Guide</h1>
+        <p class="subtitle">Master Exam Questions with Confidence</p>
+        <span class="badge">Edexcel GCSE Computer Science (1CP2)</span>
+    </header>
+
+    <div class="stats">
+        <div class="stat"><div class="stat-num">13</div><div class="stat-label">Command Words</div></div>
+        <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Examples</div></div>
+        <div class="stat"><div class="stat-num">2022-24</div><div class="stat-label">Past Papers</div></div>
+    </div>
+
+    <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="state">State/Give/Name <span class="mark-badge">1</span></button>
+        <button class="tab-btn" data-tab="identify">Identify <span class="mark-badge">1</span></button>
+        <button class="tab-btn" data-tab="define">Define <span class="mark-badge">1-2</span></button>
+        <button class="tab-btn" data-tab="describe">Describe <span class="mark-badge">2-6</span></button>
+        <button class="tab-btn" data-tab="explain">Explain <span class="mark-badge">2-4</span></button>
+        <button class="tab-btn" data-tab="discuss">Discuss <span class="mark-badge">6</span></button>
+        <button class="tab-btn" data-tab="construct">Construct <span class="mark-badge">2-4</span></button>
+        <button class="tab-btn" data-tab="calculate">Calculate <span class="mark-badge">2-4</span></button>
+        <button class="tab-btn" data-tab="complete">Complete <span class="mark-badge">2-6</span></button>
+        <button class="tab-btn" data-tab="draw">Draw <span class="mark-badge">2-6</span></button>
+        <button class="tab-btn" data-tab="convert">Convert <span class="mark-badge">2-6</span></button>
+        <button class="tab-btn" data-tab="amend">Amend <span class="mark-badge">1-6</span></button>
+        <button class="tab-btn" data-tab="write">Write <span class="mark-badge">1-6</span></button>
+    </nav>
+
+    <!-- STATE -->
+    <div class="tab-content active" id="state">
+        <div class="cmd-header">
+            <h2>State / Give / Name <span class="mark-ind">1 mark each</span></h2>
+            <p class="def">These command words require recall of one or more items. Simply provide the answer without explanation.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Simply provide the answer without explanation</div>
+            <div class="tip"><span class="n">2</span> Be precise and concise - one fact = one mark</div>
+            <div class="tip"><span class="n">3</span> Number your answers clearly when multiple items requested</div>
+            <div class="tip"><span class="n">4</span> Don't write more than asked - it won't gain extra marks</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Network Types <span class="year">2022</span></div>
+            <div class="ctx"><div class="l">Context</div><p>A hotel chain has hotels in several countries and a head office in England.</p></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>State the type of network needed to connect these hotels to the head office.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>WAN / Wide Area Network (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>WAN (Wide Area Network)</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Don't waste time explaining why - just give the answer.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: Embedded Systems <span class="year">2023</span></div>
+            <div class="ctx"><div class="l">Context</div><p>Computer systems topic.</p></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>State one characteristic of an embedded system.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Forms part of another device/system (1), OR Performs a single/dedicated/specific task (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Performs a single dedicated task</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Embedded = inside another device, does ONE specific job (washing machine, microwave).</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 3: Translation Methods <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>State two methods of translating high-level code into machine code.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Compile/Compilation (1), Interpret/Interpretation (1), Assemble (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>1. Compilation<br>2. Interpretation</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Three translators: Compiler, Interpreter, Assembler.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 4: Wireless Protocols <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>State one wireless protocol used to connect devices.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Wi-Fi (1), Bluetooth (1), ZigBee (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Wi-Fi</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Wi-Fi (internet), Bluetooth (short range), ZigBee (IoT devices).</p></div>
+        </div>
+    </div>
+
+    <!-- IDENTIFY -->
+    <div class="tab-content" id="identify">
+        <div class="cmd-header">
+            <h2>Identify <span class="mark-ind">1 mark each</span></h2>
+            <p class="def">Selection of the correct answer from items in the question, or selection from given options.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Read ALL options carefully before selecting</div>
+            <div class="tip"><span class="n">2</span> Apply your knowledge to the specific context</div>
+            <div class="tip"><span class="n">3</span> Consider why each wrong answer is incorrect</div>
+            <div class="tip"><span class="n">4</span> Don't overthink - usually one answer is clearly correct</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: CPU Components <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>Identify where an instruction is held during execution.<br>A. ALU &nbsp; B. Clock &nbsp; C. Main memory &nbsp; D. Register</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>D - Register (1). ALU does operations, Clock is a signal, Main memory is outside CPU.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>D - Register</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>During execution: Instructions held in registers (CIR, MAR, MDR, ACC).</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: Decomposition <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>Identify the computational thinking technique that involves breaking a problem into smaller parts.<br>A. Abstraction &nbsp; B. Computation &nbsp; C. Decomposition &nbsp; D. Evaluation</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>C - Decomposition (1). Abstraction = hiding detail. Evaluation = reaching conclusions.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>C - Decomposition</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>DE-compose = break DOWN. Abstraction = hide details.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 3: Overflow Error <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>Identify which statement about overflow errors is correct.<br>A. All overflow errors cause programs to crash<br>B. Overflow errors occur when a result exceeds the maximum value<br>C. Computers use hexadecimal to prevent overflow<br>D. Indexing outside an array causes overflow</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>B (1). D is a runtime error (index out of bounds), not overflow.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>B - Overflow errors occur when a result exceeds the maximum value</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Overflow = result too big for available bits. Array index error = runtime error.</p></div>
+        </div>
+    </div>
+
+    <!-- DEFINE -->
+    <div class="tab-content" id="define">
+        <div class="cmd-header">
+            <h2>Define <span class="mark-ind">1-2 marks</span></h2>
+            <p class="def">When the meaning of a term is requested. Include key technical terms that demonstrate understanding.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Provide a clear, precise definition</div>
+            <div class="tip"><span class="n">2</span> For 2 marks: include what it IS + what it DOES/CAUSES</div>
+            <div class="tip"><span class="n">3</span> Break down compound terms (MAL+WARE = malicious software)</div>
+            <div class="tip"><span class="n">4</span> Don't just give an example - define what it IS</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Syntax Error <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>Define what is meant by a syntax error.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Code that breaks/violates the rules/grammar of the programming language (1). Do not award for example alone.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>A syntax error is code that breaks the rules or grammar of the programming language.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Syntax = rules/grammar. Examples alone won't get the mark!</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: Bandwidth <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>Define the term 'bandwidth'.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>The maximum volume/amount of data that can be transmitted in one second/unit of time (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Bandwidth is the maximum amount of data that can be transmitted over a network in a given time.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Bandwidth = MAXIMUM capacity. Like pipe width - how much CAN flow, not IS flowing.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 3: Sample Interval <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>Define what is meant by sample interval.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>The time/gap between samples/measurements (1). Do not accept sampling frequency.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Sample interval is the time gap between each sample taken from an analogue signal.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Sample interval = TIME between. Sample rate = NUMBER per second. Don't confuse!</p></div>
+        </div>
+    </div>
+
+    <!-- DESCRIBE -->
+    <div class="tab-content" id="describe">
+        <div class="cmd-header">
+            <h2>Describe <span class="mark-ind">2-6 marks</span></h2>
+            <p class="def">Give an account of something. Statements need to be developed and linked, but don't need justification.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Provide a detailed account with multiple linked points</div>
+            <div class="tip"><span class="n">2</span> Develop each point but don't need to justify 'why'</div>
+            <div class="tip"><span class="n">3</span> Link points with 'then', 'next', 'so that'</div>
+            <div class="tip"><span class="n">4</span> Number of points should match available marks</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: How Routers Work <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Describe how a router forwards data packets.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Reads destination IP address (1), Uses routing table (1), Forwards to next router (1), Uses fastest route (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>The router reads the destination IP address in each packet. It uses a routing table to find the best path and forwards the packet to the next router.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Router process: Read address → Check routing table → Forward to next hop.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: Penetration Testing <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Describe what is meant by penetration testing.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>An authorised attack on a network/system (1) to identify security vulnerabilities (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Penetration testing is an authorised attack on a computer system, carried out with permission, to identify security vulnerabilities and recommend improvements.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Key word: AUTHORISED. Legal hacking to find weaknesses before criminals do.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 3: File System <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Describe how a hierarchical file system organises files.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Uses tree structure (1) with root directory (1). Each file has unique path (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>A hierarchical file system uses a tree structure with a root directory at the top. Files and folders are organised into subdirectories, each with a unique path from the root.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Like a family tree: root at top, branches (folders) leading to leaves (files).</p></div>
+        </div>
+    </div>
+
+    <!-- EXPLAIN -->
+    <div class="tab-content" id="explain">
+        <div class="cmd-header">
+            <h2>Explain <span class="mark-ind">2-4 marks</span></h2>
+            <p class="def">Requires justification/exemplification. Must contain reasoning using 'because', 'therefore', 'this means'.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> State a point AND give a reason why</div>
+            <div class="tip"><span class="n">2</span> Use 'because', 'therefore', 'this means that', 'so'</div>
+            <div class="tip"><span class="n">3</span> Structure: POINT + BECAUSE + CONSEQUENCE</div>
+            <div class="tip"><span class="n">4</span> Each explanation = 2 marks (point + reason)</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Runtime Error <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Explain what happens when a runtime error occurs.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>The program crashes/stops (1) because the operation is impossible (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>The program crashes or stops unexpectedly because the CPU encounters an operation it cannot execute, such as dividing by zero.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Runtime = happens while running. Causes: divide by zero, file not found, out of memory.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: IMAP Benefits <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Explain one benefit of using IMAP for email.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Emails can be accessed from multiple devices (1) because IMAP doesn't delete emails from server (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Emails can be accessed from multiple devices because IMAP keeps emails stored on the server rather than deleting them after download.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>IMAP = emails stay on server (access anywhere). POP3 = downloads and removes.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 3: Subprograms <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Explain one benefit of using subprograms.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Code only written once (1) because it can be called many times (1). Easier to debug (1) because code is separated (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Subprogram code only needs to be written once because it can be called multiple times, saving development time.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Benefits: reusability, easier debugging, abstraction, team working, smaller code.</p></div>
+        </div>
+    </div>
+
+    <!-- DISCUSS -->
+    <div class="tab-content" id="discuss">
+        <div class="cmd-header">
+            <h2>Discuss <span class="mark-ind">6 marks</span></h2>
+            <p class="def">Extended response. Explore all aspects, investigate by reasoning, reach a conclusion.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Write in paragraphs, not bullet points</div>
+            <div class="tip"><span class="n">2</span> Cover multiple perspectives with balanced arguments</div>
+            <div class="tip"><span class="n">3</span> Use technical vocabulary throughout</div>
+            <div class="tip"><span class="n">4</span> Link to the CONTEXT and reach a clear conclusion</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Decomposition & Abstraction <span class="year">2023</span></div>
+            <div class="ctx"><div class="l">Context</div><p>Students creating a game in groups, developing different parts.</p></div>
+            <div class="q"><div class="l">Question <span class="m">6 marks</span></div><p>Discuss how decomposition and abstraction can benefit the students and appear in code.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Level 3 (5-6): Comprehensive, well-developed with context application. Level 2 (3-4): Adequate with some linkages. Level 1 (1-2): Basic points.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p><strong>Decomposition benefits:</strong> Breaking the game into smaller parts (score, movement, sounds) makes it easier to solve. Different team members can work on different parts simultaneously.<br><br><strong>Abstraction benefits:</strong> Students working on character movement don't need to understand how sound code works internally. Library routines hide complexity.<br><br><strong>In code:</strong> Decomposition = separate subprograms for different features. Abstraction = calling functions by name without knowing internals.<br><br><strong>Conclusion:</strong> Both techniques make the project manageable and produce maintainable code.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Structure: Define → Benefits → In code → Link to context → Conclusion.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: High vs Low Level Languages <span class="year">2024</span></div>
+            <div class="ctx"><div class="l">Context</div><p>Smartphone with built-in devices (camera, microphone) and applications (email, image editing).</p></div>
+            <div class="q"><div class="l">Question <span class="m">6 marks</span></div><p>Discuss the use of high-level and low-level languages for developing the devices and applications.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p><strong>Low-level for devices:</strong> Microprocessor dependent, efficient for specific chipsets. Can manipulate hardware directly for device drivers. Smaller executables for limited RAM. Optimised for real-time operations.<br><br><strong>High-level for applications:</strong> Portable across phone versions. Development tools make coding faster. Libraries provide specialised functions.<br><br><strong>Conclusion:</strong> Low-level for time-critical device control, high-level for user applications where portability matters.</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Always link advantages to the SPECIFIC CONTEXT in the question.</p></div>
+        </div>
+    </div>
+
+    <!-- CONSTRUCT -->
+    <div class="tab-content" id="construct">
+        <div class="cmd-header">
+            <h2>Construct <span class="mark-ind">2-4 marks</span></h2>
+            <p class="def">Create an artefact using subject-specific notation. Show components - don't calculate unless asked.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Build using correct notation - don't calculate unless asked</div>
+            <div class="tip"><span class="n">2</span> Show each component clearly - each part earns marks</div>
+            <div class="tip"><span class="n">3</span> Watch for unit differences (MiB=1024 vs MB=1000)</div>
+            <div class="tip"><span class="n">4</span> Mathematical expressions must be properly formed</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Transmission Time <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">4 marks</span></div><p>Construct an expression for transmission time: 1.4 GiB file at 13 Mbps. Don't calculate.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>1.4 × 8 × 1024³ (file in bits) (1)(1), 13 × 1000² (speed in bps) (1), Correct expression (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p><strong>(1.4 × 8 × 1024³) ÷ (13 × 1000²) seconds</strong><br><br>• 1.4 × 1024³ = GiB to bytes<br>• × 8 = bytes to bits<br>• 13 × 1000² = Mbps to bps</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>⚠️ CRITICAL: GiB/MiB use 1024. Mbps/Gbps use 1000. Never mix them!</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: Image File Size <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">3 marks</span></div><p>Construct an expression: 100×600 pixels, 32-bit colour, 1024 bytes metadata.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>100 × 600 (1), × 32 and ÷ 8 (1), + 1024 (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p><strong>(100 × 600 × 32) ÷ 8 + 1024 bytes</strong><br><br>• 100 × 600 = total pixels<br>• × 32 = bits per pixel<br>• ÷ 8 = convert to bytes<br>• + 1024 = metadata</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Image size = width × height × colour depth ÷ 8. Don't forget metadata!</p></div>
+        </div>
+    </div>
+
+    <!-- CALCULATE -->
+    <div class="tab-content" id="calculate">
+        <div class="cmd-header">
+            <h2>Calculate <span class="mark-ind">2-4 marks</span></h2>
+            <p class="def">Obtain a numerical answer, showing relevant working. Include units if applicable.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Show your working step by step</div>
+            <div class="tip"><span class="n">2</span> Write final answer clearly with correct unit</div>
+            <div class="tip"><span class="n">3</span> Use column headings for binary (128|64|32|16|8|4|2|1)</div>
+            <div class="tip"><span class="n">4</span> Check your answer makes sense</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Binary to Hex <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Convert 0101 1011 to hexadecimal.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>5B (1 mark per correct digit)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>0101 = 5 (4+1)<br>1011 = B (8+2+1 = 11)<br><strong>Answer: 5B</strong></p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Split into nibbles. Each nibble → one hex digit. 10-15 = A-F.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: Logical Shift Left <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Calculate logical shift left by 3 on 1010 0011.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>0001 1000 (2 marks)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>1010 0011 → shift left 3<br>Fill gaps with zeros<br><strong>Answer: 0001 1000</strong></p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Logical shift: fill with 0s. Left shift by n = multiply by 2ⁿ.</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 3: Arithmetic Shift Right <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Calculate arithmetic shift right by 2 on 1100 1010.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>1111 0010 (2 marks)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>MSB is 1, so fill with 1s<br>1100 1010 → 1111 0010<br><strong>Answer: 1111 0010</strong></p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Arithmetic shift preserves sign bit. Fill with copies of MSB, not zeros!</p></div>
+        </div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div class="tab-content" id="complete">
+        <div class="cmd-header">
+            <h2>Complete <span class="mark-ind">2-6 marks</span></h2>
+            <p class="def">Fill in a table/diagram/algorithm. Use the same style as existing content.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Fill in ALL missing parts - check for gaps</div>
+            <div class="tip"><span class="n">2</span> Use same notation as existing content</div>
+            <div class="tip"><span class="n">3</span> For trace tables: work through code line by line</div>
+            <div class="tip"><span class="n">4</span> For truth tables: use systematic T/F combinations</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Bus Roles <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">3 marks</span></div><p>Complete the table matching buses to their roles in fetching.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Control - Carries read signal (1). Address - Carries memory location (1). Data - Carries instruction (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>Control → Carries read signal to memory<br>Address → Carries memory location<br>Data → Carries instruction from memory to CPU</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Address = WHERE, Data = WHAT, Control = WHEN/HOW (signals).</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: AND Truth Table <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Complete the truth table for S AND M.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>0 AND 0 = 0<br>0 AND 1 = 0<br>1 AND 0 = 0<br>1 AND 1 = 1</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>AND = both must be 1. OR = either can be 1. NOT = flips value.</p></div>
+        </div>
+    </div>
+
+    <!-- DRAW -->
+    <div class="tab-content" id="draw">
+        <div class="cmd-header">
+            <h2>Draw <span class="mark-ind">2-6 marks</span></h2>
+            <p class="def">Produce a diagram with correct symbols. Label/annotate as required.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Use correct symbols and notation</div>
+            <div class="tip"><span class="n">2</span> Label everything clearly</div>
+            <div class="tip"><span class="n">3</span> Flowcharts: diamond=decision, rectangle=process</div>
+            <div class="tip"><span class="n">4</span> Every decision needs TWO labelled arrows (Yes/No)</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Anti-Virus Flowchart <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">6 marks</span></div><p>Draw a flowchart showing how anti-virus software scans files.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Load virus database (1). Scan file (1). Decision: virus found? (1). Quarantine if found (1). No action if clean (1). All decisions have Yes/No labels (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>[Start] → [Load virus database] → [Scan file] → &lt;Virus found?&gt;<br>→ Yes → [Quarantine/delete]<br>→ No → [File is clean]<br>→ [Stop]</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Every decision diamond needs TWO labelled arrows. Every path must reach terminator.</p></div>
+        </div>
+    </div>
+
+    <!-- CONVERT -->
+    <div class="tab-content" id="convert">
+        <div class="cmd-header">
+            <h2>Convert <span class="mark-ind">2-6 marks</span></h2>
+            <p class="def">Change information from one representation to another. Show the process clearly.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Show the conversion process clearly</div>
+            <div class="tip"><span class="n">2</span> State FROM and TO</div>
+            <div class="tip"><span class="n">3</span> For binary/hex: split into nibbles (4 bits)</div>
+            <div class="tip"><span class="n">4</span> Check by converting back if time allows</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example 1: Binary Addition <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">2 marks</span></div><p>Convert 0100 1000 + 0010 1000 to 8-bit binary.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><pre>  0100 1000  (72)
++ 0010 1000  (40)
+-----------
+  0111 0000  (112)</pre></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Binary: 0+0=0, 0+1=1, 1+0=1, 1+1=10 (write 0, carry 1).</p></div>
+        </div>
+
+        <div class="ex"><div class="ex-h">Example 2: ASCII Bits <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">1 mark</span></div><p>How many bits are used in standard ASCII?</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>7 (1). Do not award 8 - that's Extended ASCII.</p></div>
+            <div class="ans"><div class="l">Model Answer</div><p>7 bits</p></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Standard ASCII = 7 bits (128 chars). Extended = 8 bits (256 chars).</p></div>
+        </div>
+    </div>
+
+    <!-- AMEND -->
+    <div class="tab-content" id="amend">
+        <div class="cmd-header">
+            <h2>Amend <span class="mark-ind">1-6 marks</span></h2>
+            <p class="def">Make changes, additions, deletions or rearrangements to code.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Read existing code carefully first</div>
+            <div class="tip"><span class="n">2</span> Make ONLY the changes specified</div>
+            <div class="tip"><span class="n">3</span> Test mentally that changes work</div>
+            <div class="tip"><span class="n">4</span> Common errors: colons, brackets, quotes, capitalisation</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example: Fix Errors <span class="year">2024</span></div>
+            <div class="q"><div class="l">Question <span class="m">10 marks</span></div><p>Fix the syntax and logic errors in the rainbow program.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Remove extra quote (1). false→False (1). Fix 0123 (1). Add bracket (1). Fix spelling (1). Fix print (1). and→or (1). 1→0 (1)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><pre><code>wavelengths = [380, 450]  # Removed quote
+found = False  # Capitalised
+index = 0  # Fixed octal
+index = int(input("Enter:"))  # Added bracket
+colour = rainbow[index]  # Fixed spelling
+if wavelength < 380 or wavelength > 622:  # and→or</code></pre></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Python: True/False/None must be capitalised! Check colons after if/for/while.</p></div>
+        </div>
+    </div>
+
+    <!-- WRITE -->
+    <div class="tab-content" id="write">
+        <div class="cmd-header">
+            <h2>Write <span class="mark-ind">1-6 marks</span></h2>
+            <p class="def">Create code/algorithm using subject-specific notation. Meet ALL requirements.</p>
+        </div>
+        <div class="strat"><h3>Exam Strategy</h3><div class="tips">
+            <div class="tip"><span class="n">1</span> Write code that meets ALL requirements</div>
+            <div class="tip"><span class="n">2</span> Use correct syntax</div>
+            <div class="tip"><span class="n">3</span> Test with example values mentally</div>
+            <div class="tip"><span class="n">4</span> Use meaningful variable names and comments</div>
+        </div></div>
+
+        <div class="ex"><div class="ex-h">Example: Validation & Calculation <span class="year">2023</span></div>
+            <div class="q"><div class="l">Question <span class="m">15 marks</span></div><p>Write a program: take 3 inputs, validate positive, calculate area and volume, format output.</p></div>
+            <div class="ms"><div class="l">Mark Scheme</div><p>Inputs (1), Float conversion (1), Validation (1), Logical operator (1), Error message (1), Area formula (1), Round (1), Volume formula (1), Formatting (1), Meaningful names (1), Functionality (3)</p></div>
+            <div class="ans"><div class="l">Model Answer</div><pre><code># Inputs
+base = float(input("Base: "))
+height = float(input("Height: "))
+length = float(input("Length: "))
+
+# Validation
+if base <= 0 or height <= 0 or length <= 0:
+    print("Invalid input")
+else:
+    area = round(0.5 * base * height, 2)
+    volume = area * length
+    print(f"Volume: {volume:.2f} cubic units")
+
+print("Goodbye")</code></pre></div>
+            <div class="tt"><div class="l">Top Tip</div><p>Check EVERY requirement. Validation, meaningful names, correct formulas, formatting.</p></div>
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>Questions from Edexcel GCSE Computer Science (1CP2) Past Papers 2022-2024</strong></p>
+        <p>Good luck with your exams! 🎓</p>
+    </footer>
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        window.scrollTo({top: document.querySelector('.tab-nav').offsetTop - 20, behavior: 'smooth'});
+    });
+});
+</script>
+</body>
+</html>
