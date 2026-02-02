@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLS Teaching Guide | Edexcel GCSE Computer Science Paper 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #1a1a25;
+            --accent-cyan: #00d4ff;
+            --accent-magenta: #ff00aa;
+            --accent-yellow: #ffcc00;
+            --accent-green: #00ff88;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #606070;
+            --border-subtle: #2a2a35;
+            --gradient-1: linear-gradient(135deg, #00d4ff 0%, #ff00aa 100%);
+            --gradient-2: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            right: -5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 0, 170, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            margin-bottom: 1.5rem;
+            width: fit-content;
+        }
+
+        .badge::before {
+            content: '📘';
+        }
+
+        h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .paper-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .paper-tag {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .paper-tag:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation */
+        .nav-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 3rem 0;
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+        }
+
+        .nav-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent-yellow);
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text-primary);
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .card-source {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-magenta);
+        }
+
+        /* Code blocks */
+        pre {
+            background: var(--bg-code);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        pre::before {
+            content: 'python';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .code-inline {
+            background: var(--bg-code);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .number { color: #bd93f9; }
+        .operator { color: #ff79c6; }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--bg-code);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            color: var(--accent-cyan);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        /* PLS Reference boxes */
+        .pls-ref {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+        }
+
+        .pls-ref::before {
+            content: '📖';
+            font-size: 0.9rem;
+        }
+
+        /* Tip boxes */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.1) 0%, rgba(255, 204, 0, 0.05) 100%);
+            border-left: 4px solid var(--accent-yellow);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box-title {
+            font-weight: 600;
+            color: var(--accent-yellow);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Error type badges */
+        .error-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .error-syntax { background: rgba(255, 0, 170, 0.2); color: #ff66cc; }
+        .error-name { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+        .error-logic { background: rgba(255, 204, 0, 0.2); color: #ffcc00; }
+        .error-value { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .error-index { background: rgba(189, 147, 249, 0.2); color: #bd93f9; }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Quick ref cards */
+        .quick-ref {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .quick-ref-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .quick-ref-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .quick-ref-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .nav-section {
+                position: relative;
+                top: 0;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            pre {
+                padding: 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in { transform: translateY(20px); }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="badge">Teaching Resource</div>
+            <h1>Mastering the Programming Language Subset</h1>
+            <p class="hero-subtitle">
+                A comprehensive guide to help students effectively use the PLS document 
+                during Edexcel GCSE Computer Science Paper 2 examinations.
+            </p>
+            <div class="paper-tags">
+                <span class="paper-tag">June 2024</span>
+                <span class="paper-tag">June 2023</span>
+                <span class="paper-tag">June 2022</span>
+                <span class="paper-tag">1CP2/02</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-section">
+            <div class="nav-title">Quick Navigation</div>
+            <div class="nav-links">
+                <a href="#overview" class="nav-link">Overview</a>
+                <a href="#familiarisation" class="nav-link">Familiarisation</a>
+                <a href="#debugging" class="nav-link">Debugging Examples</a>
+                <a href="#file-handling" class="nav-link">File Handling</a>
+                <a href="#calculations" class="nav-link">Calculations</a>
+                <a href="#subprograms" class="nav-link">Subprograms</a>
+                <a href="#quick-reference" class="nav-link">Quick Reference</a>
+            </div>
+        </nav>
+
+        <!-- Section 1: Overview -->
+        <section id="overview">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2>What is the PLS?</h2>
+            </div>
+            
+            <p>The Programming Language Subset (PLS) is a reference document provided during the Paper 2 exam that specifies exactly which Python 3 features students need to know. It's essentially a cheat sheet that students can use throughout the 2-hour practical exam.</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">✓</div>
+                        <div>
+                            <div class="card-title">What It Covers</div>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>Data types and conversion functions</li>
+                        <li>All operators (arithmetic, relational, logical)</li>
+                        <li>Selection and iteration syntax</li>
+                        <li>File handling operations</li>
+                        <li>String manipulation methods</li>
+                        <li>Random, math, and time libraries</li>
+                        <li>Turtle graphics commands</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">⚠</div>
+                        <div>
+                            <div class="card-title">What It Doesn't Cover</div>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>When to use specific constructs</li>
+                        <li>Problem-solving strategies</li>
+                        <li>Algorithm design</li>
+                        <li>How to debug logic errors</li>
+                        <li>How to interpret test data</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-box-title">💡 Key Insight</div>
+                <p>The PLS confirms <strong>syntax</strong>, not <strong>logic</strong>. Students still need to understand what they're trying to achieve—the PLS just helps them write it correctly.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Familiarisation -->
+        <section id="familiarisation">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2>Phase 1: Familiarisation</h2>
+            </div>
+
+            <h3>Know the Layout, Not the Content</h3>
+            <p>Students shouldn't memorise the PLS but should know <em>where</em> things are. The goal is to locate any syntax within 20 seconds.</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Page</th>
+                            <th>Key Contents</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data types & conversion</td>
+                            <td>5</td>
+                            <td><code class="code-inline">int()</code>, <code class="code-inline">float()</code>, <code class="code-inline">str()</code>, <code class="code-inline">bool()</code></td>
+                        </tr>
+                        <tr>
+                            <td>Operators</td>
+                            <td>6</td>
+                            <td><code class="code-inline">//</code>, <code class="code-inline">%</code>, <code class="code-inline">==</code>, <code class="code-inline">and</code>, <code class="code-inline">or</code></td>
+                        </tr>
+                        <tr>
+                            <td>Selection & Iteration</td>
+                            <td>7</td>
+                            <td><code class="code-inline">if/elif/else</code>, <code class="code-inline">while</code>, <code class="code-inline">for</code></td>
+                        </tr>
+                        <tr>
+                            <td>File operations</td>
+                            <td>8</td>
+                            <td><code class="code-inline">open()</code>, <code class="code-inline">read()</code>, <code class="code-inline">write()</code>, <code class="code-inline">close()</code></td>
+                        </tr>
+                        <tr>
+                            <td>String methods</td>
+                            <td>11</td>
+                            <td><code class="code-inline">split()</code>, <code class="code-inline">strip()</code>, <code class="code-inline">upper()</code>, <code class="code-inline">isdigit()</code></td>
+                        </tr>
+                        <tr>
+                            <td>Random library</td>
+                            <td>13</td>
+                            <td><code class="code-inline">random.randint(a, b)</code></td>
+                        </tr>
+                        <tr>
+                            <td>Math library</td>
+                            <td>13</td>
+                            <td><code class="code-inline">math.ceil()</code>, <code class="code-inline">math.floor()</code>, <code class="code-inline">math.pi</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Pattern Recognition</h3>
+            <p>When students see certain words in questions, they should instinctively think of specific PLS sections:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Question Contains...</th>
+                            <th>Check PLS For...</th>
+                            <th>Page</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>"random number"</td>
+                            <td><code class="code-inline">random.randint(a, b)</code></td>
+                            <td>13</td>
+                        </tr>
+                        <tr>
+                            <td>"first two letters"</td>
+                            <td>String slicing <code class="code-inline">myName[0:2]</code></td>
+                            <td>12</td>
+                        </tr>
+                        <tr>
+                            <td>"round up" / "whole bags"</td>
+                            <td><code class="code-inline">math.ceil()</code></td>
+                            <td>13</td>
+                        </tr>
+                        <tr>
+                            <td>"add to the end"</td>
+                            <td><code class="code-inline">list.append()</code></td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td>"split by comma"</td>
+                            <td><code class="code-inline">string.split(",")</code></td>
+                            <td>11</td>
+                        </tr>
+                        <tr>
+                            <td>"ASCII value"</td>
+                            <td><code class="code-inline">ord()</code> and <code class="code-inline">chr()</code></td>
+                            <td>9</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 3: Debugging Examples -->
+        <section id="debugging">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2>Debugging Examples</h2>
+            </div>
+
+            <!-- Example 1: June 2024 Q1 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔧</div>
+                    <div>
+                        <div class="card-title">Rainbow Program - Fixing Multiple Errors</div>
+                        <div class="card-source">June 2024, Question 1 (10 marks)</div>
+                    </div>
+                </div>
+
+                <p>A program displays rainbow colours based on wavelength. Students must fix 10 different errors.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Error Type</th>
+                                <th>Original Code</th>
+                                <th>PLS Reference</th>
+                                <th>Fix</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="error-badge error-syntax">Syntax</span></td>
+                                <td><code class="code-inline">597", 622]</code></td>
+                                <td><span class="pls-ref">Page 5</span></td>
+                                <td><code class="code-inline">597, 622]</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-name">NameError</span></td>
+                                <td><code class="code-inline">found = false</code></td>
+                                <td><span class="pls-ref">Page 5</span></td>
+                                <td><code class="code-inline">found = False</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-syntax">Syntax</span></td>
+                                <td><code class="code-inline">wavelength = 0123</code></td>
+                                <td><span class="pls-ref">Page 5</span></td>
+                                <td><code class="code-inline">wavelength = 123</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-syntax">Syntax</span></td>
+                                <td><code class="code-inline">int(input("...")</code></td>
+                                <td><span class="pls-ref">Page 8-9</span></td>
+                                <td><code class="code-inline">int(input("..."))</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-name">NameError</span></td>
+                                <td><code class="code-inline">color = rainbow[index]</code></td>
+                                <td>Check spelling</td>
+                                <td><code class="code-inline">colour = rainbow[index]</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-value">ValueError</span></td>
+                                <td><code class="code-inline">print(int(colour))</code></td>
+                                <td><span class="pls-ref">Page 5</span></td>
+                                <td><code class="code-inline">print(colour)</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-logic">Logic</span></td>
+                                <td><code class="code-inline">if (x < 380) and (x > 622)</code></td>
+                                <td><span class="pls-ref">Page 6</span></td>
+                                <td><code class="code-inline">if (x < 380) or (x > 622)</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 Teaching Point</div>
+                    <p>The logic error with <code class="code-inline">and</code> vs <code class="code-inline">or</code> is common. A number cannot be both less than 380 AND greater than 622 simultaneously. The PLS page 6 shows that <code class="code-inline">or</code> means "either side must be true".</p>
+                </div>
+            </div>
+
+            <!-- Example 2: June 2023 Q2 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏃</div>
+                    <div>
+                        <div class="card-title">Exercise Routine - Import and Loop Errors</div>
+                        <div class="card-source">June 2023, Question 2 (8 marks)</div>
+                    </div>
+                </div>
+
+                <p>A program selects random exercises from an array. Multiple syntax and logic errors need fixing.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Error Type</th>
+                                <th>Original Code</th>
+                                <th>PLS Reference</th>
+                                <th>Fix</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="error-badge error-syntax">Syntax</span></td>
+                                <td><code class="code-inline">import randum</code></td>
+                                <td><span class="pls-ref">Page 13</span></td>
+                                <td><code class="code-inline">import random</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-syntax">Syntax</span></td>
+                                <td><code class="code-inline">for exercise in exerciseTable</code></td>
+                                <td><span class="pls-ref">Page 7</span></td>
+                                <td><code class="code-inline">for exercise in exerciseTable:</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-index">IndexError</span></td>
+                                <td><code class="code-inline">exerciseTable[index + 1]</code></td>
+                                <td><span class="pls-ref">Page 5</span></td>
+                                <td><code class="code-inline">exerciseTable[index]</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="error-badge error-logic">Logic</span></td>
+                                <td><code class="code-inline">range(numExercises - 1)</code></td>
+                                <td><span class="pls-ref">Page 9</span></td>
+                                <td><code class="code-inline">range(numExercises)</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>Completing the Random Number Line</h4>
+                <p>The question asks to complete: <code class="code-inline">index = random.</code></p>
+                
+                <p>Check PLS page 13:</p>
+                <pre><code><span class="comment"># PLS shows: random.randint(&lt;a&gt;, &lt;b&gt;)</span>
+<span class="comment"># Returns random integer where a <= X <= b</span>
+<span class="comment"># Array has 5 elements, indices 0-4</span>
+
+index = random.randint(<span class="number">0</span>, <span class="number">4</span>)</code></pre>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 Critical Understanding</div>
+                    <p>PLS page 9 states that <code class="code-inline">range()</code> generates numbers "up to, but not including" the stop value. So <code class="code-inline">range(5)</code> gives 0,1,2,3,4 (five iterations). Using <code class="code-inline">range(numExercises - 1)</code> would give one fewer iteration than needed.</p>
+                </div>
+            </div>
+
+            <!-- Example 3: June 2022 Q1 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔤</div>
+                    <div>
+                        <div class="card-title">Number to Letter Conversion</div>
+                        <div class="card-source">June 2022, Question 1 (10 marks)</div>
+                    </div>
+                </div>
+
+                <p>Convert numbers 5-30 to letters A-Z using ASCII. Adding 60 to a number gives the ASCII code for the corresponding uppercase letter.</p>
+
+                <h4>Task-by-Task Solution</h4>
+
+                <pre><code><span class="comment"># Task 1: Create integer variable (PLS page 5)</span>
+num = <span class="number">0</span>
+
+<span class="comment"># Task 2: Take input and convert to integer</span>
+<span class="comment"># PLS page 5: int() and page 8: input()</span>
+num = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Enter a number: "</span>))
+
+<span class="comment"># Task 3: Check between 5 and 30</span>
+<span class="comment"># PLS page 6: >= and <= operators, "and" operator</span>
+<span class="keyword">if</span> num >= <span class="number">5</span> <span class="keyword">and</span> num <= <span class="number">30</span>:
+    <span class="comment"># Task 4: Add 60 and assign</span>
+    decimalCode = num + <span class="number">60</span>
+    
+    <span class="comment"># Task 5: Join strings (PLS page 12: use +)</span>
+    letter = <span class="function">chr</span>(decimalCode)
+    message = <span class="function">str</span>(num) + <span class="string">" is equal to "</span> + letter
+    <span class="function">print</span>(message)
+<span class="keyword">else</span>:
+    <span class="comment"># Task 6: Display error message</span>
+    <span class="function">print</span>(<span class="string">"Invalid input"</span>)</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 4: File Handling -->
+        <section id="file-handling">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2>File Handling Examples</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📁</div>
+                    <div>
+                        <div class="card-title">Coffee Consumption CSV Writer</div>
+                        <div class="card-source">June 2022, Question 5 (15 marks)</div>
+                    </div>
+                </div>
+
+                <p>Write coffee consumption data to a CSV file with 7 values per line (one week per line).</p>
+
+                <h4>PLS Sections Needed</h4>
+                <div class="grid-3">
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Open for Writing</div>
+                        <code class="code-inline">open(filename, "w")</code>
+                        <span class="pls-ref">Page 8</span>
+                    </div>
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Write String</div>
+                        <code class="code-inline">file.write(string)</code>
+                        <span class="pls-ref">Page 8</span>
+                    </div>
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Close File</div>
+                        <code class="code-inline">file.close()</code>
+                        <span class="pls-ref">Page 8</span>
+                    </div>
+                </div>
+
+                <pre><code><span class="comment"># Open file for writing - PLS page 8</span>
+outputFile = <span class="function">open</span>(<span class="string">"Q05_OUTPUT.TXT"</span>, <span class="string">"w"</span>)
+
+<span class="comment"># Process in groups of 7</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">0</span>, <span class="function">len</span>(coffeeData), <span class="number">7</span>):
+    <span class="comment"># Build CSV line</span>
+    line = <span class="string">""</span>
+    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="function">range</span>(<span class="number">7</span>):
+        line = line + <span class="function">str</span>(coffeeData[i + j])
+        <span class="keyword">if</span> j < <span class="number">6</span>:
+            line = line + <span class="string">","</span>
+    
+    <span class="comment"># Add newline and write - PLS page 15 shows "\n"</span>
+    outputFile.write(line + <span class="string">"\n"</span>)
+
+<span class="comment"># Close file - PLS page 8</span>
+outputFile.close()</code></pre>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🐄</div>
+                    <div>
+                        <div class="card-title">Cow Data Processing with Key Generation</div>
+                        <div class="card-source">June 2024, Question 6 (15 marks)</div>
+                    </div>
+                </div>
+
+                <p>Read cow data from CSV, create unique keys, and store records in a table.</p>
+                <p>Key format: first 2 letters of breed + (tag ÷ 100) + first 2 letters of name</p>
+
+                <h4>PLS Sections Needed</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>PLS Reference</th>
+                                <th>Syntax</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Open file for reading</td>
+                                <td><span class="pls-ref">Page 8</span></td>
+                                <td><code class="code-inline">open(filename, "r")</code></td>
+                            </tr>
+                            <tr>
+                                <td>Split CSV line</td>
+                                <td><span class="pls-ref">Page 11</span></td>
+                                <td><code class="code-inline">string.split(",")</code></td>
+                            </tr>
+                            <tr>
+                                <td>Get first 2 characters</td>
+                                <td><span class="pls-ref">Page 12</span></td>
+                                <td><code class="code-inline">myName[0:2]</code></td>
+                            </tr>
+                            <tr>
+                                <td>Integer division</td>
+                                <td><span class="pls-ref">Page 6</span></td>
+                                <td><code class="code-inline">//</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <pre><code><span class="comment"># Open file - PLS page 8</span>
+cowFile = <span class="function">open</span>(<span class="string">"Cows.txt"</span>, <span class="string">"r"</span>)
+cowTable = []
+
+<span class="comment"># Read each line</span>
+<span class="keyword">for</span> line <span class="keyword">in</span> cowFile:
+    <span class="comment"># Remove whitespace - PLS page 11</span>
+    line = line.strip()
+    
+    <span class="comment"># Split by comma - PLS page 11</span>
+    parts = line.split(<span class="string">","</span>)
+    name = parts[<span class="number">0</span>]
+    breed = parts[<span class="number">1</span>]
+    tag = <span class="function">int</span>(parts[<span class="number">2</span>])
+    
+    <span class="comment"># Create key - PLS page 12 for slicing, page 6 for //</span>
+    key = breed[<span class="number">0</span>:<span class="number">2</span>] + <span class="function">str</span>(tag // <span class="number">100</span>) + name[<span class="number">0</span>:<span class="number">2</span>]
+    
+    <span class="comment"># Create record and append - PLS page 10</span>
+    record = [key, tag, name, breed]
+    cowTable.append(record)
+
+cowFile.close()
+showTable()</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 5: Calculations -->
+        <section id="calculations">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <h2>Calculation Examples</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📐</div>
+                    <div>
+                        <div class="card-title">Prism Volume Calculator with Formatting</div>
+                        <div class="card-source">June 2023, Question 4 (15 marks)</div>
+                    </div>
+                </div>
+
+                <p>Calculate the volume of a triangular prism with input validation and formatted output.</p>
+
+                <h4>Key PLS References</h4>
+                <div class="grid-2">
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Round Function</div>
+                        <p><code class="code-inline">round(x, n)</code> - rounds x to n decimal places</p>
+                        <span class="pls-ref">Page 9</span>
+                    </div>
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Format String</div>
+                        <p><code class="code-inline">{:8.2f}</code> - 8 columns, 2 decimal places</p>
+                        <span class="pls-ref">Page 12</span>
+                    </div>
+                </div>
+
+                <h4>Understanding Format Strings (PLS Page 12)</h4>
+                <pre><code><span class="comment"># Format: {:&lt;alignment&gt;&lt;width&gt;.&lt;precision&gt;&lt;type&gt;}</span>
+<span class="comment">#</span>
+<span class="comment"># {:8.2f} means:</span>
+<span class="comment">#   8 = total width (8 characters)</span>
+<span class="comment">#   .2 = 2 decimal places</span>
+<span class="comment">#   f = fixed-point (decimal) number</span>
+
+layout = <span class="string">"{:8.2f}"</span>
+<span class="function">print</span>(<span class="string">"Volume:"</span>, layout.format(volume), <span class="string">"cubic units"</span>)</code></pre>
+
+                <pre><code><span class="comment"># Complete solution</span>
+base = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter base: "</span>))
+height = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter height: "</span>))
+length = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Enter length: "</span>))
+
+<span class="comment"># Validate all > 0 - PLS page 6</span>
+<span class="keyword">if</span> base > <span class="number">0</span> <span class="keyword">and</span> height > <span class="number">0</span> <span class="keyword">and</span> length > <span class="number">0</span>:
+    <span class="comment"># Calculate area: A = 0.5 × b × h</span>
+    area = <span class="number">0.5</span> * base * height
+    <span class="function">print</span>(<span class="string">"Area:"</span>, <span class="function">round</span>(area, <span class="number">2</span>))
+    
+    <span class="comment"># Calculate volume: V = A × l</span>
+    volume = area * length
+    
+    <span class="comment"># Formatted output - PLS page 12</span>
+    layout = <span class="string">"{:8.2f}"</span>
+    <span class="function">print</span>(<span class="string">"Volume:"</span>, layout.format(volume), <span class="string">"cubic units"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Invalid input"</span>)
+
+<span class="function">print</span>(<span class="string">"Goodbye"</span>)</code></pre>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🍕</div>
+                    <div>
+                        <div class="card-title">Café Ingredients Calculator</div>
+                        <div class="card-source">June 2024, Question 4 (15 marks)</div>
+                    </div>
+                </div>
+
+                <p>Calculate ingredient quantities for community events, rounding up to whole packs.</p>
+
+                <h4>The math.ceil() Function</h4>
+                <p>When you can't order partial bags or packs, use <code class="code-inline">math.ceil()</code> to round UP.</p>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 PLS Page 13</div>
+                    <p><code class="code-inline">math.ceil(&lt;r&gt;)</code> returns the smallest integer not less than r. So <code class="code-inline">math.ceil(2.1)</code> returns 3, and <code class="code-inline">math.ceil(2.0)</code> returns 2.</p>
+                </div>
+
+                <pre><code><span class="keyword">import</span> math
+
+adults = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Enter number of adults: "</span>))
+children = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Enter number of children: "</span>))
+
+<span class="comment"># Calculate partial bags of crisps</span>
+<span class="comment"># Adults: 0.75 bags, Children: 0.33 bags</span>
+partialBags = (adults * <span class="number">0.75</span>) + (children * <span class="number">0.33</span>)
+<span class="function">print</span>(<span class="string">"Partial bags required:"</span>, partialBags)
+
+<span class="comment"># Round up to whole bags - PLS page 13</span>
+wholeBags = math.ceil(partialBags)
+<span class="function">print</span>(<span class="string">"Order"</span>, wholeBags, <span class="string">"bags of crisps"</span>)</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 6: Subprograms -->
+        <section id="subprograms">
+            <div class="section-header">
+                <div class="section-number">06</div>
+                <h2>Subprograms Examples</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🍝</div>
+                    <div>
+                        <div class="card-title">Pasta Shapes Menu System</div>
+                        <div class="card-source">June 2024, Question 5 (15 marks)</div>
+                    </div>
+                </div>
+
+                <p>A menu-driven program with functions that return values and procedures that modify arrays.</p>
+
+                <h4>PLS Page 8: Subprogram Syntax</h4>
+                <div class="grid-2">
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Procedure (no return)</div>
+                        <pre><code><span class="keyword">def</span> <span class="function">procname</span>():
+    <span class="comment"># commands</span></code></pre>
+                    </div>
+                    <div class="quick-ref">
+                        <div class="quick-ref-title">Function (with return)</div>
+                        <pre><code><span class="keyword">def</span> <span class="function">funcname</span>():
+    <span class="comment"># commands</span>
+    <span class="keyword">return</span> value</code></pre>
+                    </div>
+                </div>
+
+                <pre><code><span class="keyword">import</span> random
+
+pastaShapes = [<span class="string">"Fusilli"</span>, <span class="string">"Penne"</span>, <span class="string">"Spaghetti"</span>, <span class="string">"Farfalle"</span>]
+
+EXIT = <span class="number">0</span>
+GET_SHAPE = <span class="number">1</span>
+ADD_SHAPE = <span class="number">2</span>
+
+<span class="keyword">def</span> <span class="function">getChoice</span>():
+    <span class="comment"># Function returns user's menu choice - PLS page 8</span>
+    choice = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Enter option: "</span>))
+    <span class="keyword">return</span> choice
+
+<span class="keyword">def</span> <span class="function">getShape</span>():
+    <span class="comment"># Random index - PLS page 13: randint includes both endpoints</span>
+    index = random.randint(<span class="number">0</span>, <span class="function">len</span>(pastaShapes) - <span class="number">1</span>)
+    <span class="keyword">return</span> pastaShapes[index]
+
+<span class="keyword">def</span> <span class="function">addShape</span>():
+    <span class="comment"># Append to list - PLS page 10</span>
+    newShape = <span class="function">input</span>(<span class="string">"Enter new pasta shape: "</span>)
+    pastaShapes.append(newShape)
+
+<span class="comment"># Main program</span>
+choice = -<span class="number">1</span>
+<span class="keyword">while</span> choice != EXIT:
+    <span class="function">print</span>(<span class="string">"1. Get random shape"</span>)
+    <span class="function">print</span>(<span class="string">"2. Add new shape"</span>)
+    <span class="function">print</span>(<span class="string">"0. Exit"</span>)
+    
+    choice = getChoice()
+    
+    <span class="keyword">if</span> choice == GET_SHAPE:
+        shape = getShape()
+        <span class="function">print</span>(<span class="string">"Random shape:"</span>, shape)
+    <span class="keyword">elif</span> choice == ADD_SHAPE:
+        addShape()
+    <span class="keyword">elif</span> choice != EXIT:
+        <span class="function">print</span>(<span class="string">"Invalid option"</span>)</code></pre>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🆔</div>
+                    <div>
+                        <div class="card-title">User ID Generator with ord()</div>
+                        <div class="card-source">June 2023, Question 5 (15 marks)</div>
+                    </div>
+                </div>
+
+                <p>Generate user IDs using string manipulation and ASCII values.</p>
+
+                <h4>Understanding ord() vs int()</h4>
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 Critical Distinction (PLS Page 9)</div>
+                    <p><code class="code-inline">int("5")</code> returns <strong>5</strong> (the numeric value)<br>
+                    <code class="code-inline">ord("5")</code> returns <strong>53</strong> (the ASCII code)</p>
+                </div>
+
+                <pre><code><span class="comment"># For user "Viola Bassir" born 15/06/2005</span>
+<span class="comment"># ID = "bassirv" + sum of ASCII values of "15062005"</span>
+
+<span class="comment"># Calculate number part using ord() - PLS page 9</span>
+dob = <span class="string">"15062005"</span>
+total = <span class="number">0</span>
+<span class="keyword">for</span> char <span class="keyword">in</span> dob:
+    total = total + <span class="function">ord</span>(char)
+    <span class="comment"># ord("1")=49, ord("5")=53, ord("0")=48...</span>
+
+<span class="comment"># total = 49+53+48+54+50+48+48+53 = 403</span>
+<span class="comment"># Final ID: "bassirv403"</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Section 7: Quick Reference -->
+        <section id="quick-reference">
+            <div class="section-header">
+                <div class="section-number">07</div>
+                <h2>Quick Reference by Question Type</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Question Type</th>
+                            <th>Key PLS Sections</th>
+                            <th>Pages</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Debugging (syntax errors)</strong></td>
+                            <td>Data types, Operators, Selection/Iteration syntax</td>
+                            <td>5-7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Debugging (logic errors)</strong></td>
+                            <td>Operators (and/or), Range behaviour</td>
+                            <td>6, 7, 9</td>
+                        </tr>
+                        <tr>
+                            <td><strong>File handling</strong></td>
+                            <td>Files section, String manipulation</td>
+                            <td>8, 11</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Calculations</strong></td>
+                            <td>Arithmetic operators, Math library, Round</td>
+                            <td>6, 9, 13</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Subprograms</strong></td>
+                            <td>Subprograms section, Return values</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>String processing</strong></td>
+                            <td>String subprograms, Slicing, Format</td>
+                            <td>11-12</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Random selection</strong></td>
+                            <td>Random library module</td>
+                            <td>13</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Searching/Validation</strong></td>
+                            <td>While loops, Relational operators</td>
+                            <td>6, 7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Turtle graphics</strong></td>
+                            <td>Turtle graphics section</td>
+                            <td>14-16</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Common Mistakes to Avoid</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h4>❌ Boolean Capitalisation</h4>
+                    <p>Python uses <code class="code-inline">True</code> and <code class="code-inline">False</code> with capital letters, not <code class="code-inline">true</code> or <code class="code-inline">false</code>.</p>
+                </div>
+                <div class="card">
+                    <h4>❌ Range Endpoint</h4>
+                    <p><code class="code-inline">range(5)</code> gives 0,1,2,3,4 — it excludes the endpoint. <code class="code-inline">randint(0,4)</code> includes both endpoints.</p>
+                </div>
+                <div class="card">
+                    <h4>❌ and vs or</h4>
+                    <p>Use <code class="code-inline">or</code> when checking "outside a range". A value can't be both &lt;5 AND &gt;10.</p>
+                </div>
+                <div class="card">
+                    <h4>❌ File Returns Strings</h4>
+                    <p>Reading from files always returns strings. Convert numbers with <code class="code-inline">int()</code> or <code class="code-inline">float()</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Teaching resource for Edexcel GCSE Computer Science (1CP2)</p>
+            <p>Papers referenced: June 2022, June 2023, June 2024</p>
+            <p style="margin-top: 1rem;">Created for classroom use</p>
+        </footer>
+    </div>
+
+    <script>
+        // Scroll reveal animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .table-wrapper, .tip-box').forEach(el => {
+            el.classList.add('scroll-reveal');
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const target = document.querySelector(targetId);
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
