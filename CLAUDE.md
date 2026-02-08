@@ -16,46 +16,60 @@ python -m http.server 8000
 
 ## Architecture
 
-Static HTML pages with no framework. All pages are self-contained single files.
+Static HTML pages with no framework. All pages are self-contained single files with inline CSS and JavaScript.
 
-**Entry point**: `index.html` - Landing page using Tailwind CSS (CDN)
+**Entry point**: `index.html` - Landing page using Tailwind CSS (CDN), links to external subdomains and local resources.
 
 ### Page Types
 
 **1. Python Practice Pages** (`paper2.html`, `subroutines.html`, `turtle.html`)
-- Questions in JavaScript `questions` object: `file`, `time`, `marks`, `context`, `instruction`, `tasks`, `starterCode`, `markScheme`, `modelAnswer`
+- Questions defined in JavaScript `questions` array with: `file`, `time`, `marks`, `context`, `instruction`, `tasks`, `starterCode`, `markScheme`, `modelAnswer`
 - CodeMirror editor (Dracula theme) + Skulpt interpreter for in-browser Python
 - Turtle pages configure `Sk.TurtleGraphics = { target: 'turtle-canvas' }` for canvas rendering
 
 **2. Revision Pages** (`bitmap.html`, `sound.html`, `compression.html`, `networks.html`)
 - Interactive activities: memory games, Parsons puzzles, categorization, calculators, quizzes
-- Tab-based navigation, drag-and-drop exercises
-- Progress tracking via state management
-- Each page has unique color theme via CSS variables in `:root`
+- Tab-based navigation with `data-tab` attributes, drag-and-drop exercises
 
 **3. Forecast Exam Pages** (`Paper2_Forecast01.html`, `Paper2_Forecast02.html`)
 - Three modes: Practice (with hints), Exam (timed, no help), Marking (shows mark schemes)
-- Line-numbered code editor with Skulpt execution
+- Mode toggled via `setMode('practice'|'exam'|'marking')` function
+- Skulpt execution with custom line-numbered editor (not CodeMirror)
 - Mark schemes, model answers, and examiner comments per question
 
-**4. Mindmap Page** (`ProgrammingMindmap.html`)
+**4. Learning Game Pages** (`array-learning-game.html`)
+- Gamified exercises with score tracking, level progression, animated feedback
+- Floating orb background effects (`.glow-orb` with blur filters)
+
+**5. Reference/Guide Pages** (`command_words_guide.html`, `pls_teaching_guide.html`)
+- Tab-based content organization, exam-focused study materials
+
+**6. Mindmap Page** (`ProgrammingMindmap.html`)
 - Uses Markmap library for interactive mindmap visualization
 
 ### Scheme of Work (`/scheme-of-work/`)
 
-Markdown documents for 3-year course delivery (Craig'n'Dave resources):
-- `year-9-sow.md`, `year-10-sow.md`, `year-11-sow.md` - Week-by-week plans
-- `assessment-calendar.md`, `programming-skills-progression.md`, `homework-schedule.md`, `resource-links.md`
+Markdown documents for 3-year course delivery (297 lessons) using Craig'n'Dave resources. Includes yearly breakdowns, assessment calendar, and resource links.
+
+## Theming Pattern
+
+Each page defines its own dark theme via CSS custom properties in `:root`:
+- Background colors: `--bg-dark`, `--bg-card`, `--bg-code`
+- Accent colors: `--accent-cyan`, `--accent-purple`, `--accent-pink`, etc.
+- Text colors: `--text-primary`, `--text-secondary`, `--text-muted`
+
+Common visual elements: animated gradient backgrounds, blur effects (`.glow-orb`), glassmorphism cards with `backdrop-filter: blur()`.
 
 ## External Dependencies (CDN)
 
-- **CodeMirror 5.65.16**: Code editor with Python syntax highlighting (Dracula theme)
+- **CodeMirror 5.65.16**: Code editor with Python syntax highlighting (paper2.html, subroutines.html, turtle.html)
 - **Skulpt 1.2.0**: In-browser Python interpreter
-- **Tailwind CSS**: Styling for `index.html` only
-- **Markmap**: Mindmap visualization for `ProgrammingMindmap.html`
+- **Tailwind CSS**: `index.html` only
+- **Google Fonts**: Various (JetBrains Mono, Outfit, Space Grotesk, Poppins, etc.)
+- **Markmap**: `ProgrammingMindmap.html` only
 
 ## Code Style
 
 - CSS custom properties in `:root` for theming
-- Vanilla ES6+ JavaScript
-- Python examples use Edexcel GCSE conventions (e.g., `pPrefix` for parameters)
+- Vanilla ES6+ JavaScript (no transpilation)
+- Python examples follow Edexcel GCSE conventions (e.g., `pPrefix` for parameters)

@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity & Network Security | Edexcel GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-red: #ef4444;
+            --accent-orange: #f97316;
+            --accent-emerald: #10b981;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-yellow: #eab308;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-color: #2a2a3a;
+            --success: #00c853;
+            --error: #ff1744;
+            --gradient-1: linear-gradient(135deg, #ef4444 0%, #a855f7 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --gradient-threat: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            --gradient-protect: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(239, 68, 68, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+        .orb-1 { background: var(--accent-red); top: -100px; left: -100px; }
+        .orb-2 { background: var(--accent-purple); bottom: -100px; right: -100px; animation-delay: -10s; }
+        .orb-3 { background: var(--accent-emerald); top: 50%; left: 50%; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 40px) scale(1.05); }
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--gradient-1);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; }
+
+        .spec-refs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .spec-ref {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+        }
+
+        .progress-tracker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 600; color: var(--accent-red); }
+        .stat-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; }
+
+        .progress-bar-container { flex: 1; min-width: 200px; max-width: 400px; }
+        .progress-bar { height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gradient-1); border-radius: 10px; transition: width 0.5s; width: 0%; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-tab.active { background: var(--gradient-1); color: white; font-weight: 600; }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        .card:hover { border-color: var(--accent-purple); box-shadow: 0 0 30px rgba(168,85,247,0.1); }
+
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .card-icon { width: 50px; height: 50px; background: var(--gradient-1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .card-icon.protect { background: var(--gradient-protect); }
+        .card-title { font-size: 1.3rem; font-weight: 600; }
+
+        .card-content { color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem; }
+        .card-content p { margin-bottom: 1rem; }
+        .card-content ul { margin: 1rem 0 1rem 1.5rem; }
+        .card-content li { margin-bottom: 0.5rem; }
+        .card-content strong { color: var(--text-primary); }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(168,85,247,0.1));
+            border-left: 4px solid var(--accent-red);
+            padding: 1rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1rem 0;
+        }
+        .highlight.green {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1));
+            border-left-color: var(--accent-emerald);
+        }
+
+        .definition-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+
+        .definition-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .definition-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gradient-1); }
+        .definition-card.protect::before { background: var(--gradient-protect); }
+        .definition-card:hover { transform: translateY(-5px); border-color: var(--accent-purple); }
+        .definition-card.protect:hover { border-color: var(--accent-emerald); }
+        .definition-term { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; color: var(--accent-red); margin-bottom: 0.75rem; }
+        .definition-card.protect .definition-term { color: var(--accent-emerald); }
+        .definition-text { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        /* Malware grid */
+        .malware-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+
+        .malware-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .malware-card:hover { transform: translateY(-5px); border-color: var(--accent-red); box-shadow: 0 10px 30px rgba(239,68,68,0.1); }
+        .malware-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .malware-name { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 600; color: var(--accent-red); margin-bottom: 0.75rem; }
+        .malware-desc { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; margin-bottom: 1rem; }
+        .malware-example { background: var(--bg-dark); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; }
+        .malware-example strong { color: var(--accent-orange); }
+
+        /* Vulnerability table */
+        .vuln-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+        .vuln-table th { background: var(--gradient-1); color: white; padding: 1rem; text-align: left; font-weight: 600; }
+        .vuln-table td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
+        .vuln-table tr:hover td { background: rgba(168,85,247,0.1); }
+
+        .attack-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; }
+        .attack-badge.technical { background: rgba(239,68,68,0.2); color: #f87171; }
+        .attack-badge.social { background: rgba(249,115,22,0.2); color: #fb923c; }
+        .attack-badge.physical { background: rgba(168,85,247,0.2); color: #c084fc; }
+
+        /* Protection methods grid */
+        .protection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+
+        .protection-card {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-emerald);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        .protection-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(16,185,129,0.15); }
+        .protection-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .protection-name { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; color: var(--accent-emerald); margin-bottom: 0.75rem; }
+        .protection-desc { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; }
+        .protection-list { list-style: none; margin-top: 1rem; }
+        .protection-list li { padding: 0.4rem 0; padding-left: 1.5rem; position: relative; font-size: 0.9rem; color: var(--text-secondary); }
+        .protection-list li::before { content: '✓'; position: absolute; left: 0; color: var(--accent-emerald); font-weight: bold; }
+
+        /* Social engineering cards */
+        .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+
+        .social-card {
+            background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(239,68,68,0.1));
+            border: 2px solid var(--accent-orange);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        .social-card:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(249,115,22,0.15); }
+        .social-name { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .social-desc { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; margin-bottom: 1rem; }
+        .social-example { background: var(--bg-dark); border-radius: 8px; padding: 0.75rem 1rem; font-size: 0.85rem; font-style: italic; border-left: 3px solid var(--accent-orange); }
+
+        /* Memory Game */
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 700px; margin: 0 auto; }
+        @media (max-width: 600px) { .memory-grid { grid-template-columns: repeat(3, 1fr); } }
+        .memory-card { aspect-ratio: 1; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; text-align: center; padding: 0.5rem; transition: all 0.3s; user-select: none; }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-purple); transform: scale(1.05); }
+        .memory-card.flipped { background: var(--gradient-1); color: white; font-weight: 600; }
+        .memory-card.matched { background: var(--success); color: var(--bg-dark); font-weight: 600; cursor: default; }
+        .memory-card .card-back { font-size: 2rem; }
+        .memory-card .card-front { display: none; }
+        .memory-card.flipped .card-back, .memory-card.matched .card-back { display: none; }
+        .memory-card.flipped .card-front, .memory-card.matched .card-front { display: block; }
+
+        /* Category Game */
+        .category-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .category-box { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.25rem; min-height: 280px; }
+        .category-box.threat { border-color: var(--accent-red); }
+        .category-box.protect { border-color: var(--accent-emerald); }
+        .category-box h4 { text-align: center; padding: 0.75rem; border-radius: 10px; margin-bottom: 1rem; font-weight: 600; font-size: 0.9rem; color: white; }
+        .category-box.threat h4 { background: var(--gradient-threat); }
+        .category-box.protect h4 { background: var(--gradient-protect); }
+        .category-items { min-height: 180px; border: 2px dashed var(--border-color); border-radius: 10px; padding: 0.5rem; }
+        .category-item { background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 8px; padding: 0.6rem 0.85rem; margin-bottom: 0.4rem; cursor: grab; transition: all 0.2s; font-size: 0.85rem; }
+        .category-item:hover { border-color: var(--accent-purple); }
+        .category-item.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .category-item.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+        .category-item.dragging { opacity: 0.5; }
+
+        .items-bank { background: var(--bg-card); border: 2px solid var(--accent-yellow); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; }
+        .items-bank h4 { margin-bottom: 1rem; color: var(--accent-yellow); display: flex; align-items: center; gap: 0.5rem; }
+        .items-bank-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; min-height: 50px; }
+
+        /* Matching Game */
+        .matching-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 768px) { .matching-container { grid-template-columns: 1fr; } }
+
+        .matching-column { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; }
+        .matching-column h4 { text-align: center; margin-bottom: 1rem; padding: 0.75rem; border-radius: 10px; font-weight: 600; }
+        .matching-column.threats h4 { background: var(--gradient-threat); color: white; }
+        .matching-column.protections h4 { background: var(--gradient-protect); color: white; }
+
+        .matching-item { background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem; cursor: pointer; transition: all 0.2s; }
+        .matching-item:hover { border-color: var(--accent-purple); }
+        .matching-item.selected { border-color: var(--accent-cyan); background: rgba(6,182,212,0.1); box-shadow: 0 0 15px rgba(6,182,212,0.2); }
+        .matching-item.matched { border-color: var(--success); background: rgba(0,200,83,0.1); cursor: default; }
+        .matching-item.wrong { animation: shake 0.5s; border-color: var(--error); }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Quiz */
+        .quiz-question { background: var(--bg-card); border: 2px solid var(--border-color); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .quiz-question h4 { margin-bottom: 1.5rem; font-size: 1rem; line-height: 1.6; }
+        .quiz-question .question-number { display: inline-block; background: var(--gradient-1); color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
+        .quiz-option { padding: 1rem 1.25rem; background: var(--bg-dark); border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 1rem; }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-purple); transform: translateX(5px); }
+        .quiz-option.selected { border-color: var(--accent-purple); background: rgba(168,85,247,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+        .quiz-option.disabled { cursor: default; }
+        .option-letter { width: 32px; height: 32px; border-radius: 50%; background: var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+        .quiz-feedback { margin-top: 1rem; padding: 1rem; border-radius: 10px; display: none; font-size: 0.9rem; line-height: 1.6; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(0,200,83,0.1); border: 1px solid var(--success); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(255,23,68,0.1); border: 1px solid var(--error); color: var(--error); }
+
+        .quiz-progress { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+        .quiz-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--border-color); transition: all 0.3s; }
+        .quiz-dot.current { background: var(--accent-purple); transform: scale(1.3); }
+        .quiz-dot.correct { background: var(--success); }
+        .quiz-dot.incorrect { background: var(--error); }
+
+        .quiz-score { text-align: center; padding: 3rem; background: var(--bg-card); border-radius: 20px; border: 2px solid var(--border-color); }
+        .quiz-score h3 { font-size: 2rem; margin-bottom: 1rem; }
+        .quiz-score .score-value { font-family: 'JetBrains Mono', monospace; font-size: 4rem; font-weight: 700; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .quiz-score p { color: var(--text-secondary); margin-top: 1rem; }
+
+        .btn { padding: 1rem 2rem; border: none; border-radius: 12px; font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: var(--gradient-1); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border: 2px solid var(--border-color); }
+        .btn-secondary:hover { border-color: var(--accent-purple); background: rgba(168,85,247,0.1); }
+        .btn-success { background: var(--gradient-protect); color: white; }
+        .btn-group { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+
+        .notification { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 500; transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 100; }
+        .notification.show { transform: translateY(0); opacity: 1; }
+        .notification.success { background: var(--success); color: var(--bg-dark); }
+        .notification.error { background: var(--error); color: white; }
+
+        .game-stats { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .game-stat { text-align: center; padding: 1rem 2rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; }
+        .game-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 600; color: var(--accent-purple); }
+        .game-stat-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; margin-top: 0.25rem; }
+
+        /* Exam tips */
+        .exam-tip { background: linear-gradient(135deg, rgba(234,179,8,0.1), rgba(249,115,22,0.1)); border: 2px solid var(--accent-yellow); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; }
+        .exam-tip h4 { color: var(--accent-yellow); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .exam-tip p { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .hero { padding: 2rem 1rem; }
+            .progress-tracker { flex-direction: column; text-align: center; }
+            .progress-stats { justify-content: center; }
+            .card { padding: 1.5rem; }
+            .nav-tab { padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <div class="container">
+        <header class="hero">
+            <span class="hero-badge">Edexcel GCSE Computer Science</span>
+            <h1>Cybersecurity & Network Security</h1>
+            <p>Master threats, vulnerabilities, and protection methods to keep digital systems safe and secure.</p>
+            <div class="spec-refs">
+                <span class="spec-ref">5.2 Network Security</span>
+                <span class="spec-ref">5.3.1 Cyber Threats</span>
+                <span class="spec-ref">5.3.2 Protection Methods</span>
+            </div>
+        </header>
+
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat"><div class="stat-value" id="activitiesCompleted">0</div><div class="stat-label">Activities</div></div>
+                <div class="stat"><div class="stat-value" id="correctAnswers">0</div><div class="stat-label">Correct</div></div>
+                <div class="stat"><div class="stat-value" id="streakCount">0</div><div class="stat-label">Streak</div></div>
+            </div>
+            <div class="progress-bar-container"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="network-security">Network Security</button>
+            <button class="nav-tab" data-section="malware">Malware</button>
+            <button class="nav-tab" data-section="vulnerabilities">Vulnerabilities</button>
+            <button class="nav-tab" data-section="social">Social Engineering</button>
+            <button class="nav-tab" data-section="protection">Protection</button>
+            <button class="nav-tab" data-section="memory">Memory Game</button>
+            <button class="nav-tab" data-section="categorize">Categorize</button>
+            <button class="nav-tab" data-section="matching">Match Attack</button>
+            <button class="nav-tab" data-section="quiz">Quiz</button>
+        </nav>
+
+        <!-- Network Security Section -->
+        <div class="section active" id="network-security">
+            <div class="section-header">
+                <h2>Network Security</h2>
+                <p>Understanding why networks need protection and how to identify vulnerabilities</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔒</div>
+                    <h3 class="card-title">Why is Network Security Important?</h3>
+                </div>
+                <div class="card-content">
+                    <p><strong>Network security</strong> is the practice of protecting computer networks and their data from unauthorized access, attacks, and damage. As more of our lives move online, protecting networks has become critical.</p>
+
+                    <div class="highlight">
+                        <strong>Key Reasons for Network Security:</strong>
+                        <ul>
+                            <li><strong>Protecting sensitive data</strong> - Personal information, financial records, and business secrets must be kept confidential</li>
+                            <li><strong>Preventing financial loss</strong> - Cyberattacks can cost businesses millions in damages and lost revenue</li>
+                            <li><strong>Maintaining trust</strong> - Customers and users expect their data to be protected</li>
+                            <li><strong>Legal compliance</strong> - Laws like GDPR require organizations to protect personal data</li>
+                            <li><strong>Ensuring availability</strong> - Systems must remain accessible to authorized users</li>
+                        </ul>
+                    </div>
+
+                    <p>Without proper security, networks are vulnerable to data theft, service disruption, financial fraud, and reputational damage.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔍</div>
+                    <h3 class="card-title">Identifying Network Vulnerabilities</h3>
+                </div>
+                <div class="card-content">
+                    <p>Organizations use specialized techniques to find weaknesses in their networks before attackers can exploit them.</p>
+
+                    <div class="definition-grid">
+                        <div class="definition-card">
+                            <div class="definition-term">Penetration Testing</div>
+                            <div class="definition-text">
+                                A <strong>simulated cyberattack</strong> performed by security professionals to identify vulnerabilities. Testers attempt to breach security using the same methods as real attackers, but with permission.
+                                <br><br>
+                                <strong>Process:</strong> Planning → Scanning → Gaining Access → Maintaining Access → Analysis → Reporting
+                            </div>
+                        </div>
+                        <div class="definition-card">
+                            <div class="definition-term">Ethical Hacking</div>
+                            <div class="definition-text">
+                                <strong>Authorized hacking</strong> performed by "white hat" hackers who use their skills to help organizations. They legally break into systems to expose weaknesses and help fix them.
+                                <br><br>
+                                <strong>Key difference:</strong> Ethical hackers have written permission and report all findings to help improve security.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exam-tip">
+                        <h4>📝 Exam Tip</h4>
+                        <p>Remember: Penetration testing and ethical hacking are <strong>legal</strong> because they are authorized by the organization. The same actions without permission would be illegal under the Computer Misuse Act.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon protect">🛡️</div>
+                    <h3 class="card-title">Methods of Protecting Networks</h3>
+                </div>
+                <div class="card-content">
+                    <div class="protection-grid">
+                        <div class="protection-card">
+                            <div class="protection-icon">🔐</div>
+                            <div class="protection-name">Access Control</div>
+                            <div class="protection-desc">Restricting who can access the network and what they can do.</div>
+                            <ul class="protection-list">
+                                <li>Strong passwords and password policies</li>
+                                <li>User authentication (usernames, PINs, biometrics)</li>
+                                <li>Access levels and permissions</li>
+                                <li>Two-factor authentication (2FA)</li>
+                                <li>Account lockout after failed attempts</li>
+                            </ul>
+                        </div>
+                        <div class="protection-card">
+                            <div class="protection-icon">🏢</div>
+                            <div class="protection-name">Physical Security</div>
+                            <div class="protection-desc">Protecting the actual hardware and infrastructure.</div>
+                            <ul class="protection-list">
+                                <li>Locked server rooms</li>
+                                <li>Security cameras (CCTV)</li>
+                                <li>ID badges and access cards</li>
+                                <li>Visitor sign-in procedures</li>
+                                <li>Biometric locks (fingerprint, retina)</li>
+                            </ul>
+                        </div>
+                        <div class="protection-card">
+                            <div class="protection-icon">🧱</div>
+                            <div class="protection-name">Firewalls</div>
+                            <div class="protection-desc">A security barrier between a trusted network and untrusted networks.</div>
+                            <ul class="protection-list">
+                                <li>Monitors incoming and outgoing traffic</li>
+                                <li>Blocks unauthorized access attempts</li>
+                                <li>Uses rules to filter traffic</li>
+                                <li>Can be hardware or software based</li>
+                                <li>Creates a protected perimeter</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight green">
+                        <strong>How a Firewall Works:</strong>
+                        <p>A firewall examines all data packets trying to enter or leave a network. It checks each packet against a set of security rules. If a packet matches an "allow" rule, it passes through. If it matches a "block" rule or doesn't match any allow rule, it's stopped. This prevents malicious traffic from entering and sensitive data from leaving without authorization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Malware Section -->
+        <div class="section" id="malware">
+            <div class="section-header">
+                <h2>Malware Threats</h2>
+                <p>Understanding the different types of malicious software that threaten digital systems</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">☠️</div>
+                    <h3 class="card-title">What is Malware?</h3>
+                </div>
+                <div class="card-content">
+                    <p><strong>Malware</strong> (malicious software) is any software intentionally designed to cause damage to a computer, server, network, or user. It can steal data, spy on users, encrypt files for ransom, or simply cause destruction.</p>
+
+                    <div class="highlight">
+                        <strong>Common ways malware spreads:</strong>
+                        <ul>
+                            <li>Email attachments and links</li>
+                            <li>Downloading from untrusted websites</li>
+                            <li>Infected USB drives</li>
+                            <li>Exploiting software vulnerabilities</li>
+                            <li>Pirated software and media</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="malware-grid">
+                <div class="malware-card">
+                    <div class="malware-icon">🦠</div>
+                    <div class="malware-name">Virus</div>
+                    <div class="malware-desc">A program that <strong>attaches itself to a legitimate file</strong> and spreads when that file is shared. Requires human action to activate and spread.</div>
+                    <div class="malware-example"><strong>Example:</strong> A virus attached to a Word document that infects your computer when you open it, then spreads to other documents you share.</div>
+                </div>
+
+                <div class="malware-card">
+                    <div class="malware-icon">🐛</div>
+                    <div class="malware-name">Worm</div>
+                    <div class="malware-desc">A <strong>self-replicating</strong> program that spreads across networks automatically <strong>without needing a host file</strong> or human action.</div>
+                    <div class="malware-example"><strong>Example:</strong> The "ILOVEYOU" worm spread via email, automatically sending itself to everyone in the victim's contact list.</div>
+                </div>
+
+                <div class="malware-card">
+                    <div class="malware-icon">🐴</div>
+                    <div class="malware-name">Trojan</div>
+                    <div class="malware-desc">Malware <strong>disguised as legitimate software</strong>. Users are tricked into installing it, thinking it's a useful program.</div>
+                    <div class="malware-example"><strong>Example:</strong> A free game download that secretly installs a backdoor, allowing hackers to access your computer remotely.</div>
+                </div>
+
+                <div class="malware-card">
+                    <div class="malware-icon">💰</div>
+                    <div class="malware-name">Ransomware</div>
+                    <div class="malware-desc"><strong>Encrypts the victim's files</strong> and demands payment (ransom) to decrypt them. Often demands payment in cryptocurrency.</div>
+                    <div class="malware-example"><strong>Example:</strong> WannaCry attacked the NHS in 2017, encrypting patient records and demanding Bitcoin payment to restore access.</div>
+                </div>
+
+                <div class="malware-card">
+                    <div class="malware-icon">⌨️</div>
+                    <div class="malware-name">Keylogger</div>
+                    <div class="malware-desc"><strong>Records every keystroke</strong> typed on the infected device. Used to steal passwords, credit card numbers, and personal messages.</div>
+                    <div class="malware-example"><strong>Example:</strong> A keylogger captures your online banking password as you type it, sending it to a cybercriminal.</div>
+                </div>
+
+                <div class="malware-card">
+                    <div class="malware-icon">👁️</div>
+                    <div class="malware-name">Spyware</div>
+                    <div class="malware-desc"><strong>Secretly monitors user activity</strong> and collects personal information without consent. Can track browsing, capture screenshots, or access webcams.</div>
+                    <div class="malware-example"><strong>Example:</strong> Spyware installed on a phone tracks GPS location, reads messages, and records calls without the user knowing.</div>
+                </div>
+            </div>
+
+            <div class="exam-tip">
+                <h4>📝 Exam Tip</h4>
+                <p><strong>Key differences to remember:</strong> Viruses need a host file and human action to spread. Worms spread automatically without human help. Trojans look like normal software but hide malicious code inside.</p>
+            </div>
+        </div>
+
+        <!-- Vulnerabilities Section -->
+        <div class="section" id="vulnerabilities">
+            <div class="section-header">
+                <h2>Technical Vulnerabilities</h2>
+                <p>How hackers exploit weaknesses in systems and software</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚠️</div>
+                    <h3 class="card-title">Exploiting Technical Vulnerabilities</h3>
+                </div>
+                <div class="card-content">
+                    <p>Hackers look for weaknesses in software and systems that they can exploit to gain unauthorized access or cause damage.</p>
+
+                    <table class="vuln-table">
+                        <thead>
+                            <tr>
+                                <th>Vulnerability</th>
+                                <th>Description</th>
+                                <th>How Hackers Exploit It</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="attack-badge technical">Unpatched Software</span></td>
+                                <td>Software that hasn't been updated with the latest security fixes</td>
+                                <td>Hackers use known exploits for old vulnerabilities that have already been fixed in updates</td>
+                            </tr>
+                            <tr>
+                                <td><span class="attack-badge technical">Out-of-date Anti-malware</span></td>
+                                <td>Security software with outdated virus definitions</td>
+                                <td>New malware can slip past because the software doesn't recognize it</td>
+                            </tr>
+                            <tr>
+                                <td><span class="attack-badge technical">Zero-day Exploits</span></td>
+                                <td>Vulnerabilities unknown to the software developer</td>
+                                <td>Attacks before any patch exists, giving victims "zero days" to prepare</td>
+                            </tr>
+                            <tr>
+                                <td><span class="attack-badge technical">Weak Passwords</span></td>
+                                <td>Simple or commonly used passwords</td>
+                                <td>Brute force attacks and dictionary attacks to guess passwords</td>
+                            </tr>
+                            <tr>
+                                <td><span class="attack-badge technical">SQL Injection</span></td>
+                                <td>Poorly coded websites that don't validate input</td>
+                                <td>Insert malicious database commands through web forms</td>
+                            </tr>
+                            <tr>
+                                <td><span class="attack-badge technical">Open Ports</span></td>
+                                <td>Unnecessary network services running</td>
+                                <td>Scan for open ports and exploit vulnerable services</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="highlight">
+                        <strong>Why Updates Matter:</strong>
+                        <p>When a security flaw is discovered, software companies release patches to fix it. However, once a patch is released, hackers can reverse-engineer it to understand the vulnerability. This creates a race between users updating their systems and hackers exploiting those who haven't updated.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔓</div>
+                    <h3 class="card-title">Common Attack Methods</h3>
+                </div>
+                <div class="card-content">
+                    <div class="definition-grid">
+                        <div class="definition-card">
+                            <div class="definition-term">Brute Force Attack</div>
+                            <div class="definition-text">Systematically trying every possible password combination until finding the correct one. Modern computers can try millions of combinations per second.</div>
+                        </div>
+                        <div class="definition-card">
+                            <div class="definition-term">Dictionary Attack</div>
+                            <div class="definition-text">Using a list of common words and passwords to try to gain access. Faster than brute force because it targets likely passwords first.</div>
+                        </div>
+                        <div class="definition-card">
+                            <div class="definition-term">Denial of Service (DoS)</div>
+                            <div class="definition-text">Flooding a network or server with traffic to make it unavailable to legitimate users. DDoS uses multiple attacking computers.</div>
+                        </div>
+                        <div class="definition-card">
+                            <div class="definition-term">Man-in-the-Middle</div>
+                            <div class="definition-text">Intercepting communications between two parties to eavesdrop or alter messages without either party knowing.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Engineering Section -->
+        <div class="section" id="social">
+            <div class="section-header">
+                <h2>Social Engineering</h2>
+                <p>How attackers manipulate people rather than technology</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🎭</div>
+                    <h3 class="card-title">What is Social Engineering?</h3>
+                </div>
+                <div class="card-content">
+                    <p><strong>Social engineering</strong> is the art of manipulating people into revealing confidential information or performing actions that compromise security. Instead of attacking systems directly, social engineers exploit <strong>human psychology</strong> and trust.</p>
+
+                    <div class="highlight">
+                        <strong>Why it works:</strong>
+                        <ul>
+                            <li>People naturally want to be helpful</li>
+                            <li>Fear and urgency cloud judgment</li>
+                            <li>Authority figures are trusted</li>
+                            <li>Curiosity can override caution</li>
+                            <li>People often take shortcuts under pressure</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social-grid">
+                <div class="social-card">
+                    <div class="social-name">🎣 Phishing</div>
+                    <div class="social-desc">Sending fraudulent emails that appear to be from reputable sources to steal sensitive data like login credentials or credit card numbers.</div>
+                    <div class="social-example">"Your account has been compromised! Click here immediately to verify your details and avoid suspension."</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">📱 Smishing</div>
+                    <div class="social-desc">Phishing via SMS text messages. Attackers send texts with malicious links or requests for personal information.</div>
+                    <div class="social-example">"URGENT: Your bank account is locked. Reply with your PIN to unlock or call this number immediately."</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">📞 Vishing</div>
+                    <div class="social-desc">Voice phishing using phone calls. Attackers pretend to be from banks, tech support, or government agencies.</div>
+                    <div class="social-example">"This is Microsoft calling. We've detected a virus on your computer. Please give us remote access to fix it."</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">🪝 Baiting</div>
+                    <div class="social-desc">Leaving malware-infected devices (like USB drives) in public places, hoping curiosity leads someone to plug them in.</div>
+                    <div class="social-example">A USB drive labeled "Confidential - Salary Information" left in a company parking lot.</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">🚪 Tailgating</div>
+                    <div class="social-desc">Following an authorized person through a secure door without using credentials. Also called "piggybacking".</div>
+                    <div class="social-example">Someone carrying boxes asks an employee to hold the security door open because "their hands are full."</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">🎭 Pretexting</div>
+                    <div class="social-desc">Creating a fabricated scenario to engage a victim and gain their trust to steal information.</div>
+                    <div class="social-example">"Hi, I'm from IT. We're updating the system and need your password to migrate your account."</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">👀 Shoulder Surfing</div>
+                    <div class="social-desc">Looking over someone's shoulder to see confidential information like PINs, passwords, or sensitive documents.</div>
+                    <div class="social-example">Watching someone enter their PIN at an ATM or type their password on public transport.</div>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-name">🗑️ Dumpster Diving</div>
+                    <div class="social-desc">Searching through trash to find confidential information that wasn't properly shredded or destroyed.</div>
+                    <div class="social-example">Finding discarded bank statements, old hard drives, or documents with passwords written on them.</div>
+                </div>
+            </div>
+
+            <div class="exam-tip">
+                <h4>📝 Exam Tip</h4>
+                <p>Social engineering attacks exploit <strong>human weaknesses</strong>, not technical ones. The best defense is user education and awareness training. Remember the different types: Phishing (email), Smishing (SMS), Vishing (voice/phone).</p>
+            </div>
+        </div>
+
+        <!-- Protection Section -->
+        <div class="section" id="protection">
+            <div class="section-header">
+                <h2>Protection Methods</h2>
+                <p>How to protect digital systems and data from cyber threats</p>
+            </div>
+
+            <div class="protection-grid">
+                <div class="protection-card">
+                    <div class="protection-icon">🛡️</div>
+                    <div class="protection-name">Anti-malware Software</div>
+                    <div class="protection-desc">Software that detects, prevents, and removes malicious software from computers and networks.</div>
+                    <ul class="protection-list">
+                        <li>Real-time scanning of files and downloads</li>
+                        <li>Regular full-system scans</li>
+                        <li>Automatic updates for latest threat definitions</li>
+                        <li>Quarantine suspicious files</li>
+                        <li>Includes antivirus, anti-spyware, and anti-ransomware</li>
+                    </ul>
+                </div>
+
+                <div class="protection-card">
+                    <div class="protection-icon">🔐</div>
+                    <div class="protection-name">Encryption</div>
+                    <div class="protection-desc">Converting data into a coded format that can only be read with the correct decryption key.</div>
+                    <ul class="protection-list">
+                        <li>Protects data in transit (HTTPS, VPN)</li>
+                        <li>Protects data at rest (encrypted drives)</li>
+                        <li>End-to-end encryption for messages</li>
+                        <li>Even if data is stolen, it's unreadable</li>
+                        <li>Uses algorithms like AES, RSA</li>
+                    </ul>
+                </div>
+
+                <div class="protection-card">
+                    <div class="protection-icon">📋</div>
+                    <div class="protection-name">Acceptable Use Policies (AUP)</div>
+                    <div class="protection-desc">Rules that define how users may use an organization's computer systems and network.</div>
+                    <ul class="protection-list">
+                        <li>Defines acceptable and prohibited activities</li>
+                        <li>Password requirements and policies</li>
+                        <li>Rules for email and internet use</li>
+                        <li>Consequences for policy violations</li>
+                        <li>Signed by users to confirm understanding</li>
+                    </ul>
+                </div>
+
+                <div class="protection-card">
+                    <div class="protection-icon">💾</div>
+                    <div class="protection-name">Backup & Recovery</div>
+                    <div class="protection-desc">Creating copies of data that can be restored if the original is lost, corrupted, or encrypted by ransomware.</div>
+                    <ul class="protection-list">
+                        <li>Regular automated backups</li>
+                        <li>3-2-1 rule: 3 copies, 2 media types, 1 offsite</li>
+                        <li>Test recovery procedures regularly</li>
+                        <li>Air-gapped backups (offline, disconnected)</li>
+                        <li>Essential for ransomware protection</li>
+                    </ul>
+                </div>
+
+                <div class="protection-card">
+                    <div class="protection-icon">🔥</div>
+                    <div class="protection-name">Firewalls</div>
+                    <div class="protection-desc">Security barriers that monitor and control network traffic based on predetermined security rules.</div>
+                    <ul class="protection-list">
+                        <li>Blocks unauthorized incoming connections</li>
+                        <li>Prevents data exfiltration</li>
+                        <li>Can be hardware or software based</li>
+                        <li>Packet filtering and inspection</li>
+                        <li>First line of defense for networks</li>
+                    </ul>
+                </div>
+
+                <div class="protection-card">
+                    <div class="protection-icon">🎓</div>
+                    <div class="protection-name">User Education</div>
+                    <div class="protection-desc">Training users to recognize and avoid security threats, especially social engineering attacks.</div>
+                    <ul class="protection-list">
+                        <li>Phishing awareness training</li>
+                        <li>Password best practices</li>
+                        <li>Safe browsing habits</li>
+                        <li>Reporting suspicious activity</li>
+                        <li>Regular security updates and reminders</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon protect">🔑</div>
+                    <h3 class="card-title">Additional Security Measures</h3>
+                </div>
+                <div class="card-content">
+                    <div class="definition-grid">
+                        <div class="definition-card protect">
+                            <div class="definition-term">Two-Factor Authentication (2FA)</div>
+                            <div class="definition-text">Requires two different types of verification: something you know (password) + something you have (phone code) or something you are (fingerprint).</div>
+                        </div>
+                        <div class="definition-card protect">
+                            <div class="definition-term">Software Updates</div>
+                            <div class="definition-text">Keeping all software up-to-date ensures known vulnerabilities are patched before attackers can exploit them.</div>
+                        </div>
+                        <div class="definition-card protect">
+                            <div class="definition-term">Network Monitoring</div>
+                            <div class="definition-text">Continuously watching network traffic for unusual activity that might indicate an attack or breach.</div>
+                        </div>
+                        <div class="definition-card protect">
+                            <div class="definition-term">Access Controls</div>
+                            <div class="definition-text">Limiting user permissions to only what they need for their job (principle of least privilege).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exam-tip">
+                <h4>📝 Exam Tip</h4>
+                <p>When asked about protection methods, always explain <strong>what</strong> the method is and <strong>how</strong> it protects against specific threats. For example: "Encryption protects data by converting it to unreadable code, so even if hackers steal the data, they cannot read it without the decryption key."</p>
+            </div>
+        </div>
+
+        <!-- Memory Game Section -->
+        <div class="section" id="memory">
+            <div class="section-header">
+                <h2>Memory Game</h2>
+                <p>Match the cybersecurity terms with their definitions</p>
+            </div>
+
+            <div class="game-stats">
+                <div class="game-stat">
+                    <div class="game-stat-value" id="memoryMoves">0</div>
+                    <div class="game-stat-label">Moves</div>
+                </div>
+                <div class="game-stat">
+                    <div class="game-stat-value" id="memoryPairs">0/8</div>
+                    <div class="game-stat-label">Pairs Found</div>
+                </div>
+            </div>
+
+            <div class="memory-grid" id="memoryGrid"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="initMemoryGame()">🔄 New Game</button>
+            </div>
+        </div>
+
+        <!-- Categorize Section -->
+        <div class="section" id="categorize">
+            <div class="section-header">
+                <h2>Categorize</h2>
+                <p>Drag each item into the correct category: Threat or Protection</p>
+            </div>
+
+            <div class="items-bank">
+                <h4>📦 Items Bank - Drag items to the correct category</h4>
+                <div class="items-bank-grid" id="itemsBank"></div>
+            </div>
+
+            <div class="category-container">
+                <div class="category-box threat">
+                    <h4>☠️ THREATS</h4>
+                    <div class="category-items" id="threatCategory" ondrop="drop(event, 'threat')" ondragover="allowDrop(event)"></div>
+                </div>
+                <div class="category-box protect">
+                    <h4>🛡️ PROTECTION</h4>
+                    <div class="category-items" id="protectCategory" ondrop="drop(event, 'protection')" ondragover="allowDrop(event)"></div>
+            </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="checkCategories()">✓ Check Answers</button>
+                <button class="btn btn-secondary" onclick="initCategoryGame()">🔄 Reset</button>
+            </div>
+        </div>
+
+        <!-- Matching Section -->
+        <div class="section" id="matching">
+            <div class="section-header">
+                <h2>Match the Attack to Protection</h2>
+                <p>Click an attack, then click the best protection method against it</p>
+            </div>
+
+            <div class="game-stats">
+                <div class="game-stat">
+                    <div class="game-stat-value" id="matchScore">0/6</div>
+                    <div class="game-stat-label">Matched</div>
+                </div>
+            </div>
+
+            <div class="matching-container">
+                <div class="matching-column threats">
+                    <h4>⚠️ Attacks & Threats</h4>
+                    <div id="attackColumn"></div>
+                </div>
+                <div class="matching-column protections">
+                    <h4>🛡️ Protection Methods</h4>
+                    <div id="protectionColumn"></div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="initMatchingGame()">🔄 Reset Game</button>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="section" id="quiz">
+            <div class="section-header">
+                <h2>Knowledge Quiz</h2>
+                <p>Test your understanding of cybersecurity concepts</p>
+            </div>
+
+            <div class="quiz-progress" id="quizProgress"></div>
+            <div id="quizContainer"></div>
+            <div class="btn-group" id="quizButtons">
+                <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display:none;">Next Question →</button>
+                <button class="btn btn-secondary" onclick="initQuiz()">🔄 Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Progress tracking
+        let stats = {
+            activitiesCompleted: 0,
+            correctAnswers: 0,
+            streak: 0,
+            totalActivities: 4
+        };
+
+        function updateStats() {
+            document.getElementById('activitiesCompleted').textContent = stats.activitiesCompleted;
+            document.getElementById('correctAnswers').textContent = stats.correctAnswers;
+            document.getElementById('streakCount').textContent = stats.streak;
+            document.getElementById('progressFill').style.width = `${(stats.activitiesCompleted / stats.totalActivities) * 100}%`;
+        }
+
+        function showNotification(message, type) {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.className = `notification ${type} show`;
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+
+        // Tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.section).classList.add('active');
+            });
+        });
+
+        // Memory Game
+        const memoryPairs = [
+            { term: 'Virus', def: 'Attaches to files, needs human action' },
+            { term: 'Worm', def: 'Self-replicates across networks' },
+            { term: 'Trojan', def: 'Disguised as legitimate software' },
+            { term: 'Ransomware', def: 'Encrypts files, demands payment' },
+            { term: 'Phishing', def: 'Fake emails to steal data' },
+            { term: 'Firewall', def: 'Monitors network traffic' },
+            { term: 'Encryption', def: 'Converts data to coded format' },
+            { term: 'Keylogger', def: 'Records all keystrokes' }
+        ];
+
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let canFlip = true;
+
+        function initMemoryGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            memoryCards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            moves = 0;
+            canFlip = true;
+
+            document.getElementById('memoryMoves').textContent = '0';
+            document.getElementById('memoryPairs').textContent = '0/8';
+
+            // Create card pairs
+            memoryPairs.forEach((pair, i) => {
+                memoryCards.push({ id: i * 2, type: 'term', content: pair.term, pairId: i });
+                memoryCards.push({ id: i * 2 + 1, type: 'def', content: pair.def, pairId: i });
+            });
+
+            // Shuffle
+            memoryCards.sort(() => Math.random() - 0.5);
+
+            // Create DOM elements
+            memoryCards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.dataset.id = card.id;
+                cardEl.innerHTML = `<span class="card-back">🔒</span><span class="card-front">${card.content}</span>`;
+                cardEl.addEventListener('click', () => flipCard(cardEl, card));
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(element, card) {
+            if (!canFlip || element.classList.contains('flipped') || element.classList.contains('matched')) return;
+
+            element.classList.add('flipped');
+            flippedCards.push({ element, card });
+
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('memoryMoves').textContent = moves;
+                canFlip = false;
+
+                const [first, second] = flippedCards;
+
+                if (first.card.pairId === second.card.pairId && first.card.type !== second.card.type) {
+                    // Match!
+                    setTimeout(() => {
+                        first.element.classList.add('matched');
+                        second.element.classList.add('matched');
+                        matchedPairs++;
+                        document.getElementById('memoryPairs').textContent = `${matchedPairs}/8`;
+                        flippedCards = [];
+                        canFlip = true;
+                        stats.correctAnswers++;
+                        stats.streak++;
+                        updateStats();
+
+                        if (matchedPairs === 8) {
+                            stats.activitiesCompleted++;
+                            updateStats();
+                            showNotification(`Completed in ${moves} moves!`, 'success');
+                        }
+                    }, 500);
+                } else {
+                    // No match
+                    setTimeout(() => {
+                        first.element.classList.remove('flipped');
+                        second.element.classList.remove('flipped');
+                        flippedCards = [];
+                        canFlip = true;
+                        stats.streak = 0;
+                        updateStats();
+                    }, 1000);
+                }
+            }
+        }
+
+        // Category Game
+        const categoryItems = [
+            { name: 'Virus', category: 'threat' },
+            { name: 'Firewall', category: 'protection' },
+            { name: 'Ransomware', category: 'threat' },
+            { name: 'Encryption', category: 'protection' },
+            { name: 'Phishing', category: 'threat' },
+            { name: 'Anti-malware', category: 'protection' },
+            { name: 'Keylogger', category: 'threat' },
+            { name: 'Backup', category: 'protection' },
+            { name: 'Trojan', category: 'threat' },
+            { name: '2FA', category: 'protection' },
+            { name: 'Worm', category: 'threat' },
+            { name: 'AUP', category: 'protection' }
+        ];
+
+        function initCategoryGame() {
+            const bank = document.getElementById('itemsBank');
+            const threatCat = document.getElementById('threatCategory');
+            const protectCat = document.getElementById('protectCategory');
+
+            bank.innerHTML = '';
+            threatCat.innerHTML = '';
+            protectCat.innerHTML = '';
+
+            const shuffled = [...categoryItems].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((item, i) => {
+                const el = document.createElement('div');
+                el.className = 'category-item';
+                el.textContent = item.name;
+                el.draggable = true;
+                el.dataset.category = item.category;
+                el.dataset.id = i;
+                el.ondragstart = (e) => {
+                    e.dataTransfer.setData('text', i);
+                    el.classList.add('dragging');
+                };
+                el.ondragend = () => el.classList.remove('dragging');
+                bank.appendChild(el);
+            });
+        }
+
+        function allowDrop(e) { e.preventDefault(); }
+
+        function drop(e, targetCategory) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text');
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item && !item.classList.contains('correct')) {
+                e.target.closest('.category-items').appendChild(item);
+            }
+        }
+
+        function checkCategories() {
+            let correct = 0;
+            let total = categoryItems.length;
+
+            document.querySelectorAll('.category-item').forEach(item => {
+                const parent = item.parentElement;
+                const expectedCategory = item.dataset.category;
+
+                item.classList.remove('correct', 'incorrect');
+
+                if (parent.id === 'threatCategory' && expectedCategory === 'threat') {
+                    item.classList.add('correct');
+                    correct++;
+                } else if (parent.id === 'protectCategory' && expectedCategory === 'protection') {
+                    item.classList.add('correct');
+                    correct++;
+                } else if (parent.id !== 'itemsBank') {
+                    item.classList.add('incorrect');
+                }
+            });
+
+            if (correct === total) {
+                stats.activitiesCompleted++;
+                stats.correctAnswers += correct;
+                updateStats();
+                showNotification('All correct! Well done!', 'success');
+            } else {
+                showNotification(`${correct}/${total} correct. Try again!`, 'error');
+            }
+        }
+
+        // Matching Game
+        const matchingPairs = [
+            { attack: 'Ransomware', protection: 'Backup & Recovery', explanation: 'Backups let you restore data without paying ransom' },
+            { attack: 'Phishing', protection: 'User Education', explanation: 'Training helps users recognize fake emails' },
+            { attack: 'Malware', protection: 'Anti-malware Software', explanation: 'Detects and removes malicious software' },
+            { attack: 'Data Interception', protection: 'Encryption', explanation: 'Encrypted data is unreadable if intercepted' },
+            { attack: 'Unauthorized Access', protection: 'Firewall', explanation: 'Blocks unauthorized network connections' },
+            { attack: 'Password Attack', protection: 'Two-Factor Auth', explanation: 'Second factor needed even if password stolen' }
+        ];
+
+        let selectedAttack = null;
+        let matchedCount = 0;
+
+        function initMatchingGame() {
+            const attackCol = document.getElementById('attackColumn');
+            const protectCol = document.getElementById('protectionColumn');
+            attackCol.innerHTML = '';
+            protectCol.innerHTML = '';
+            selectedAttack = null;
+            matchedCount = 0;
+            document.getElementById('matchScore').textContent = '0/6';
+
+            const attacks = [...matchingPairs].sort(() => Math.random() - 0.5);
+            const protections = [...matchingPairs].sort(() => Math.random() - 0.5);
+
+            attacks.forEach((pair, i) => {
+                const el = document.createElement('div');
+                el.className = 'matching-item';
+                el.textContent = pair.attack;
+                el.dataset.attack = pair.attack;
+                el.onclick = () => selectAttack(el, pair);
+                attackCol.appendChild(el);
+            });
+
+            protections.forEach((pair, i) => {
+                const el = document.createElement('div');
+                el.className = 'matching-item';
+                el.textContent = pair.protection;
+                el.dataset.protection = pair.protection;
+                el.onclick = () => selectProtection(el, pair);
+                protectCol.appendChild(el);
+            });
+        }
+
+        function selectAttack(el, pair) {
+            if (el.classList.contains('matched')) return;
+            document.querySelectorAll('#attackColumn .matching-item').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAttack = { element: el, data: pair };
+        }
+
+        function selectProtection(el, pair) {
+            if (!selectedAttack || el.classList.contains('matched')) return;
+
+            if (selectedAttack.data.attack === pair.attack) {
+                selectedAttack.element.classList.remove('selected');
+                selectedAttack.element.classList.add('matched');
+                el.classList.add('matched');
+                matchedCount++;
+                document.getElementById('matchScore').textContent = `${matchedCount}/6`;
+                stats.correctAnswers++;
+                stats.streak++;
+                updateStats();
+
+                if (matchedCount === 6) {
+                    stats.activitiesCompleted++;
+                    updateStats();
+                    showNotification('Perfect! All matched correctly!', 'success');
+                }
+                selectedAttack = null;
+            } else {
+                el.classList.add('wrong');
+                selectedAttack.element.classList.add('wrong');
+                stats.streak = 0;
+                updateStats();
+                setTimeout(() => {
+                    el.classList.remove('wrong');
+                    selectedAttack.element.classList.remove('wrong', 'selected');
+                    selectedAttack = null;
+                }, 500);
+            }
+        }
+
+        // Quiz
+        const quizQuestions = [
+            {
+                question: "Which type of malware disguises itself as legitimate software to trick users into installing it?",
+                options: ["Virus", "Worm", "Trojan", "Ransomware"],
+                correct: 2,
+                explanation: "A Trojan (named after the Trojan Horse) appears to be useful software but contains hidden malicious code."
+            },
+            {
+                question: "What is the main difference between a virus and a worm?",
+                options: [
+                    "Viruses are more dangerous than worms",
+                    "Worms can self-replicate without human action, viruses need a host file",
+                    "Viruses spread faster than worms",
+                    "Worms only affect mobile devices"
+                ],
+                correct: 1,
+                explanation: "Worms can spread automatically across networks without needing a host file or human action, while viruses need to attach to files and require users to spread them."
+            },
+            {
+                question: "Which social engineering attack involves sending fraudulent text messages?",
+                options: ["Phishing", "Vishing", "Smishing", "Pretexting"],
+                correct: 2,
+                explanation: "Smishing is SMS phishing - sending fraudulent text messages to steal information or spread malware."
+            },
+            {
+                question: "Why is it important to keep anti-malware software up to date?",
+                options: [
+                    "To make the computer run faster",
+                    "To recognize new malware threats",
+                    "To save disk space",
+                    "To improve the user interface"
+                ],
+                correct: 1,
+                explanation: "Anti-malware software needs regular updates to its virus definitions so it can recognize and protect against newly discovered malware."
+            },
+            {
+                question: "What does a firewall do?",
+                options: [
+                    "Encrypts all files on the computer",
+                    "Removes viruses from infected files",
+                    "Monitors and controls network traffic based on security rules",
+                    "Creates backup copies of important data"
+                ],
+                correct: 2,
+                explanation: "A firewall monitors incoming and outgoing network traffic and blocks unauthorized access based on predetermined security rules."
+            },
+            {
+                question: "Which protection method would be MOST effective against ransomware?",
+                options: [
+                    "Stronger passwords",
+                    "Regular backups stored offline",
+                    "Faster internet connection",
+                    "More RAM in the computer"
+                ],
+                correct: 1,
+                explanation: "Regular backups stored offline (air-gapped) mean you can restore your data without paying the ransom if your files are encrypted."
+            },
+            {
+                question: "What is penetration testing?",
+                options: [
+                    "Installing antivirus software",
+                    "A simulated cyberattack to find vulnerabilities",
+                    "Encrypting sensitive data",
+                    "Training users about phishing"
+                ],
+                correct: 1,
+                explanation: "Penetration testing is an authorized simulated attack on a system to identify security vulnerabilities before real attackers can exploit them."
+            },
+            {
+                question: "What type of malware records every key pressed on a keyboard?",
+                options: ["Spyware", "Ransomware", "Keylogger", "Adware"],
+                correct: 2,
+                explanation: "A keylogger records all keystrokes, which can capture passwords, credit card numbers, and other sensitive information as users type."
+            },
+            {
+                question: "Which is an example of physical security?",
+                options: [
+                    "Installing a firewall",
+                    "Encrypting files",
+                    "Locked server room with ID card access",
+                    "Using strong passwords"
+                ],
+                correct: 2,
+                explanation: "Physical security protects the actual hardware - locked rooms, security cameras, and ID badges prevent unauthorized physical access to equipment."
+            },
+            {
+                question: "What is an Acceptable Use Policy (AUP)?",
+                options: [
+                    "Software that blocks malware",
+                    "Rules defining how users may use computer systems",
+                    "A type of encryption algorithm",
+                    "A backup procedure"
+                ],
+                correct: 1,
+                explanation: "An AUP is a document outlining rules and guidelines for using an organization's computer systems, including what activities are allowed and prohibited."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let quizScore = 0;
+        let quizAnswered = false;
+
+        function initQuiz() {
+            currentQuestion = 0;
+            quizScore = 0;
+            quizAnswered = false;
+            renderQuizProgress();
+            renderQuestion();
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        function renderQuizProgress() {
+            const progress = document.getElementById('quizProgress');
+            progress.innerHTML = '';
+            quizQuestions.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = `quiz-dot ${i === currentQuestion ? 'current' : ''}`;
+                dot.id = `dot-${i}`;
+                progress.appendChild(dot);
+            });
+        }
+
+        function renderQuestion() {
+            const container = document.getElementById('quizContainer');
+
+            if (currentQuestion >= quizQuestions.length) {
+                const percentage = Math.round((quizScore / quizQuestions.length) * 100);
+                container.innerHTML = `
+                    <div class="quiz-score">
+                        <h3>Quiz Complete!</h3>
+                        <div class="score-value">${quizScore}/${quizQuestions.length}</div>
+                        <p>${percentage >= 80 ? 'Excellent work! You have a strong understanding of cybersecurity.' :
+                           percentage >= 60 ? 'Good effort! Review the topics you missed.' :
+                           'Keep studying! Review the theory sections and try again.'}</p>
+                    </div>
+                `;
+                document.getElementById('nextBtn').style.display = 'none';
+
+                if (quizScore >= quizQuestions.length * 0.8) {
+                    stats.activitiesCompleted++;
+                    updateStats();
+                }
+                return;
+            }
+
+            const q = quizQuestions[currentQuestion];
+            quizAnswered = false;
+
+            container.innerHTML = `
+                <div class="quiz-question">
+                    <span class="question-number">Question ${currentQuestion + 1} of ${quizQuestions.length}</span>
+                    <h4>${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, i) => `
+                            <div class="quiz-option" onclick="selectAnswer(${i})" data-index="${i}">
+                                <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="quiz-feedback" id="feedback"></div>
+                </div>
+            `;
+        }
+
+        function selectAnswer(index) {
+            if (quizAnswered) return;
+            quizAnswered = true;
+
+            const q = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            const feedback = document.getElementById('feedback');
+            const dot = document.getElementById(`dot-${currentQuestion}`);
+
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            if (index === q.correct) {
+                options[index].classList.add('correct');
+                feedback.className = 'quiz-feedback correct show';
+                feedback.innerHTML = `✓ Correct! ${q.explanation}`;
+                dot.classList.add('correct');
+                quizScore++;
+                stats.correctAnswers++;
+                stats.streak++;
+            } else {
+                options[index].classList.add('incorrect');
+                options[q.correct].classList.add('correct');
+                feedback.className = 'quiz-feedback incorrect show';
+                feedback.innerHTML = `✗ Incorrect. ${q.explanation}`;
+                dot.classList.add('incorrect');
+                stats.streak = 0;
+            }
+
+            updateStats();
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            renderQuizProgress();
+            renderQuestion();
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+
+        // Initialize all games on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initMemoryGame();
+            initCategoryGame();
+            initMatchingGame();
+            initQuiz();
+            updateStats();
+        });
+    </script>
+</body>
+</html>
