@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper 1 Answer Builder | GCSE Computer Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0a0a0f;
+    --bg-card: #12121a;
+    --bg-card-hover: #1a1a25;
+    --accent-purple: #a855f7;
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-emerald: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6a6a7a;
+    --border-color: #2a2a3a;
+    --success: #10b981;
+    --partial: #f59e0b;
+    --error: #ef4444;
+    --gradient-1: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+    --gradient-2: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Animated background */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    z-index: 0;
+    animation: float 20s ease-in-out infinite;
+}
+.orb-1 { background: var(--accent-purple); top: -100px; left: -100px; }
+.orb-2 { background: var(--accent-blue); bottom: -100px; right: -100px; animation-delay: -10s; }
+.orb-3 { background: var(--accent-cyan); top: 50%; left: 50%; animation-delay: -5s; }
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(50px, -50px) scale(1.1); }
+    50% { transform: translate(-30px, 30px) scale(0.9); }
+    75% { transform: translate(40px, 40px) scale(1.05); }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+}
+
+.header-badge {
+    display: inline-block;
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+}
+
+.header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Progress bar */
+.progress-container {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.progress-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.progress-dot.active {
+    border-color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.2);
+    color: var(--accent-purple);
+}
+
+.progress-dot.completed {
+    border-color: var(--success);
+    background: var(--success);
+    color: var(--bg-dark);
+}
+
+.progress-dot.partial {
+    border-color: var(--partial);
+    background: var(--partial);
+    color: var(--bg-dark);
+}
+
+/* Score display */
+.score-display {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.score-item {
+    text-align: center;
+    padding: 1rem 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.score-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.score-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+/* Question card */
+.question-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.question-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.question-number {
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.question-marks {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent-amber);
+}
+
+.question-topic {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.question-text {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    padding: 1.5rem;
+    background: var(--bg-dark);
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-purple);
+}
+
+/* Game area */
+.game-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+    .game-area { grid-template-columns: 1fr; }
+}
+
+.sentence-bank, .answer-area {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    min-height: 400px;
+}
+
+.area-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.area-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.sentence-bank .area-icon { background: rgba(168, 85, 247, 0.2); }
+.answer-area .area-icon { background: rgba(16, 185, 129, 0.2); }
+
+.area-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.area-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sentences-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 300px;
+}
+
+.sentence-item {
+    background: var(--bg-dark);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    cursor: grab;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    user-select: none;
+}
+
+.sentence-item:hover {
+    border-color: var(--accent-purple);
+    transform: translateX(5px);
+}
+
+.sentence-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+}
+
+.sentence-item.in-answer {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--accent-emerald);
+}
+
+.answer-area .sentence-item {
+    position: relative;
+    padding-right: 3rem;
+}
+
+.answer-area .sentence-item::after {
+    content: '×';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: rgba(239, 68, 68, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--error);
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.answer-area .sentence-item:hover::after {
+    opacity: 1;
+}
+
+.drop-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.drop-zone.drag-over {
+    border-color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.05);
+    color: var(--accent-emerald);
+}
+
+/* Buttons */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--gradient-1);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-purple);
+    background: rgba(168, 85, 247, 0.1);
+}
+
+.btn-success {
+    background: var(--gradient-2);
+    color: white;
+}
+
+/* Feedback panel */
+.feedback-panel {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: none;
+}
+
+.feedback-panel.show { display: block; animation: slideIn 0.4s ease; }
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.feedback-score.full { color: var(--success); }
+.feedback-score.partial { color: var(--partial); }
+.feedback-score.low { color: var(--error); }
+
+.feedback-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.feedback-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.mark-breakdown {
+    margin-bottom: 1.5rem;
+}
+
+.mark-breakdown h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mark-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid var(--border-color);
+}
+
+.mark-item.awarded { border-left-color: var(--success); }
+.mark-item.missed { border-left-color: var(--error); opacity: 0.7; }
+
+.mark-status {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.mark-item.awarded .mark-status { background: var(--success); color: white; }
+.mark-item.missed .mark-status { background: var(--error); color: white; }
+
+.mark-content { flex: 1; }
+
+.mark-point {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.mark-explanation {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.model-answer {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
+    border: 2px solid var(--accent-emerald);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.model-answer h4 {
+    color: var(--accent-emerald);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.model-answer p {
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+.model-answer strong {
+    color: var(--accent-emerald);
+}
+
+/* Results screen */
+.results-screen {
+    text-align: center;
+    padding: 3rem;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    display: none;
+}
+
+.results-screen.show { display: block; }
+
+.results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.results-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+
+.results-message {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.results-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.result-item {
+    padding: 1rem 1.5rem;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.result-item span {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.result-item small {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Exam tip */
+.exam-tip {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(249, 115, 22, 0.1));
+    border: 2px solid var(--accent-amber);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+}
+
+.exam-tip h5 {
+    color: var(--accent-amber);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.exam-tip p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .question-card, .sentence-bank, .answer-area, .feedback-panel { padding: 1.25rem; }
+    .sentence-item { padding: 0.85rem 1rem; font-size: 0.9rem; }
+    .btn { padding: 0.85rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+<div class="glow-orb orb-3"></div>
+
+<div class="container">
+    <header class="header">
+        <span class="header-badge">Edexcel GCSE Computer Science</span>
+        <h1>Paper 1 Answer Builder</h1>
+        <p>Build perfect exam answers by selecting and arranging the right sentences. Learn what examiners are looking for!</p>
+    </header>
+
+    <div class="progress-container" id="progressDots"></div>
+
+    <div class="score-display">
+        <div class="score-item">
+            <div class="score-value" id="totalMarks">0</div>
+            <div class="score-label">Marks Earned</div>
+        </div>
+        <div class="score-item">
+            <div class="score-value" id="maxMarks">0</div>
+            <div class="score-label">Marks Available</div>
+        </div>
+        <div class="score-item">
+            <div class="score-value" id="questionNum">1/4</div>
+            <div class="score-label">Question</div>
+        </div>
+    </div>
+
+    <div id="gameContainer">
+        <div class="question-card" id="questionCard">
+            <div class="question-header">
+                <span class="question-number" id="qNumber">Question 1</span>
+                <span class="question-marks" id="qMarks">4 marks</span>
+                <span class="question-topic" id="qTopic">Topic: Networks</span>
+            </div>
+            <div class="question-text" id="qText"></div>
+        </div>
+
+        <div class="game-area">
+            <div class="sentence-bank">
+                <div class="area-header">
+                    <div class="area-icon">📝</div>
+                    <div>
+                        <div class="area-title">Sentence Bank</div>
+                        <div class="area-subtitle">Click or drag sentences to build your answer</div>
+                    </div>
+                </div>
+                <div class="sentences-container" id="sentenceBank"></div>
+            </div>
+
+            <div class="answer-area">
+                <div class="area-header">
+                    <div class="area-icon">✍️</div>
+                    <div>
+                        <div class="area-title">Your Answer</div>
+                        <div class="area-subtitle">Arrange sentences in a logical order</div>
+                    </div>
+                </div>
+                <div class="sentences-container" id="answerArea">
+                    <div class="drop-zone" id="dropZone">
+                        Drag sentences here or click to add them to your answer
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="clearAnswer()">🗑️ Clear Answer</button>
+            <button class="btn btn-primary" onclick="submitAnswer()" id="submitBtn">✓ Submit Answer</button>
+        </div>
+
+        <div class="feedback-panel" id="feedbackPanel">
+            <div class="feedback-header">
+                <div class="feedback-score" id="feedbackScore">0/4</div>
+                <div>
+                    <div class="feedback-title" id="feedbackTitle">Good effort!</div>
+                    <div class="feedback-subtitle" id="feedbackSubtitle">Here's how your answer was marked:</div>
+                </div>
+            </div>
+
+            <div class="mark-breakdown" id="markBreakdown">
+                <h4>📋 Mark Scheme Breakdown</h4>
+                <div id="markItems"></div>
+            </div>
+
+            <div class="model-answer">
+                <h4>✨ Model Answer</h4>
+                <p id="modelAnswerText"></p>
+            </div>
+
+            <div class="exam-tip" id="examTip">
+                <h5>💡 Examiner's Tip</h5>
+                <p id="examTipText"></p>
+            </div>
+
+            <div class="btn-group" style="margin-top: 1.5rem;">
+                <button class="btn btn-success" onclick="nextQuestion()" id="nextBtn">Next Question →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen">
+        <h2 class="results-title">Activity Complete!</h2>
+        <div class="results-score" id="finalScore">0/20</div>
+        <p class="results-message" id="resultsMessage">Great work practising your exam technique!</p>
+        <div class="results-breakdown" id="resultsBreakdown"></div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="restartGame()">🔄 Try Again</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const questions = [
+    {
+        id: 1,
+        topic: "Networks",
+        marks: 4,
+        question: "Describe how data is transmitted across a network using <strong>packet switching</strong>. (4 marks)",
+        sentences: [
+            { id: 1, text: "Data is broken down into smaller chunks called packets.", points: ["packets"] },
+            { id: 2, text: "Each packet contains the destination IP address and a sequence number.", points: ["metadata"] },
+            { id: 3, text: "Packets can take different routes across the network to reach the destination.", points: ["routes"] },
+            { id: 4, text: "At the destination, packets are reassembled in the correct order using sequence numbers.", points: ["reassemble"] },
+            { id: 5, text: "All packets must travel along the same fixed route.", points: [], distractor: true },
+            { id: 6, text: "Packet switching requires a dedicated connection between sender and receiver.", points: [], distractor: true },
+            { id: 7, text: "Routers direct packets along the most efficient available path.", points: ["routers"] },
+            { id: 8, text: "If a packet is lost, only that packet needs to be resent, not all the data.", points: ["efficiency"] }
+        ],
+        markScheme: [
+            { point: "packets", description: "Data is split/broken into packets", mark: 1 },
+            { point: "metadata", description: "Packets contain address/header information and sequence numbers", mark: 1 },
+            { point: "routes", description: "Packets can take different routes to the destination", mark: 1 },
+            { point: "reassemble", description: "Packets are reassembled in order at the destination", mark: 1 }
+        ],
+        modelAnswer: "Data is <strong>broken down into packets</strong> before transmission. Each packet contains the <strong>destination IP address and a sequence number</strong> in its header. Packets can take <strong>different routes</strong> across the network depending on traffic and availability. At the destination, packets are <strong>reassembled in the correct order</strong> using the sequence numbers.",
+        examTip: "When describing packet switching, always mention: packets, addressing/sequencing, different routes, and reassembly. Each of these concepts typically earns one mark."
+    },
+    {
+        id: 2,
+        topic: "CPU Architecture",
+        marks: 4,
+        question: "Explain the purpose of the <strong>fetch-decode-execute cycle</strong> and describe what happens at each stage. (4 marks)",
+        sentences: [
+            { id: 1, text: "The fetch-decode-execute cycle is the process the CPU uses to carry out instructions.", points: ["purpose"] },
+            { id: 2, text: "In the FETCH stage, the next instruction is retrieved from RAM using the address in the Program Counter.", points: ["fetch"] },
+            { id: 3, text: "In the DECODE stage, the Control Unit interprets the instruction to determine what operation is needed.", points: ["decode"] },
+            { id: 4, text: "In the EXECUTE stage, the ALU performs the required calculation or operation.", points: ["execute"] },
+            { id: 5, text: "The cycle runs once when the computer starts up.", points: [], distractor: true },
+            { id: 6, text: "The GPU is responsible for fetching instructions.", points: [], distractor: true },
+            { id: 7, text: "This cycle repeats continuously while the computer is running.", points: ["continuous"] },
+            { id: 8, text: "The Program Counter is incremented to point to the next instruction.", points: ["pc"] }
+        ],
+        markScheme: [
+            { point: "purpose", description: "The cycle allows the CPU to process/execute instructions", mark: 1 },
+            { point: "fetch", description: "FETCH: Instruction retrieved from RAM/memory", mark: 1 },
+            { point: "decode", description: "DECODE: Control Unit interprets/decodes the instruction", mark: 1 },
+            { point: "execute", description: "EXECUTE: ALU carries out the operation/calculation", mark: 1 }
+        ],
+        modelAnswer: "The fetch-decode-execute cycle is <strong>how the CPU processes instructions</strong>. In the <strong>FETCH</strong> stage, the instruction is retrieved from RAM using the address stored in the Program Counter. In the <strong>DECODE</strong> stage, the Control Unit interprets the instruction to understand what needs to be done. In the <strong>EXECUTE</strong> stage, the ALU performs the required operation. This cycle repeats continuously.",
+        examTip: "For FDE cycle questions, clearly label each stage (Fetch, Decode, Execute) and explain what component is involved (PC/MAR for Fetch, CU for Decode, ALU for Execute)."
+    },
+    {
+        id: 3,
+        topic: "Secondary Storage",
+        marks: 6,
+        question: "Compare <strong>solid state drives (SSDs)</strong> and <strong>magnetic hard disk drives (HDDs)</strong> as secondary storage devices. (6 marks)",
+        sentences: [
+            { id: 1, text: "SSDs have no moving parts, making them more durable and less prone to damage from movement.", points: ["ssd-durable"] },
+            { id: 2, text: "HDDs use spinning magnetic platters and a read/write head to store and access data.", points: ["hdd-mechanism"] },
+            { id: 3, text: "SSDs have faster read/write speeds because data is accessed electronically.", points: ["ssd-speed"] },
+            { id: 4, text: "HDDs are generally cheaper per gigabyte of storage.", points: ["hdd-cost"] },
+            { id: 5, text: "SSDs consume less power and produce less heat than HDDs.", points: ["ssd-power"] },
+            { id: 6, text: "HDDs typically offer larger storage capacities at affordable prices.", points: ["hdd-capacity"] },
+            { id: 7, text: "Both SSDs and HDDs use optical lasers to read data.", points: [], distractor: true },
+            { id: 8, text: "SSDs store data using flash memory with no mechanical components.", points: ["ssd-mechanism"] },
+            { id: 9, text: "HDDs are silent during operation.", points: [], distractor: true },
+            { id: 10, text: "SSDs are ideal for portable devices due to their resistance to physical shock.", points: ["ssd-portable"] }
+        ],
+        markScheme: [
+            { point: "ssd-mechanism", description: "SSD uses flash memory / no moving parts / electronic storage", mark: 1 },
+            { point: "hdd-mechanism", description: "HDD uses magnetic platters / spinning disks / mechanical", mark: 1 },
+            { point: "ssd-speed", description: "SSD has faster access/read/write speeds", mark: 1 },
+            { point: "hdd-cost", description: "HDD is cheaper / more cost effective per GB", mark: 1 },
+            { point: "ssd-durable", description: "SSD is more durable / reliable / resistant to damage", mark: 1 },
+            { point: "hdd-capacity", description: "HDD offers larger capacities / more storage space", mark: 1 }
+        ],
+        modelAnswer: "<strong>SSDs use flash memory</strong> with no moving parts, storing data electronically. <strong>HDDs use spinning magnetic platters</strong> with a read/write head. SSDs offer <strong>faster read/write speeds</strong> due to electronic access. HDDs are <strong>cheaper per gigabyte</strong>, making them cost-effective for large storage. SSDs are <strong>more durable</strong> and resistant to physical damage. HDDs typically provide <strong>larger storage capacities</strong> at lower prices.",
+        examTip: "For comparison questions, make sure you cover BOTH items being compared. Structure your answer with clear points about each, covering: how they work, speed, cost, durability, and capacity."
+    },
+    {
+        id: 4,
+        topic: "Data Representation",
+        marks: 4,
+        question: "Explain why computers use <strong>binary</strong> to represent all data and instructions. (4 marks)",
+        sentences: [
+            { id: 1, text: "Computers are built from electronic switches (transistors) that can only be ON or OFF.", points: ["transistors"] },
+            { id: 2, text: "Binary uses only two digits (0 and 1), which represent these two states.", points: ["two-states"] },
+            { id: 3, text: "This makes binary simple and reliable for electronic circuits to process.", points: ["reliable"] },
+            { id: 4, text: "All data types (text, images, sound) can be converted into binary patterns.", points: ["all-data"] },
+            { id: 5, text: "Binary is faster to process than decimal numbers.", points: [], distractor: true },
+            { id: 6, text: "Computers could use decimal but binary was chosen to save memory.", points: [], distractor: true },
+            { id: 7, text: "The two states are easy to distinguish, reducing errors in data processing.", points: ["errors"] },
+            { id: 8, text: "Binary allows electrical signals to be clearly identified as high voltage (1) or low voltage (0).", points: ["voltage"] }
+        ],
+        markScheme: [
+            { point: "transistors", description: "Computers use transistors/switches that have two states (ON/OFF)", mark: 1 },
+            { point: "two-states", description: "Binary has two digits (0 and 1) matching these two states", mark: 1 },
+            { point: "reliable", description: "Two states are simple/reliable/easy to distinguish electronically", mark: 1 },
+            { point: "all-data", description: "All data types can be represented/encoded in binary", mark: 1 }
+        ],
+        modelAnswer: "Computers use <strong>transistors (electronic switches)</strong> that can only be in one of two states: ON or OFF. <strong>Binary uses just two digits (0 and 1)</strong> which directly correspond to these states. Having only two states makes the system <strong>simple and reliable</strong> - it's easy for circuits to distinguish between them. <strong>All types of data</strong> (numbers, text, images, sound) can be encoded as binary patterns.",
+        examTip: "When explaining why binary is used, focus on the PHYSICAL reason (transistors/switches) and the PRACTICAL benefits (reliability, simplicity). Mention that it's not a choice - it's a necessity based on how electronic circuits work."
+    }
+];
+
+let currentQuestion = 0;
+let totalMarksEarned = 0;
+let totalMarksAvailable = 0;
+let selectedSentences = [];
+let questionResults = [];
+
+function init() {
+    totalMarksEarned = 0;
+    totalMarksAvailable = questions.reduce((sum, q) => sum + q.marks, 0);
+    currentQuestion = 0;
+    selectedSentences = [];
+    questionResults = [];
+
+    document.getElementById('maxMarks').textContent = totalMarksAvailable;
+    document.getElementById('resultsScreen').classList.remove('show');
+    document.getElementById('gameContainer').style.display = 'block';
+
+    renderProgressDots();
+    loadQuestion();
+}
+
+function renderProgressDots() {
+    const container = document.getElementById('progressDots');
+    container.innerHTML = questions.map((q, i) => `
+        <div class="progress-dot ${i === 0 ? 'active' : ''}" id="dot-${i}">${i + 1}</div>
+    `).join('');
+}
+
+function loadQuestion() {
+    const q = questions[currentQuestion];
+    selectedSentences = [];
+
+    document.getElementById('qNumber').textContent = `Question ${currentQuestion + 1}`;
+    document.getElementById('qMarks').textContent = `${q.marks} marks`;
+    document.getElementById('qTopic').textContent = `Topic: ${q.topic}`;
+    document.getElementById('qText').innerHTML = q.question;
+    document.getElementById('questionNum').textContent = `${currentQuestion + 1}/${questions.length}`;
+
+    // Shuffle sentences
+    const shuffled = [...q.sentences].sort(() => Math.random() - 0.5);
+
+    const bankContainer = document.getElementById('sentenceBank');
+    bankContainer.innerHTML = shuffled.map(s => `
+        <div class="sentence-item" data-id="${s.id}" onclick="toggleSentence(${s.id})" draggable="true">
+            ${s.text}
+        </div>
+    `).join('');
+
+    document.getElementById('answerArea').innerHTML = `
+        <div class="drop-zone" id="dropZone">
+            Drag sentences here or click to add them to your answer
+        </div>
+    `;
+
+    document.getElementById('feedbackPanel').classList.remove('show');
+    document.getElementById('submitBtn').disabled = false;
+
+    setupDragAndDrop();
+}
+
+function setupDragAndDrop() {
+    const items = document.querySelectorAll('.sentence-item');
+    const answerArea = document.getElementById('answerArea');
+
+    items.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', item.dataset.id);
+            item.classList.add('dragging');
+        });
+
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+        });
+    });
+
+    answerArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) dropZone.classList.add('drag-over');
+    });
+
+    answerArea.addEventListener('dragleave', () => {
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) dropZone.classList.remove('drag-over');
+    });
+
+    answerArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const id = parseInt(e.dataTransfer.getData('text/plain'));
+        if (!selectedSentences.includes(id)) {
+            addToAnswer(id);
+        }
+    });
+}
+
+function toggleSentence(id) {
+    if (selectedSentences.includes(id)) {
+        removeFromAnswer(id);
+    } else {
+        addToAnswer(id);
+    }
+}
+
+function addToAnswer(id) {
+    if (selectedSentences.includes(id)) return;
+
+    selectedSentences.push(id);
+    updateAnswerArea();
+
+    const bankItem = document.querySelector(`#sentenceBank .sentence-item[data-id="${id}"]`);
+    if (bankItem) bankItem.classList.add('in-answer');
+}
+
+function removeFromAnswer(id) {
+    selectedSentences = selectedSentences.filter(s => s !== id);
+    updateAnswerArea();
+
+    const bankItem = document.querySelector(`#sentenceBank .sentence-item[data-id="${id}"]`);
+    if (bankItem) bankItem.classList.remove('in-answer');
+}
+
+function updateAnswerArea() {
+    const answerArea = document.getElementById('answerArea');
+    const q = questions[currentQuestion];
+
+    if (selectedSentences.length === 0) {
+        answerArea.innerHTML = `
+            <div class="drop-zone" id="dropZone">
+                Drag sentences here or click to add them to your answer
+            </div>
+        `;
+        setupDragAndDrop();
+        return;
+    }
+
+    answerArea.innerHTML = selectedSentences.map(id => {
+        const sentence = q.sentences.find(s => s.id === id);
+        return `
+            <div class="sentence-item" onclick="removeFromAnswer(${id})">
+                ${sentence.text}
+            </div>
+        `;
+    }).join('');
+}
+
+function clearAnswer() {
+    selectedSentences = [];
+    document.querySelectorAll('#sentenceBank .sentence-item').forEach(item => {
+        item.classList.remove('in-answer');
+    });
+    updateAnswerArea();
+}
+
+function submitAnswer() {
+    const q = questions[currentQuestion];
+    let marksAwarded = 0;
+    const pointsAwarded = [];
+
+    // Check which marking points are covered
+    selectedSentences.forEach(id => {
+        const sentence = q.sentences.find(s => s.id === id);
+        sentence.points.forEach(point => {
+            if (!pointsAwarded.includes(point)) {
+                pointsAwarded.push(point);
+            }
+        });
+    });
+
+    // Calculate marks
+    q.markScheme.forEach(mark => {
+        if (pointsAwarded.includes(mark.point)) {
+            marksAwarded++;
+        }
+    });
+
+    // Cap at maximum marks
+    marksAwarded = Math.min(marksAwarded, q.marks);
+    totalMarksEarned += marksAwarded;
+
+    // Store result
+    questionResults.push({
+        question: currentQuestion + 1,
+        marks: marksAwarded,
+        maxMarks: q.marks
+    });
+
+    // Update UI
+    document.getElementById('totalMarks').textContent = totalMarksEarned;
+    document.getElementById('submitBtn').disabled = true;
+
+    // Update progress dot
+    const dot = document.getElementById(`dot-${currentQuestion}`);
+    dot.classList.remove('active');
+    if (marksAwarded === q.marks) {
+        dot.classList.add('completed');
+    } else {
+        dot.classList.add('partial');
+    }
+
+    // Show feedback
+    showFeedback(marksAwarded, pointsAwarded);
+}
+
+function showFeedback(marksAwarded, pointsAwarded) {
+    const q = questions[currentQuestion];
+    const panel = document.getElementById('feedbackPanel');
+
+    // Score display
+    const scoreEl = document.getElementById('feedbackScore');
+    scoreEl.textContent = `${marksAwarded}/${q.marks}`;
+    scoreEl.className = 'feedback-score';
+    if (marksAwarded === q.marks) {
+        scoreEl.classList.add('full');
+        document.getElementById('feedbackTitle').textContent = 'Excellent! Full marks!';
+    } else if (marksAwarded >= q.marks / 2) {
+        scoreEl.classList.add('partial');
+        document.getElementById('feedbackTitle').textContent = 'Good effort!';
+    } else {
+        scoreEl.classList.add('low');
+        document.getElementById('feedbackTitle').textContent = 'Keep practising!';
+    }
+
+    // Mark breakdown
+    const markItemsEl = document.getElementById('markItems');
+    markItemsEl.innerHTML = q.markScheme.map(mark => {
+        const awarded = pointsAwarded.includes(mark.point);
+        return `
+            <div class="mark-item ${awarded ? 'awarded' : 'missed'}">
+                <div class="mark-status">${awarded ? '✓' : '✗'}</div>
+                <div class="mark-content">
+                    <div class="mark-point">${mark.description}</div>
+                    <div class="mark-explanation">${awarded ?
+                        'You included this point in your answer.' :
+                        'This point was missing from your answer.'}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Model answer
+    document.getElementById('modelAnswerText').innerHTML = q.modelAnswer;
+
+    // Exam tip
+    document.getElementById('examTipText').textContent = q.examTip;
+
+    // Next button text
+    document.getElementById('nextBtn').textContent =
+        currentQuestion < questions.length - 1 ? 'Next Question →' : 'View Results →';
+
+    panel.classList.add('show');
+}
+
+function nextQuestion() {
+    currentQuestion++;
+
+    if (currentQuestion >= questions.length) {
+        showResults();
+        return;
+    }
+
+    // Update progress dot
+    document.getElementById(`dot-${currentQuestion}`).classList.add('active');
+
+    loadQuestion();
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showResults() {
+    document.getElementById('gameContainer').style.display = 'none';
+    const resultsScreen = document.getElementById('resultsScreen');
+    resultsScreen.classList.add('show');
+
+    const percentage = Math.round((totalMarksEarned / totalMarksAvailable) * 100);
+    document.getElementById('finalScore').textContent = `${totalMarksEarned}/${totalMarksAvailable}`;
+
+    let message = '';
+    if (percentage >= 90) {
+        message = 'Outstanding! You really understand what examiners are looking for!';
+    } else if (percentage >= 70) {
+        message = 'Great work! You\'re building strong exam technique.';
+    } else if (percentage >= 50) {
+        message = 'Good effort! Review the model answers to improve further.';
+    } else {
+        message = 'Keep practising! Focus on including all the key points in your answers.';
+    }
+    document.getElementById('resultsMessage').textContent = message;
+
+    // Breakdown
+    const breakdownEl = document.getElementById('resultsBreakdown');
+    breakdownEl.innerHTML = questionResults.map((r, i) => `
+        <div class="result-item">
+            <span style="color: ${r.marks === r.maxMarks ? 'var(--success)' : r.marks > 0 ? 'var(--partial)' : 'var(--error)'}">
+                ${r.marks}/${r.maxMarks}
+            </span>
+            <small>Q${r.question}</small>
+        </div>
+    `).join('');
+}
+
+function restartGame() {
+    init();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
