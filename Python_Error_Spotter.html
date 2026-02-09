@@ -1144,20 +1144,24 @@ function highlightSyntax(code) {
     // Escape HTML
     code = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+    // Extract strings and comments first so keyword/number regexes don't corrupt them
+    const strings = [];
+    code = code.replace(/(".*?"|'.*?')/g, (m) => { strings.push(m); return `\x00S${strings.length - 1}\x00`; });
+    const comments = [];
+    code = code.replace(/(#.*)$/g, (m) => { comments.push(m); return `\x00C${comments.length - 1}\x00`; });
+
     // Keywords
     code = code.replace(/\b(def|return|if|else|elif|for|while|in|range|and|or|not|True|False|None)\b/g, '<span class="keyword">$1</span>');
 
     // Built-in functions
     code = code.replace(/\b(print|input|int|str|len|float)\b(?=\()/g, '<span class="builtin">$1</span>');
 
-    // Strings
-    code = code.replace(/(".*?"|'.*?')/g, '<span class="string">$1</span>');
-
     // Numbers
     code = code.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
 
-    // Comments
-    code = code.replace(/(#.*)$/g, '<span class="comment">$1</span>');
+    // Restore comments and strings with highlighting
+    comments.forEach((c, i) => { code = code.replace(`\x00C${i}\x00`, `<span class="comment">${c}</span>`); });
+    strings.forEach((s, i) => { code = code.replace(`\x00S${i}\x00`, `<span class="string">${s}</span>`); });
 
     return code;
 }
