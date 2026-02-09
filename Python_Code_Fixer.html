@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Code Fixer | GCSE Computer Science Paper 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --bg-code: #0d1117;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-yellow: #d29922;
+    --accent-blue: #58a6ff;
+    --accent-purple: #a371f7;
+    --accent-cyan: #39c5cf;
+    --accent-orange: #f0883e;
+    --accent-pink: #db61a2;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --border-color: #30363d;
+    --success: #238636;
+    --error: #da3633;
+    --gradient-1: linear-gradient(135deg, #a371f7 0%, #58a6ff 100%);
+    --gradient-2: linear-gradient(135deg, #3fb950 0%, #39c5cf 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(163, 113, 247, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88, 166, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.1;
+    z-index: 0;
+}
+.orb-1 { background: var(--accent-purple); top: -150px; left: -150px; }
+.orb-2 { background: var(--accent-blue); bottom: -150px; right: -150px; }
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 2rem 1rem 2.5rem;
+}
+
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+.header p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* Score panel */
+.score-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.score-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.score-stat {
+    text-align: center;
+}
+
+.score-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.score-stat-value.green { color: var(--accent-green); }
+.score-stat-value.purple { color: var(--accent-purple); }
+.score-stat-value.blue { color: var(--accent-blue); }
+
+.score-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.progress-ring {
+    width: 60px;
+    height: 60px;
+}
+
+.progress-ring circle {
+    fill: none;
+    stroke-width: 6;
+}
+
+.progress-ring .bg { stroke: var(--border-color); }
+.progress-ring .progress {
+    stroke: url(#progressGradient);
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Main layout */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; }
+}
+
+/* Code panel */
+.code-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #1c2128;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.code-filename {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.code-filename .icon { color: var(--accent-yellow); }
+
+.code-block {
+    background: var(--bg-code);
+    overflow-x: auto;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.code-line {
+    display: flex;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    transition: background 0.2s;
+}
+
+.code-line.error-line {
+    background: rgba(248, 81, 73, 0.1);
+    border-left: 3px solid var(--accent-red);
+}
+
+.code-line.fixed-line {
+    background: rgba(63, 185, 80, 0.1);
+    border-left: 3px solid var(--accent-green);
+}
+
+.code-line.current-error {
+    background: rgba(163, 113, 247, 0.15);
+    border-left: 3px solid var(--accent-purple);
+}
+
+.line-number {
+    min-width: 45px;
+    padding: 0.25rem 0.75rem;
+    text-align: right;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.2);
+    user-select: none;
+    border-right: 1px solid var(--border-color);
+}
+
+.line-code {
+    padding: 0.25rem 0.75rem;
+    flex: 1;
+    white-space: pre;
+}
+
+/* Syntax highlighting */
+.keyword { color: #ff7b72; }
+.string { color: #a5d6ff; }
+.number { color: #79c0ff; }
+.function { color: #d2a8ff; }
+.comment { color: #8b949e; font-style: italic; }
+.operator { color: #ff7b72; }
+.builtin { color: #ffa657; }
+.boolean { color: #79c0ff; }
+
+/* Fixes panel */
+.fixes-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.fixes-header {
+    padding: 1rem 1.25rem;
+    background: #1c2128;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.fixes-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fixes-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 550px;
+}
+
+.fix-item {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s;
+}
+
+.fix-item:last-child { border-bottom: none; }
+
+.fix-item.current {
+    background: rgba(163, 113, 247, 0.1);
+    border-left: 3px solid var(--accent-purple);
+}
+
+.fix-item.completed {
+    background: rgba(63, 185, 80, 0.05);
+}
+
+.fix-item.incorrect {
+    background: rgba(248, 81, 73, 0.05);
+}
+
+.fix-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.fix-line-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+}
+
+.fix-line-badge.error { border-color: var(--accent-red); color: var(--accent-red); }
+.fix-line-badge.fixed { border-color: var(--accent-green); color: var(--accent-green); background: rgba(63, 185, 80, 0.1); }
+.fix-line-badge.wrong { border-color: var(--accent-red); color: var(--accent-red); background: rgba(248, 81, 73, 0.1); }
+
+.fix-type-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.fix-type-badge.syntax { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+.fix-type-badge.name { background: rgba(240, 136, 62, 0.15); color: var(--accent-orange); }
+.fix-type-badge.value { background: rgba(219, 97, 162, 0.15); color: var(--accent-pink); }
+.fix-type-badge.logic { background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow); }
+
+.fix-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.fix-original {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(248, 81, 73, 0.1);
+    border: 1px solid rgba(248, 81, 73, 0.3);
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    color: var(--accent-red);
+    overflow-x: auto;
+    white-space: pre;
+}
+
+.fix-input-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fix-input {
+    flex: 1;
+    padding: 0.6rem 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+
+.fix-input:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+}
+
+.fix-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.fix-input.correct {
+    border-color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.1);
+}
+
+.fix-input.incorrect {
+    border-color: var(--accent-red);
+    background: rgba(248, 81, 73, 0.1);
+}
+
+.fix-btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent-purple);
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fix-btn:hover:not(:disabled) {
+    background: #8957e5;
+}
+
+.fix-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.fix-feedback {
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: none;
+}
+
+.fix-feedback.show { display: block; }
+
+.fix-feedback.correct {
+    background: rgba(63, 185, 80, 0.1);
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+}
+
+.fix-feedback.incorrect {
+    background: rgba(248, 81, 73, 0.1);
+    border: 1px solid var(--accent-red);
+    color: var(--text-secondary);
+}
+
+.fix-feedback code {
+    background: var(--bg-dark);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-green);
+}
+
+.fix-status-icon {
+    font-size: 1.1rem;
+}
+
+/* Buttons */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.9rem 1.75rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--gradient-1);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(163, 113, 247, 0.25);
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-purple);
+}
+
+.btn-success {
+    background: var(--gradient-2);
+    color: white;
+}
+
+/* Results screen */
+.results-screen {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    display: none;
+}
+
+.results-screen.show { display: block; }
+
+.results-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+.results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.results-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.results-message {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.results-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.result-card {
+    padding: 1rem 1.5rem;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    min-width: 120px;
+}
+
+.result-card-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.result-card-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Explanation box */
+.explanation-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.explanation-box h4 {
+    color: var(--accent-cyan);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.explanation-item {
+    padding: 0.75rem;
+    background: var(--bg-dark);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.explanation-item:last-child { margin-bottom: 0; }
+
+.explanation-item strong {
+    color: var(--accent-purple);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.explanation-item code {
+    background: rgba(163, 113, 247, 0.15);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-green);
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .code-line { font-size: 0.75rem; }
+    .line-number { min-width: 35px; padding: 0.25rem 0.5rem; }
+    .fix-item { padding: 0.85rem; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+
+<svg style="position:absolute;width:0;height:0;">
+    <defs>
+        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#a371f7"/>
+            <stop offset="100%" style="stop-color:#58a6ff"/>
+        </linearGradient>
+    </defs>
+</svg>
+
+<div class="container">
+    <header class="header">
+        <span class="header-badge">🔧 Paper 2 Practice</span>
+        <h1>Python Code Fixer</h1>
+        <p>This program has 10 bugs! Fix each error to make the rainbow wavelength converter work correctly.</p>
+    </header>
+
+    <div class="score-panel">
+        <div class="score-stats">
+            <div class="score-stat">
+                <div class="score-stat-value green" id="fixedCount">0</div>
+                <div class="score-stat-label">Fixed</div>
+            </div>
+            <div class="score-stat">
+                <div class="score-stat-value purple" id="remainingCount">10</div>
+                <div class="score-stat-label">Remaining</div>
+            </div>
+            <div class="score-stat">
+                <div class="score-stat-value blue" id="attemptsCount">0</div>
+                <div class="score-stat-label">Attempts</div>
+            </div>
+        </div>
+        <svg class="progress-ring" viewBox="0 0 60 60">
+            <circle class="bg" cx="30" cy="30" r="24"/>
+            <circle class="progress" cx="30" cy="30" r="24"
+                stroke-dasharray="150.8"
+                stroke-dashoffset="150.8"
+                id="progressCircle"/>
+        </svg>
+    </div>
+
+    <div id="gameContainer">
+        <div class="main-layout">
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-filename">
+                        <span class="icon">🐍</span>
+                        rainbow_wavelength.py
+                    </span>
+                </div>
+                <div class="code-block" id="codeBlock"></div>
+            </div>
+
+            <div class="fixes-panel">
+                <div class="fixes-header">
+                    <h3>🐛 Bugs to Fix</h3>
+                </div>
+                <div class="fixes-list" id="fixesList"></div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="resetAll()">🔄 Reset All</button>
+            <button class="btn btn-primary" onclick="showResults()" id="finishBtn" style="display: none;">📊 View Results</button>
+        </div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-icon" id="resultsIcon">🏆</div>
+        <h2 class="results-title">Challenge Complete!</h2>
+        <div class="results-score" id="finalScore">0/10</div>
+        <p class="results-message" id="resultsMessage">Great debugging practice!</p>
+
+        <div class="results-breakdown">
+            <div class="result-card">
+                <div class="result-card-value" style="color: var(--accent-green);" id="correctOnFirst">0</div>
+                <div class="result-card-label">First Try</div>
+            </div>
+            <div class="result-card">
+                <div class="result-card-value" style="color: var(--accent-yellow);" id="correctOnRetry">0</div>
+                <div class="result-card-label">With Hints</div>
+            </div>
+            <div class="result-card">
+                <div class="result-card-value" style="color: var(--accent-red);" id="totalAttempts">0</div>
+                <div class="result-card-label">Total Attempts</div>
+            </div>
+        </div>
+
+        <div class="explanation-box">
+            <h4>💡 Key Learning Points</h4>
+            <div class="explanation-item">
+                <strong>Syntax Errors:</strong> Missing quotes, colons, brackets - Python can't understand the code
+            </div>
+            <div class="explanation-item">
+                <strong>NameErrors:</strong> Using undefined variables or wrong capitalisation (<code>false</code> vs <code>False</code>)
+            </div>
+            <div class="explanation-item">
+                <strong>ValueErrors:</strong> Wrong data type for an operation (e.g., <code>int("Red")</code>)
+            </div>
+            <div class="explanation-item">
+                <strong>Logic Errors:</strong> Code runs but produces wrong results - hardest to find!
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="restartGame()">🔄 Try Again</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// The buggy code with line numbers
+const originalCode = [
+    { num: 1, code: '# Rainbow wavelength converter', fixed: null },
+    { num: 2, code: '# Converts wavelength in nm to rainbow colour', fixed: null },
+    { num: 3, code: '', fixed: null },
+    { num: 4, code: 'rainbow = ["Violet", "Blue", "Cyan", "Green", "Yellow", "Orange", "Red"]', fixed: null },
+    { num: 5, code: 'waveTable = [380, 425, 450, 492, 577, 597", 622]', fixed: null, hasError: true },
+    { num: 6, code: 'found = false', fixed: null, hasError: true },
+    { num: 7, code: '', fixed: null },
+    { num: 8, code: 'wavelength = 0123', fixed: null, hasError: true },
+    { num: 9, code: '', fixed: null },
+    { num: 10, code: 'def getColour():', fixed: null },
+    { num: 11, code: '    global wavelength', fixed: null },
+    { num: 12, code: '    global found', fixed: null },
+    { num: 13, code: '    global index', fixed: null },
+    { num: 14, code: '    ', fixed: null },
+    { num: 15, code: '    index = int(input("Enter an index: ")', fixed: null, hasError: true },
+    { num: 16, code: '    ', fixed: null },
+    { num: 17, code: '    if (index >= 0) and (index <= 6):', fixed: null },
+    { num: 18, code: '        found = True', fixed: null },
+    { num: 19, code: '        wavelength = waveTable[index]', fixed: null },
+    { num: 20, code: '    else:', fixed: null },
+    { num: 21, code: '        color = rainbow[index]', fixed: null, hasError: true },
+    { num: 22, code: '        print(int(colour))', fixed: null, hasError: true },
+    { num: 23, code: '', fixed: null },
+    { num: 24, code: 'def findColour():', fixed: null },
+    { num: 25, code: '    global found, index', fixed: null },
+    { num: 26, code: '    if ((wavelength < 380) and (wavelength > 622)):', fixed: null, hasError: true },
+    { num: 27, code: '        print("Wavelength out of range")', fixed: null },
+    { num: 28, code: '    else:', fixed: null },
+    { num: 29, code: '        index = 1', fixed: null, hasError: true },
+    { num: 30, code: '        found = False', fixed: null },
+    { num: 31, code: '        ', fixed: null },
+    { num: 32, code: '        while (not found):', fixed: null },
+    { num: 33, code: '            if (index > 5):', fixed: null },
+    { num: 34, code: '                found = True', fixed: null },
+    { num: 35, code: '            elif (waveTable[index] <= wavelength):', fixed: null, hasError: true },
+    { num: 36, code: '                found = True', fixed: null },
+    { num: 37, code: '            print(rainbow[index - 2])', fixed: null, hasError: true },
+    { num: 38, code: '            index = index + 1', fixed: null },
+    { num: 39, code: '', fixed: null },
+    { num: 40, code: 'getColour()', fixed: null },
+    { num: 41, code: 'if found:', fixed: null },
+    { num: 42, code: '    findColour()', fixed: null }
+];
+
+const bugs = [
+    {
+        id: 1,
+        line: 5,
+        errorType: 'syntax',
+        errorLabel: 'SyntaxError',
+        description: 'Fix the syntax error - there\'s a stray quotation mark in the list',
+        original: 'waveTable = [380, 425, 450, 492, 577, 597", 622]',
+        correct: 'waveTable = [380, 425, 450, 492, 577, 597, 622]',
+        acceptedAnswers: ['wavetable = [380, 425, 450, 492, 577, 597, 622]', 'waveTable = [380, 425, 450, 492, 577, 597, 622]', 'wavetable=[380,425,450,492,577,597,622]', 'waveTable=[380,425,450,492,577,597,622]'],
+        hint: 'Remove the extra " after 597'
+    },
+    {
+        id: 2,
+        line: 6,
+        errorType: 'name',
+        errorLabel: 'NameError',
+        description: 'Fix the NameError - Python booleans need capital letters',
+        original: 'found = false',
+        correct: 'found = False',
+        acceptedAnswers: ['found = false', 'found=false'].map(x => x) ? ['found = False', 'found=False'] : [],
+        hint: 'Python uses False not false'
+    },
+    {
+        id: 3,
+        line: 8,
+        errorType: 'syntax',
+        errorLabel: 'SyntaxError',
+        description: 'Fix the syntax error - numbers cannot have leading zeros in Python 3',
+        original: 'wavelength = 0123',
+        correct: 'wavelength = 123',
+        acceptedAnswers: ['wavelength = 123', 'wavelength=123', 'wavelength = 0'],
+        hint: 'Remove the leading zero (0123 is invalid in Python 3)'
+    },
+    {
+        id: 4,
+        line: 15,
+        errorType: 'syntax',
+        errorLabel: 'SyntaxError',
+        description: 'Fix the syntax error - check the brackets are balanced',
+        original: '    index = int(input("Enter an index: ")',
+        correct: '    index = int(input("Enter an index: "))',
+        acceptedAnswers: ['index = int(input("Enter an index: "))', '    index = int(input("Enter an index: "))', 'index=int(input("Enter an index: "))'],
+        hint: 'Missing closing bracket )'
+    },
+    {
+        id: 5,
+        line: 21,
+        errorType: 'name',
+        errorLabel: 'NameError',
+        description: 'Fix the NameError - the variable name doesn\'t match (check spelling)',
+        original: '        color = rainbow[index]',
+        correct: '        colour = rainbow[index]',
+        acceptedAnswers: ['colour = rainbow[index]', '        colour = rainbow[index]', 'colour=rainbow[index]'],
+        hint: 'Variable is "colour" not "color" (British spelling)'
+    },
+    {
+        id: 6,
+        line: 22,
+        errorType: 'value',
+        errorLabel: 'ValueError',
+        description: 'Fix the ValueError - you cannot convert a colour name to an integer',
+        original: '        print(int(colour))',
+        correct: '        print(colour)',
+        acceptedAnswers: ['print(colour)', '        print(colour)', 'print (colour)'],
+        hint: 'Remove int() - colour is a string like "Red", not a number'
+    },
+    {
+        id: 7,
+        line: 26,
+        errorType: 'logic',
+        errorLabel: 'Logic Error',
+        description: 'Fix the logic error - a number can\'t be both less than 380 AND greater than 622',
+        original: '    if ((wavelength < 380) and (wavelength > 622)):',
+        correct: '    if ((wavelength < 380) or (wavelength > 622)):',
+        acceptedAnswers: ['if ((wavelength < 380) or (wavelength > 622)):', '    if ((wavelength < 380) or (wavelength > 622)):', 'if (wavelength < 380) or (wavelength > 622):', '    if (wavelength < 380) or (wavelength > 622):'],
+        hint: 'Should be "or" not "and" - out of range means EITHER too low OR too high'
+    },
+    {
+        id: 8,
+        line: 29,
+        errorType: 'logic',
+        errorLabel: 'Logic Error',
+        description: 'Fix the logic error - array indices start at 0, not 1',
+        original: '        index = 1',
+        correct: '        index = 0',
+        acceptedAnswers: ['index = 0', '        index = 0', 'index=0'],
+        hint: 'Lists start at index 0, not 1'
+    },
+    {
+        id: 9,
+        line: 35,
+        errorType: 'logic',
+        errorLabel: 'Logic Error',
+        description: 'Fix the logic error - we need to find when wavelength is LESS than the table value',
+        original: '            elif (waveTable[index] <= wavelength):',
+        correct: '            elif (waveTable[index] >= wavelength):',
+        acceptedAnswers: ['elif (waveTable[index] >= wavelength):', '            elif (waveTable[index] >= wavelength):', 'elif (wavetable[index] >= wavelength):', 'elif waveTable[index] >= wavelength:'],
+        hint: 'Change <= to >= to find the correct colour band'
+    },
+    {
+        id: 10,
+        line: 37,
+        errorType: 'logic',
+        errorLabel: 'Logic Error',
+        description: 'Fix the logic error - the index offset is wrong for the rainbow array',
+        original: '            print(rainbow[index - 2])',
+        correct: '            print(rainbow[index - 1])',
+        acceptedAnswers: ['print(rainbow[index - 1])', '            print(rainbow[index - 1])', 'print(rainbow[index-1])', 'print (rainbow[index - 1])'],
+        hint: 'Should be index - 1, not index - 2'
+    }
+];
+
+let codeState = JSON.parse(JSON.stringify(originalCode));
+let bugState = bugs.map(b => ({ ...b, fixed: false, attempts: 0, firstTry: false }));
+let totalAttempts = 0;
+
+function init() {
+    codeState = JSON.parse(JSON.stringify(originalCode));
+    bugState = bugs.map(b => ({ ...b, fixed: false, attempts: 0, firstTry: false }));
+    totalAttempts = 0;
+
+    document.getElementById('resultsScreen').classList.remove('show');
+    document.getElementById('gameContainer').style.display = 'block';
+    document.getElementById('finishBtn').style.display = 'none';
+
+    renderCode();
+    renderFixes();
+    updateStats();
+}
+
+function renderCode() {
+    const codeBlock = document.getElementById('codeBlock');
+    codeBlock.innerHTML = codeState.map(line => {
+        const bug = bugState.find(b => b.line === line.num);
+        let classes = 'code-line';
+
+        if (bug && !bug.fixed) {
+            classes += ' error-line';
+        } else if (bug && bug.fixed) {
+            classes += ' fixed-line';
+        }
+
+        const displayCode = line.fixed || line.code;
+
+        return `
+            <div class="${classes}" id="codeLine-${line.num}">
+                <span class="line-number">${line.num}</span>
+                <span class="line-code">${highlightSyntax(displayCode)}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function highlightSyntax(code) {
+    if (!code.trim()) return '&nbsp;';
+
+    // Escape HTML first
+    let escaped = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Comments (do first to avoid highlighting inside comments)
+    escaped = escaped.replace(/(#.*)$/gm, '<span class="comment">$1</span>');
+
+    // Strings
+    escaped = escaped.replace(/("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')/g, '<span class="string">$1</span>');
+
+    // Keywords
+    escaped = escaped.replace(/\b(def|return|if|else|elif|for|while|in|range|and|or|not|global|True|False|None)\b/g, '<span class="keyword">$1</span>');
+
+    // Built-in functions
+    escaped = escaped.replace(/\b(print|input|int|str|len|float)\b(?=\s*\()/g, '<span class="builtin">$1</span>');
+
+    // Numbers
+    escaped = escaped.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+
+    return escaped;
+}
+
+function renderFixes() {
+    const fixesList = document.getElementById('fixesList');
+    fixesList.innerHTML = bugState.map((bug, idx) => `
+        <div class="fix-item ${bug.fixed ? 'completed' : ''}" id="fixItem-${bug.id}">
+            <div class="fix-header">
+                <span class="fix-line-badge ${bug.fixed ? 'fixed' : 'error'}">
+                    Line ${bug.line}
+                </span>
+                <span class="fix-type-badge ${bug.errorType}">${bug.errorLabel}</span>
+            </div>
+            <div class="fix-description">${bug.description}</div>
+            <div class="fix-original">${escapeHtml(bug.original)}</div>
+            <div class="fix-input-container">
+                <input type="text"
+                    class="fix-input ${bug.fixed ? 'correct' : ''}"
+                    id="fixInput-${bug.id}"
+                    placeholder="Type the corrected line..."
+                    ${bug.fixed ? 'disabled' : ''}
+                    value="${bug.fixed ? bug.correct : ''}"
+                    onkeypress="handleKeyPress(event, ${bug.id})"
+                >
+                <button class="fix-btn"
+                    id="fixBtn-${bug.id}"
+                    onclick="checkFix(${bug.id})"
+                    ${bug.fixed ? 'disabled' : ''}>
+                    ${bug.fixed ? '✓' : 'Fix'}
+                </button>
+            </div>
+            <div class="fix-feedback" id="feedback-${bug.id}"></div>
+        </div>
+    `).join('');
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function handleKeyPress(event, bugId) {
+    if (event.key === 'Enter') {
+        checkFix(bugId);
+    }
+}
+
+function checkFix(bugId) {
+    const bug = bugState.find(b => b.id === bugId);
+    if (bug.fixed) return;
+
+    const input = document.getElementById(`fixInput-${bugId}`);
+    const feedback = document.getElementById(`feedback-${bugId}`);
+    const userAnswer = input.value.trim();
+
+    bug.attempts++;
+    totalAttempts++;
+
+    // Normalize for comparison
+    const normalizedUser = userAnswer.toLowerCase().replace(/\s+/g, ' ').trim();
+    const normalizedCorrect = bug.correct.toLowerCase().replace(/\s+/g, ' ').trim();
+
+    // Check if correct
+    const isCorrect = bug.acceptedAnswers.some(ans =>
+        normalizedUser === ans.toLowerCase().replace(/\s+/g, ' ').trim()
+    ) || normalizedUser === normalizedCorrect;
+
+    if (isCorrect) {
+        bug.fixed = true;
+        bug.firstTry = bug.attempts === 1;
+
+        // Update code display
+        const lineIdx = codeState.findIndex(l => l.num === bug.line);
+        if (lineIdx !== -1) {
+            codeState[lineIdx].fixed = bug.correct;
+        }
+
+        input.classList.add('correct');
+        input.disabled = true;
+        document.getElementById(`fixBtn-${bugId}`).disabled = true;
+        document.getElementById(`fixBtn-${bugId}`).textContent = '✓';
+        document.getElementById(`fixItem-${bugId}`).classList.add('completed');
+
+        feedback.className = 'fix-feedback correct show';
+        feedback.innerHTML = `✓ Correct!${bug.firstTry ? ' First try!' : ''}`;
+
+        renderCode();
+        updateStats();
+
+        // Check if all fixed
+        if (bugState.every(b => b.fixed)) {
+            document.getElementById('finishBtn').style.display = 'inline-flex';
+        }
+    } else {
+        input.classList.add('incorrect');
+        setTimeout(() => input.classList.remove('incorrect'), 500);
+
+        feedback.className = 'fix-feedback incorrect show';
+        if (bug.attempts >= 2) {
+            feedback.innerHTML = `✗ Not quite. Hint: ${bug.hint}`;
+        } else {
+            feedback.innerHTML = `✗ Not quite. Try again!`;
+        }
+    }
+
+    updateStats();
+}
+
+function updateStats() {
+    const fixed = bugState.filter(b => b.fixed).length;
+    const remaining = bugState.length - fixed;
+
+    document.getElementById('fixedCount').textContent = fixed;
+    document.getElementById('remainingCount').textContent = remaining;
+    document.getElementById('attemptsCount').textContent = totalAttempts;
+
+    // Update progress circle
+    const progress = (fixed / bugState.length) * 150.8;
+    document.getElementById('progressCircle').style.strokeDashoffset = 150.8 - progress;
+}
+
+function resetAll() {
+    if (confirm('Reset all your progress? This cannot be undone.')) {
+        init();
+    }
+}
+
+function showResults() {
+    document.getElementById('gameContainer').style.display = 'none';
+    document.getElementById('resultsScreen').classList.add('show');
+
+    const fixed = bugState.filter(b => b.fixed).length;
+    const firstTry = bugState.filter(b => b.fixed && b.firstTry).length;
+    const withHints = fixed - firstTry;
+
+    document.getElementById('finalScore').textContent = `${fixed}/10`;
+    document.getElementById('correctOnFirst').textContent = firstTry;
+    document.getElementById('correctOnRetry').textContent = withHints;
+    document.getElementById('totalAttempts').textContent = totalAttempts;
+
+    let icon = '🏆';
+    let message = '';
+
+    if (fixed === 10 && totalAttempts <= 12) {
+        icon = '🌟';
+        message = 'Outstanding! You fixed all bugs with minimal attempts!';
+    } else if (fixed === 10) {
+        icon = '🏆';
+        message = 'Excellent! You successfully debugged the entire program!';
+    } else if (fixed >= 7) {
+        icon = '👏';
+        message = 'Great progress! Keep practising to catch all the bugs.';
+    } else {
+        icon = '💪';
+        message = 'Good effort! Review the error types and try again.';
+    }
+
+    document.getElementById('resultsIcon').textContent = icon;
+    document.getElementById('resultsMessage').textContent = message;
+}
+
+function restartGame() {
+    init();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
