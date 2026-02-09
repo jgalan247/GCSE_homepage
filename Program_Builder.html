@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Program Builder | GCSE Computer Science Paper 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<style>
+:root {
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --bg-code: #0d1117;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-yellow: #d29922;
+    --accent-blue: #58a6ff;
+    --accent-purple: #a371f7;
+    --accent-cyan: #39c5cf;
+    --accent-orange: #f0883e;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --border-color: #30363d;
+    --success: #238636;
+    --error: #da3633;
+    --gradient-1: linear-gradient(135deg, #f85149 0%, #a371f7 100%);
+    --gradient-2: linear-gradient(135deg, #3fb950 0%, #58a6ff 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background effects */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(248, 81, 73, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(163, 113, 247, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.1;
+    z-index: 0;
+}
+.orb-1 { background: var(--accent-red); top: -150px; left: -150px; }
+.orb-2 { background: var(--accent-purple); bottom: -150px; right: -150px; }
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+}
+
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+.header p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+.home-link:hover { color: var(--accent-blue); }
+
+/* Progress bar */
+.progress-bar-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-info {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-stat {
+    text-align: center;
+}
+
+.progress-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+}
+
+.progress-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.progress-track {
+    flex: 1;
+    min-width: 200px;
+}
+
+.progress-track-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-track-fill {
+    height: 100%;
+    background: var(--gradient-1);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.progress-dots {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    justify-content: center;
+}
+
+.progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-color);
+    transition: all 0.3s;
+}
+
+.progress-dot.current { background: var(--accent-purple); transform: scale(1.2); }
+.progress-dot.correct { background: var(--accent-green); }
+.progress-dot.incorrect { background: var(--accent-red); }
+
+/* Problem card */
+.problem-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.problem-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.problem-number {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.problem-badge {
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.problem-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.difficulty-badge {
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.difficulty-badge.q3 {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+}
+
+.difficulty-badge.q4 {
+    background: rgba(163, 113, 247, 0.15);
+    color: var(--accent-purple);
+    border: 1px solid var(--accent-purple);
+}
+
+.marks-badge {
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+}
+
+.problem-prompt {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.problem-prompt strong {
+    color: var(--text-primary);
+}
+
+.problem-prompt ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.problem-prompt li {
+    margin: 0.3rem 0;
+}
+
+/* Builder area */
+.builder-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.builder-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #1c2128;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.panel-title .icon { color: var(--accent-yellow); }
+
+.panel-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg-dark);
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+}
+
+.block-pool {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 250px;
+}
+
+.solution-area {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 250px;
+}
+
+.solution-area.drag-over {
+    background: rgba(163, 113, 247, 0.05);
+}
+
+.empty-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Code blocks */
+.code-block-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-code);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.75rem, 1.5vw, 0.88rem);
+    line-height: 1.5;
+    cursor: grab;
+    transition: all 0.2s;
+    white-space: pre;
+    min-height: 44px;
+    user-select: none;
+    position: relative;
+}
+
+.code-block-item:hover {
+    border-color: var(--accent-purple);
+    background: rgba(163, 113, 247, 0.05);
+}
+
+.code-block-item.dragging {
+    opacity: 0.4;
+    border-color: var(--accent-purple);
+}
+
+.code-block-item.distractor {
+    /* no visual difference - student shouldn't know */
+}
+
+.code-block-item .drag-handle {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.code-block-item .block-code {
+    flex: 1;
+    overflow-x: auto;
+}
+
+.code-block-item .remove-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    color: white;
+    font-size: 0.7rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    font-weight: 700;
+}
+
+.solution-area .code-block-item:hover .remove-btn {
+    display: flex;
+}
+
+.solution-area .code-block-item .line-num {
+    min-width: 24px;
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+    border-right: 1px solid var(--border-color);
+    margin-right: 0.25rem;
+}
+
+/* Syntax highlighting */
+.keyword { color: #ff7b72; }
+.string { color: #a5d6ff; }
+.number { color: #79c0ff; }
+.function { color: #d2a8ff; }
+.comment { color: #8b949e; font-style: italic; }
+.operator { color: #ff7b72; }
+.builtin { color: #ffa657; }
+
+/* Action bar */
+.action-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover:not(:disabled) {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
+.btn-run {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+}
+.btn-run:hover:not(:disabled) {
+    background: rgba(88, 166, 255, 0.25);
+}
+
+.btn-submit {
+    background: var(--gradient-1);
+    color: white;
+    border: none;
+}
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(248, 81, 73, 0.3);
+}
+
+.btn-success {
+    background: var(--gradient-2);
+    color: white;
+    border: none;
+}
+.btn-success:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(63, 185, 80, 0.3);
+}
+
+/* Output panel */
+.output-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+.output-panel.visible { display: block; }
+
+.output-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border-color);
+}
+
+.output-section {
+    background: var(--bg-card);
+    padding: 1rem;
+}
+
+.output-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+
+.output-content {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    min-height: 60px;
+    background: var(--bg-dark);
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.output-content.error {
+    color: var(--accent-red);
+}
+
+.output-match {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+}
+
+.output-match.pass {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+}
+
+.output-match.fail {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+}
+
+.output-match.skip {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--accent-yellow);
+}
+
+/* Input panel for Skulpt */
+.input-panel {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border-color);
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-panel.active { display: flex; }
+
+.input-panel input {
+    flex: 1;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    outline: none;
+}
+
+.input-panel input:focus {
+    border-color: var(--accent-blue);
+}
+
+.input-panel button {
+    padding: 0.5rem 1rem;
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* Feedback panel */
+.feedback-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+.feedback-panel.visible { display: block; }
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.feedback-icon.correct {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+    border: 2px solid var(--accent-green);
+}
+
+.feedback-icon.partial {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--accent-yellow);
+    border: 2px solid var(--accent-yellow);
+}
+
+.feedback-icon.incorrect {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+    border: 2px solid var(--accent-red);
+}
+
+.feedback-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.feedback-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.feedback-marks {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-marks-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.mark-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.mark-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.mark-icon.awarded {
+    background: var(--accent-green);
+    color: white;
+}
+
+.mark-icon.missed {
+    background: var(--accent-red);
+    color: white;
+}
+
+.mark-icon.deducted {
+    background: var(--accent-orange);
+    color: white;
+}
+
+.mark-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.mark-desc strong {
+    color: var(--text-primary);
+}
+
+.mark-points {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.feedback-model {
+    padding: 1rem 1.5rem;
+}
+
+.feedback-model h4 {
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    margin-bottom: 0.75rem;
+}
+
+.model-code {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.feedback-actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Results screen */
+.results-screen {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.results-screen.visible { display: block; }
+
+.results-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    background: var(--gradient-2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.results-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin: 1rem 0;
+}
+
+.results-message {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.results-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.result-stat {
+    text-align: center;
+}
+
+.result-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.result-stat-value.green { color: var(--accent-green); }
+.result-stat-value.blue { color: var(--accent-blue); }
+.result-stat-value.purple { color: var(--accent-purple); }
+
+.result-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.results-per-challenge {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    text-align: left;
+}
+
+.results-per-challenge h3 {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+}
+
+.result-row-title {
+    color: var(--text-secondary);
+}
+
+.result-row-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+
+.result-row-score.full { color: var(--accent-green); }
+.result-row-score.partial { color: var(--accent-yellow); }
+.result-row-score.low { color: var(--accent-red); }
+
+/* Game container */
+#gameContainer { display: block; }
+#gameContainer.hidden { display: none; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .builder-area {
+        grid-template-columns: 1fr;
+    }
+
+    .output-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .progress-bar-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 600px) {
+    .problem-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-bar {
+        flex-direction: column;
+    }
+
+    .action-bar .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.4s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html" class="home-link">&larr; Back to CS Hub</a>
+        <div class="header-badge">Paper 2 Q3/Q4 Practice</div>
+        <h1>Program Builder</h1>
+        <p>Drag and drop code blocks to build complete programs. Run your code and get exam-style mark scheme feedback.</p>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar-container" id="progressBar">
+        <div class="progress-info">
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="challengeCounter">1/8</div>
+                <div class="progress-stat-label">Challenge</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="marksEarned">0</div>
+                <div class="progress-stat-label">Marks</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="marksMax">101</div>
+                <div class="progress-stat-label">Possible</div>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div class="progress-track-bar">
+                <div class="progress-track-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-dots" id="progressDots"></div>
+        </div>
+    </div>
+
+    <!-- Game container -->
+    <div id="gameContainer">
+        <!-- Problem spec card -->
+        <div class="problem-card fade-in" id="problemCard">
+            <div class="problem-header">
+                <div class="problem-number">
+                    <span class="problem-badge" id="problemBadge">Challenge 1</span>
+                    <span class="problem-title" id="problemTitle"></span>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="difficulty-badge" id="difficultyBadge"></span>
+                    <span class="marks-badge" id="marksBadge"></span>
+                </div>
+            </div>
+            <div class="problem-prompt" id="problemPrompt"></div>
+        </div>
+
+        <!-- Builder area -->
+        <div class="builder-area" id="builderArea">
+            <!-- Block pool -->
+            <div class="builder-panel">
+                <div class="panel-header">
+                    <div class="panel-title"><span class="icon">&#9776;</span> Code Blocks</div>
+                    <div class="panel-count" id="poolCount">0 blocks</div>
+                </div>
+                <div class="block-pool" id="blockPool">
+                    <div class="empty-message">Loading blocks...</div>
+                </div>
+            </div>
+
+            <!-- Solution area -->
+            <div class="builder-panel">
+                <div class="panel-header">
+                    <div class="panel-title"><span class="icon">&#9998;</span> Your Solution</div>
+                    <div class="panel-count" id="solutionCount">0 lines</div>
+                </div>
+                <div class="solution-area" id="solutionArea">
+                    <div class="empty-message" id="solutionEmpty">Drag code blocks here or click to add</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action bar -->
+        <div class="action-bar" id="actionBar">
+            <button class="btn btn-secondary" onclick="clearSolution()">Clear All</button>
+            <button class="btn btn-run" onclick="runCode()">Run Code</button>
+            <button class="btn btn-submit" onclick="submitForMarking()">Submit for Marking</button>
+        </div>
+
+        <!-- Output panel -->
+        <div class="output-panel" id="outputPanel">
+            <div class="panel-header">
+                <div class="panel-title"><span class="icon">&#9654;</span> Output</div>
+            </div>
+            <div class="output-grid">
+                <div class="output-section">
+                    <div class="output-label">Your Output</div>
+                    <div class="output-content" id="userOutput">Click "Run Code" to execute</div>
+                </div>
+                <div class="output-section">
+                    <div class="output-label">Expected Output</div>
+                    <div class="output-content" id="expectedOutput"></div>
+                </div>
+            </div>
+            <div id="outputMatch"></div>
+            <div class="input-panel" id="inputPanel">
+                <input type="text" id="skulptInput" placeholder="Enter input..." onkeydown="if(event.key==='Enter')submitSkulptInput()">
+                <button onclick="submitSkulptInput()">Send</button>
+            </div>
+        </div>
+
+        <!-- Feedback panel -->
+        <div class="feedback-panel" id="feedbackPanel">
+            <div class="feedback-header">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div>
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div class="feedback-subtitle" id="feedbackSubtitle"></div>
+                </div>
+            </div>
+            <div class="feedback-marks" id="feedbackMarks"></div>
+            <div class="feedback-model" id="feedbackModel"></div>
+            <div class="feedback-actions">
+                <button class="btn btn-success" id="nextBtn" onclick="nextChallenge()">Next Challenge &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results screen -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-icon">&#127942;</div>
+        <h2 class="results-title">All Challenges Complete!</h2>
+        <div class="results-score" id="finalScore">0 / 101</div>
+        <p class="results-message" id="resultsMessage"></p>
+        <div class="results-breakdown" id="resultsBreakdown"></div>
+        <div class="results-per-challenge" id="resultsPerChallenge"></div>
+        <button class="btn btn-submit" onclick="restartGame()" style="margin: 0 auto;">Restart</button>
+    </div>
+</div>
+
+<script>
+// =================== CHALLENGES DATA ===================
+const challenges = [
+    {
+        title: "Temperature Converter",
+        difficulty: "Q3",
+        marks: 10,
+        prompt: `<strong>Write a program</strong> that asks the user to enter a temperature in Celsius, converts it to Fahrenheit and displays the result.
+        <ul>
+            <li>The program should ask the user to input a temperature in Celsius</li>
+            <li>Convert the temperature using the formula: <code>F = (C x 9/5) + 32</code></li>
+            <li>Display the result with a suitable message</li>
+        </ul>`,
+        testInputs: ["25"],
+        expectedOutput: "Enter temperature in Celsius: 25\n77.0 degrees Fahrenheit",
+        skipOutputCheck: false,
+        correctBlocks: [
+            'celsius = int(input("Enter temperature in Celsius: "))',
+            'fahrenheit = (celsius * 9/5) + 32',
+            'print(str(fahrenheit) + " degrees Fahrenheit")'
+        ],
+        distractors: [
+            'celsius = input("Enter temperature in Celsius: ")',
+            'fahrenheit = (celsius * 5/9) + 32',
+            'fahrenheit = celsius * 9/5 + 32',
+            'print(fahrenheit + " degrees Fahrenheit")'
+        ],
+        markScheme: [
+            { description: 'Use of input() with appropriate prompt', marks: 2, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Casting input to int() or float()', marks: 2, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Correct formula: (C * 9/5) + 32', marks: 3, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'Output displayed with print() and suitable message', marks: 3, checkType: 'blockPresent', blockIndex: 2 }
+        ],
+        modelAnswer: 'celsius = int(input("Enter temperature in Celsius: "))\nfahrenheit = (celsius * 9/5) + 32\nprint(str(fahrenheit) + " degrees Fahrenheit")'
+    },
+    {
+        title: "Grade Calculator",
+        difficulty: "Q3",
+        marks: 10,
+        prompt: `<strong>Write a program</strong> that asks the user to enter a test score (0-100) and displays the grade.
+        <ul>
+            <li>90 or above = "A"</li>
+            <li>70-89 = "B"</li>
+            <li>50-69 = "C"</li>
+            <li>Below 50 = "Fail"</li>
+            <li>Display an error message for invalid scores (below 0 or above 100)</li>
+        </ul>`,
+        testInputs: ["75"],
+        expectedOutput: "Enter your score: 75\nGrade: B",
+        skipOutputCheck: false,
+        correctBlocks: [
+            'score = int(input("Enter your score: "))',
+            'if score < 0 or score > 100:',
+            '    print("Invalid score")',
+            'elif score >= 90:',
+            '    print("Grade: A")',
+            'elif score >= 70:',
+            '    print("Grade: B")',
+            'elif score >= 50:',
+            '    print("Grade: C")',
+            'else:',
+            '    print("Grade: Fail")'
+        ],
+        distractors: [
+            'score = input("Enter your score: ")',
+            'elif score > 70:',
+            'if score < 0 and score > 100:'
+        ],
+        markScheme: [
+            { description: 'Input with int() casting', marks: 2, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Validation: check score < 0 or > 100', marks: 2, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'Correct if/elif/else chain with >= boundaries', marks: 3, checkType: 'blockOrder', firstBlock: 3, secondBlock: 5 },
+            { description: 'All four grade outputs (A, B, C, Fail)', marks: 3, checkType: 'blockPresent', blockIndex: 10 }
+        ],
+        modelAnswer: 'score = int(input("Enter your score: "))\nif score < 0 or score > 100:\n    print("Invalid score")\nelif score >= 90:\n    print("Grade: A")\nelif score >= 70:\n    print("Grade: B")\nelif score >= 50:\n    print("Grade: C")\nelse:\n    print("Grade: Fail")'
+    },
+    {
+        title: "Area Calculator",
+        difficulty: "Q3",
+        marks: 10,
+        prompt: `<strong>Write a program</strong> that calculates the area of a rectangle.
+        <ul>
+            <li>Ask the user to enter the length and the width (allow decimals)</li>
+            <li>Calculate the area (length &times; width)</li>
+            <li>Display the result rounded to 2 decimal places</li>
+        </ul>`,
+        testInputs: ["5.5", "3.2"],
+        expectedOutput: "Enter length: 5.5\nEnter width: 3.2\nArea: 17.6",
+        skipOutputCheck: false,
+        correctBlocks: [
+            'length = float(input("Enter length: "))',
+            'width = float(input("Enter width: "))',
+            'area = length * width',
+            'area = round(area, 2)',
+            'print("Area: " + str(area))'
+        ],
+        distractors: [
+            'length = int(input("Enter length: "))',
+            'area = length + width',
+            'area = round(area, 1)',
+            'print("Area: " + area)'
+        ],
+        markScheme: [
+            { description: 'Two inputs using float() for decimal values', marks: 3, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Correct multiplication formula', marks: 2, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'round() to 2 decimal places', marks: 2, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'Output with print() and str() conversion', marks: 3, checkType: 'blockPresent', blockIndex: 4 }
+        ],
+        modelAnswer: 'length = float(input("Enter length: "))\nwidth = float(input("Enter width: "))\narea = length * width\narea = round(area, 2)\nprint("Area: " + str(area))'
+    },
+    {
+        title: "Password Validator",
+        difficulty: "Q3",
+        marks: 13,
+        prompt: `<strong>Write a program</strong> that checks if a password is strong enough.
+        <ul>
+            <li>Ask the user to enter a password</li>
+            <li>A strong password must be at least 8 characters long</li>
+            <li>It must contain at least one digit</li>
+            <li>Display whether the password is "Strong" or "Weak" with reasons</li>
+        </ul>`,
+        testInputs: ["hello1"],
+        expectedOutput: "Enter password: hello1\nWeak password\nPassword must be at least 8 characters",
+        skipOutputCheck: false,
+        correctBlocks: [
+            'password = input("Enter password: ")',
+            'has_digit = False',
+            'for char in password:',
+            '    if char.isdigit():',
+            '        has_digit = True',
+            'if len(password) >= 8 and has_digit == True:',
+            '    print("Strong password")',
+            'else:',
+            '    print("Weak password")',
+            'if len(password) < 8:',
+            '    print("Password must be at least 8 characters")',
+            'if has_digit == False:',
+            '    print("Password must contain a digit")'
+        ],
+        distractors: [
+            'has_digit = True',
+            'if char.isdigit():',
+            'if len(password) >= 8 or has_digit == True:',
+            '        has_digit = False'
+        ],
+        markScheme: [
+            { description: 'Input to get password (no casting needed)', marks: 1, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Boolean flag initialised to False', marks: 2, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'For loop to iterate through characters', marks: 2, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'isdigit() check with flag set to True', marks: 2, checkType: 'blockOrder', firstBlock: 3, secondBlock: 4 },
+            { description: 'len() check for minimum 8 characters', marks: 2, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'Correct use of AND (not OR) in combined condition', marks: 2, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'Feedback messages for weak password reasons', marks: 2, checkType: 'blockPresent', blockIndex: 12 }
+        ],
+        modelAnswer: 'password = input("Enter password: ")\nhas_digit = False\nfor char in password:\n    if char.isdigit():\n        has_digit = True\nif len(password) >= 8 and has_digit == True:\n    print("Strong password")\nelse:\n    print("Weak password")\nif len(password) < 8:\n    print("Password must be at least 8 characters")\nif has_digit == False:\n    print("Password must contain a digit")'
+    },
+    {
+        title: "Shopping Discount",
+        difficulty: "Q3",
+        marks: 13,
+        prompt: `<strong>Write a program</strong> for a shop that calculates discounts.
+        <ul>
+            <li>Ask the user to enter the total price of their shopping</li>
+            <li>If they spend &pound;100 or more, they get 20% off</li>
+            <li>If they spend &pound;50 or more (but less than &pound;100), they get 10% off</li>
+            <li>Otherwise, no discount is applied</li>
+            <li>Validate that the price is not negative</li>
+            <li>Display the discount amount and the final price</li>
+        </ul>`,
+        testInputs: ["80"],
+        expectedOutput: "Enter total price: 80\nDiscount: 8.0\nFinal price: 72.0",
+        skipOutputCheck: false,
+        correctBlocks: [
+            'price = float(input("Enter total price: "))',
+            'if price < 0:',
+            '    print("Invalid price")',
+            'elif price >= 100:',
+            '    discount = price * 0.20',
+            'elif price >= 50:',
+            '    discount = price * 0.10',
+            'else:',
+            '    discount = 0',
+            'if price >= 0:',
+            '    final = price - discount',
+            '    print("Discount: " + str(discount))',
+            '    print("Final price: " + str(final))'
+        ],
+        distractors: [
+            'price = int(input("Enter total price: "))',
+            'elif price > 50:',
+            '    discount = price * 10',
+            'elif price > 100:'
+        ],
+        markScheme: [
+            { description: 'Input with float() for decimal prices', marks: 2, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Validation for negative price', marks: 2, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'Correct elif ordering (100 checked before 50)', marks: 3, checkType: 'blockOrder', firstBlock: 3, secondBlock: 5 },
+            { description: 'Correct percentage calculations (0.20, 0.10)', marks: 3, checkType: 'blockPresent', blockIndex: 4 },
+            { description: 'Final price calculation and output', marks: 3, checkType: 'blockPresent', blockIndex: 12 }
+        ],
+        modelAnswer: 'price = float(input("Enter total price: "))\nif price < 0:\n    print("Invalid price")\nelif price >= 100:\n    discount = price * 0.20\nelif price >= 50:\n    discount = price * 0.10\nelse:\n    discount = 0\nif price >= 0:\n    final = price - discount\n    print("Discount: " + str(discount))\n    print("Final price: " + str(final))'
+    },
+    {
+        title: "Dice Game",
+        difficulty: "Q4",
+        marks: 15,
+        prompt: `<strong>Write a program</strong> that simulates a dice game.
+        <ul>
+            <li>The player rolls two dice 5 times</li>
+            <li>Each round, if the two dice match (a double), the player scores 10 points</li>
+            <li>If the total of the two dice is even, the player scores 5 points</li>
+            <li>Otherwise, the player scores 0</li>
+            <li>Display each round's dice values and points</li>
+            <li>Display the total score at the end</li>
+        </ul>`,
+        testInputs: [],
+        expectedOutput: "(Output varies due to random dice)",
+        skipOutputCheck: true,
+        correctBlocks: [
+            'import random',
+            'total_score = 0',
+            'for i in range(5):',
+            '    dice1 = random.randint(1, 6)',
+            '    dice2 = random.randint(1, 6)',
+            '    print("Dice: " + str(dice1) + " and " + str(dice2))',
+            '    if dice1 == dice2:',
+            '        points = 10',
+            '    elif (dice1 + dice2) % 2 == 0:',
+            '        points = 5',
+            '    else:',
+            '        points = 0',
+            '    total_score = total_score + points',
+            '    print("Points: " + str(points))',
+            'print("Total score: " + str(total_score))'
+        ],
+        distractors: [
+            '    dice1 = random.randint(0, 6)',
+            '    if dice1 = dice2:',
+            '    total_score = points',
+            '    print("Total score: " + str(total_score))'
+        ],
+        markScheme: [
+            { description: 'import random', marks: 1, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Accumulator initialised to 0', marks: 1, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'For loop with range(5)', marks: 2, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Two random.randint(1, 6) calls', marks: 2, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'Double check with == comparison', marks: 2, checkType: 'blockPresent', blockIndex: 6 },
+            { description: 'Even check with modulus % 2', marks: 2, checkType: 'blockPresent', blockIndex: 8 },
+            { description: 'Accumulate score (+=) not overwrite', marks: 2, checkType: 'blockPresent', blockIndex: 12 },
+            { description: 'Total score printed after loop', marks: 3, checkType: 'blockOrder', firstBlock: 2, secondBlock: 14 }
+        ],
+        modelAnswer: 'import random\ntotal_score = 0\nfor i in range(5):\n    dice1 = random.randint(1, 6)\n    dice2 = random.randint(1, 6)\n    print("Dice: " + str(dice1) + " and " + str(dice2))\n    if dice1 == dice2:\n        points = 10\n    elif (dice1 + dice2) % 2 == 0:\n        points = 5\n    else:\n        points = 0\n    total_score = total_score + points\n    print("Points: " + str(points))\nprint("Total score: " + str(total_score))'
+    },
+    {
+        title: "Times Table Generator",
+        difficulty: "Q4",
+        marks: 15,
+        prompt: `<strong>Write a program</strong> that generates a times table.
+        <ul>
+            <li>Ask the user to enter a number</li>
+            <li>Display the times table for that number from 1 to 12</li>
+            <li>Keep a running total of all the results</li>
+            <li>Display the total at the end</li>
+        </ul>`,
+        testInputs: ["3"],
+        expectedOutput: "Enter a number: 3\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30\n3 x 11 = 33\n3 x 12 = 36\nTotal: 234",
+        skipOutputCheck: false,
+        correctBlocks: [
+            'number = int(input("Enter a number: "))',
+            'total = 0',
+            'for i in range(1, 13):',
+            '    result = number * i',
+            '    total = total + result',
+            '    print(str(number) + " x " + str(i) + " = " + str(result))',
+            'print("Total: " + str(total))'
+        ],
+        distractors: [
+            'for i in range(1, 12):',
+            '    total = result',
+            'for i in range(12):',
+            'print(str(number) + " x " + str(i) + " = " + str(result))'
+        ],
+        markScheme: [
+            { description: 'Input with int() casting', marks: 2, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Accumulator (total) initialised to 0', marks: 1, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'For loop with range(1, 13) — correct bounds', marks: 3, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Multiplication calculation', marks: 2, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'Running total using addition (not overwrite)', marks: 2, checkType: 'blockPresent', blockIndex: 4 },
+            { description: 'Formatted output inside loop', marks: 2, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'Total printed after loop ends', marks: 3, checkType: 'blockOrder', firstBlock: 2, secondBlock: 6 }
+        ],
+        modelAnswer: 'number = int(input("Enter a number: "))\ntotal = 0\nfor i in range(1, 13):\n    result = number * i\n    total = total + result\n    print(str(number) + " x " + str(i) + " = " + str(result))\nprint("Total: " + str(total))'
+    },
+    {
+        title: "Number Guessing Game",
+        difficulty: "Q4",
+        marks: 15,
+        prompt: `<strong>Write a program</strong> for a number guessing game.
+        <ul>
+            <li>Generate a random number between 1 and 100</li>
+            <li>Allow the user up to 7 guesses</li>
+            <li>After each guess, display "Too high" or "Too low"</li>
+            <li>If the user guesses correctly, display a success message with the number of attempts</li>
+            <li>If they run out of guesses, display the answer</li>
+        </ul>`,
+        testInputs: ["50", "25", "37", "42"],
+        expectedOutput: "(Output varies due to random number)",
+        skipOutputCheck: true,
+        correctBlocks: [
+            'import random',
+            'target = random.randint(1, 100)',
+            'guesses = 0',
+            'won = False',
+            'while guesses < 7 and won == False:',
+            '    guess = int(input("Enter guess: "))',
+            '    guesses = guesses + 1',
+            '    if guess == target:',
+            '        print("Correct! You took " + str(guesses) + " guesses")',
+            '        won = True',
+            '    elif guess < target:',
+            '        print("Too low")',
+            '    else:',
+            '        print("Too high")',
+            'if won == False:',
+            '    print("Out of guesses! The answer was " + str(target))'
+        ],
+        distractors: [
+            'while guesses < 7 or won == False:',
+            '    guess = input("Enter guess: ")',
+            '    if guess = target:',
+            '    guesses = 1'
+        ],
+        markScheme: [
+            { description: 'import random and randint(1, 100)', marks: 2, checkType: 'blockPresent', blockIndex: 1 },
+            { description: 'Counter initialised to 0', marks: 1, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Boolean flag for win condition', marks: 1, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'While loop with compound condition (AND not OR)', marks: 3, checkType: 'blockPresent', blockIndex: 4 },
+            { description: 'Input with int() inside loop', marks: 2, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'Counter incremented correctly', marks: 1, checkType: 'blockPresent', blockIndex: 6 },
+            { description: 'Correct == comparison for guess check', marks: 2, checkType: 'blockPresent', blockIndex: 7 },
+            { description: 'Too high / Too low feedback', marks: 1, checkType: 'blockOrder', firstBlock: 10, secondBlock: 12 },
+            { description: 'End message if not won', marks: 2, checkType: 'blockPresent', blockIndex: 15 }
+        ],
+        modelAnswer: 'import random\ntarget = random.randint(1, 100)\nguesses = 0\nwon = False\nwhile guesses < 7 and won == False:\n    guess = int(input("Enter guess: "))\n    guesses = guesses + 1\n    if guess == target:\n        print("Correct! You took " + str(guesses) + " guesses")\n        won = True\n    elif guess < target:\n        print("Too low")\n    else:\n        print("Too high")\nif won == False:\n    print("Out of guesses! The answer was " + str(target))'
+    }
+];
+
+// =================== GAME STATE ===================
+let currentChallenge = 0;
+let totalMarksEarned = 0;
+let challengeResults = [];
+let inputResolve = null;
+let inputQueue = [];
+let inputQueueIndex = 0;
+
+// =================== SYNTAX HIGHLIGHTING ===================
+function highlightSyntax(code) {
+    if (!code.trim()) return '&nbsp;';
+
+    code = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    const strings = [];
+    code = code.replace(/(".*?"|'.*?')/g, (m) => { strings.push(m); return `\x00S${strings.length - 1}\x00`; });
+    const comments = [];
+    code = code.replace(/(#.*)$/g, (m) => { comments.push(m); return `\x00C${comments.length - 1}\x00`; });
+
+    code = code.replace(/\b(import|def|return|if|else|elif|for|while|in|range|and|or|not|True|False|None)\b/g, '<span class="keyword">$1</span>');
+    code = code.replace(/\b(print|input|int|str|len|float|round|randint|isdigit)\b(?=[\(.])/g, '<span class="builtin">$1</span>');
+    code = code.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+
+    comments.forEach((c, i) => { code = code.replace(`\x00C${i}\x00`, `<span class="comment">${c}</span>`); });
+    strings.forEach((s, i) => { code = code.replace(`\x00S${i}\x00`, `<span class="string">${s}</span>`); });
+
+    return code;
+}
+
+// =================== INITIALIZATION ===================
+function initGame() {
+    currentChallenge = 0;
+    totalMarksEarned = 0;
+    challengeResults = [];
+
+    document.getElementById('gameContainer').classList.remove('hidden');
+    document.getElementById('resultsScreen').classList.remove('visible');
+
+    const dotsContainer = document.getElementById('progressDots');
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < challenges.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        dotsContainer.appendChild(dot);
+    }
+
+    loadChallenge();
+}
+
+function loadChallenge() {
+    const ch = challenges[currentChallenge];
+
+    // Update progress
+    document.getElementById('challengeCounter').textContent = `${currentChallenge + 1}/${challenges.length}`;
+    document.getElementById('marksEarned').textContent = totalMarksEarned;
+    document.getElementById('progressFill').style.width = `${(currentChallenge / challenges.length) * 100}%`;
+
+    const dots = document.querySelectorAll('.progress-dot');
+    dots.forEach((d, i) => {
+        if (i === currentChallenge) d.className = 'progress-dot current';
+        else if (i < currentChallenge) {
+            // keep correct/incorrect from results
+        }
+    });
+
+    // Problem card
+    document.getElementById('problemBadge').textContent = `Challenge ${currentChallenge + 1}`;
+    document.getElementById('problemTitle').textContent = ch.title;
+    document.getElementById('difficultyBadge').textContent = ch.difficulty;
+    document.getElementById('difficultyBadge').className = `difficulty-badge ${ch.difficulty.toLowerCase()}`;
+    document.getElementById('marksBadge').textContent = `${ch.marks} marks`;
+    document.getElementById('problemPrompt').innerHTML = ch.prompt;
+
+    // Prepare blocks (shuffle correct + distractors together)
+    const allBlocks = [];
+    ch.correctBlocks.forEach((code, i) => {
+        allBlocks.push({ code, isDistractor: false, originalIndex: i });
+    });
+    ch.distractors.forEach((code, i) => {
+        allBlocks.push({ code, isDistractor: true, originalIndex: -1 });
+    });
+
+    // Fisher-Yates shuffle
+    for (let i = allBlocks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allBlocks[i], allBlocks[j]] = [allBlocks[j], allBlocks[i]];
+    }
+
+    // Render pool
+    const pool = document.getElementById('blockPool');
+    pool.innerHTML = '';
+    allBlocks.forEach((block, idx) => {
+        const el = createBlockElement(block.code, block.isDistractor, idx);
+        pool.appendChild(el);
+    });
+    updatePoolCount();
+
+    // Clear solution area
+    const solutionArea = document.getElementById('solutionArea');
+    solutionArea.innerHTML = '<div class="empty-message" id="solutionEmpty">Drag code blocks here or click to add</div>';
+    updateSolutionCount();
+
+    // Hide panels
+    document.getElementById('outputPanel').classList.remove('visible');
+    document.getElementById('feedbackPanel').classList.remove('visible');
+    document.getElementById('actionBar').style.display = '';
+
+    // Setup drag-drop for solution area
+    setupSolutionDrop();
+
+    // Scroll to top of problem
+    document.getElementById('problemCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function createBlockElement(code, isDistractor, poolIndex) {
+    const el = document.createElement('div');
+    el.className = 'code-block-item';
+    el.draggable = true;
+    el.dataset.code = code;
+    el.dataset.distractor = isDistractor;
+    el.dataset.poolIndex = poolIndex;
+
+    el.innerHTML = `
+        <span class="drag-handle">&#9776;</span>
+        <span class="block-code">${highlightSyntax(code)}</span>
+        <button class="remove-btn" onclick="event.stopPropagation(); removeFromSolution(this.parentElement);" title="Remove">&times;</button>
+    `;
+
+    // Drag events
+    el.addEventListener('dragstart', (e) => {
+        el.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', '');
+    });
+
+    el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+    });
+
+    // Click to add/move
+    el.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) return;
+        const pool = document.getElementById('blockPool');
+        const solution = document.getElementById('solutionArea');
+
+        if (el.parentElement === pool) {
+            addToSolution(el);
+        }
+    });
+
+    return el;
+}
+
+// =================== DRAG AND DROP ===================
+function setupSolutionDrop() {
+    const solution = document.getElementById('solutionArea');
+    const pool = document.getElementById('blockPool');
+
+    solution.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        solution.classList.add('drag-over');
+
+        const dragging = document.querySelector('.code-block-item.dragging');
+        if (!dragging) return;
+
+        const siblings = [...solution.querySelectorAll('.code-block-item:not(.dragging)')];
+        const afterElement = siblings.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = e.clientY - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset, element: child };
+            }
+            return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+        if (afterElement) {
+            solution.insertBefore(dragging, afterElement);
+        } else {
+            solution.appendChild(dragging);
+        }
+    });
+
+    solution.addEventListener('dragleave', () => {
+        solution.classList.remove('drag-over');
+    });
+
+    solution.addEventListener('drop', (e) => {
+        e.preventDefault();
+        solution.classList.remove('drag-over');
+
+        const dragging = document.querySelector('.code-block-item.dragging');
+        if (!dragging) return;
+
+        // If it was in the pool, move it to solution
+        if (dragging.parentElement === pool || dragging.parentElement !== solution) {
+            // Remove empty message
+            const empty = document.getElementById('solutionEmpty');
+            if (empty) empty.remove();
+
+            // Already positioned by dragover, just make sure it's in solution
+            if (dragging.parentElement !== solution) {
+                solution.appendChild(dragging);
+            }
+        }
+
+        updateSolutionCount();
+        updatePoolCount();
+        updateLineNumbers();
+    });
+
+    // Also allow dropping back to pool
+    pool.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    pool.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const dragging = document.querySelector('.code-block-item.dragging');
+        if (dragging && dragging.parentElement !== pool) {
+            pool.appendChild(dragging);
+            // Remove line number
+            const lineNum = dragging.querySelector('.line-num');
+            if (lineNum) lineNum.remove();
+            updateSolutionCount();
+            updatePoolCount();
+            updateLineNumbers();
+            showEmptyMessageIfNeeded();
+        }
+    });
+}
+
+function addToSolution(el) {
+    const solution = document.getElementById('solutionArea');
+    const empty = document.getElementById('solutionEmpty');
+    if (empty) empty.remove();
+
+    // Add line number
+    if (!el.querySelector('.line-num')) {
+        const lineNum = document.createElement('span');
+        lineNum.className = 'line-num';
+        el.insertBefore(lineNum, el.firstChild);
+    }
+
+    solution.appendChild(el);
+    updateSolutionCount();
+    updatePoolCount();
+    updateLineNumbers();
+}
+
+function removeFromSolution(el) {
+    const pool = document.getElementById('blockPool');
+    // Remove line number
+    const lineNum = el.querySelector('.line-num');
+    if (lineNum) lineNum.remove();
+
+    pool.appendChild(el);
+    updateSolutionCount();
+    updatePoolCount();
+    updateLineNumbers();
+    showEmptyMessageIfNeeded();
+}
+
+function clearSolution() {
+    const solution = document.getElementById('solutionArea');
+    const pool = document.getElementById('blockPool');
+    const blocks = [...solution.querySelectorAll('.code-block-item')];
+
+    blocks.forEach(b => {
+        const lineNum = b.querySelector('.line-num');
+        if (lineNum) lineNum.remove();
+        pool.appendChild(b);
+    });
+
+    showEmptyMessageIfNeeded();
+    updateSolutionCount();
+    updatePoolCount();
+}
+
+function showEmptyMessageIfNeeded() {
+    const solution = document.getElementById('solutionArea');
+    const blocks = solution.querySelectorAll('.code-block-item');
+    if (blocks.length === 0 && !document.getElementById('solutionEmpty')) {
+        const msg = document.createElement('div');
+        msg.className = 'empty-message';
+        msg.id = 'solutionEmpty';
+        msg.textContent = 'Drag code blocks here or click to add';
+        solution.appendChild(msg);
+    }
+}
+
+function updateLineNumbers() {
+    const solution = document.getElementById('solutionArea');
+    const blocks = solution.querySelectorAll('.code-block-item');
+    blocks.forEach((b, i) => {
+        let lineNum = b.querySelector('.line-num');
+        if (!lineNum) {
+            lineNum = document.createElement('span');
+            lineNum.className = 'line-num';
+            b.insertBefore(lineNum, b.firstChild);
+        }
+        lineNum.textContent = i + 1;
+    });
+}
+
+function updatePoolCount() {
+    const pool = document.getElementById('blockPool');
+    const count = pool.querySelectorAll('.code-block-item').length;
+    document.getElementById('poolCount').textContent = `${count} block${count !== 1 ? 's' : ''}`;
+}
+
+function updateSolutionCount() {
+    const solution = document.getElementById('solutionArea');
+    const count = solution.querySelectorAll('.code-block-item').length;
+    document.getElementById('solutionCount').textContent = `${count} line${count !== 1 ? 's' : ''}`;
+}
+
+// =================== SKULPT EXECUTION ===================
+function getSolutionCode() {
+    const solution = document.getElementById('solutionArea');
+    const blocks = solution.querySelectorAll('.code-block-item');
+    return [...blocks].map(b => b.dataset.code).join('\n');
+}
+
+function runCode() {
+    const code = getSolutionCode();
+    if (!code.trim()) {
+        alert('Add some code blocks to your solution first!');
+        return;
+    }
+
+    const ch = challenges[currentChallenge];
+    const outputPanel = document.getElementById('outputPanel');
+    outputPanel.classList.add('visible');
+
+    const userOutput = document.getElementById('userOutput');
+    const expectedOutput = document.getElementById('expectedOutput');
+    const matchEl = document.getElementById('outputMatch');
+
+    userOutput.textContent = '';
+    userOutput.classList.remove('error');
+    expectedOutput.textContent = ch.expectedOutput;
+    matchEl.innerHTML = '';
+
+    // Setup input queue
+    inputQueue = [...ch.testInputs];
+    inputQueueIndex = 0;
+
+    const inputPanelEl = document.getElementById('inputPanel');
+    inputPanelEl.classList.remove('active');
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) throw "File not found: '" + x + "'";
+        return Sk.builtinFiles["files"][x];
+    }
+
+    function inputFun(prompt) {
+        userOutput.textContent += prompt;
+        if (inputQueueIndex < inputQueue.length) {
+            const val = inputQueue[inputQueueIndex++];
+            userOutput.textContent += val + '\n';
+            return new Promise(resolve => resolve(val));
+        }
+        // Show input panel for manual input
+        return new Promise(resolve => {
+            inputResolve = resolve;
+            inputPanelEl.classList.add('active');
+            document.getElementById('skulptInput').focus();
+        });
+    }
+
+    Sk.configure({
+        output: (text) => { userOutput.textContent += text; },
+        read: builtinRead,
+        inputfun: inputFun,
+        inputfunTakesPrompt: true,
+        __future__: Sk.python3
+    });
+
+    Sk.misceval.asyncToPromise(() => {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+    }).then(() => {
+        inputPanelEl.classList.remove('active');
+        // Compare output
+        if (!ch.skipOutputCheck) {
+            const actual = userOutput.textContent.trim();
+            const expected = ch.expectedOutput.trim();
+            if (actual === expected) {
+                matchEl.innerHTML = '<div class="output-match pass" style="margin: 0.75rem 1rem;">&#10003; Output matches expected</div>';
+            } else {
+                matchEl.innerHTML = '<div class="output-match fail" style="margin: 0.75rem 1rem;">&#10007; Output differs from expected</div>';
+            }
+        } else {
+            matchEl.innerHTML = '<div class="output-match skip" style="margin: 0.75rem 1rem;">&#9888; Output varies (random-based) &mdash; check manually</div>';
+        }
+    }).catch(err => {
+        inputPanelEl.classList.remove('active');
+        userOutput.textContent += '\n' + String(err);
+        userOutput.classList.add('error');
+        matchEl.innerHTML = '<div class="output-match fail" style="margin: 0.75rem 1rem;">&#10007; Error during execution</div>';
+    });
+}
+
+function submitSkulptInput() {
+    const input = document.getElementById('skulptInput');
+    const val = input.value;
+    input.value = '';
+
+    const userOutput = document.getElementById('userOutput');
+    userOutput.textContent += val + '\n';
+
+    document.getElementById('inputPanel').classList.remove('active');
+    if (inputResolve) {
+        inputResolve(val);
+        inputResolve = null;
+    }
+}
+
+// =================== MARKING ===================
+function submitForMarking() {
+    const ch = challenges[currentChallenge];
+    const solution = document.getElementById('solutionArea');
+    const blocks = [...solution.querySelectorAll('.code-block-item')];
+
+    if (blocks.length === 0) {
+        alert('Add some code blocks to your solution first!');
+        return;
+    }
+
+    const solutionCodes = blocks.map(b => b.dataset.code);
+    const solutionDistractors = blocks.filter(b => b.dataset.distractor === 'true');
+
+    let marksAwarded = 0;
+    let markDetails = [];
+
+    // Check each mark scheme point
+    ch.markScheme.forEach(point => {
+        let awarded = false;
+
+        if (point.checkType === 'blockPresent') {
+            const targetCode = ch.correctBlocks[point.blockIndex];
+            if (solutionCodes.includes(targetCode)) {
+                awarded = true;
+            }
+        } else if (point.checkType === 'blockOrder') {
+            const firstCode = ch.correctBlocks[point.firstBlock];
+            const secondCode = ch.correctBlocks[point.secondBlock];
+            const firstIdx = solutionCodes.indexOf(firstCode);
+            const secondIdx = solutionCodes.indexOf(secondCode);
+            if (firstIdx !== -1 && secondIdx !== -1 && firstIdx < secondIdx) {
+                awarded = true;
+            }
+        }
+
+        if (awarded) {
+            marksAwarded += point.marks;
+        }
+
+        markDetails.push({
+            description: point.description,
+            marks: point.marks,
+            awarded
+        });
+    });
+
+    // Deduct for distractors
+    let distractorDeductions = 0;
+    solutionDistractors.forEach(d => {
+        distractorDeductions++;
+        markDetails.push({
+            description: `Distractor included: <code>${escapeHtml(d.dataset.code.trim())}</code>`,
+            marks: -1,
+            awarded: false,
+            isDeduction: true
+        });
+    });
+
+    marksAwarded = Math.max(0, marksAwarded - distractorDeductions);
+    const maxMarks = ch.marks;
+    marksAwarded = Math.min(marksAwarded, maxMarks);
+
+    // Store result
+    challengeResults.push({
+        title: ch.title,
+        earned: marksAwarded,
+        max: maxMarks
+    });
+
+    totalMarksEarned += marksAwarded;
+    document.getElementById('marksEarned').textContent = totalMarksEarned;
+
+    // Show feedback
+    showFeedback(marksAwarded, maxMarks, markDetails, ch);
+
+    // Hide action bar
+    document.getElementById('actionBar').style.display = 'none';
+
+    // Update progress dot
+    const dots = document.querySelectorAll('.progress-dot');
+    const ratio = marksAwarded / maxMarks;
+    if (ratio >= 0.7) {
+        dots[currentChallenge].className = 'progress-dot correct';
+    } else {
+        dots[currentChallenge].className = 'progress-dot incorrect';
+    }
+}
+
+function showFeedback(earned, max, details, ch) {
+    const panel = document.getElementById('feedbackPanel');
+    panel.classList.add('visible');
+
+    const icon = document.getElementById('feedbackIcon');
+    const title = document.getElementById('feedbackTitle');
+    const subtitle = document.getElementById('feedbackSubtitle');
+
+    const ratio = earned / max;
+    if (ratio >= 0.8) {
+        icon.className = 'feedback-icon correct';
+        icon.textContent = '\u2713';
+        title.textContent = 'Excellent!';
+        subtitle.textContent = `You scored ${earned}/${max} marks`;
+    } else if (ratio >= 0.5) {
+        icon.className = 'feedback-icon partial';
+        icon.textContent = '~';
+        title.textContent = 'Good Effort';
+        subtitle.textContent = `You scored ${earned}/${max} marks`;
+    } else {
+        icon.className = 'feedback-icon incorrect';
+        icon.textContent = '\u2717';
+        title.textContent = 'Keep Practising';
+        subtitle.textContent = `You scored ${earned}/${max} marks`;
+    }
+
+    // Mark details
+    const marksEl = document.getElementById('feedbackMarks');
+    let marksHtml = `<div class="feedback-marks-summary">Score: <span style="color: var(--accent-green);">${earned}</span> / ${max}</div>`;
+
+    details.forEach(d => {
+        if (d.isDeduction) {
+            marksHtml += `
+                <div class="mark-item">
+                    <div class="mark-icon deducted">-1</div>
+                    <div>
+                        <div class="mark-desc">${d.description}</div>
+                        <div class="mark-points">-1 mark (distractor penalty)</div>
+                    </div>
+                </div>`;
+        } else {
+            marksHtml += `
+                <div class="mark-item">
+                    <div class="mark-icon ${d.awarded ? 'awarded' : 'missed'}">${d.awarded ? '\u2713' : '\u2717'}</div>
+                    <div>
+                        <div class="mark-desc">${d.description}</div>
+                        <div class="mark-points">${d.awarded ? d.marks + ' mark' + (d.marks > 1 ? 's' : '') + ' awarded' : d.marks + ' mark' + (d.marks > 1 ? 's' : '') + ' missed'}</div>
+                    </div>
+                </div>`;
+        }
+    });
+    marksEl.innerHTML = marksHtml;
+
+    // Model answer
+    const modelEl = document.getElementById('feedbackModel');
+    const lines = ch.modelAnswer.split('\n').map(line => highlightSyntax(line)).join('\n');
+    modelEl.innerHTML = `
+        <h4>Model Answer</h4>
+        <div class="model-code">${lines}</div>
+    `;
+
+    // Next button text
+    const nextBtn = document.getElementById('nextBtn');
+    if (currentChallenge === challenges.length - 1) {
+        nextBtn.textContent = 'View Results \u2192';
+    } else {
+        nextBtn.textContent = 'Next Challenge \u2192';
+    }
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// =================== NAVIGATION ===================
+function nextChallenge() {
+    currentChallenge++;
+    if (currentChallenge >= challenges.length) {
+        showResults();
+        return;
+    }
+    loadChallenge();
+}
+
+function showResults() {
+    document.getElementById('gameContainer').classList.add('hidden');
+    const screen = document.getElementById('resultsScreen');
+    screen.classList.add('visible');
+
+    const maxPossible = challenges.reduce((sum, c) => sum + c.marks, 0);
+    document.getElementById('finalScore').textContent = `${totalMarksEarned} / ${maxPossible}`;
+
+    const ratio = totalMarksEarned / maxPossible;
+    let msg = '';
+    if (ratio >= 0.8) msg = 'Outstanding! You really know your Python programming.';
+    else if (ratio >= 0.6) msg = 'Good work! Review the model answers for the ones you missed.';
+    else if (ratio >= 0.4) msg = 'Decent start. Keep practising with these exam-style questions.';
+    else msg = 'This is tough stuff \u2014 review the model answers and try again!';
+    document.getElementById('resultsMessage').textContent = msg;
+
+    // Breakdown stats
+    const fullMarks = challengeResults.filter(r => r.earned === r.max).length;
+    const breakdown = document.getElementById('resultsBreakdown');
+    breakdown.innerHTML = `
+        <div class="result-stat">
+            <div class="result-stat-value green">${totalMarksEarned}</div>
+            <div class="result-stat-label">Total Marks</div>
+        </div>
+        <div class="result-stat">
+            <div class="result-stat-value blue">${fullMarks}</div>
+            <div class="result-stat-label">Full Marks</div>
+        </div>
+        <div class="result-stat">
+            <div class="result-stat-value purple">${challenges.length}</div>
+            <div class="result-stat-label">Challenges</div>
+        </div>
+    `;
+
+    // Per-challenge breakdown
+    const perChallenge = document.getElementById('resultsPerChallenge');
+    let rows = '<h3>Per-Challenge Breakdown</h3>';
+    challengeResults.forEach((r, i) => {
+        const pct = r.earned / r.max;
+        const cls = pct >= 0.8 ? 'full' : pct >= 0.5 ? 'partial' : 'low';
+        rows += `
+            <div class="result-row">
+                <span class="result-row-title">${i + 1}. ${r.title}</span>
+                <span class="result-row-score ${cls}">${r.earned} / ${r.max}</span>
+            </div>`;
+    });
+    perChallenge.innerHTML = rows;
+
+    // Update progress
+    document.getElementById('progressFill').style.width = '100%';
+}
+
+function restartGame() {
+    initGame();
+}
+
+// =================== START ===================
+document.addEventListener('DOMContentLoaded', initGame);
+</script>
+</body>
+</html>
