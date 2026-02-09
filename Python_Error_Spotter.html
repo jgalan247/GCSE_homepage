@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Error Spotter | GCSE Computer Science Paper 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --bg-code: #0d1117;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-yellow: #d29922;
+    --accent-blue: #58a6ff;
+    --accent-purple: #a371f7;
+    --accent-cyan: #39c5cf;
+    --accent-orange: #f0883e;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --border-color: #30363d;
+    --success: #238636;
+    --error: #da3633;
+    --gradient-1: linear-gradient(135deg, #f85149 0%, #a371f7 100%);
+    --gradient-2: linear-gradient(135deg, #3fb950 0%, #58a6ff 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background effects */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(248, 81, 73, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(163, 113, 247, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.1;
+    z-index: 0;
+}
+.orb-1 { background: var(--accent-red); top: -150px; left: -150px; }
+.orb-2 { background: var(--accent-purple); bottom: -150px; right: -150px; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+}
+
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+.header p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Progress bar */
+.progress-bar-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-info {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-stat {
+    text-align: center;
+}
+
+.progress-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-purple);
+}
+
+.progress-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.progress-track {
+    flex: 1;
+    min-width: 200px;
+}
+
+.progress-track-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-track-fill {
+    height: 100%;
+    background: var(--gradient-1);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.progress-dots {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    justify-content: center;
+}
+
+.progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-color);
+    transition: all 0.3s;
+}
+
+.progress-dot.current { background: var(--accent-purple); transform: scale(1.2); }
+.progress-dot.correct { background: var(--accent-green); }
+.progress-dot.incorrect { background: var(--accent-red); }
+
+/* Question card */
+.question-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.question-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.question-number {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.question-badge {
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.question-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.error-type-badge {
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.error-type-badge.syntax { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+.error-type-badge.logic { background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+.error-type-badge.runtime { background: rgba(240, 136, 62, 0.15); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+.error-type-badge.indentation { background: rgba(163, 113, 247, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+.question-prompt {
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Code display */
+.code-container {
+    position: relative;
+}
+
+.code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #1c2128;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.code-filename {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.code-filename .icon { color: var(--accent-yellow); }
+
+.code-block {
+    background: var(--bg-code);
+    padding: 0;
+    overflow-x: auto;
+}
+
+.code-line {
+    display: flex;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    transition: background 0.2s;
+}
+
+.code-line:hover {
+    background: rgba(88, 166, 255, 0.1);
+}
+
+.code-line.selected {
+    background: rgba(248, 81, 73, 0.15);
+}
+
+.code-line.correct-line {
+    background: rgba(63, 185, 80, 0.15);
+}
+
+.code-line.wrong-line {
+    background: rgba(248, 81, 73, 0.15);
+}
+
+.line-number {
+    min-width: 50px;
+    padding: 0.3rem 1rem;
+    text-align: right;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.2);
+    user-select: none;
+    border-right: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.line-number:hover {
+    color: var(--accent-blue);
+}
+
+.line-code {
+    padding: 0.3rem 1rem;
+    flex: 1;
+    white-space: pre;
+}
+
+/* Syntax highlighting */
+.keyword { color: #ff7b72; }
+.string { color: #a5d6ff; }
+.number { color: #79c0ff; }
+.function { color: #d2a8ff; }
+.comment { color: #8b949e; font-style: italic; }
+.operator { color: #ff7b72; }
+.builtin { color: #ffa657; }
+
+/* Answer section */
+.answer-section {
+    padding: 1.5rem;
+}
+
+.answer-group {
+    margin-bottom: 1.5rem;
+}
+
+.answer-label {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.answer-label .step {
+    background: var(--accent-purple);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+/* Line selector */
+.line-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.line-btn {
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.line-btn:hover {
+    border-color: var(--accent-purple);
+    background: rgba(163, 113, 247, 0.1);
+}
+
+.line-btn.selected {
+    border-color: var(--accent-red);
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
+.line-btn.correct {
+    border-color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.2);
+    color: var(--accent-green);
+}
+
+.line-btn.incorrect {
+    border-color: var(--accent-red);
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+}
+
+/* Error type selector */
+.error-type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.error-type-btn {
+    padding: 0.6rem 1.2rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-dark);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.error-type-btn:hover {
+    border-color: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+.error-type-btn.selected {
+    border-color: var(--accent-purple);
+    background: rgba(163, 113, 247, 0.15);
+    color: var(--accent-purple);
+}
+
+.error-type-btn.correct {
+    border-color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+}
+
+.error-type-btn.incorrect {
+    border-color: var(--accent-red);
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+}
+
+/* Fix input */
+.fix-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    resize: none;
+    min-height: 80px;
+    transition: border-color 0.2s;
+}
+
+.fix-input:focus {
+    outline: none;
+    border-color: var(--accent-purple);
+}
+
+.fix-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Buttons */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.btn {
+    padding: 0.9rem 1.75rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: var(--gradient-1);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(248, 81, 73, 0.25);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-purple);
+}
+
+.btn-success {
+    background: var(--gradient-2);
+    color: white;
+}
+
+/* Feedback */
+.feedback-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    display: none;
+}
+
+.feedback-panel.show {
+    display: block;
+    animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.feedback-icon.correct { background: rgba(63, 185, 80, 0.2); }
+.feedback-icon.partial { background: rgba(210, 153, 34, 0.2); }
+.feedback-icon.incorrect { background: rgba(248, 81, 73, 0.2); }
+
+.feedback-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.feedback-title.correct { color: var(--accent-green); }
+.feedback-title.partial { color: var(--accent-yellow); }
+.feedback-title.incorrect { color: var(--accent-red); }
+
+.feedback-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.feedback-details {
+    display: grid;
+    gap: 1rem;
+}
+
+.feedback-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    border-left: 3px solid var(--border-color);
+}
+
+.feedback-item.correct { border-left-color: var(--accent-green); }
+.feedback-item.incorrect { border-left-color: var(--accent-red); }
+
+.feedback-item-icon {
+    font-size: 1.1rem;
+}
+
+.feedback-item-content {
+    flex: 1;
+}
+
+.feedback-item-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.feedback-item-value {
+    font-weight: 500;
+}
+
+.feedback-item-value.correct { color: var(--accent-green); }
+.feedback-item-value.incorrect { color: var(--accent-red); }
+
+.correct-answer-box {
+    background: rgba(63, 185, 80, 0.1);
+    border: 1px solid var(--accent-green);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.correct-answer-box h4 {
+    color: var(--accent-green);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.correct-answer-box p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.correct-answer-box code {
+    background: var(--bg-dark);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-green);
+}
+
+/* Results screen */
+.results-screen {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    display: none;
+}
+
+.results-screen.show { display: block; }
+
+.results-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.results-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.results-message {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.results-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.result-stat {
+    padding: 1rem 1.5rem;
+    background: var(--bg-dark);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    min-width: 100px;
+}
+
+.result-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.result-stat-value.green { color: var(--accent-green); }
+.result-stat-value.red { color: var(--accent-red); }
+.result-stat-value.yellow { color: var(--accent-yellow); }
+
+.result-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+/* Error type legend */
+.error-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--bg-dark);
+    border-radius: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.legend-dot.syntax { background: var(--accent-red); }
+.legend-dot.logic { background: var(--accent-yellow); }
+.legend-dot.runtime { background: var(--accent-orange); }
+.legend-dot.indentation { background: var(--accent-purple); }
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .question-header { padding: 1rem; }
+    .answer-section { padding: 1rem; }
+    .code-line { font-size: 0.8rem; }
+    .line-number { min-width: 40px; padding: 0.3rem 0.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+
+<div class="container">
+    <header class="header">
+        <span class="header-badge">🐍 Paper 2 Practice</span>
+        <h1>Python Error Spotter</h1>
+        <p>Identify the error type, locate the problematic line, and explain how to fix it!</p>
+    </header>
+
+    <div class="error-legend">
+        <div class="legend-item"><span class="legend-dot syntax"></span> Syntax Error</div>
+        <div class="legend-item"><span class="legend-dot logic"></span> Logic Error</div>
+        <div class="legend-item"><span class="legend-dot runtime"></span> Runtime Error</div>
+        <div class="legend-item"><span class="legend-dot indentation"></span> Indentation Error</div>
+    </div>
+
+    <div class="progress-bar-container">
+        <div class="progress-info">
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="scoreDisplay">0</div>
+                <div class="progress-stat-label">Score</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="questionDisplay">1/10</div>
+                <div class="progress-stat-label">Question</div>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div class="progress-track-bar">
+                <div class="progress-track-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-dots" id="progressDots"></div>
+        </div>
+    </div>
+
+    <div id="gameContainer">
+        <div class="question-card" id="questionCard">
+            <div class="question-header">
+                <div class="question-number">
+                    <span class="question-badge" id="qBadge">Q1</span>
+                    <span class="question-title">Find the bug!</span>
+                </div>
+                <span class="error-type-badge" id="errorHint" style="display: none;"></span>
+            </div>
+
+            <div class="question-prompt" id="questionPrompt">
+                The following code contains an error. Identify the error type, the line number, and explain how to fix it.
+            </div>
+
+            <div class="code-container">
+                <div class="code-header">
+                    <span class="code-filename">
+                        <span class="icon">🐍</span>
+                        <span id="filename">program.py</span>
+                    </span>
+                </div>
+                <div class="code-block" id="codeBlock"></div>
+            </div>
+
+            <div class="answer-section">
+                <div class="answer-group">
+                    <div class="answer-label">
+                        <span class="step">1</span>
+                        What type of error is this?
+                    </div>
+                    <div class="error-type-selector" id="errorTypeSelector">
+                        <button class="error-type-btn" data-type="syntax" onclick="selectErrorType('syntax')">Syntax Error</button>
+                        <button class="error-type-btn" data-type="logic" onclick="selectErrorType('logic')">Logic Error</button>
+                        <button class="error-type-btn" data-type="runtime" onclick="selectErrorType('runtime')">Runtime Error</button>
+                        <button class="error-type-btn" data-type="indentation" onclick="selectErrorType('indentation')">Indentation Error</button>
+                    </div>
+                </div>
+
+                <div class="answer-group">
+                    <div class="answer-label">
+                        <span class="step">2</span>
+                        Which line contains the error?
+                    </div>
+                    <div class="line-selector" id="lineSelector"></div>
+                </div>
+
+                <div class="answer-group">
+                    <div class="answer-label">
+                        <span class="step">3</span>
+                        How would you fix it? (Write the corrected line)
+                    </div>
+                    <textarea class="fix-input" id="fixInput" placeholder="Type the corrected code here..."></textarea>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="submitAnswer()" id="submitBtn">✓ Check Answer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="feedback-panel" id="feedbackPanel">
+            <div class="feedback-header">
+                <div class="feedback-icon" id="feedbackIcon">✓</div>
+                <div>
+                    <div class="feedback-title" id="feedbackTitle">Correct!</div>
+                    <div class="feedback-subtitle" id="feedbackSubtitle">You identified the error correctly.</div>
+                </div>
+            </div>
+
+            <div class="feedback-details" id="feedbackDetails"></div>
+
+            <div class="correct-answer-box" id="correctAnswerBox">
+                <h4>💡 Explanation</h4>
+                <p id="explanationText"></p>
+            </div>
+
+            <div class="btn-group" style="margin-top: 1.5rem;">
+                <button class="btn btn-success" onclick="nextQuestion()" id="nextBtn">Next Question →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-icon">🏆</div>
+        <h2 class="results-title">Quiz Complete!</h2>
+        <div class="results-score" id="finalScore">0/30</div>
+        <p class="results-message" id="resultsMessage">Great debugging practice!</p>
+
+        <div class="results-breakdown" id="resultsBreakdown">
+            <div class="result-stat">
+                <div class="result-stat-value green" id="correctTypes">0</div>
+                <div class="result-stat-label">Error Types</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-value green" id="correctLines">0</div>
+                <div class="result-stat-label">Lines Found</div>
+            </div>
+            <div class="result-stat">
+                <div class="result-stat-value green" id="correctFixes">0</div>
+                <div class="result-stat-label">Fixes</div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="restartQuiz()">🔄 Try Again</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const questions = [
+    {
+        id: 1,
+        prompt: "This program should print numbers 1 to 5, but it has an error.",
+        code: [
+            'for i in range(1, 6)',
+            '    print(i)'
+        ],
+        errorType: 'syntax',
+        errorLine: 1,
+        errorDescription: 'Missing colon at the end of the for loop statement',
+        fix: 'for i in range(1, 6):',
+        fixKeywords: [':', 'for i in range(1, 6):'],
+        explanation: 'In Python, a <code>for</code> loop statement must end with a colon <code>:</code>. The colon indicates the start of the code block that will be repeated. Without it, Python cannot understand where the loop body begins.'
+    },
+    {
+        id: 2,
+        prompt: "This program asks for the user's age but crashes when run.",
+        code: [
+            'age = input("Enter your age: ")',
+            'next_year = age + 1',
+            'print("Next year you will be", next_year)'
+        ],
+        errorType: 'runtime',
+        errorLine: 2,
+        errorDescription: 'Cannot add integer to string - input() returns a string',
+        fix: 'next_year = int(age) + 1',
+        fixKeywords: ['int(age)', 'int('],
+        explanation: 'The <code>input()</code> function always returns a string, even if the user types a number. You cannot add an integer (1) to a string. The fix is to convert the input to an integer using <code>int(age)</code> before performing arithmetic.'
+    },
+    {
+        id: 3,
+        prompt: "This program should check if a number is positive, but the logic is wrong.",
+        code: [
+            'number = int(input("Enter a number: "))',
+            'if number > 0:',
+            '    print("Negative")',
+            'else:',
+            '    print("Positive or zero")'
+        ],
+        errorType: 'logic',
+        errorLine: 3,
+        errorDescription: 'The output messages are the wrong way around',
+        fix: '    print("Positive")',
+        fixKeywords: ['Positive', 'positive'],
+        explanation: 'This is a logic error - the code runs without crashing but produces incorrect output. When <code>number > 0</code> is true, the number is positive, not negative. The print statements have been swapped. Logic errors are the hardest to find because Python doesn\'t report them as errors.'
+    },
+    {
+        id: 4,
+        prompt: "This program should print a greeting, but it won't run.",
+        code: [
+            'def greet(name):',
+            'print("Hello, " + name)',
+            '',
+            'greet("Alice")'
+        ],
+        errorType: 'indentation',
+        errorLine: 2,
+        errorDescription: 'The print statement inside the function is not indented',
+        fix: '    print("Hello, " + name)',
+        fixKeywords: ['    print', 'print("Hello'],
+        explanation: 'In Python, the code inside a function must be indented (usually 4 spaces). Without indentation, Python thinks the function definition ended immediately and has no body. The <code>print</code> statement needs to be indented to be part of the <code>greet</code> function.'
+    },
+    {
+        id: 5,
+        prompt: "This program should calculate the average of three numbers.",
+        code: [
+            'num1 = 10',
+            'num2 = 20',
+            'num3 = 30',
+            'average = num1 + num2 + num3 / 3',
+            'print("Average:", average)'
+        ],
+        errorType: 'logic',
+        errorLine: 4,
+        errorDescription: 'Missing brackets - only num3 is being divided by 3 due to operator precedence',
+        fix: 'average = (num1 + num2 + num3) / 3',
+        fixKeywords: ['(num1 + num2 + num3)', '(', ')'],
+        explanation: 'Due to operator precedence, division is performed before addition. So the calculation is <code>10 + 20 + (30/3)</code> = 40, not <code>(10+20+30)/3</code> = 20. Brackets are needed to ensure the addition happens first: <code>(num1 + num2 + num3) / 3</code>.'
+    },
+    {
+        id: 6,
+        prompt: "This program should print items from a shopping list.",
+        code: [
+            'shopping = ["milk", "bread", "eggs"]',
+            'print(shopping[3])'
+        ],
+        errorType: 'runtime',
+        errorLine: 2,
+        errorDescription: 'Index out of range - list indices start at 0, so valid indices are 0, 1, 2',
+        fix: 'print(shopping[2])',
+        fixKeywords: ['[0]', '[1]', '[2]', 'shopping[2]', 'shopping[1]', 'shopping[0]'],
+        explanation: 'List indices in Python start at 0, not 1. A list with 3 items has indices 0, 1, and 2. Trying to access index 3 causes an "IndexError: list index out of range" because that position doesn\'t exist. To get "eggs", use <code>shopping[2]</code>.'
+    },
+    {
+        id: 7,
+        prompt: "This program should print 'Hello World' but has a syntax error.",
+        code: [
+            'message = "Hello World',
+            'print(message)'
+        ],
+        errorType: 'syntax',
+        errorLine: 1,
+        errorDescription: 'Missing closing quotation mark on the string',
+        fix: 'message = "Hello World"',
+        fixKeywords: ['"Hello World"', "'Hello World'", 'World"', "World'"],
+        explanation: 'Strings in Python must have matching opening and closing quotation marks. The string <code>"Hello World</code> is missing its closing quote. Python will report an "EOL while scanning string literal" error. The fix is to add the closing quotation mark: <code>"Hello World"</code>.'
+    },
+    {
+        id: 8,
+        prompt: "This program should count down from 5 to 1, but it runs forever.",
+        code: [
+            'count = 5',
+            'while count > 0:',
+            '    print(count)',
+            '    count = count + 1'
+        ],
+        errorType: 'logic',
+        errorLine: 4,
+        errorDescription: 'count is increasing instead of decreasing, causing an infinite loop',
+        fix: '    count = count - 1',
+        fixKeywords: ['- 1', '-1', 'count - 1', 'count -= 1'],
+        explanation: 'The loop continues while <code>count > 0</code>, but count is being increased (+1) instead of decreased (-1). This means count will never reach 0 or below, so the condition is always true - creating an infinite loop. Change <code>+ 1</code> to <code>- 1</code> to count down.'
+    },
+    {
+        id: 9,
+        prompt: "This function should return the square of a number.",
+        code: [
+            'def square(num):',
+            '    result = num * num',
+            '    print(result)',
+            '',
+            'answer = square(5)',
+            'print("The answer is", answer)'
+        ],
+        errorType: 'logic',
+        errorLine: 3,
+        errorDescription: 'The function prints instead of returning the value, so answer will be None',
+        fix: '    return result',
+        fixKeywords: ['return', 'return result'],
+        explanation: 'The function uses <code>print()</code> instead of <code>return</code>. While this displays the result, it doesn\'t send the value back to where the function was called. So <code>answer = square(5)</code> stores <code>None</code> (the default return value). Change <code>print(result)</code> to <code>return result</code>.'
+    },
+    {
+        id: 10,
+        prompt: "This program should check if someone can vote (18 or over).",
+        code: [
+            'age = int(input("Enter your age: "))',
+            'if age >= 18',
+            '    print("You can vote!")',
+            'else:',
+            '    print("Too young to vote")'
+        ],
+        errorType: 'syntax',
+        errorLine: 2,
+        errorDescription: 'Missing colon at the end of the if statement',
+        fix: 'if age >= 18:',
+        fixKeywords: [':', 'if age >= 18:'],
+        explanation: 'Just like <code>for</code> and <code>while</code> loops, <code>if</code> statements must end with a colon <code>:</code>. This tells Python that the next indented line(s) belong to the if block. Without the colon, you get a "SyntaxError: expected \':\'\" message.'
+    }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let selectedErrorType = null;
+let selectedLine = null;
+let results = { types: 0, lines: 0, fixes: 0 };
+
+function init() {
+    currentQuestion = 0;
+    score = 0;
+    selectedErrorType = null;
+    selectedLine = null;
+    results = { types: 0, lines: 0, fixes: 0 };
+
+    document.getElementById('resultsScreen').classList.remove('show');
+    document.getElementById('gameContainer').style.display = 'block';
+
+    renderProgressDots();
+    loadQuestion();
+}
+
+function renderProgressDots() {
+    const container = document.getElementById('progressDots');
+    container.innerHTML = questions.map((_, i) =>
+        `<div class="progress-dot ${i === 0 ? 'current' : ''}" id="dot-${i}"></div>`
+    ).join('');
+}
+
+function loadQuestion() {
+    const q = questions[currentQuestion];
+    selectedErrorType = null;
+    selectedLine = null;
+
+    // Update header
+    document.getElementById('qBadge').textContent = `Q${currentQuestion + 1}`;
+    document.getElementById('questionPrompt').textContent = q.prompt;
+    document.getElementById('questionDisplay').textContent = `${currentQuestion + 1}/${questions.length}`;
+    document.getElementById('progressFill').style.width = `${(currentQuestion / questions.length) * 100}%`;
+
+    // Render code
+    const codeBlock = document.getElementById('codeBlock');
+    codeBlock.innerHTML = q.code.map((line, i) => `
+        <div class="code-line" id="codeLine-${i + 1}">
+            <span class="line-number" onclick="selectLine(${i + 1})">${i + 1}</span>
+            <span class="line-code">${highlightSyntax(line)}</span>
+        </div>
+    `).join('');
+
+    // Render line selector
+    const lineSelector = document.getElementById('lineSelector');
+    lineSelector.innerHTML = q.code.map((_, i) => `
+        <button class="line-btn" data-line="${i + 1}" onclick="selectLine(${i + 1})">${i + 1}</button>
+    `).join('');
+
+    // Reset error type buttons
+    document.querySelectorAll('.error-type-btn').forEach(btn => {
+        btn.classList.remove('selected', 'correct', 'incorrect');
+    });
+
+    // Reset fix input
+    document.getElementById('fixInput').value = '';
+
+    // Hide feedback
+    document.getElementById('feedbackPanel').classList.remove('show');
+    document.getElementById('submitBtn').disabled = false;
+
+    // Update score display
+    document.getElementById('scoreDisplay').textContent = score;
+}
+
+function highlightSyntax(code) {
+    if (!code.trim()) return '&nbsp;';
+
+    // Escape HTML
+    code = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    // Keywords
+    code = code.replace(/\b(def|return|if|else|elif|for|while|in|range|and|or|not|True|False|None)\b/g, '<span class="keyword">$1</span>');
+
+    // Built-in functions
+    code = code.replace(/\b(print|input|int|str|len|float)\b(?=\()/g, '<span class="builtin">$1</span>');
+
+    // Strings
+    code = code.replace(/(".*?"|'.*?')/g, '<span class="string">$1</span>');
+
+    // Numbers
+    code = code.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+
+    // Comments
+    code = code.replace(/(#.*)$/g, '<span class="comment">$1</span>');
+
+    return code;
+}
+
+function selectErrorType(type) {
+    selectedErrorType = type;
+    document.querySelectorAll('.error-type-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.dataset.type === type) {
+            btn.classList.add('selected');
+        }
+    });
+}
+
+function selectLine(lineNum) {
+    selectedLine = lineNum;
+
+    // Update line buttons
+    document.querySelectorAll('.line-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (parseInt(btn.dataset.line) === lineNum) {
+            btn.classList.add('selected');
+        }
+    });
+
+    // Update code highlighting
+    document.querySelectorAll('.code-line').forEach(line => {
+        line.classList.remove('selected');
+    });
+    document.getElementById(`codeLine-${lineNum}`)?.classList.add('selected');
+}
+
+function submitAnswer() {
+    const q = questions[currentQuestion];
+    const fixInput = document.getElementById('fixInput').value.trim();
+
+    let typeCorrect = selectedErrorType === q.errorType;
+    let lineCorrect = selectedLine === q.errorLine;
+    let fixCorrect = false;
+
+    // Check fix - look for key parts of the answer
+    if (fixInput) {
+        fixCorrect = q.fixKeywords.some(keyword =>
+            fixInput.toLowerCase().includes(keyword.toLowerCase())
+        );
+    }
+
+    // Calculate points (1 for each correct part)
+    let points = 0;
+    if (typeCorrect) { points++; results.types++; }
+    if (lineCorrect) { points++; results.lines++; }
+    if (fixCorrect) { points++; results.fixes++; }
+    score += points;
+
+    // Update progress dot
+    const dot = document.getElementById(`dot-${currentQuestion}`);
+    dot.classList.remove('current');
+    if (points === 3) {
+        dot.classList.add('correct');
+    } else if (points > 0) {
+        dot.classList.add('incorrect'); // partial - use yellow?
+        dot.style.background = 'var(--accent-yellow)';
+    } else {
+        dot.classList.add('incorrect');
+    }
+
+    // Update score display
+    document.getElementById('scoreDisplay').textContent = score;
+
+    // Show feedback
+    showFeedback(typeCorrect, lineCorrect, fixCorrect, q);
+
+    document.getElementById('submitBtn').disabled = true;
+}
+
+function showFeedback(typeCorrect, lineCorrect, fixCorrect, q) {
+    const panel = document.getElementById('feedbackPanel');
+    const allCorrect = typeCorrect && lineCorrect && fixCorrect;
+    const someCorrect = typeCorrect || lineCorrect || fixCorrect;
+
+    // Update feedback header
+    const icon = document.getElementById('feedbackIcon');
+    const title = document.getElementById('feedbackTitle');
+    const subtitle = document.getElementById('feedbackSubtitle');
+
+    if (allCorrect) {
+        icon.className = 'feedback-icon correct';
+        icon.textContent = '✓';
+        title.className = 'feedback-title correct';
+        title.textContent = 'Perfect!';
+        subtitle.textContent = 'You identified everything correctly!';
+    } else if (someCorrect) {
+        icon.className = 'feedback-icon partial';
+        icon.textContent = '~';
+        title.className = 'feedback-title partial';
+        title.textContent = 'Partially Correct';
+        subtitle.textContent = 'You got some parts right. Check the details below.';
+    } else {
+        icon.className = 'feedback-icon incorrect';
+        icon.textContent = '✗';
+        title.className = 'feedback-title incorrect';
+        title.textContent = 'Not Quite';
+        subtitle.textContent = 'Review the correct answers below.';
+    }
+
+    // Update feedback details
+    const details = document.getElementById('feedbackDetails');
+    details.innerHTML = `
+        <div class="feedback-item ${typeCorrect ? 'correct' : 'incorrect'}">
+            <div class="feedback-item-icon">${typeCorrect ? '✓' : '✗'}</div>
+            <div class="feedback-item-content">
+                <div class="feedback-item-label">Error Type</div>
+                <div class="feedback-item-value ${typeCorrect ? 'correct' : 'incorrect'}">
+                    ${typeCorrect ? 'Correct!' : `The error is a <strong>${q.errorType}</strong> error`}
+                </div>
+            </div>
+        </div>
+        <div class="feedback-item ${lineCorrect ? 'correct' : 'incorrect'}">
+            <div class="feedback-item-icon">${lineCorrect ? '✓' : '✗'}</div>
+            <div class="feedback-item-content">
+                <div class="feedback-item-label">Error Line</div>
+                <div class="feedback-item-value ${lineCorrect ? 'correct' : 'incorrect'}">
+                    ${lineCorrect ? 'Correct!' : `The error is on <strong>line ${q.errorLine}</strong>`}
+                </div>
+            </div>
+        </div>
+        <div class="feedback-item ${fixCorrect ? 'correct' : 'incorrect'}">
+            <div class="feedback-item-icon">${fixCorrect ? '✓' : '✗'}</div>
+            <div class="feedback-item-content">
+                <div class="feedback-item-label">Fix</div>
+                <div class="feedback-item-value ${fixCorrect ? 'correct' : 'incorrect'}">
+                    ${fixCorrect ? 'Correct!' : `Correct fix: <code>${escapeHtml(q.fix)}</code>`}
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Update explanation
+    document.getElementById('explanationText').innerHTML = q.explanation;
+
+    // Highlight error type button
+    document.querySelectorAll('.error-type-btn').forEach(btn => {
+        if (btn.dataset.type === q.errorType) {
+            btn.classList.add('correct');
+        } else if (btn.classList.contains('selected')) {
+            btn.classList.add('incorrect');
+        }
+    });
+
+    // Highlight line buttons and code
+    document.querySelectorAll('.line-btn').forEach(btn => {
+        const line = parseInt(btn.dataset.line);
+        if (line === q.errorLine) {
+            btn.classList.add('correct');
+        } else if (line === selectedLine) {
+            btn.classList.add('incorrect');
+        }
+    });
+
+    document.querySelectorAll('.code-line').forEach(line => {
+        line.classList.remove('selected');
+    });
+    document.getElementById(`codeLine-${q.errorLine}`)?.classList.add('correct-line');
+    if (selectedLine !== q.errorLine && selectedLine) {
+        document.getElementById(`codeLine-${selectedLine}`)?.classList.add('wrong-line');
+    }
+
+    // Update next button
+    document.getElementById('nextBtn').textContent =
+        currentQuestion < questions.length - 1 ? 'Next Question →' : 'View Results →';
+
+    panel.classList.add('show');
+}
+
+function escapeHtml(text) {
+    return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function nextQuestion() {
+    currentQuestion++;
+
+    if (currentQuestion >= questions.length) {
+        showResults();
+        return;
+    }
+
+    // Update progress dot
+    document.getElementById(`dot-${currentQuestion}`)?.classList.add('current');
+
+    loadQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showResults() {
+    document.getElementById('gameContainer').style.display = 'none';
+    document.getElementById('resultsScreen').classList.add('show');
+
+    const maxScore = questions.length * 3;
+    const percentage = Math.round((score / maxScore) * 100);
+
+    document.getElementById('finalScore').textContent = `${score}/${maxScore}`;
+    document.getElementById('correctTypes').textContent = results.types;
+    document.getElementById('correctLines').textContent = results.lines;
+    document.getElementById('correctFixes').textContent = results.fixes;
+
+    let message = '';
+    if (percentage >= 90) {
+        message = 'Excellent debugging skills! You\'re ready for the exam!';
+    } else if (percentage >= 70) {
+        message = 'Great work! Keep practising to perfect your debugging.';
+    } else if (percentage >= 50) {
+        message = 'Good effort! Review the error types and try again.';
+    } else {
+        message = 'Keep practising! Focus on learning the different error types.';
+    }
+    document.getElementById('resultsMessage').textContent = message;
+}
+
+function restartQuiz() {
+    init();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
