@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔓 CS Escape Room — Can You Hack Your Way Out?</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-green: #00ff41;
+    --neon-blue: #00d4ff;
+    --neon-pink: #ff006e;
+    --neon-orange: #ff6600;
+    --neon-purple: #b44aff;
+    --neon-yellow: #ffe600;
+    --dark-bg: #0a0a0f;
+    --panel-bg: #12121a;
+    --panel-border: #1e1e2e;
+    --text-dim: #5a5a7a;
+    --text-light: #c0c0d0;
+    --success: #00ff41;
+    --error: #ff006e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline effect */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 65, 0.015) 2px,
+      rgba(0, 255, 65, 0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* === INTRO SCREEN === */
+  #intro-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--dark-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.8s ease;
+  }
+
+  #intro-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .intro-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    animation: glitch 3s infinite;
+  }
+
+  .intro-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--neon-green);
+    margin-bottom: 2rem;
+    opacity: 0.8;
+  }
+
+  .intro-briefing {
+    max-width: 600px;
+    padding: 2rem;
+    border: 1px solid var(--neon-green);
+    border-radius: 8px;
+    background: rgba(0, 255, 65, 0.03);
+    margin: 0 1rem 2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--neon-green);
+  }
+
+  .intro-briefing p { margin-bottom: 0.8rem; }
+  .intro-briefing .warning { color: var(--neon-pink); }
+
+  .team-input-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .team-input-area label {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--neon-blue);
+    font-size: 0.9rem;
+  }
+
+  .team-input-area input {
+    background: var(--panel-bg);
+    border: 1px solid var(--neon-blue);
+    color: var(--neon-green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    text-align: center;
+    width: 250px;
+    outline: none;
+  }
+
+  .team-input-area input:focus {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  }
+
+  .start-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 1rem 3rem;
+    background: transparent;
+    border: 2px solid var(--neon-green);
+    color: var(--neon-green);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+
+  .start-btn:hover {
+    background: var(--neon-green);
+    color: var(--dark-bg);
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+  }
+
+  /* === COMPLETION SCREEN === */
+  #completion-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--dark-bg);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  #completion-screen.show { display: flex; }
+
+  .completion-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--neon-yellow), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .completion-stats {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2rem;
+    color: var(--neon-green);
+    margin: 1rem 0;
+    line-height: 2;
+  }
+
+  .completion-code {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--neon-yellow);
+    border: 2px solid var(--neon-yellow);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    letter-spacing: 8px;
+    animation: pulse-glow 2s infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 230, 0, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(255, 230, 0, 0.6); }
+  }
+
+  /* === MAIN GAME === */
+  #game-container {
+    display: none;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  #game-container.show { display: block; }
+
+  /* Top bar */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .team-name-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-blue);
+  }
+
+  .timer {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.4rem;
+    color: var(--neon-green);
+  }
+
+  .timer.warning { color: var(--neon-orange); }
+  .timer.danger { color: var(--neon-pink); animation: blink 0.5s infinite; }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hint-counter {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-purple);
+  }
+
+  /* Progress bar */
+  .progress-container {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-dot {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--panel-border);
+    transition: all 0.5s ease;
+  }
+
+  .progress-dot.completed {
+    background: var(--neon-green);
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  }
+
+  .progress-dot.active {
+    background: var(--neon-blue);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+    animation: pulse-bar 1.5s infinite;
+  }
+
+  @keyframes pulse-bar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Puzzle panels */
+  .puzzle-panel {
+    display: none;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 2rem;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .puzzle-panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .puzzle-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .puzzle-number {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--dark-bg);
+    background: var(--neon-blue);
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .puzzle-topic {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .puzzle-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    margin: 0.8rem 0 1rem;
+  }
+
+  .puzzle-story {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--neon-green);
+    opacity: 0.7;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-left: 3px solid var(--neon-green);
+    background: rgba(0, 255, 65, 0.02);
+  }
+
+  .puzzle-question {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+  }
+
+  .puzzle-question code {
+    font-family: 'Share Tech Mono', monospace;
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--neon-blue);
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.95em;
+  }
+
+  .puzzle-question .highlight {
+    color: var(--neon-yellow);
+    font-weight: 600;
+  }
+
+  /* Tables inside puzzles */
+  .puzzle-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .puzzle-table th {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--neon-blue);
+    padding: 0.6rem;
+    text-align: left;
+    border-bottom: 1px solid var(--neon-blue);
+  }
+
+  .puzzle-table td {
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--panel-border);
+    color: var(--text-light);
+  }
+
+  /* Multiple choice */
+  .mc-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .mc-options { grid-template-columns: 1fr; }
+  }
+
+  .mc-option {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .mc-option:hover {
+    border-color: var(--neon-blue);
+    background: rgba(0, 212, 255, 0.1);
+  }
+
+  .mc-option.selected {
+    border-color: var(--neon-blue);
+    background: rgba(0, 212, 255, 0.15);
+    color: var(--neon-blue);
+  }
+
+  .mc-option.correct {
+    border-color: var(--success);
+    background: rgba(0, 255, 65, 0.15);
+    color: var(--success);
+  }
+
+  .mc-option.wrong {
+    border-color: var(--error);
+    background: rgba(255, 0, 110, 0.1);
+    color: var(--error);
+    opacity: 0.6;
+  }
+
+  .mc-label {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: var(--neon-blue);
+    margin-right: 0.5rem;
+  }
+
+  /* Text input answers */
+  .answer-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+
+  .answer-input {
+    flex: 1;
+    background: var(--dark-bg);
+    border: 1px solid var(--panel-border);
+    color: var(--neon-green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .answer-input:focus {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  }
+
+  .answer-input.correct {
+    border-color: var(--success);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+  }
+
+  .answer-input.wrong {
+    border-color: var(--error);
+    box-shadow: 0 0 10px rgba(255, 0, 110, 0.3);
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .submit-btn, .hint-btn, .next-btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .submit-btn {
+    background: var(--neon-blue);
+    color: var(--dark-bg);
+  }
+
+  .submit-btn:hover {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  }
+
+  .hint-btn {
+    background: transparent;
+    border: 1px solid var(--neon-purple);
+    color: var(--neon-purple);
+    font-size: 0.7rem;
+  }
+
+  .hint-btn:hover {
+    background: rgba(180, 74, 255, 0.1);
+  }
+
+  .hint-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .next-btn {
+    background: var(--neon-green);
+    color: var(--dark-bg);
+    display: none;
+    margin-top: 1rem;
+  }
+
+  .next-btn:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* Feedback */
+  .feedback {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    display: none;
+    line-height: 1.5;
+  }
+
+  .feedback.success {
+    display: block;
+    background: rgba(0, 255, 65, 0.08);
+    border: 1px solid var(--success);
+    color: var(--success);
+  }
+
+  .feedback.error {
+    display: block;
+    background: rgba(255, 0, 110, 0.08);
+    border: 1px solid var(--error);
+    color: var(--error);
+  }
+
+  .feedback.hint {
+    display: block;
+    background: rgba(180, 74, 255, 0.08);
+    border: 1px solid var(--neon-purple);
+    color: var(--neon-purple);
+  }
+
+  /* Drag and drop matching */
+  .match-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem;
+    align-items: start;
+    margin: 1rem 0;
+  }
+
+  .match-left, .match-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .match-arrows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .match-arrow {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    padding: 0.65rem 0;
+  }
+
+  .match-item {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+  }
+
+  .match-item.fixed {
+    color: var(--neon-blue);
+    border-color: rgba(0, 212, 255, 0.3);
+  }
+
+  .match-dropzone {
+    min-height: 42px;
+    border: 1px dashed var(--text-dim);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .match-dropzone:hover, .match-dropzone.drag-over {
+    border-color: var(--neon-blue);
+    background: rgba(0, 212, 255, 0.05);
+  }
+
+  .match-dropzone.filled {
+    border-style: solid;
+    border-color: var(--neon-purple);
+    color: var(--neon-purple);
+    cursor: pointer;
+  }
+
+  .match-dropzone.correct-zone {
+    border-color: var(--success);
+    color: var(--success);
+    background: rgba(0, 255, 65, 0.05);
+  }
+
+  .match-dropzone.wrong-zone {
+    border-color: var(--error);
+    color: var(--error);
+    background: rgba(255, 0, 110, 0.05);
+  }
+
+  .draggable-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    min-height: 50px;
+    padding: 0.5rem;
+    border: 1px dashed var(--panel-border);
+    border-radius: 8px;
+  }
+
+  .draggable-item {
+    background: var(--neon-purple);
+    color: var(--dark-bg);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.2s;
+  }
+
+  .draggable-item:hover {
+    box-shadow: 0 0 12px rgba(180, 74, 255, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .draggable-item.dragging {
+    opacity: 0.4;
+  }
+
+  .draggable-item.placed {
+    display: none;
+  }
+
+  /* Order puzzle */
+  .order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    cursor: grab;
+    transition: all 0.2s;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .order-item:hover {
+    border-color: var(--neon-blue);
+    background: rgba(0, 212, 255, 0.1);
+  }
+
+  .order-item.dragging {
+    opacity: 0.4;
+    border-color: var(--neon-purple);
+  }
+
+  .order-num {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--neon-blue);
+    min-width: 20px;
+  }
+
+  @keyframes glitch {
+    0%, 94%, 100% { opacity: 1; }
+    95% { opacity: 0.8; transform: translateX(-2px); }
+    96% { opacity: 0.8; transform: translateX(2px); }
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .puzzle-panel { padding: 1.2rem; }
+    .match-container {
+      grid-template-columns: 1fr;
+    }
+    .match-arrows { display: none; }
+    .top-bar { font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO SCREEN -->
+<div id="intro-screen">
+  <div class="intro-title">🔓 CS ESCAPE ROOM</div>
+  <div class="intro-subtitle">// Can You Hack Your Way Out?</div>
+  <div class="intro-briefing">
+    <p>> INCOMING TRANSMISSION...</p>
+    <p>A rogue AI has locked down the school network. Firewalls are up. Systems are encrypted. The only way out is to prove you know your Computer Science.</p>
+    <p>You have <span class="warning">50 MINUTES</span> to solve 6 puzzles and obtain the master unlock code.</p>
+    <p>Each puzzle tests a different area: binary, hex, networks, hardware, and more. Solve one to unlock the next.</p>
+    <p>You have <span class="warning">3 HINTS</span> — use them wisely.</p>
+    <p>> GOOD LUCK, OPERATIVES_</p>
+  </div>
+  <div class="team-input-area">
+    <label>ENTER TEAM NAME:</label>
+    <input type="text" id="team-name-input" placeholder="e.g. Binary Bandits" maxlength="25" autofocus>
+  </div>
+  <button class="start-btn" onclick="startGame()">▶ BEGIN MISSION</button>
+</div>
+
+<!-- COMPLETION SCREEN -->
+<div id="completion-screen">
+  <div class="completion-title">🏆 SYSTEM UNLOCKED</div>
+  <div class="completion-stats">
+    <div>TEAM: <span id="final-team"></span></div>
+    <div>TIME: <span id="final-time"></span></div>
+    <div>HINTS USED: <span id="final-hints"></span> / 3</div>
+    <div>ATTEMPTS: <span id="final-attempts"></span></div>
+  </div>
+  <div>YOUR MASTER UNLOCK CODE:</div>
+  <div class="completion-code" id="final-code"></div>
+  <div style="font-family: 'Share Tech Mono', monospace; color: var(--text-dim); margin-top: 1rem; font-size: 0.85rem;">
+    Show this code to your teacher to confirm your escape!
+  </div>
+</div>
+
+<!-- MAIN GAME -->
+<div id="game-container">
+  <div class="top-bar">
+    <div class="team-name-display" id="team-display">TEAM: —</div>
+    <div class="timer" id="timer">50:00</div>
+    <div class="hint-counter" id="hint-counter">💡 HINTS: 3</div>
+  </div>
+
+  <div class="progress-container" id="progress-bar"></div>
+
+  <!-- PUZZLE 1: Binary to Denary -->
+  <div class="puzzle-panel" id="puzzle-0">
+    <div class="puzzle-header">
+      <span class="puzzle-number">PUZZLE 1 / 6</span>
+      <span class="puzzle-topic">DATA REPRESENTATION</span>
+    </div>
+    <div class="puzzle-title">Binary Decryption</div>
+    <div class="puzzle-story">> The first firewall requires a denary passcode. The AI has left the code in binary. Convert it to break through.</div>
+    <div class="puzzle-question">
+      The locked terminal is displaying: <code>11010110</code><br><br>
+      Convert this 8-bit binary number to <span class="highlight">denary (decimal)</span>.<br><br>
+      <em style="font-size: 0.85rem; color: var(--text-dim);">Tip: Remember your place values — 128, 64, 32, 16, 8, 4, 2, 1</em>
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="answer-0" placeholder="Enter denary number...">
+      <button class="submit-btn" onclick="checkTextAnswer(0)">SUBMIT</button>
+    </div>
+    <div class="btn-row">
+      <button class="hint-btn" onclick="showHint(0)">💡 USE HINT</button>
+    </div>
+    <div class="feedback" id="feedback-0"></div>
+    <button class="next-btn" id="next-0" onclick="nextPuzzle(0)">NEXT PUZZLE →</button>
+  </div>
+
+  <!-- PUZZLE 2: Hex Conversion -->
+  <div class="puzzle-panel" id="puzzle-1">
+    <div class="puzzle-header">
+      <span class="puzzle-number">PUZZLE 2 / 6</span>
+      <span class="puzzle-topic">DATA REPRESENTATION</span>
+    </div>
+    <div class="puzzle-title">Hex Code Cracker</div>
+    <div class="puzzle-story">> Nice work! But the second layer uses hexadecimal encoding. The AI thinks students can't handle hex. Prove it wrong.</div>
+    <div class="puzzle-question">
+      The screen flashes a hex value: <code>B7</code><br><br>
+      What is <code>B7</code> in <span class="highlight">denary (decimal)</span>?<br><br>
+      <em style="font-size: 0.85rem; color: var(--text-dim);">Tip: B = 11 in denary. Each hex digit represents 4 bits.</em>
+    </div>
+    <div class="answer-row">
+      <input type="text" class="answer-input" id="answer-1" placeholder="Enter denary number...">
+      <button class="submit-btn" onclick="checkTextAnswer(1)">SUBMIT</button>
+    </div>
+    <div class="btn-row">
+      <button class="hint-btn" onclick="showHint(1)">💡 USE HINT</button>
+    </div>
+    <div class="feedback" id="feedback-1"></div>
+    <button class="next-btn" id="next-1" onclick="nextPuzzle(1)">NEXT PUZZLE →</button>
+  </div>
+
+  <!-- PUZZLE 3: Network Matching -->
+  <div class="puzzle-panel" id="puzzle-2">
+    <div class="puzzle-header">
+      <span class="puzzle-number">PUZZLE 3 / 6</span>
+      <span class="puzzle-topic">NETWORKS & SECURITY</span>
+    </div>
+    <div class="puzzle-title">Network Protocol Override</div>
+    <div class="puzzle-story">> You've broken through the data layers. Now the AI is testing whether you understand networks. Match the protocols to regain control.</div>
+    <div class="puzzle-question">
+      Drag each <span class="highlight">description</span> to match the correct <span class="highlight">network term</span>.
+    </div>
+
+    <div class="draggable-pool" id="drag-pool-2">
+      <div class="draggable-item" draggable="true" data-match="dns">Translates domain names to IP addresses</div>
+      <div class="draggable-item" draggable="true" data-match="tcp">Ensures data packets arrive complete and in order</div>
+      <div class="draggable-item" draggable="true" data-match="ftp">Used to upload/download files between computers</div>
+      <div class="draggable-item" draggable="true" data-match="https">Encrypts web traffic between browser and server</div>
+    </div>
+
+    <div class="match-container">
+      <div class="match-left">
+        <div class="match-item fixed">DNS</div>
+        <div class="match-item fixed">TCP</div>
+        <div class="match-item fixed">FTP</div>
+        <div class="match-item fixed">HTTPS</div>
+      </div>
+      <div class="match-arrows">
+        <div class="match-arrow">→</div>
+        <div class="match-arrow">→</div>
+        <div class="match-arrow">→</div>
+        <div class="match-arrow">→</div>
+      </div>
+      <div class="match-right" id="drop-zones-2">
+        <div class="match-dropzone" data-expect="dns" onclick="clearDropzone(this)">Drop here...</div>
+        <div class="match-dropzone" data-expect="tcp" onclick="clearDropzone(this)">Drop here...</div>
+        <div class="match-dropzone" data-expect="ftp" onclick="clearDropzone(this)">Drop here...</div>
+        <div class="match-dropzone" data-expect="https" onclick="clearDropzone(this)">Drop here...</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="submit-btn" onclick="checkMatchAnswer(2)">SUBMIT</button>
+      <button class="hint-btn" onclick="showHint(2)">💡 USE HINT</button>
+    </div>
+    <div class="feedback" id="feedback-2"></div>
+    <button class="next-btn" id="next-2" onclick="nextPuzzle(2)">NEXT PUZZLE →</button>
+  </div>
+
+  <!-- PUZZLE 4: Network Security MC -->
+  <div class="puzzle-panel" id="puzzle-3">
+    <div class="puzzle-header">
+      <span class="puzzle-number">PUZZLE 4 / 6</span>
+      <span class="puzzle-topic">NETWORKS & SECURITY</span>
+    </div>
+    <div class="puzzle-title">Threat Detection</div>
+    <div class="puzzle-story">> The AI has planted malware across the network. You need to identify the correct security measures to neutralise each threat.</div>
+    <div class="puzzle-question">
+      A company discovers that an attacker has been secretly recording all keyboard input on employee machines to steal passwords.<br><br>
+      What type of malware is this, and what is the <span class="highlight">best combination</span> of defences?
+    </div>
+    <div class="mc-options" id="mc-options-3">
+      <div class="mc-option" onclick="selectMC(3, this, 'A')">
+        <span class="mc-label">A</span> Virus — install a firewall and use strong passwords
+      </div>
+      <div class="mc-option" onclick="selectMC(3, this, 'B')">
+        <span class="mc-label">B</span> Keylogger — use anti-malware software and two-factor authentication
+      </div>
+      <div class="mc-option" onclick="selectMC(3, this, 'C')">
+        <span class="mc-label">C</span> Phishing — train staff to recognise suspicious emails
+      </div>
+      <div class="mc-option" onclick="selectMC(3, this, 'D')">
+        <span class="mc-label">D</span> Ransomware — keep regular backups and pay the ransom
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="submit-btn" onclick="checkMCAnswer(3, 'B')">SUBMIT</button>
+      <button class="hint-btn" onclick="showHint(3)">💡 USE HINT</button>
+    </div>
+    <div class="feedback" id="feedback-3"></div>
+    <button class="next-btn" id="next-3" onclick="nextPuzzle(3)">NEXT PUZZLE →</button>
+  </div>
+
+  <!-- PUZZLE 5: Hardware Components -->
+  <div class="puzzle-panel" id="puzzle-4">
+    <div class="puzzle-header">
+      <span class="puzzle-number">PUZZLE 5 / 6</span>
+      <span class="puzzle-topic">HARDWARE & SOFTWARE</span>
+    </div>
+    <div class="puzzle-title">Component Identification</div>
+    <div class="puzzle-story">> Almost there! The AI has scrambled the hardware database. Reassign each description to the correct component to restore the system.</div>
+    <div class="puzzle-question">
+      Match each <span class="highlight">description</span> to the correct <span class="highlight">hardware component</span>.
+    </div>
+
+    <div class="draggable-pool" id="drag-pool-4">
+      <div class="draggable-item" draggable="true" data-match="cpu">Fetches, decodes and executes instructions</div>
+      <div class="draggable-item" draggable="true" data-match="ram">Volatile memory that stores currently running programs</div>
+      <div class="draggable-item" draggable="true" data-match="ssd">Non-volatile secondary storage with no moving parts</div>
+      <div class="draggable-item" draggable="true" data-match="gpu">Specialised processor optimised for rendering graphics</div>
+    </div>
+
+    <div class="match-container">
+      <div class="match-left">
+        <div class="match-item fixed">CPU</div>
+        <div class="match-item fixed">RAM</div>
+        <div class="match-item fixed">SSD</div>
+        <div class="match-item fixed">GPU</div>
+      </div>
+      <div class="match-arrows">
+        <div class="match-arrow">→</div>
+        <div class="match-arrow">→</div>
+        <div class="match-arrow">→</div>
+        <div class="match-arrow">→</div>
+      </div>
+      <div class="match-right" id="drop-zones-4">
+        <div class="match-dropzone" data-expect="cpu" onclick="clearDropzone(this)">Drop here...</div>
+        <div class="match-dropzone" data-expect="ram" onclick="clearDropzone(this)">Drop here...</div>
+        <div class="match-dropzone" data-expect="ssd" onclick="clearDropzone(this)">Drop here...</div>
+        <div class="match-dropzone" data-expect="gpu" onclick="clearDropzone(this)">Drop here...</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="submit-btn" onclick="checkMatchAnswer(4)">SUBMIT</button>
+      <button class="hint-btn" onclick="showHint(4)">💡 USE HINT</button>
+    </div>
+    <div class="feedback" id="feedback-4"></div>
+    <button class="next-btn" id="next-4" onclick="nextPuzzle(4)">NEXT PUZZLE →</button>
+  </div>
+
+  <!-- PUZZLE 6: Final - Multi-part -->
+  <div class="puzzle-panel" id="puzzle-5">
+    <div class="puzzle-header">
+      <span class="puzzle-number">PUZZLE 6 / 6</span>
+      <span class="puzzle-topic">HARDWARE & SOFTWARE</span>
+    </div>
+    <div class="puzzle-title">Final Override — The Fetch-Decode-Execute Cycle</div>
+    <div class="puzzle-story">> THIS IS IT. The AI's core process is the CPU cycle itself. Put the steps in the correct order to shut it down and escape!</div>
+    <div class="puzzle-question">
+      The CPU processes every instruction using the <span class="highlight">Fetch-Decode-Execute cycle</span>. Drag these steps into the correct order (1 = first).
+    </div>
+
+    <div class="order-list" id="order-list-5">
+      <div class="order-item" draggable="true" data-correct="2">
+        <span class="order-num">?</span>
+        The instruction is decoded (interpreted) by the Control Unit
+      </div>
+      <div class="order-item" draggable="true" data-correct="4">
+        <span class="order-num">?</span>
+        The Program Counter is incremented to point to the next instruction
+      </div>
+      <div class="order-item" draggable="true" data-correct="1">
+        <span class="order-num">?</span>
+        The next instruction is fetched from RAM using the address in the Program Counter
+      </div>
+      <div class="order-item" draggable="true" data-correct="3">
+        <span class="order-num">?</span>
+        The ALU executes the instruction (e.g. performs a calculation)
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="submit-btn" onclick="checkOrderAnswer(5)">SUBMIT</button>
+      <button class="hint-btn" onclick="showHint(5)">💡 USE HINT</button>
+    </div>
+    <div class="feedback" id="feedback-5"></div>
+    <button class="next-btn" id="next-5" onclick="completeGame()">🔓 UNLOCK SYSTEM</button>
+  </div>
+</div>
+
+<script>
+  // === GAME STATE ===
+  let teamName = '';
+  let timerInterval;
+  let secondsLeft = 50 * 60;
+  let currentPuzzle = 0;
+  let hintsLeft = 3;
+  let totalAttempts = 0;
+  let puzzleSolved = [false, false, false, false, false, false];
+  let selectedMC = {};
+  const totalPuzzles = 6;
+
+  const puzzleCodes = ['D', 'E', 'C', 'O', 'D', 'E']; // spells DECODE
+
+  const hints = [
+    "Write out the place values: 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1. Put 1 or 0 under each. Add up the values where there's a 1.",
+    "B in hex = 11 in denary. The formula is: (first digit × 16) + second digit. So B7 = (11 × 16) + 7",
+    "DNS is like a phone book for the internet. TCP checks nothing is lost. FTP is for file transfers. HTTPS is the padlock you see in your browser.",
+    "A keylogger records keystrokes. Even if passwords are stolen, 2FA (like a code sent to your phone) means the password alone isn't enough.",
+    "Think about what each component DOES: which one runs programs? Which one loses data when powered off? Which has no moving parts?",
+    "The cycle starts with FETCH. Think: you can't decode something you haven't fetched yet, and you can't execute something you haven't decoded.",
+  ];
+
+  // === ANSWERS ===
+  const textAnswers = {
+    0: ['214'],
+    1: ['183'],
+  };
+
+  // === INIT ===
+  function startGame() {
+    teamName = document.getElementById('team-name-input').value.trim() || 'Anonymous Hackers';
+    document.getElementById('intro-screen').classList.add('hidden');
+    document.getElementById('game-container').classList.add('show');
+    document.getElementById('team-display').textContent = 'TEAM: ' + teamName;
+
+    // Build progress bar
+    const pb = document.getElementById('progress-bar');
+    for (let i = 0; i < totalPuzzles; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+      dot.id = 'prog-' + i;
+      pb.appendChild(dot);
+    }
+
+    document.getElementById('puzzle-0').classList.add('active');
+    startTimer();
+    initDragAndDrop();
+    initOrderLists();
+  }
+
+  // === TIMER ===
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft <= 0) {
+        clearInterval(timerInterval);
+        secondsLeft = 0;
+      }
+      updateTimerDisplay();
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    const el = document.getElementById('timer');
+    el.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    el.className = 'timer';
+    if (secondsLeft <= 300) el.classList.add('danger');
+    else if (secondsLeft <= 900) el.classList.add('warning');
+  }
+
+  function getElapsedTime() {
+    const elapsed = (50 * 60) - secondsLeft;
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    return `${m}m ${s}s`;
+  }
+
+  // === TEXT ANSWERS ===
+  function checkTextAnswer(idx) {
+    if (puzzleSolved[idx]) return;
+    const input = document.getElementById('answer-' + idx);
+    const val = input.value.trim();
+    totalAttempts++;
+
+    if (textAnswers[idx].includes(val)) {
+      solvePuzzle(idx);
+      input.classList.remove('wrong');
+      input.classList.add('correct');
+      showFeedback(idx, 'success', `✅ Correct! The code fragment is: <strong>${puzzleCodes[idx]}</strong>`);
+    } else {
+      input.classList.remove('correct');
+      input.classList.add('wrong');
+      showFeedback(idx, 'error', '❌ Not quite — try again!');
+      setTimeout(() => input.classList.remove('wrong'), 600);
+    }
+  }
+
+  // === MULTIPLE CHOICE ===
+  function selectMC(idx, el, letter) {
+    if (puzzleSolved[idx]) return;
+    document.querySelectorAll('#mc-options-' + idx + ' .mc-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedMC[idx] = letter;
+  }
+
+  function checkMCAnswer(idx, correct) {
+    if (puzzleSolved[idx]) return;
+    if (!selectedMC[idx]) {
+      showFeedback(idx, 'error', '⚠️ Select an answer first!');
+      return;
+    }
+    totalAttempts++;
+
+    const options = document.querySelectorAll('#mc-options-' + idx + ' .mc-option');
+    if (selectedMC[idx] === correct) {
+      options.forEach(o => {
+        if (o.classList.contains('selected')) o.classList.add('correct');
+        else o.style.opacity = '0.4';
+      });
+      solvePuzzle(idx);
+      showFeedback(idx, 'success', `✅ Correct! A keylogger records keystrokes. Anti-malware detects it, and 2FA stops stolen passwords being useful. Code fragment: <strong>${puzzleCodes[idx]}</strong>`);
+    } else {
+      options.forEach(o => {
+        if (o.classList.contains('selected')) o.classList.add('wrong');
+      });
+      showFeedback(idx, 'error', '❌ Not quite — think about what "recording keyboard input" means...');
+      setTimeout(() => {
+        options.forEach(o => o.classList.remove('wrong', 'selected'));
+      }, 1200);
+    }
+  }
+
+  // === DRAG & DROP MATCHING ===
+  let draggedItem = null;
+
+  function initDragAndDrop() {
+    document.querySelectorAll('.draggable-item').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        draggedItem = item;
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+        draggedItem = null;
+      });
+      // Touch support
+      item.addEventListener('click', () => {
+        if (draggedItem === item) {
+          draggedItem.classList.remove('dragging');
+          draggedItem = null;
+        } else {
+          if (draggedItem) draggedItem.classList.remove('dragging');
+          draggedItem = item;
+          item.classList.add('dragging');
+        }
+      });
+    });
+
+    document.querySelectorAll('.match-dropzone').forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        if (draggedItem) {
+          placeItem(zone, draggedItem);
+        }
+      });
+      // Touch/click support
+      zone.addEventListener('click', () => {
+        if (draggedItem && !zone.classList.contains('filled')) {
+          placeItem(zone, draggedItem);
+        }
+      });
+    });
+  }
+
+  function placeItem(zone, item) {
+    if (zone.classList.contains('filled')) return;
+    zone.textContent = item.textContent;
+    zone.dataset.placed = item.dataset.match;
+    zone.classList.add('filled');
+    item.classList.add('placed');
+    item.classList.remove('dragging');
+    draggedItem = null;
+  }
+
+  function clearDropzone(zone) {
+    if (!zone.classList.contains('filled')) return;
+    const matchVal = zone.dataset.placed;
+    // Find and restore the draggable item
+    const pool = zone.closest('.puzzle-panel').querySelector('.draggable-pool');
+    pool.querySelectorAll('.draggable-item').forEach(item => {
+      if (item.dataset.match === matchVal && item.classList.contains('placed')) {
+        item.classList.remove('placed');
+      }
+    });
+    zone.textContent = 'Drop here...';
+    zone.classList.remove('filled', 'correct-zone', 'wrong-zone');
+    delete zone.dataset.placed;
+  }
+
+  function checkMatchAnswer(idx) {
+    if (puzzleSolved[idx]) return;
+    const zones = document.querySelectorAll('#drop-zones-' + idx + ' .match-dropzone');
+    let allFilled = true;
+    let allCorrect = true;
+    totalAttempts++;
+
+    zones.forEach(z => {
+      if (!z.dataset.placed) { allFilled = false; return; }
+      if (z.dataset.placed === z.dataset.expect) {
+        z.classList.add('correct-zone');
+        z.classList.remove('wrong-zone');
+      } else {
+        z.classList.add('wrong-zone');
+        z.classList.remove('correct-zone');
+        allCorrect = false;
+      }
+    });
+
+    if (!allFilled) {
+      showFeedback(idx, 'error', '⚠️ Fill in all the drop zones first!');
+      return;
+    }
+
+    if (allCorrect) {
+      solvePuzzle(idx);
+      showFeedback(idx, 'success', `✅ All matched correctly! Code fragment: <strong>${puzzleCodes[idx]}</strong>`);
+    } else {
+      showFeedback(idx, 'error', '❌ Some matches are wrong — the red ones are incorrect. Click them to clear and try again.');
+    }
+  }
+
+  // === ORDER PUZZLE ===
+  function initOrderLists() {
+    document.querySelectorAll('.order-list').forEach(list => {
+      let dragItem = null;
+
+      list.querySelectorAll('.order-item').forEach(item => {
+        item.addEventListener('dragstart', () => {
+          dragItem = item;
+          item.classList.add('dragging');
+        });
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          dragItem = null;
+          updateOrderNumbers(list);
+        });
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+          if (dragItem && dragItem !== item) {
+            const rect = item.getBoundingClientRect();
+            const midY = rect.top + rect.height / 2;
+            if (e.clientY < midY) {
+              list.insertBefore(dragItem, item);
+            } else {
+              list.insertBefore(dragItem, item.nextSibling);
+            }
+          }
+        });
+      });
+
+      // Shuffle order
+      const items = Array.from(list.children);
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        list.appendChild(items[j]);
+      }
+      updateOrderNumbers(list);
+    });
+  }
+
+  function updateOrderNumbers(list) {
+    list.querySelectorAll('.order-item').forEach((item, i) => {
+      item.querySelector('.order-num').textContent = (i + 1);
+    });
+  }
+
+  function checkOrderAnswer(idx) {
+    if (puzzleSolved[idx]) return;
+    const list = document.getElementById('order-list-' + idx);
+    const items = list.querySelectorAll('.order-item');
+    let allCorrect = true;
+    totalAttempts++;
+
+    items.forEach((item, i) => {
+      const expected = parseInt(item.dataset.correct);
+      if ((i + 1) !== expected) allCorrect = false;
+    });
+
+    if (allCorrect) {
+      solvePuzzle(idx);
+      showFeedback(idx, 'success', `✅ Perfect order! Fetch → Decode → Execute → Increment PC. Code fragment: <strong>${puzzleCodes[idx]}</strong>`);
+    } else {
+      showFeedback(idx, 'error', '❌ Not the right order — remember, you can\'t decode what you haven\'t fetched!');
+    }
+  }
+
+  // === COMMON ===
+  function solvePuzzle(idx) {
+    puzzleSolved[idx] = true;
+    document.getElementById('next-' + idx).style.display = 'inline-block';
+    document.getElementById('prog-' + idx).classList.remove('active');
+    document.getElementById('prog-' + idx).classList.add('completed');
+
+    // Disable inputs
+    const panel = document.getElementById('puzzle-' + idx);
+    panel.querySelectorAll('.submit-btn, .hint-btn').forEach(b => b.disabled = true);
+    panel.querySelectorAll('.answer-input').forEach(i => i.disabled = true);
+    panel.querySelectorAll('.mc-option').forEach(o => o.style.pointerEvents = 'none');
+    panel.querySelectorAll('.draggable-item').forEach(d => d.draggable = false);
+    panel.querySelectorAll('.order-item').forEach(o => o.draggable = false);
+    panel.querySelectorAll('.match-dropzone').forEach(z => z.onclick = null);
+  }
+
+  function nextPuzzle(idx) {
+    document.getElementById('puzzle-' + idx).classList.remove('active');
+    currentPuzzle = idx + 1;
+    if (currentPuzzle < totalPuzzles) {
+      document.getElementById('puzzle-' + currentPuzzle).classList.add('active');
+      document.getElementById('prog-' + currentPuzzle).classList.add('active');
+    }
+  }
+
+  function showFeedback(idx, type, msg) {
+    const fb = document.getElementById('feedback-' + idx);
+    fb.className = 'feedback ' + type;
+    fb.innerHTML = msg;
+  }
+
+  function showHint(idx) {
+    if (hintsLeft <= 0 || puzzleSolved[idx]) return;
+    hintsLeft--;
+    document.getElementById('hint-counter').textContent = '💡 HINTS: ' + hintsLeft;
+    showFeedback(idx, 'hint', '💡 HINT: ' + hints[idx]);
+
+    // Disable all hint buttons if none left
+    if (hintsLeft <= 0) {
+      document.querySelectorAll('.hint-btn').forEach(b => b.disabled = true);
+    }
+  }
+
+  function completeGame() {
+    clearInterval(timerInterval);
+    document.getElementById('game-container').classList.remove('show');
+    const screen = document.getElementById('completion-screen');
+    screen.classList.add('show');
+
+    document.getElementById('final-team').textContent = teamName;
+    document.getElementById('final-time').textContent = getElapsedTime();
+    document.getElementById('final-hints').textContent = (3 - hintsLeft);
+    document.getElementById('final-attempts').textContent = totalAttempts;
+    document.getElementById('final-code').textContent = puzzleCodes.join('');
+  }
+
+  // Enter key support for text inputs
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const active = document.activeElement;
+      if (active && active.classList.contains('answer-input')) {
+        const idx = parseInt(active.id.split('-')[1]);
+        checkTextAnswer(idx);
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💰 Who Wants to Be a Computer Scientist?</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Russo+One&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #f5c518;
+    --gold-dim: #a68b0d;
+    --blue-deep: #001033;
+    --blue-mid: #001a4d;
+    --blue-light: #003399;
+    --blue-glow: #0055ff;
+    --blue-bright: #3399ff;
+    --purple: #6633cc;
+    --correct: #00cc44;
+    --wrong: #dd2222;
+    --orange: #ff8800;
+    --text-white: #eef2ff;
+    --text-dim: #7788aa;
+    --glass: rgba(0, 20, 60, 0.85);
+    --glass-border: rgba(50, 100, 200, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Chakra Petch', sans-serif;
+    background: radial-gradient(ellipse at center, #001a4d 0%, #000a1f 60%, #000000 100%);
+    color: var(--text-white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ambient particles */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(2px 2px at 20% 30%, rgba(100, 150, 255, 0.15), transparent),
+      radial-gradient(2px 2px at 80% 70%, rgba(100, 150, 255, 0.1), transparent),
+      radial-gradient(1px 1px at 50% 50%, rgba(200, 200, 255, 0.08), transparent),
+      radial-gradient(2px 2px at 70% 20%, rgba(100, 150, 255, 0.12), transparent),
+      radial-gradient(1px 1px at 30% 80%, rgba(150, 180, 255, 0.1), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* === SHARED === */
+  .container {
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* === INTRO === */
+  #intro-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  #intro-screen.hidden { display: none; }
+
+  .logo-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    background: linear-gradient(180deg, #fff 0%, var(--gold) 50%, var(--gold-dim) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+  }
+
+  .logo-sub {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: var(--blue-bright);
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+  }
+
+  .intro-rules {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    max-width: 520px;
+    text-align: left;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+  }
+
+  .intro-rules h3 {
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    font-family: 'Russo One', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .intro-rules .lifeline-desc {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.5rem 0;
+    color: var(--text-white);
+    font-size: 0.85rem;
+  }
+
+  .lifeline-icon {
+    font-size: 1.3rem;
+    min-width: 30px;
+    text-align: center;
+  }
+
+  .intro-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-input label {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--blue-bright);
+    letter-spacing: 1px;
+  }
+
+  .intro-input input {
+    background: var(--blue-deep);
+    border: 1px solid var(--blue-light);
+    color: var(--gold);
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    width: 280px;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .intro-input input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(245, 197, 24, 0.15);
+  }
+
+  .play-btn {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.1rem;
+    padding: 1rem 3rem;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dim) 100%);
+    border: none;
+    color: var(--blue-deep);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+  }
+
+  .play-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(245, 197, 24, 0.4);
+  }
+
+  /* === GAME SCREEN === */
+  #game-screen { display: none; }
+  #game-screen.show { display: block; }
+
+  /* Money ladder */
+  .money-ladder {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.6rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ladder-step {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    color: var(--text-dim);
+    transition: all 0.4s;
+    white-space: nowrap;
+  }
+
+  .ladder-step.current {
+    color: var(--gold);
+    background: rgba(245, 197, 24, 0.15);
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(245, 197, 24, 0.2);
+  }
+
+  .ladder-step.done {
+    color: var(--correct);
+    opacity: 0.5;
+  }
+
+  .ladder-step.milestone {
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .ladder-step.milestone.current {
+    color: var(--gold);
+  }
+
+  /* Top bar */
+  .game-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .team-badge {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--blue-bright);
+  }
+
+  .lifelines {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .lifeline-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--blue-light);
+    background: var(--glass);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .lifeline-btn:hover:not(.used) {
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(245, 197, 24, 0.3);
+    transform: scale(1.1);
+  }
+
+  .lifeline-btn.used {
+    opacity: 0.2;
+    cursor: not-allowed;
+    border-color: var(--text-dim);
+  }
+
+  .lifeline-btn.used::after {
+    content: '✕';
+    position: absolute;
+    font-size: 1.5rem;
+    color: var(--wrong);
+  }
+
+  /* Question area */
+  .question-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: slideUp 0.5s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 0.3rem;
+  }
+
+  .q-value {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.4rem;
+    background: linear-gradient(180deg, #fff, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+  }
+
+  .q-topic {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .q-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+  }
+
+  .q-text code {
+    font-family: 'Fira Code', monospace;
+    background: rgba(0, 80, 200, 0.2);
+    color: var(--blue-bright);
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.95em;
+  }
+
+  /* Answer options */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 550px) {
+    .options-grid { grid-template-columns: 1fr; }
+  }
+
+  .option-btn {
+    background: linear-gradient(135deg, rgba(0, 30, 80, 0.9), rgba(0, 20, 60, 0.95));
+    border: 2px solid var(--blue-light);
+    border-radius: 50px;
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: left;
+    color: var(--text-white);
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .option-btn:hover:not(.locked) {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(0, 40, 100, 0.9), rgba(0, 30, 80, 0.95));
+    box-shadow: 0 0 15px rgba(245, 197, 24, 0.15);
+  }
+
+  .option-btn.selected {
+    border-color: var(--orange);
+    background: linear-gradient(135deg, rgba(100, 60, 0, 0.4), rgba(80, 40, 0, 0.5));
+    box-shadow: 0 0 15px rgba(255, 136, 0, 0.3);
+    animation: pulse-select 1.5s ease infinite;
+  }
+
+  @keyframes pulse-select {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 136, 0, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(255, 136, 0, 0.4); }
+  }
+
+  .option-btn.correct-opt {
+    border-color: var(--correct);
+    background: linear-gradient(135deg, rgba(0, 100, 30, 0.4), rgba(0, 80, 20, 0.5));
+    box-shadow: 0 0 20px rgba(0, 204, 68, 0.3);
+    animation: none;
+  }
+
+  .option-btn.wrong-opt {
+    border-color: var(--wrong);
+    background: linear-gradient(135deg, rgba(100, 0, 0, 0.4), rgba(80, 0, 0, 0.5));
+    box-shadow: 0 0 15px rgba(221, 34, 34, 0.3);
+    animation: none;
+  }
+
+  .option-btn.faded {
+    opacity: 0.15;
+    pointer-events: none;
+    border-color: var(--text-dim);
+  }
+
+  .option-btn.locked { pointer-events: none; }
+
+  .opt-letter {
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    min-width: 22px;
+  }
+
+  .opt-text { flex: 1; }
+
+  /* Final answer button */
+  .final-answer-btn {
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.9rem 2.5rem;
+    background: linear-gradient(180deg, var(--orange), #cc6600);
+    border: none;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+    display: none;
+  }
+
+  .final-answer-btn.show { display: inline-block; }
+
+  .final-answer-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(255, 136, 0, 0.4);
+  }
+
+  /* Feedback area */
+  .feedback-area {
+    text-align: center;
+    margin-top: 1rem;
+    min-height: 60px;
+  }
+
+  .feedback-msg {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+    line-height: 1.6;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .feedback-msg.show { display: inline-block; }
+
+  .feedback-msg.correct-fb {
+    background: rgba(0, 204, 68, 0.1);
+    border: 1px solid var(--correct);
+    color: var(--correct);
+  }
+
+  .feedback-msg.wrong-fb {
+    background: rgba(221, 34, 34, 0.1);
+    border: 1px solid var(--wrong);
+    color: var(--wrong);
+  }
+
+  .next-q-btn {
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(180deg, var(--blue-glow), var(--blue-light));
+    border: none;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    transition: all 0.3s;
+    display: none;
+    letter-spacing: 1px;
+  }
+
+  .next-q-btn.show { display: inline-block; }
+
+  .next-q-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 85, 255, 0.4);
+  }
+
+  /* === LIFELINE MODAL (Ask the Class) === */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal-box {
+    background: var(--glass);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1rem;
+    height: 140px;
+    margin: 1rem 0;
+  }
+
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    width: 50px;
+  }
+
+  .bar-fill {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    transition: height 1s ease;
+    min-height: 4px;
+  }
+
+  .bar-fill.a-bar { background: var(--gold); }
+  .bar-fill.b-bar { background: var(--blue-bright); }
+  .bar-fill.c-bar { background: var(--orange); }
+  .bar-fill.d-bar { background: var(--purple); }
+
+  .bar-label {
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+
+  .bar-pct {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--text-white);
+  }
+
+  .modal-close {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.6rem 2rem;
+    background: var(--blue-light);
+    border: none;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+
+  /* Phone a Friend modal */
+  .phone-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: var(--text-white);
+    line-height: 1.8;
+    margin: 1rem 0;
+    text-align: left;
+    padding: 1rem;
+    background: rgba(0, 50, 150, 0.2);
+    border-radius: 8px;
+    border-left: 3px solid var(--blue-bright);
+  }
+
+  /* === GAME OVER === */
+  #gameover-screen {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  #gameover-screen.show { display: flex; }
+
+  .go-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    margin-bottom: 0.5rem;
+  }
+
+  .go-title.win {
+    background: linear-gradient(180deg, #fff, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .go-title.lose {
+    color: var(--wrong);
+  }
+
+  .go-stats {
+    font-family: 'Fira Code', monospace;
+    font-size: 1rem;
+    color: var(--blue-bright);
+    line-height: 2.2;
+    margin: 1.5rem 0;
+  }
+
+  .go-winnings {
+    font-family: 'Russo One', sans-serif;
+    font-size: 2rem;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    animation: pulse-select 2s infinite;
+  }
+
+  .replay-btn {
+    font-family: 'Russo One', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(180deg, var(--blue-glow), var(--blue-light));
+    border: none;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro-screen">
+  <div class="logo-title">💰 WHO WANTS TO BE A<br>COMPUTER SCIENTIST?</div>
+  <div class="logo-sub">// EDEXCEL GCSE EDITION</div>
+  <div class="intro-rules">
+    <h3>HOW TO PLAY</h3>
+    <p style="margin-bottom: 0.8rem;">Answer 10 questions of increasing difficulty to climb the money ladder. Get one wrong and you drop to your last safety net!</p>
+    <h3 style="margin-top: 1rem;">YOUR 3 LIFELINES</h3>
+    <div class="lifeline-desc"><span class="lifeline-icon">✂️</span> <strong>50:50</strong> — Removes two wrong answers</div>
+    <div class="lifeline-desc"><span class="lifeline-icon">👥</span> <strong>Ask the Class</strong> — See what the audience thinks (bar chart)</div>
+    <div class="lifeline-desc"><span class="lifeline-icon">📞</span> <strong>Phone a Friend</strong> — Get a helpful hint from a CS expert</div>
+    <h3 style="margin-top: 1rem;">SAFETY NETS</h3>
+    <p>£1,000 (Q5) and £32,000 (Q8) are guaranteed — if you get a later question wrong, you keep that amount.</p>
+  </div>
+  <div class="intro-input">
+    <label>ENTER TEAM NAME</label>
+    <input type="text" id="team-input" placeholder="e.g. Byte Me" maxlength="25" autofocus>
+  </div>
+  <button class="play-btn" onclick="startGame()">LET'S PLAY</button>
+</div>
+
+<!-- GAME -->
+<div id="game-screen" class="container">
+  <div class="money-ladder" id="money-ladder"></div>
+  <div class="game-top">
+    <div class="team-badge" id="team-badge">TEAM: —</div>
+    <div class="lifelines">
+      <button class="lifeline-btn" id="ll-5050" title="50:50" onclick="useFiftyFifty()">✂️</button>
+      <button class="lifeline-btn" id="ll-ask" title="Ask the Class" onclick="useAskClass()">👥</button>
+      <button class="lifeline-btn" id="ll-phone" title="Phone a Friend" onclick="usePhone()">📞</button>
+    </div>
+  </div>
+
+  <div class="question-card" id="question-card">
+    <div class="q-number" id="q-number"></div>
+    <div class="q-value" id="q-value"></div>
+    <div class="q-topic" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+  </div>
+
+  <div class="options-grid" id="options-grid"></div>
+
+  <div style="text-align: center;">
+    <button class="final-answer-btn" id="final-btn" onclick="lockAnswer()">FINAL ANSWER</button>
+  </div>
+
+  <div class="feedback-area">
+    <div class="feedback-msg" id="feedback-msg"></div>
+    <br>
+    <button class="next-q-btn" id="next-btn" onclick="nextQuestion()">NEXT QUESTION →</button>
+  </div>
+</div>
+
+<!-- ASK THE CLASS MODAL -->
+<div class="modal-overlay" id="ask-modal">
+  <div class="modal-box">
+    <div class="modal-title">👥 ASK THE CLASS</div>
+    <div class="bar-chart" id="bar-chart"></div>
+    <button class="modal-close" onclick="closeModal('ask-modal')">GOT IT</button>
+  </div>
+</div>
+
+<!-- PHONE A FRIEND MODAL -->
+<div class="modal-overlay" id="phone-modal">
+  <div class="modal-box">
+    <div class="modal-title">📞 PHONE A FRIEND</div>
+    <div class="phone-text" id="phone-text"></div>
+    <button class="modal-close" onclick="closeModal('phone-modal')">THANKS!</button>
+  </div>
+</div>
+
+<!-- GAME OVER -->
+<div id="gameover-screen">
+  <div class="go-title" id="go-title"></div>
+  <div class="go-stats" id="go-stats"></div>
+  <div class="go-winnings" id="go-winnings"></div>
+  <button class="replay-btn" onclick="location.reload()">PLAY AGAIN</button>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "How many bits are in one <strong>byte</strong>?",
+    options: ["4", "8", "16", "32"],
+    correct: 1,
+    topic: "DATA REPRESENTATION",
+    phone: "I'm pretty sure a byte is 8 bits. A nibble is 4 bits — don't get them mixed up!",
+    classVotes: [5, 75, 12, 8]
+  },
+  {
+    q: "Which of these is <strong>volatile</strong> memory?",
+    options: ["Hard Disk Drive", "RAM", "SSD", "USB Flash Drive"],
+    correct: 1,
+    topic: "HARDWARE & SOFTWARE",
+    phone: "Volatile means it loses data when the power is off. That's definitely RAM — all the others keep their data.",
+    classVotes: [5, 70, 15, 10]
+  },
+  {
+    q: "What does <code>DNS</code> stand for?",
+    options: ["Data Network System", "Domain Name System", "Digital Network Server", "Domain Node Service"],
+    correct: 1,
+    topic: "NETWORKS & SECURITY",
+    phone: "Domain Name System — it's basically the phone book of the internet, translating website names to IP addresses.",
+    classVotes: [10, 65, 15, 10]
+  },
+  {
+    q: "What is the <strong>denary</strong> value of the binary number <code>10110</code>?",
+    options: ["18", "20", "22", "26"],
+    correct: 2,
+    topic: "DATA REPRESENTATION",
+    phone: "Work it out: 16 + 0 + 4 + 2 + 0 = 22. Remember the place values go 16, 8, 4, 2, 1.",
+    classVotes: [12, 15, 60, 13]
+  },
+  {
+    q: "Which network device forwards data packets to the correct destination using IP addresses?",
+    options: ["Switch", "Router", "Hub", "NIC"],
+    correct: 1,
+    topic: "NETWORKS & SECURITY",
+    phone: "A router uses IP addresses to forward packets between networks. A switch uses MAC addresses within a local network — subtle difference!",
+    classVotes: [20, 55, 10, 15]
+  },
+  {
+    q: "What is the hexadecimal value of the denary number <strong>255</strong>?",
+    options: ["EF", "FF", "FE", "F0"],
+    correct: 1,
+    topic: "DATA REPRESENTATION",
+    phone: "255 is the maximum value of one byte. In hex, F = 15, and (15 × 16) + 15 = 255. So it's FF.",
+    classVotes: [15, 55, 18, 12]
+  },
+  {
+    q: "A type of malware that <strong>encrypts</strong> your files and demands payment is called:",
+    options: ["Spyware", "Trojan", "Ransomware", "Adware"],
+    correct: 2,
+    topic: "NETWORKS & SECURITY",
+    phone: "That's ransomware — they literally hold your files to ransom. The best defence is having good backups!",
+    classVotes: [8, 12, 62, 18]
+  },
+  {
+    q: "In the CPU, which component performs <strong>arithmetic and logical operations</strong>?",
+    options: ["Control Unit", "ALU", "Cache", "Register"],
+    correct: 1,
+    topic: "HARDWARE & SOFTWARE",
+    phone: "The ALU — Arithmetic Logic Unit. It does all the calculations and comparisons. The Control Unit manages the process but doesn't do the maths.",
+    classVotes: [18, 52, 15, 15]
+  },
+  {
+    q: "A character set that uses <strong>16 bits</strong> per character and can represent every writing system in the world is called:",
+    options: ["ASCII", "Unicode", "Binary", "Extended ASCII"],
+    correct: 1,
+    topic: "DATA REPRESENTATION",
+    phone: "Unicode! ASCII only uses 7 bits (128 characters). Unicode uses 16+ bits and covers every language, emoji, and symbol.",
+    classVotes: [15, 50, 5, 30]
+  },
+  {
+    q: "A company uses a <strong>star topology</strong> for its LAN. What is the main <strong>disadvantage</strong> of this setup?",
+    options: [
+      "If one workstation fails, the whole network goes down",
+      "If the central switch/server fails, the whole network goes down",
+      "Data collisions are very common",
+      "It is impossible to add new devices"
+    ],
+    correct: 1,
+    topic: "NETWORKS & SECURITY",
+    phone: "In a star topology, everything connects through a central point. That's also its weakness — if that central switch or server dies, everything stops.",
+    classVotes: [20, 48, 18, 14]
+  }
+];
+
+const moneyLadder = [
+  "£100", "£200", "£500", "£1,000", "£2,000",
+  "£4,000", "£8,000", "£16,000", "£32,000", "£1,000,000"
+];
+
+// Safety nets at index 4 (£1,000) and 8 (£32,000) — zero-indexed Q5 and Q8 from the spec above but these are indices 3 and 7
+// Actually let's keep it simple: milestones at Q5 (index 4) and Q8 (index 7)
+const milestones = [4, 7];
+
+let teamName = '';
+let currentQ = 0;
+let selectedIdx = -1;
+let locked = false;
+let lifelines = { fifty: true, ask: true, phone: true };
+let gameOver = false;
+
+function startGame() {
+  teamName = document.getElementById('team-input').value.trim() || 'Anonymous';
+  document.getElementById('intro-screen').classList.add('hidden');
+  document.getElementById('game-screen').classList.add('show');
+  document.getElementById('team-badge').textContent = 'TEAM: ' + teamName;
+  buildLadder();
+  loadQuestion();
+}
+
+function buildLadder() {
+  const el = document.getElementById('money-ladder');
+  el.innerHTML = '';
+  moneyLadder.forEach((val, i) => {
+    const step = document.createElement('span');
+    step.className = 'ladder-step' + (milestones.includes(i) ? ' milestone' : '') + (i === 0 ? ' current' : '');
+    step.id = 'step-' + i;
+    step.textContent = `Q${i + 1}: ${val}`;
+    el.appendChild(step);
+  });
+}
+
+function updateLadder() {
+  moneyLadder.forEach((_, i) => {
+    const step = document.getElementById('step-' + i);
+    step.classList.remove('current', 'done');
+    if (i < currentQ) step.classList.add('done');
+    if (i === currentQ) step.classList.add('current');
+  });
+}
+
+function loadQuestion() {
+  if (currentQ >= questions.length) {
+    winGame();
+    return;
+  }
+
+  const q = questions[currentQ];
+  selectedIdx = -1;
+  locked = false;
+
+  document.getElementById('q-number').textContent = `QUESTION ${currentQ + 1} OF 10`;
+  document.getElementById('q-value').textContent = `FOR ${moneyLadder[currentQ]}`;
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-text').innerHTML = q.q;
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'option-btn';
+    btn.id = 'opt-' + i;
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}:</span><span class="opt-text">${opt}</span>`;
+    btn.onclick = () => selectOption(i);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('final-btn').classList.remove('show');
+  document.getElementById('feedback-msg').classList.remove('show');
+  document.getElementById('next-btn').classList.remove('show');
+  updateLadder();
+
+  // Re-animate card
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'slideUp 0.5s ease';
+}
+
+function selectOption(idx) {
+  if (locked || gameOver) return;
+  selectedIdx = idx;
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.classList.remove('selected');
+    if (i === idx) b.classList.add('selected');
+  });
+  document.getElementById('final-btn').classList.add('show');
+}
+
+function lockAnswer() {
+  if (locked || selectedIdx < 0 || gameOver) return;
+  locked = true;
+
+  const q = questions[currentQ];
+  const correct = q.correct;
+  const fb = document.getElementById('feedback-msg');
+
+  // Lock all options
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.add('locked'));
+
+  // Reveal after a suspenseful pause
+  setTimeout(() => {
+    document.getElementById('opt-' + correct).classList.add('correct-opt');
+
+    if (selectedIdx === correct) {
+      if (selectedIdx !== correct) return; // redundant safety
+      document.getElementById('opt-' + selectedIdx).classList.remove('selected');
+      document.getElementById('opt-' + selectedIdx).classList.add('correct-opt');
+      fb.className = 'feedback-msg correct-fb show';
+      fb.innerHTML = `✅ CORRECT! You've won <strong>${moneyLadder[currentQ]}</strong>`;
+      document.getElementById('next-btn').classList.add('show');
+    } else {
+      document.getElementById('opt-' + selectedIdx).classList.add('wrong-opt');
+      // Calculate safety net
+      let safeAmount = '£0';
+      for (let m = milestones.length - 1; m >= 0; m--) {
+        if (milestones[m] < currentQ) {
+          safeAmount = moneyLadder[milestones[m]];
+          break;
+        }
+      }
+      fb.className = 'feedback-msg wrong-fb show';
+      const letters = ['A', 'B', 'C', 'D'];
+      fb.innerHTML = `❌ Wrong! The answer was <strong>${letters[correct]}: ${q.options[correct]}</strong>. You leave with <strong>${safeAmount}</strong>.`;
+
+      setTimeout(() => loseGame(safeAmount), 2500);
+    }
+
+    document.getElementById('final-btn').classList.remove('show');
+  }, 1500);
+}
+
+function nextQuestion() {
+  currentQ++;
+  loadQuestion();
+}
+
+// === LIFELINES ===
+function useFiftyFifty() {
+  if (!lifelines.fifty || locked || gameOver) return;
+  lifelines.fifty = false;
+  document.getElementById('ll-5050').classList.add('used');
+
+  const q = questions[currentQ];
+  const correct = q.correct;
+  // Pick 2 wrong answers to hide
+  let wrongIdxs = [0, 1, 2, 3].filter(i => i !== correct);
+  // Shuffle and pick 2
+  wrongIdxs.sort(() => Math.random() - 0.5);
+  const toHide = wrongIdxs.slice(0, 2);
+
+  toHide.forEach(i => {
+    document.getElementById('opt-' + i).classList.add('faded');
+  });
+
+  // If the selected option was hidden, deselect
+  if (toHide.includes(selectedIdx)) {
+    selectedIdx = -1;
+    document.getElementById('final-btn').classList.remove('show');
+  }
+}
+
+function useAskClass() {
+  if (!lifelines.ask || locked || gameOver) return;
+  lifelines.ask = false;
+  document.getElementById('ll-ask').classList.add('used');
+
+  const q = questions[currentQ];
+  const chart = document.getElementById('bar-chart');
+  chart.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  const maxVote = Math.max(...q.classVotes);
+
+  q.classVotes.forEach((pct, i) => {
+    // Check if option is faded (50:50 used)
+    const opt = document.getElementById('opt-' + i);
+    const isFaded = opt && opt.classList.contains('faded');
+
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+
+    const pctLabel = document.createElement('div');
+    pctLabel.className = 'bar-pct';
+    pctLabel.textContent = isFaded ? '—' : pct + '%';
+
+    const bar = document.createElement('div');
+    bar.className = 'bar-fill ' + ['a', 'b', 'c', 'd'][i] + '-bar';
+    bar.style.height = '0px';
+    setTimeout(() => {
+      bar.style.height = isFaded ? '4px' : (pct / maxVote * 110) + 'px';
+    }, 100);
+
+    if (isFaded) bar.style.opacity = '0.15';
+
+    const label = document.createElement('div');
+    label.className = 'bar-label';
+    label.textContent = letters[i];
+
+    col.appendChild(pctLabel);
+    col.appendChild(bar);
+    col.appendChild(label);
+    chart.appendChild(col);
+  });
+
+  document.getElementById('ask-modal').classList.add('show');
+}
+
+function usePhone() {
+  if (!lifelines.phone || locked || gameOver) return;
+  lifelines.phone = false;
+  document.getElementById('ll-phone').classList.add('used');
+
+  const q = questions[currentQ];
+  document.getElementById('phone-text').innerHTML = `📱 <em>"Hmm, let me think about this one..."</em><br><br>${q.phone}`;
+  document.getElementById('phone-modal').classList.add('show');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// === END STATES ===
+function winGame() {
+  gameOver = true;
+  document.getElementById('game-screen').classList.remove('show');
+  const screen = document.getElementById('gameover-screen');
+  screen.classList.add('show');
+  document.getElementById('go-title').className = 'go-title win';
+  document.getElementById('go-title').textContent = '🏆 YOU DID IT!';
+  document.getElementById('go-stats').innerHTML = `TEAM: ${teamName}<br>ANSWERED: 10 / 10 CORRECT`;
+  document.getElementById('go-winnings').textContent = '£1,000,000';
+}
+
+function loseGame(amount) {
+  gameOver = true;
+  document.getElementById('game-screen').classList.remove('show');
+  const screen = document.getElementById('gameover-screen');
+  screen.classList.add('show');
+  document.getElementById('go-title').className = 'go-title lose';
+  document.getElementById('go-title').textContent = 'GAME OVER';
+  document.getElementById('go-stats').innerHTML = `TEAM: ${teamName}<br>REACHED: Question ${currentQ + 1} of 10`;
+  document.getElementById('go-winnings').textContent = amount;
+}
+
+// Enter key = final answer if selected
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && selectedIdx >= 0 && !locked) lockAnswer();
+});
+</script>
+
+</body>
+</html>
