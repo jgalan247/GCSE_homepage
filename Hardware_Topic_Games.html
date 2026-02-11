@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Topic Games | Topic 3.1 Revision</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #12182a;
+            --bg-card-hover: #1a2340;
+            --bg-code: #0d1117;
+            --accent-orange: #f97316;
+            --accent-amber: #f59e0b;
+            --accent-yellow: #fbbf24;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --accent-emerald: #10b981;
+            --text-primary: #ffffff;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6380;
+            --success: #00f5a0;
+            --error: #ff4757;
+            --grid-line: #2a3a5a;
+            --gradient-1: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(249,115,22,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245,158,11,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+        .orb-1 { background: var(--accent-orange); top: -100px; left: -100px; }
+        .orb-2 { background: var(--accent-amber); bottom: -100px; right: -100px; animation-delay: -10s; }
+        .orb-3 { background: var(--accent-purple); top: 50%; left: 50%; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 40px) scale(1.05); }
+        }
+
+        /* Header */
+        header {
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--grid-line);
+            background: rgba(10,14,23,0.85);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { border-color: var(--accent-orange); color: var(--text-primary); }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-display {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            border: 1px solid var(--grid-line);
+            font-size: 0.9rem;
+        }
+
+        .score-icon { font-size: 1.2rem; }
+        .score-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-amber);
+        }
+        .streak-value { color: var(--accent-orange); }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 14px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-orange);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(245,158,11,0.2));
+            border-color: var(--accent-orange);
+            color: var(--text-primary);
+        }
+
+        .tab-emoji { font-size: 1.2rem; }
+
+        .tab-check {
+            color: var(--success);
+            font-size: 1rem;
+            display: none;
+        }
+        .tab-btn.completed .tab-check { display: inline; }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section titles */
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(249,115,22,0.3); }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 2px solid var(--grid-line);
+        }
+        .btn-secondary:hover { border-color: var(--accent-orange); color: var(--text-primary); }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Game Card wrapper */
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--grid-line);
+        }
+
+        /* ========== GAME 1: FDE Cycle Builder ========== */
+        .fde-phase-label {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .phase-fetch { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .phase-decode { background: rgba(168,85,247,0.2); color: #c084fc; }
+        .phase-execute { background: rgba(249,115,22,0.2); color: #fb923c; }
+
+        .fde-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .fde-slot {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            border: 2px dashed var(--grid-line);
+            border-radius: 10px;
+            min-height: 55px;
+            transition: all 0.3s;
+        }
+        .fde-slot.drag-over { border-color: var(--accent-orange); background: rgba(249,115,22,0.05); }
+        .fde-slot.correct { border-color: var(--success); border-style: solid; background: rgba(0,245,160,0.05); }
+        .fde-slot.incorrect { border-color: var(--error); border-style: solid; background: rgba(255,71,87,0.05); }
+
+        .slot-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .slot-content {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .fde-slot.filled .slot-content { color: var(--text-primary); }
+
+        .fde-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent-amber);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .fde-block {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+        .fde-block:hover { transform: translateY(-2px); }
+        .fde-block.dragging { opacity: 0.4; }
+        .fde-block.stage-fetch { background: rgba(59,130,246,0.15); color: #93c5fd; border-color: rgba(59,130,246,0.3); }
+        .fde-block.stage-decode { background: rgba(168,85,247,0.15); color: #d8b4fe; border-color: rgba(168,85,247,0.3); }
+        .fde-block.stage-execute { background: rgba(249,115,22,0.15); color: #fdba74; border-color: rgba(249,115,22,0.3); }
+
+        /* Phase 2: Component matching */
+        .fde-component-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg-dark);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+        .fde-component-row.correct { border-color: var(--success); background: rgba(0,245,160,0.05); }
+        .fde-component-row.incorrect { border-color: var(--error); background: rgba(255,71,87,0.05); }
+
+        .fde-step-text {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .fde-select {
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            min-width: 160px;
+        }
+        .fde-select:focus { border-color: var(--accent-orange); outline: none; }
+
+        .stage-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        /* ========== GAME 2: Component Match (Memory) ========== */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 700px;
+            margin: 0 auto 20px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 8px;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-orange); transform: scale(1.05); }
+        .memory-card.flipped { background: var(--gradient-1); color: white; font-weight: 600; }
+        .memory-card.matched { background: var(--accent-emerald); color: var(--bg-dark); font-weight: 600; cursor: default; }
+
+        .memory-card .card-back { font-size: 2rem; }
+        .memory-card .card-front { display: none; font-size: 0.8rem; line-height: 1.3; }
+        .memory-card.flipped .card-back,
+        .memory-card.matched .card-back { display: none; }
+        .memory-card.flipped .card-front,
+        .memory-card.matched .card-front { display: block; }
+
+        .memory-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .memory-stat {
+            padding: 8px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        .memory-stat span { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent-amber); }
+
+        /* ========== GAME 3: Storage Sort ========== */
+        .storage-bank {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-amber);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .storage-bank h4 {
+            margin-bottom: 12px;
+            color: var(--accent-amber);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .storage-bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 50px;
+        }
+
+        .storage-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--grid-line);
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: grab;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+        .storage-item:hover { border-color: var(--accent-orange); }
+        .storage-item.dragging { opacity: 0.4; }
+        .storage-item.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .storage-item.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+        .storage-item.selected { border-color: var(--accent-amber); background: rgba(245,158,11,0.15); }
+
+        .category-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-box {
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 16px;
+            padding: 16px;
+            min-height: 250px;
+        }
+        .category-box.magnetic { border-color: var(--accent-blue); }
+        .category-box.optical { border-color: var(--accent-purple); }
+        .category-box.solid-state { border-color: var(--accent-emerald); }
+
+        .category-box h4 {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+        }
+        .category-box.magnetic h4 { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+        .category-box.optical h4 { background: linear-gradient(135deg, #a855f7, #ec4899); }
+        .category-box.solid-state h4 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+
+        .category-items {
+            min-height: 150px;
+            border: 2px dashed var(--grid-line);
+            border-radius: 10px;
+            padding: 8px;
+            transition: all 0.3s;
+        }
+        .category-items.drag-over { border-color: var(--accent-amber); background: rgba(245,158,11,0.05); }
+
+        .category-items .storage-item { margin-bottom: 6px; }
+
+        /* ========== GAME 4: Hardware Quiz ========== */
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+
+        .quiz-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-amber);
+            white-space: nowrap;
+        }
+
+        .quiz-question-card {
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-topic-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .badge-311 { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .badge-312 { background: rgba(168,85,247,0.2); color: #c084fc; }
+        .badge-313 { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+
+        .quiz-question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 18px;
+            background: var(--bg-dark);
+            border: 2px solid var(--grid-line);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-orange); background: rgba(249,115,22,0.05); }
+        .quiz-option.selected { border-color: var(--accent-orange); background: rgba(249,115,22,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(0,245,160,0.1); }
+        .quiz-option.wrong { border-color: var(--error); background: rgba(255,71,87,0.1); }
+        .quiz-option.disabled { cursor: default; opacity: 0.7; }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .quiz-option.correct .option-letter { border-color: var(--success); color: var(--success); }
+        .quiz-option.wrong .option-letter { border-color: var(--error); color: var(--error); }
+
+        .quiz-explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(249,115,22,0.08);
+            border: 1px solid rgba(249,115,22,0.2);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            display: none;
+        }
+        .quiz-explanation.show { display: block; }
+
+        /* Quiz Results */
+        .quiz-results {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .results-breakdown {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .breakdown-item {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .breakdown-item .label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
+        .breakdown-item .value { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.2rem; }
+
+        /* Feedback animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.4s ease; }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pop { animation: pop 0.3s ease; }
+
+        /* Feedback toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            z-index: 200;
+            opacity: 0;
+            transition: all 0.4s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: rgba(0,245,160,0.2); border: 2px solid var(--success); color: var(--success); }
+        .toast.error { background: rgba(255,71,87,0.2); border: 2px solid var(--error); color: var(--error); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .category-container { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 12px 15px; }
+            .logo { font-size: 1.2rem; }
+            .score-display { gap: 8px; }
+            .score-item { padding: 6px 10px; font-size: 0.8rem; }
+            .container { padding: 15px; }
+            .tab-btn { padding: 10px 16px; font-size: 0.85rem; }
+            .section-title { font-size: 1.4rem; }
+            .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .memory-card { font-size: 0.65rem; padding: 5px; }
+            .memory-card .card-front { font-size: 0.7rem; }
+            .fde-bank { padding: 12px; }
+            .fde-block { padding: 8px 12px; font-size: 0.8rem; }
+        }
+        @media (max-width: 480px) {
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="back-btn">← Back</a>
+            <div class="logo">Hardware Games</div>
+        </div>
+        <div class="score-display">
+            <div class="score-item">
+                <span class="score-icon">⭐</span>
+                <span class="score-value" id="totalScore">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-icon">🔥</span>
+                <span class="score-value streak-value" id="streak">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="fde">
+                <span class="tab-emoji">⚙️</span>
+                FDE Cycle Builder
+                <span class="tab-check">✓</span>
+            </button>
+            <button class="tab-btn" data-tab="memory">
+                <span class="tab-emoji">🧠</span>
+                Component Match
+                <span class="tab-check">✓</span>
+            </button>
+            <button class="tab-btn" data-tab="storage">
+                <span class="tab-emoji">💾</span>
+                Storage Sort
+                <span class="tab-check">✓</span>
+            </button>
+            <button class="tab-btn" data-tab="quiz">
+                <span class="tab-emoji">❓</span>
+                Hardware Quiz
+                <span class="tab-check">✓</span>
+            </button>
+        </nav>
+
+        <!-- ==================== GAME 1: FDE Cycle Builder ==================== -->
+        <div class="tab-content active" id="fde">
+            <h2 class="section-title">⚙️ FDE Cycle Builder</h2>
+            <p class="section-subtitle">Drag the 8 steps of the Fetch-Decode-Execute cycle into the correct order, then match each step to its CPU component.</p>
+
+            <div id="fdePhase1">
+                <div class="game-card">
+                    <h3 style="margin-bottom: 8px; font-size: 1.1rem;">Phase 1: Order the Steps</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">
+                        <span class="fde-phase-label phase-fetch">Fetch</span>
+                        <span class="fde-phase-label phase-decode">Decode</span>
+                        <span class="fde-phase-label phase-execute">Execute</span>
+                    </p>
+
+                    <div class="fde-bank" id="fdeBank">
+                        <!-- Blocks inserted by JS -->
+                    </div>
+
+                    <div class="fde-slots" id="fdeSlots">
+                        <!-- 8 slots inserted by JS -->
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFDEOrder()">✓ Check Order</button>
+                        <button class="btn btn-secondary" onclick="resetFDE()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="fdePhase2" style="display:none;">
+                <div class="game-card">
+                    <h3 style="margin-bottom: 8px; font-size: 1.1rem;">Phase 2: Match Components</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Select the CPU component responsible for each step.</p>
+
+                    <div id="fdeComponentRows">
+                        <!-- Rows inserted by JS -->
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkFDEComponents()">✓ Check Components</button>
+                        <button class="btn btn-secondary" onclick="resetFDEPhase2()">🔄 Reset Selections</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 2: Component Match ==================== -->
+        <div class="tab-content" id="memory">
+            <h2 class="section-title">🧠 Component Match</h2>
+            <p class="section-subtitle">Flip cards to match CPU components with their descriptions. Find all 8 pairs!</p>
+
+            <div class="game-card">
+                <div class="memory-stats">
+                    <div class="memory-stat">Pairs: <span id="memoryPairs">0/8</span></div>
+                    <div class="memory-stat">Moves: <span id="memoryMoves">0</span></div>
+                </div>
+
+                <div class="memory-grid" id="memoryGrid">
+                    <!-- Cards inserted by JS -->
+                </div>
+
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-secondary" onclick="initMemoryGame()">🔄 New Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 3: Storage Sort ==================== -->
+        <div class="tab-content" id="storage">
+            <h2 class="section-title">💾 Storage Sort</h2>
+            <p class="section-subtitle">Drag each characteristic into the correct storage type: Magnetic, Optical, or Solid State.</p>
+
+            <div class="game-card">
+                <div class="storage-bank" id="storageBank">
+                    <h4>📦 Item Bank — Drag items to the correct category (or tap to select, then tap a category)</h4>
+                    <div class="storage-bank-grid" id="storageBankGrid">
+                        <!-- Items inserted by JS -->
+                    </div>
+                </div>
+
+                <div class="category-container">
+                    <div class="category-box magnetic">
+                        <h4>🧲 Magnetic</h4>
+                        <div class="category-items" id="magneticCategory"></div>
+                    </div>
+                    <div class="category-box optical">
+                        <h4>💿 Optical</h4>
+                        <div class="category-items" id="opticalCategory"></div>
+                    </div>
+                    <div class="category-box solid-state">
+                        <h4>⚡ Solid State</h4>
+                        <div class="category-items" id="solidCategory"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkStorage()">✓ Check Answers</button>
+                    <button class="btn btn-secondary" onclick="initStorageGame()">🔄 Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 4: Hardware Quiz ==================== -->
+        <div class="tab-content" id="quiz">
+            <h2 class="section-title">❓ Hardware Quiz</h2>
+            <p class="section-subtitle">20 multiple-choice questions covering all of Topic 3.1 — Von Neumann, CPU, buses, storage & embedded systems.</p>
+
+            <div class="game-card">
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div></div>
+                    <div class="quiz-counter" id="quizCounter">0 / 20</div>
+                </div>
+
+                <div id="quizArea">
+                    <!-- Question rendered by JS -->
+                </div>
+
+                <div id="quizResults" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ==================== GLOBAL STATE ====================
+    let totalScore = 0;
+    let streak = 0;
+
+    function addScore(pts) {
+        totalScore += pts;
+        document.getElementById('totalScore').textContent = totalScore;
+    }
+
+    function addStreak() {
+        streak++;
+        document.getElementById('streak').textContent = streak;
+    }
+
+    function resetStreak() {
+        streak = 0;
+        document.getElementById('streak').textContent = streak;
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function markTabComplete(tabId) {
+        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('completed');
+    }
+
+    // ==================== TAB NAVIGATION ====================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ==================== GAME 1: FDE CYCLE BUILDER ====================
+    const fdeSteps = [
+        { id: 0, text: 'The address in the PC is copied to the MAR', component: 'PC', stage: 'fetch' },
+        { id: 1, text: 'The address is sent along the address bus to main memory', component: 'Address Bus', stage: 'fetch' },
+        { id: 2, text: 'The data at that address is sent along the data bus to the MDR', component: 'Data Bus', stage: 'fetch' },
+        { id: 3, text: 'The instruction in the MDR is copied to the CIR', component: 'MDR', stage: 'fetch' },
+        { id: 4, text: 'The PC is incremented by 1 to point to the next instruction', component: 'PC', stage: 'fetch' },
+        { id: 5, text: 'The CU decodes the instruction held in the CIR', component: 'CU', stage: 'decode' },
+        { id: 6, text: 'The CU sends control signals to the relevant components', component: 'CU', stage: 'execute' },
+        { id: 7, text: 'The ALU performs any calculations and stores the result in the ACC', component: 'ALU', stage: 'execute' }
+    ];
+
+    const cpuComponents = ['PC', 'MAR', 'MDR', 'CIR', 'CU', 'ALU', 'ACC', 'Address Bus', 'Data Bus', 'Control Bus'];
+
+    let fdeSlotContents = new Array(8).fill(null);
+
+    function initFDE() {
+        const bank = document.getElementById('fdeBank');
+        const slots = document.getElementById('fdeSlots');
+        bank.innerHTML = '';
+        slots.innerHTML = '';
+        fdeSlotContents = new Array(8).fill(null);
+
+        // Create 8 drop slots
+        for (let i = 0; i < 8; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'fde-slot';
+            slot.dataset.index = i;
+            slot.innerHTML = `<div class="slot-number">${i + 1}</div><div class="slot-content">Drop step ${i + 1} here</div>`;
+            slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+            slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+            slot.addEventListener('drop', e => dropIntoSlot(e, i));
+            // tap to return block to bank
+            slot.addEventListener('click', () => returnFromSlot(i));
+            slots.appendChild(slot);
+        }
+
+        // Create shuffled blocks in bank
+        const shuffled = [...fdeSteps].sort(() => Math.random() - 0.5);
+        shuffled.forEach(step => {
+            const block = createFDEBlock(step);
+            bank.appendChild(block);
+        });
+
+        document.getElementById('fdePhase1').style.display = 'block';
+        document.getElementById('fdePhase2').style.display = 'none';
+
+        // Reset slot styles
+        document.querySelectorAll('.fde-slot').forEach(s => s.classList.remove('correct', 'incorrect'));
+    }
+
+    function createFDEBlock(step) {
+        const block = document.createElement('div');
+        block.className = 'fde-block stage-' + step.stage;
+        block.textContent = step.text;
+        block.draggable = true;
+        block.dataset.id = step.id;
+        block.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', step.id);
+            block.classList.add('dragging');
+        });
+        block.addEventListener('dragend', () => block.classList.remove('dragging'));
+        // Tap support: tap block in bank to auto-fill next empty slot
+        block.addEventListener('click', () => {
+            if (block.parentElement.id === 'fdeBank') {
+                const emptyIdx = fdeSlotContents.indexOf(null);
+                if (emptyIdx !== -1) placeInSlot(step.id, emptyIdx);
+            }
+        });
+        return block;
+    }
+
+    function dropIntoSlot(e, slotIndex) {
+        e.preventDefault();
+        const slot = document.querySelectorAll('.fde-slot')[slotIndex];
+        slot.classList.remove('drag-over');
+        const stepId = parseInt(e.dataTransfer.getData('text/plain'));
+        placeInSlot(stepId, slotIndex);
+    }
+
+    function placeInSlot(stepId, slotIndex) {
+        // If slot already has a block, return it to bank
+        if (fdeSlotContents[slotIndex] !== null) {
+            returnFromSlot(slotIndex);
+        }
+
+        // If this step is already placed elsewhere, remove it
+        const existingIdx = fdeSlotContents.indexOf(stepId);
+        if (existingIdx !== -1) {
+            returnFromSlot(existingIdx);
+        }
+
+        const step = fdeSteps.find(s => s.id === stepId);
+        const block = document.querySelector(`.fde-block[data-id="${stepId}"]`);
+        if (!block || !step) return;
+
+        fdeSlotContents[slotIndex] = stepId;
+        const slot = document.querySelectorAll('.fde-slot')[slotIndex];
+        slot.classList.add('filled');
+        slot.querySelector('.slot-content').textContent = step.text;
+        slot.querySelector('.slot-content').style.color = 'var(--text-primary)';
+        block.style.display = 'none';
+    }
+
+    function returnFromSlot(slotIndex) {
+        const stepId = fdeSlotContents[slotIndex];
+        if (stepId === null) return;
+        fdeSlotContents[slotIndex] = null;
+        const slot = document.querySelectorAll('.fde-slot')[slotIndex];
+        slot.classList.remove('filled', 'correct', 'incorrect');
+        slot.querySelector('.slot-content').textContent = `Drop step ${slotIndex + 1} here`;
+        slot.querySelector('.slot-content').style.color = 'var(--text-muted)';
+
+        const block = document.querySelector(`.fde-block[data-id="${stepId}"]`);
+        if (block) {
+            block.style.display = '';
+            // Make sure it's in the bank
+            document.getElementById('fdeBank').appendChild(block);
+        }
+    }
+
+    function resetFDE() {
+        initFDE();
+    }
+
+    function checkFDEOrder() {
+        if (fdeSlotContents.includes(null)) {
+            showToast('Place all 8 steps first!', 'error');
+            return;
+        }
+
+        let correct = 0;
+        const slots = document.querySelectorAll('.fde-slot');
+        slots.forEach((slot, i) => {
+            slot.classList.remove('correct', 'incorrect');
+            if (fdeSlotContents[i] === i) {
+                slot.classList.add('correct');
+                slot.classList.add('pop');
+                correct++;
+            } else {
+                slot.classList.add('incorrect');
+                slot.classList.add('shake');
+            }
+            setTimeout(() => { slot.classList.remove('pop', 'shake'); }, 500);
+        });
+
+        if (correct === 8) {
+            addScore(80);
+            addStreak();
+            showToast('Perfect order! +80 pts — Now match the components!', 'success');
+            setTimeout(() => {
+                document.getElementById('fdePhase1').style.display = 'none';
+                document.getElementById('fdePhase2').style.display = 'block';
+                initFDEPhase2();
+            }, 1500);
+        } else {
+            addScore(correct * 10);
+            if (correct > 0) addStreak(); else resetStreak();
+            showToast(`${correct}/8 correct — try again!`, 'error');
+        }
+    }
+
+    // Phase 2
+    function initFDEPhase2() {
+        const container = document.getElementById('fdeComponentRows');
+        container.innerHTML = '';
+
+        fdeSteps.forEach((step, i) => {
+            const row = document.createElement('div');
+            row.className = 'fde-component-row';
+            row.dataset.index = i;
+
+            const stageBadge = `<span class="stage-badge phase-${step.stage}">${step.stage.charAt(0).toUpperCase() + step.stage.slice(1)}</span>`;
+            const options = cpuComponents.map(c => `<option value="${c}">${c}</option>`).join('');
+
+            row.innerHTML = `
+                ${stageBadge}
+                <span class="fde-step-text">${step.text}</span>
+                <select class="fde-select" data-correct="${step.component}">
+                    <option value="">Select...</option>
+                    ${options}
+                </select>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function resetFDEPhase2() {
+        document.querySelectorAll('.fde-select').forEach(s => { s.value = ''; });
+        document.querySelectorAll('.fde-component-row').forEach(r => r.classList.remove('correct', 'incorrect'));
+    }
+
+    function checkFDEComponents() {
+        let correct = 0;
+        const selects = document.querySelectorAll('.fde-select');
+        selects.forEach(sel => {
+            const row = sel.closest('.fde-component-row');
+            row.classList.remove('correct', 'incorrect');
+            if (sel.value === '') return;
+            if (sel.value === sel.dataset.correct) {
+                row.classList.add('correct');
+                correct++;
+            } else {
+                row.classList.add('incorrect');
+            }
+        });
+
+        const unanswered = Array.from(selects).filter(s => s.value === '').length;
+        if (unanswered > 0) {
+            showToast(`Select a component for all ${unanswered} remaining step(s)!`, 'error');
+            return;
+        }
+
+        addScore(correct * 5);
+        if (correct === 8) {
+            addStreak();
+            showToast(`All components correct! +${correct * 5} pts`, 'success');
+            markTabComplete('fde');
+        } else {
+            if (correct > 4) addStreak(); else resetStreak();
+            showToast(`${correct}/8 components correct (+${correct * 5} pts)`, correct >= 6 ? 'success' : 'error');
+            if (correct === 8) markTabComplete('fde');
+        }
+    }
+
+    // ==================== GAME 2: COMPONENT MATCH ====================
+    const allPairs = [
+        { id: 0, term: 'ALU', def: 'Performs calculations and logical comparisons' },
+        { id: 1, term: 'CU', def: 'Decodes instructions and sends control signals' },
+        { id: 2, term: 'PC', def: 'Holds the address of the next instruction to fetch' },
+        { id: 3, term: 'MAR', def: 'Holds the address of data to be read or written in memory' },
+        { id: 4, term: 'MDR', def: 'Holds data that has been fetched or is about to be written' },
+        { id: 5, term: 'ACC', def: 'Stores the result of calculations from the ALU' },
+        { id: 6, term: 'Address Bus', def: 'Carries memory addresses; unidirectional' },
+        { id: 7, term: 'Data Bus', def: 'Carries data between CPU and memory; bidirectional' },
+        { id: 8, term: 'Control Bus', def: 'Carries control signals such as read/write; bidirectional' },
+        { id: 9, term: 'RAM', def: 'Volatile memory that stores running programs and data' },
+        { id: 10, term: 'Clock', def: 'Sends regular electrical pulses to synchronise CPU operations' },
+        { id: 11, term: 'CIR', def: 'Holds the instruction currently being decoded/executed' }
+    ];
+
+    let memFlipped = [];
+    let memMatched = 0;
+    let memMoves = 0;
+    let memCanFlip = true;
+
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        memFlipped = [];
+        memMatched = 0;
+        memMoves = 0;
+        memCanFlip = true;
+        document.getElementById('memoryPairs').textContent = '0/8';
+        document.getElementById('memoryMoves').textContent = '0';
+
+        // Pick 8 random pairs
+        const shuffledPairs = [...allPairs].sort(() => Math.random() - 0.5).slice(0, 8);
+
+        // Create 16 cards (term + def for each)
+        const cards = [];
+        shuffledPairs.forEach(pair => {
+            cards.push({ pairId: pair.id, type: 'term', content: pair.term });
+            cards.push({ pairId: pair.id, type: 'def', content: pair.def });
+        });
+
+        // Shuffle cards
+        cards.sort(() => Math.random() - 0.5);
+
+        cards.forEach((card, i) => {
+            const el = document.createElement('div');
+            el.className = 'memory-card';
+            el.dataset.index = i;
+            el.innerHTML = `<span class="card-back">🔒</span><span class="card-front">${card.content}</span>`;
+            el.addEventListener('click', () => flipCard(el, card));
+            grid.appendChild(el);
+        });
+    }
+
+    function flipCard(el, card) {
+        if (!memCanFlip || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+
+        el.classList.add('flipped');
+        memFlipped.push({ el, card });
+
+        if (memFlipped.length === 2) {
+            memMoves++;
+            document.getElementById('memoryMoves').textContent = memMoves;
+            memCanFlip = false;
+
+            const [first, second] = memFlipped;
+
+            if (first.card.pairId === second.card.pairId && first.card.type !== second.card.type) {
+                // Match!
+                setTimeout(() => {
+                    first.el.classList.add('matched');
+                    second.el.classList.add('matched');
+                    memMatched++;
+                    document.getElementById('memoryPairs').textContent = `${memMatched}/8`;
+                    memFlipped = [];
+                    memCanFlip = true;
+                    addScore(10);
+                    addStreak();
+
+                    if (memMatched === 8) {
+                        const bonus = Math.max(0, 100 - (memMoves - 8) * 2);
+                        addScore(bonus);
+                        showToast(`All pairs matched! Bonus: +${bonus} pts`, 'success');
+                        markTabComplete('memory');
+                    }
+                }, 400);
+            } else {
+                resetStreak();
+                setTimeout(() => {
+                    first.el.classList.remove('flipped');
+                    second.el.classList.remove('flipped');
+                    memFlipped = [];
+                    memCanFlip = true;
+                }, 800);
+            }
+        }
+    }
+
+    // ==================== GAME 3: STORAGE SORT ====================
+    const storageItems = [
+        { text: 'Uses spinning platters and read/write heads', category: 'magnetic' },
+        { text: 'A hard disk drive (HDD) is an example', category: 'magnetic' },
+        { text: 'Data stored as magnetic polarities on disk surface', category: 'magnetic' },
+        { text: 'Can be damaged by strong magnets', category: 'magnetic' },
+        { text: 'Moving parts make it slower and less durable', category: 'magnetic' },
+        { text: 'Highest capacity for lowest cost per GB', category: 'magnetic' },
+        { text: 'Uses a laser to read pits and lands on the surface', category: 'optical' },
+        { text: 'CD, DVD, and Blu-ray are examples', category: 'optical' },
+        { text: 'Data is stored in a spiral track from the centre', category: 'optical' },
+        { text: 'Often used for distributing software and media', category: 'optical' },
+        { text: 'Read-only, recordable, and rewritable versions exist', category: 'optical' },
+        { text: 'Has limited capacity compared to other types', category: 'optical' },
+        { text: 'No moving parts — completely electronic', category: 'solid' },
+        { text: 'SSD and USB flash drives are examples', category: 'solid' },
+        { text: 'Uses NAND flash memory to store data', category: 'solid' },
+        { text: 'Very fast read/write speeds', category: 'solid' },
+        { text: 'More durable and shock-resistant', category: 'solid' },
+        { text: 'Most expensive per GB of storage', category: 'solid' }
+    ];
+
+    let selectedStorageItem = null;
+
+    function initStorageGame() {
+        const bankGrid = document.getElementById('storageBankGrid');
+        bankGrid.innerHTML = '';
+        document.getElementById('magneticCategory').innerHTML = '';
+        document.getElementById('opticalCategory').innerHTML = '';
+        document.getElementById('solidCategory').innerHTML = '';
+        selectedStorageItem = null;
+
+        const shuffled = [...storageItems].sort(() => Math.random() - 0.5);
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'storage-item';
+            el.textContent = item.text;
+            el.draggable = true;
+            el.dataset.category = item.category;
+            el.dataset.id = i;
+
+            el.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', i);
+                el.classList.add('dragging');
+            });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+            // Tap to select (mobile)
+            el.addEventListener('click', () => {
+                if (selectedStorageItem === el) {
+                    el.classList.remove('selected');
+                    selectedStorageItem = null;
+                } else {
+                    document.querySelectorAll('.storage-item.selected').forEach(s => s.classList.remove('selected'));
+                    el.classList.add('selected');
+                    selectedStorageItem = el;
+                }
+            });
+
+            bankGrid.appendChild(el);
+        });
+
+        // Set up drop zones
+        ['magneticCategory', 'opticalCategory', 'solidCategory'].forEach(id => {
+            const zone = document.getElementById(id);
+            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const dataId = e.dataTransfer.getData('text/plain');
+                const item = document.querySelector(`.storage-item[data-id="${dataId}"]`);
+                if (item) zone.appendChild(item);
+            });
+            // Tap to place selected item
+            zone.addEventListener('click', e => {
+                if (selectedStorageItem && !zone.contains(selectedStorageItem)) {
+                    zone.appendChild(selectedStorageItem);
+                    selectedStorageItem.classList.remove('selected');
+                    selectedStorageItem = null;
+                }
+            });
+        });
+    }
+
+    function checkStorage() {
+        const bankRemaining = document.querySelectorAll('#storageBankGrid .storage-item').length;
+        if (bankRemaining > 0) {
+            showToast(`${bankRemaining} item(s) still in the bank!`, 'error');
+            return;
+        }
+
+        let correct = 0;
+        const categoryMap = {
+            magneticCategory: 'magnetic',
+            opticalCategory: 'optical',
+            solidCategory: 'solid'
+        };
+
+        document.querySelectorAll('.storage-item').forEach(item => {
+            item.classList.remove('correct', 'incorrect');
+            const parent = item.parentElement;
+            const expected = item.dataset.category;
+            const actual = categoryMap[parent.id];
+
+            if (actual === expected) {
+                item.classList.add('correct');
+                correct++;
+            } else {
+                item.classList.add('incorrect');
+            }
+        });
+
+        addScore(correct * 5);
+        if (correct === 18) {
+            addStreak();
+            showToast(`Perfect! All 18 correct! +${correct * 5} pts`, 'success');
+            markTabComplete('storage');
+        } else {
+            if (correct >= 12) addStreak(); else resetStreak();
+            showToast(`${correct}/18 correct (+${correct * 5} pts)`, correct >= 12 ? 'success' : 'error');
+        }
+    }
+
+    // ==================== GAME 4: HARDWARE QUIZ ====================
+    const quizQuestions = [
+        // 3.1.1 — Von Neumann, CPU, FDE, Buses (10 questions)
+        {
+            topic: '3.1.1', q: 'What does the Von Neumann architecture store in the same memory?',
+            options: ['Programs and data', 'Only programs', 'Only data', 'The operating system only'],
+            correct: 0,
+            explanation: 'The Von Neumann stored program concept means both programs (instructions) and data are stored in the same main memory (RAM). This allows the computer to be general-purpose.'
+        },
+        {
+            topic: '3.1.1', q: 'Which component of the CPU performs arithmetic and logical operations?',
+            options: ['Control Unit (CU)', 'Arithmetic Logic Unit (ALU)', 'Program Counter (PC)', 'Memory Data Register (MDR)'],
+            correct: 1,
+            explanation: 'The ALU (Arithmetic Logic Unit) performs all mathematical calculations (add, subtract, multiply, divide) and logical comparisons (AND, OR, NOT, greater than, equal to, etc.).'
+        },
+        {
+            topic: '3.1.1', q: 'What is the role of the Program Counter (PC)?',
+            options: ['Counts how many programs are running', 'Holds the address of the next instruction to be fetched', 'Stores the current instruction being executed', 'Counts clock cycles'],
+            correct: 1,
+            explanation: 'The PC holds the memory address of the next instruction to be fetched from RAM. After each fetch, the PC is incremented by 1 so it points to the following instruction.'
+        },
+        {
+            topic: '3.1.1', q: 'During the fetch stage, what is copied from the PC to the MAR?',
+            options: ['The instruction data', 'A memory address', 'The result of a calculation', 'A control signal'],
+            correct: 1,
+            explanation: 'The MAR (Memory Address Register) receives the address from the PC. This address is then sent along the address bus to locate the required instruction in main memory.'
+        },
+        {
+            topic: '3.1.1', q: 'Which bus carries data between the CPU and main memory?',
+            options: ['Address bus', 'Control bus', 'Data bus', 'System bus'],
+            correct: 2,
+            explanation: 'The data bus transfers actual data (instructions or values) between the CPU and memory. It is bidirectional — data can flow in both directions.'
+        },
+        {
+            topic: '3.1.1', q: 'What is the address bus used for?',
+            options: ['Sending data to memory', 'Carrying control signals', 'Specifying a memory location to read or write', 'Sending clock pulses'],
+            correct: 2,
+            explanation: 'The address bus carries the memory address that identifies which location in RAM the CPU wants to read from or write to. It is unidirectional (CPU to memory only).'
+        },
+        {
+            topic: '3.1.1', q: 'What does the Control Unit (CU) do?',
+            options: ['Performs calculations', 'Decodes instructions and coordinates the CPU', 'Stores the results of calculations', 'Manages secondary storage'],
+            correct: 1,
+            explanation: 'The CU decodes instructions from the CIR and sends control signals to other parts of the CPU and computer to carry out the instruction. It coordinates the fetch-decode-execute cycle.'
+        },
+        {
+            topic: '3.1.1', q: 'What happens when the clock speed of a CPU is increased?',
+            options: ['More instructions are processed per second', 'The CPU uses less power', 'RAM capacity increases', 'The address bus gets wider'],
+            correct: 0,
+            explanation: 'The clock sends regular electrical pulses that synchronise operations. A higher clock speed means more pulses per second, so more FDE cycles can be completed — increasing performance.'
+        },
+        {
+            topic: '3.1.1', q: 'Which register holds the instruction currently being decoded?',
+            options: ['MAR', 'MDR', 'CIR', 'ACC'],
+            correct: 2,
+            explanation: 'The CIR (Current Instruction Register) holds the instruction that was fetched from memory and is currently being decoded by the Control Unit.'
+        },
+        {
+            topic: '3.1.1', q: 'What type of memory is RAM?',
+            options: ['Non-volatile, read-only', 'Volatile, read and write', 'Non-volatile, read and write', 'Volatile, read-only'],
+            correct: 1,
+            explanation: 'RAM (Random Access Memory) is volatile — it loses all data when power is turned off. It can be both read from and written to, and holds currently running programs and data.'
+        },
+        // 3.1.2 — Secondary Storage (6 questions)
+        {
+            topic: '3.1.2', q: 'Which type of secondary storage uses spinning magnetic platters?',
+            options: ['SSD', 'Optical disc', 'Hard Disk Drive (HDD)', 'USB flash drive'],
+            correct: 2,
+            explanation: 'An HDD (Hard Disk Drive) uses spinning magnetic platters with read/write heads that move across the surface. Data is stored as magnetic polarities on the disc surface.'
+        },
+        {
+            topic: '3.1.2', q: 'How does an optical disc store data?',
+            options: ['Using electrical charges in NAND gates', 'By magnetising areas on a platter', 'Using pits and lands read by a laser', 'By storing electrons in flash cells'],
+            correct: 2,
+            explanation: 'Optical discs (CD, DVD, Blu-ray) store data as a series of pits (indentations) and lands (flat areas) on a reflective surface. A laser beam reads these patterns.'
+        },
+        {
+            topic: '3.1.2', q: 'What is the main advantage of solid state storage over magnetic storage?',
+            options: ['Lower cost per GB', 'Higher maximum capacity', 'Faster access speeds and more durable', 'Easier to share between computers'],
+            correct: 2,
+            explanation: 'SSDs have no moving parts, making them much faster (no seek time), more durable (shock-resistant), lighter, and quieter than HDDs. However, they cost more per GB.'
+        },
+        {
+            topic: '3.1.2', q: 'Which storage type typically has the lowest cost per gigabyte?',
+            options: ['Solid state (SSD)', 'Optical (Blu-ray)', 'Magnetic (HDD)', 'Flash memory (USB)'],
+            correct: 2,
+            explanation: 'Magnetic storage (HDDs) offers the lowest cost per GB, which is why they are commonly used for large-capacity storage in servers and desktop PCs where speed is less critical.'
+        },
+        {
+            topic: '3.1.2', q: 'Why is secondary storage needed in a computer system?',
+            options: ['RAM is too fast', 'To increase clock speed', 'RAM is volatile so data would be lost when power is off', 'To decode instructions'],
+            correct: 2,
+            explanation: 'RAM is volatile — it loses all contents when the computer is switched off. Secondary storage (HDD, SSD, optical) is non-volatile and retains data permanently, even without power.'
+        },
+        {
+            topic: '3.1.2', q: 'Which of these is NOT an example of optical storage?',
+            options: ['CD-ROM', 'DVD-RW', 'SSD', 'Blu-ray'],
+            correct: 2,
+            explanation: 'An SSD (Solid State Drive) uses NAND flash memory and has no moving parts. CD-ROM, DVD-RW, and Blu-ray are all types of optical disc that use lasers to read/write data.'
+        },
+        // 3.1.3 — Embedded Systems (4 questions)
+        {
+            topic: '3.1.3', q: 'What is an embedded system?',
+            options: ['A computer that can run any software', 'A dedicated computer built into a larger device to perform a specific function', 'A server that stores cloud data', 'A portable laptop computer'],
+            correct: 1,
+            explanation: 'An embedded system is a small computer system built into a larger device. It is designed to perform one specific task (or a small set of tasks) rather than being a general-purpose computer.'
+        },
+        {
+            topic: '3.1.3', q: 'Which of the following is an example of an embedded system?',
+            options: ['A desktop PC', 'A washing machine controller', 'A laptop', 'A tablet running Android'],
+            correct: 1,
+            explanation: 'A washing machine has an embedded system to control the wash cycle, temperature, spin speed etc. Desktops, laptops, and tablets are general-purpose computers, not embedded systems.'
+        },
+        {
+            topic: '3.1.3', q: 'What is a key characteristic of embedded systems compared to general-purpose computers?',
+            options: ['They can run many different applications', 'They usually perform a single dedicated function', 'They always have a screen and keyboard', 'They use more powerful processors'],
+            correct: 1,
+            explanation: 'Embedded systems are designed for a specific, dedicated purpose. Unlike general-purpose computers that can run various applications, embedded systems typically do one job reliably and efficiently.'
+        },
+        {
+            topic: '3.1.3', q: 'Which of these devices contains an embedded system?',
+            options: ['Traffic light controller', 'Gaming desktop PC', 'Tablet computer', 'Server rack'],
+            correct: 0,
+            explanation: 'Traffic lights use an embedded system to manage timing sequences and respond to sensors. They perform a fixed, specific task — making them a classic example of an embedded system.'
+        }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+    let quizStreak = 0;
+    let quizAnswered = false;
+    const quizTopicScores = { '3.1.1': { correct: 0, total: 0 }, '3.1.2': { correct: 0, total: 0 }, '3.1.3': { correct: 0, total: 0 } };
+
+    function initQuiz() {
+        quizIndex = 0;
+        quizScore = 0;
+        quizStreak = 0;
+        quizAnswered = false;
+        Object.values(quizTopicScores).forEach(t => { t.correct = 0; t.total = 0; });
+        document.getElementById('quizResults').style.display = 'none';
+        document.getElementById('quizArea').style.display = 'block';
+        renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+        if (quizIndex >= quizQuestions.length) {
+            showQuizResults();
+            return;
+        }
+
+        const q = quizQuestions[quizIndex];
+        quizAnswered = false;
+        const pct = (quizIndex / quizQuestions.length) * 100;
+        document.getElementById('quizProgressFill').style.width = pct + '%';
+        document.getElementById('quizCounter').textContent = `${quizIndex + 1} / ${quizQuestions.length}`;
+
+        const letters = ['A', 'B', 'C', 'D'];
+        const badgeClass = q.topic === '3.1.1' ? 'badge-311' : q.topic === '3.1.2' ? 'badge-312' : 'badge-313';
+
+        let html = `
+            <div class="quiz-question-card">
+                <span class="quiz-topic-badge ${badgeClass}">${q.topic}</span>
+                <p class="quiz-question-text">${q.q}</p>
+                <div class="quiz-options">
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option" data-index="${i}" onclick="selectQuizOption(${i})">
+                            <div class="option-letter">${letters[i]}</div>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-explanation" id="quizExplanation">${q.explanation}</div>
+            </div>
+            <div class="btn-group" style="justify-content:center;">
+                <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuizQuestion()" style="display:none;">Next Question →</button>
+            </div>
+        `;
+
+        document.getElementById('quizArea').innerHTML = html;
+    }
+
+    function selectQuizOption(index) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+
+        const q = quizQuestions[quizIndex];
+        quizTopicScores[q.topic].total++;
+        const options = document.querySelectorAll('.quiz-option');
+
+        options.forEach(opt => opt.classList.add('disabled'));
+        options[index].classList.add('selected');
+
+        if (index === q.correct) {
+            options[index].classList.add('correct');
+            quizScore++;
+            quizStreak++;
+            quizTopicScores[q.topic].correct++;
+            const streakBonus = quizStreak >= 3 ? 5 : 0;
+            addScore(10 + streakBonus);
+            addStreak();
+            if (streakBonus) showToast(`Correct! +10 pts (+${streakBonus} streak bonus)`, 'success');
+            else showToast('Correct! +10 pts', 'success');
+        } else {
+            options[index].classList.add('wrong');
+            options[q.correct].classList.add('correct');
+            quizStreak = 0;
+            resetStreak();
+            showToast('Incorrect!', 'error');
+        }
+
+        document.getElementById('quizExplanation').classList.add('show');
+        document.getElementById('quizNextBtn').style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+        quizIndex++;
+        renderQuizQuestion();
+    }
+
+    function showQuizResults() {
+        document.getElementById('quizArea').style.display = 'none';
+        document.getElementById('quizProgressFill').style.width = '100%';
+        document.getElementById('quizCounter').textContent = `${quizQuestions.length} / ${quizQuestions.length}`;
+
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+
+        let grade = '';
+        if (pct >= 90) grade = 'Outstanding!';
+        else if (pct >= 70) grade = 'Great work!';
+        else if (pct >= 50) grade = 'Good effort!';
+        else grade = 'Keep revising!';
+
+        document.getElementById('quizResults').style.display = 'block';
+        document.getElementById('quizResults').innerHTML = `
+            <div class="quiz-results">
+                <div class="results-score">${quizScore}/${quizQuestions.length}</div>
+                <p style="font-size:1.3rem; margin-bottom:5px;">${grade}</p>
+                <p style="color:var(--text-secondary);">You scored ${pct}% overall</p>
+
+                <div class="results-breakdown">
+                    <div class="breakdown-item">
+                        <div class="label">3.1.1 CPU & FDE</div>
+                        <div class="value" style="color:var(--accent-blue);">${quizTopicScores['3.1.1'].correct}/${quizTopicScores['3.1.1'].total}</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="label">3.1.2 Storage</div>
+                        <div class="value" style="color:var(--accent-purple);">${quizTopicScores['3.1.2'].correct}/${quizTopicScores['3.1.2'].total}</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="label">3.1.3 Embedded</div>
+                        <div class="value" style="color:var(--accent-emerald);">${quizTopicScores['3.1.3'].correct}/${quizTopicScores['3.1.3'].total}</div>
+                    </div>
+                </div>
+
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="initQuiz()">🔄 Try Again</button>
+                </div>
+            </div>
+        `;
+
+        markTabComplete('quiz');
+    }
+
+    // ==================== INIT ====================
+    initFDE();
+    initMemoryGame();
+    initStorageGame();
+    initQuiz();
+    </script>
+</body>
+</html>

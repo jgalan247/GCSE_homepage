@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Languages Games | Topic 3.3 Revision</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0e17;
+            --bg-card: #12182a;
+            --bg-card-hover: #1a2340;
+            --bg-code: #0d1117;
+            --accent-violet: #8b5cf6;
+            --accent-indigo: #6366f1;
+            --accent-purple: #a855f7;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --accent-emerald: #10b981;
+            --accent-orange: #f97316;
+            --text-primary: #ffffff;
+            --text-secondary: #8892b0;
+            --text-muted: #5a6380;
+            --success: #00f5a0;
+            --error: #ff4757;
+            --grid-line: #2a3a5a;
+            --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(139,92,246,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+        .orb-1 { background: var(--accent-violet); top: -100px; left: -100px; }
+        .orb-2 { background: var(--accent-indigo); bottom: -100px; right: -100px; animation-delay: -10s; }
+        .orb-3 { background: var(--accent-cyan); top: 50%; left: 50%; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 40px) scale(1.05); }
+        }
+
+        header {
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--grid-line);
+            background: rgba(10,14,23,0.85);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .back-btn:hover { border-color: var(--accent-violet); color: var(--text-primary); }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-display {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            border: 1px solid var(--grid-line);
+            font-size: 0.9rem;
+        }
+
+        .score-icon { font-size: 1.2rem; }
+        .score-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-violet);
+        }
+        .streak-value { color: var(--accent-indigo); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 14px 24px;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-violet);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(99,102,241,0.2));
+            border-color: var(--accent-violet);
+            color: var(--text-primary);
+        }
+
+        .tab-emoji { font-size: 1.2rem; }
+
+        .tab-check {
+            color: var(--success);
+            font-size: 1rem;
+            display: none;
+        }
+        .tab-btn.completed .tab-check { display: inline; }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,92,246,0.3); }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 2px solid var(--grid-line);
+        }
+        .btn-secondary:hover { border-color: var(--accent-violet); color: var(--text-primary); }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--grid-line);
+        }
+
+        /* ========== GAME 1: Language Level Sort ========== */
+        .lang-bank {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-violet);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .lang-bank h4 {
+            margin-bottom: 12px;
+            color: var(--accent-violet);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .lang-bank-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 50px;
+        }
+
+        .lang-item {
+            background: var(--bg-dark);
+            border: 2px solid var(--grid-line);
+            border-radius: 8px;
+            padding: 8px 14px;
+            cursor: grab;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+        .lang-item:hover { border-color: var(--accent-violet); }
+        .lang-item.dragging { opacity: 0.4; }
+        .lang-item.correct { border-color: var(--success); background: rgba(0,200,83,0.1); }
+        .lang-item.incorrect { border-color: var(--error); background: rgba(255,23,68,0.1); }
+        .lang-item.selected { border-color: var(--accent-indigo); background: rgba(99,102,241,0.15); }
+
+        .lang-category-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .lang-category-box {
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 16px;
+            padding: 16px;
+            min-height: 220px;
+        }
+        .lang-category-box.machine-code { border-color: var(--accent-red); }
+        .lang-category-box.assembly { border-color: var(--accent-amber); }
+        .lang-category-box.high-level { border-color: var(--accent-emerald); }
+
+        .lang-category-box h4 {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+        }
+        .lang-category-box.machine-code h4 { background: linear-gradient(135deg, #ef4444, #f97316); }
+        .lang-category-box.assembly h4 { background: linear-gradient(135deg, #f59e0b, #eab308); }
+        .lang-category-box.high-level h4 { background: linear-gradient(135deg, #10b981, #06b6d4); }
+
+        .lang-drop-zone {
+            min-height: 140px;
+            border: 2px dashed var(--grid-line);
+            border-radius: 10px;
+            padding: 8px;
+            transition: all 0.3s;
+        }
+        .lang-drop-zone.drag-over { border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+        .lang-drop-zone .lang-item { margin-bottom: 6px; }
+
+        /* ========== GAME 2: Translator Match (Memory) ========== */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 700px;
+            margin: 0 auto 20px;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 8px;
+            transition: all 0.3s;
+            user-select: none;
+        }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-violet); transform: scale(1.05); }
+        .memory-card.flipped { background: var(--gradient-1); color: white; font-weight: 600; }
+        .memory-card.matched { background: var(--accent-emerald); color: var(--bg-dark); font-weight: 600; cursor: default; }
+
+        .memory-card .card-back { font-size: 2rem; }
+        .memory-card .card-front { display: none; font-size: 0.8rem; line-height: 1.3; }
+        .memory-card.flipped .card-back,
+        .memory-card.matched .card-back { display: none; }
+        .memory-card.flipped .card-front,
+        .memory-card.matched .card-front { display: block; }
+
+        .memory-stats {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .memory-stat {
+            padding: 8px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        .memory-stat span { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--accent-violet); }
+
+        /* ========== GAME 3: Translation Process Builder ========== */
+        .process-phase-label {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .phase-compiler { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+        .phase-interpreter { background: rgba(6,182,212,0.2); color: #67e8f9; }
+
+        .process-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .process-tab {
+            padding: 10px 22px;
+            background: var(--bg-dark);
+            border: 2px solid var(--grid-line);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .process-tab:hover { border-color: var(--accent-violet); }
+        .process-tab.active { background: rgba(139,92,246,0.15); border-color: var(--accent-violet); color: var(--text-primary); }
+
+        .process-panel { display: none; }
+        .process-panel.active { display: block; }
+
+        .process-slots {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .process-slot {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-dark);
+            border: 2px dashed var(--grid-line);
+            border-radius: 10px;
+            min-height: 55px;
+            transition: all 0.3s;
+        }
+        .process-slot.drag-over { border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+        .process-slot.correct { border-color: var(--success); border-style: solid; background: rgba(0,245,160,0.05); }
+        .process-slot.incorrect { border-color: var(--error); border-style: solid; background: rgba(255,71,87,0.05); }
+
+        .slot-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .slot-content {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .process-slot.filled .slot-content { color: var(--text-primary); }
+
+        .process-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent-violet);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .process-block {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: grab;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            user-select: none;
+            background: rgba(139,92,246,0.12);
+            color: #c4b5fd;
+            border-color: rgba(139,92,246,0.25);
+        }
+        .process-block.interp-block {
+            background: rgba(6,182,212,0.12);
+            color: #67e8f9;
+            border-color: rgba(6,182,212,0.25);
+        }
+        .process-block:hover { transform: translateY(-2px); }
+        .process-block.dragging { opacity: 0.4; }
+
+        /* ========== GAME 4: Quiz ========== */
+        .quiz-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+
+        .quiz-counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-violet);
+            white-space: nowrap;
+        }
+
+        .quiz-question-card {
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-topic-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .badge-331 { background: rgba(139,92,246,0.2); color: #c4b5fd; }
+        .badge-332 { background: rgba(6,182,212,0.2); color: #67e8f9; }
+
+        .quiz-question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 18px;
+            background: var(--bg-dark);
+            border: 2px solid var(--grid-line);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-violet); background: rgba(139,92,246,0.05); }
+        .quiz-option.selected { border-color: var(--accent-violet); background: rgba(139,92,246,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(0,245,160,0.1); }
+        .quiz-option.wrong { border-color: var(--error); background: rgba(255,71,87,0.1); }
+        .quiz-option.disabled { cursor: default; opacity: 0.7; }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--grid-line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        .quiz-option.correct .option-letter { border-color: var(--success); color: var(--success); }
+        .quiz-option.wrong .option-letter { border-color: var(--error); color: var(--error); }
+
+        .quiz-explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(139,92,246,0.08);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            display: none;
+        }
+        .quiz-explanation.show { display: block; }
+
+        .quiz-results {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-score {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .results-breakdown {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .breakdown-item {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--grid-line);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .breakdown-item .label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
+        .breakdown-item .value { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.2rem; }
+
+        /* Feedback */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.4s ease; }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pop { animation: pop 0.3s ease; }
+
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            z-index: 200;
+            opacity: 0;
+            transition: all 0.4s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: rgba(0,245,160,0.2); border: 2px solid var(--success); color: var(--success); }
+        .toast.error { background: rgba(255,71,87,0.2); border: 2px solid var(--error); color: var(--error); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .lang-category-container { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 12px 15px; }
+            .logo { font-size: 1.2rem; }
+            .score-display { gap: 8px; }
+            .score-item { padding: 6px 10px; font-size: 0.8rem; }
+            .container { padding: 15px; }
+            .tab-btn { padding: 10px 16px; font-size: 0.85rem; }
+            .section-title { font-size: 1.4rem; }
+            .memory-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .memory-card { font-size: 0.65rem; padding: 5px; }
+            .memory-card .card-front { font-size: 0.7rem; }
+            .process-bank { padding: 12px; }
+            .process-block { padding: 8px 12px; font-size: 0.8rem; }
+        }
+        @media (max-width: 480px) {
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="back-btn">&larr; Back</a>
+            <div class="logo">Languages Games</div>
+        </div>
+        <div class="score-display">
+            <div class="score-item">
+                <span class="score-icon">⭐</span>
+                <span class="score-value" id="totalScore">0</span>
+            </div>
+            <div class="score-item">
+                <span class="score-icon">🔥</span>
+                <span class="score-value streak-value" id="streak">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="langsort">
+                <span class="tab-emoji">📊</span>
+                Language Level Sort
+                <span class="tab-check">✓</span>
+            </button>
+            <button class="tab-btn" data-tab="transmem">
+                <span class="tab-emoji">🧠</span>
+                Translator Match
+                <span class="tab-check">✓</span>
+            </button>
+            <button class="tab-btn" data-tab="builder">
+                <span class="tab-emoji">⚙️</span>
+                Translation Builder
+                <span class="tab-check">✓</span>
+            </button>
+            <button class="tab-btn" data-tab="quiz">
+                <span class="tab-emoji">❓</span>
+                Languages Quiz
+                <span class="tab-check">✓</span>
+            </button>
+        </nav>
+
+        <!-- ==================== GAME 1: Language Level Sort ==================== -->
+        <div class="tab-content active" id="langsort">
+            <h2 class="section-title">📊 Language Level Sort</h2>
+            <p class="section-subtitle">Drag each characteristic into the correct language level: Machine Code, Assembly Language, or High-Level Language.</p>
+
+            <div class="game-card">
+                <div class="lang-bank" id="langBank">
+                    <h4>📦 Item Bank — Drag items to the correct category (or tap to select, then tap a category)</h4>
+                    <div class="lang-bank-grid" id="langBankGrid"></div>
+                </div>
+
+                <div class="lang-category-container">
+                    <div class="lang-category-box machine-code">
+                        <h4>🔴 Machine Code</h4>
+                        <div class="lang-drop-zone" id="machineCategory"></div>
+                    </div>
+                    <div class="lang-category-box assembly">
+                        <h4>🟡 Assembly Language</h4>
+                        <div class="lang-drop-zone" id="assemblyCategory"></div>
+                    </div>
+                    <div class="lang-category-box high-level">
+                        <h4>🟢 High-Level Language</h4>
+                        <div class="lang-drop-zone" id="highCategory"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkLangSort()">✓ Check Answers</button>
+                    <button class="btn btn-secondary" onclick="initLangSort()">🔄 Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 2: Translator Match ==================== -->
+        <div class="tab-content" id="transmem">
+            <h2 class="section-title">🧠 Translator Match</h2>
+            <p class="section-subtitle">Flip cards to match translation and language terms with their definitions. Find all 8 pairs!</p>
+
+            <div class="game-card">
+                <div class="memory-stats">
+                    <div class="memory-stat">Pairs: <span id="memoryPairs">0/8</span></div>
+                    <div class="memory-stat">Moves: <span id="memoryMoves">0</span></div>
+                </div>
+
+                <div class="memory-grid" id="memoryGrid"></div>
+
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-secondary" onclick="initMemoryGame()">🔄 New Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 3: Translation Process Builder ==================== -->
+        <div class="tab-content" id="builder">
+            <h2 class="section-title">⚙️ Translation Process Builder</h2>
+            <p class="section-subtitle">Order the steps for how a compiler and interpreter each translate high-level code into machine code.</p>
+
+            <div class="game-card">
+                <div class="process-tabs">
+                    <button class="process-tab active" onclick="switchProcess('compiler')">
+                        <span class="process-phase-label phase-compiler">Compiler</span>
+                    </button>
+                    <button class="process-tab" onclick="switchProcess('interpreter')">
+                        <span class="process-phase-label phase-interpreter">Interpreter</span>
+                    </button>
+                </div>
+
+                <!-- Compiler Panel -->
+                <div class="process-panel active" id="compilerPanel">
+                    <div class="process-bank" id="compilerBank"></div>
+                    <div class="process-slots" id="compilerSlots"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkProcess('compiler')">✓ Check Order</button>
+                        <button class="btn btn-secondary" onclick="initProcess('compiler')">🔄 Reset</button>
+                    </div>
+                </div>
+
+                <!-- Interpreter Panel -->
+                <div class="process-panel" id="interpreterPanel">
+                    <div class="process-bank" id="interpreterBank"></div>
+                    <div class="process-slots" id="interpreterSlots"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="checkProcess('interpreter')">✓ Check Order</button>
+                        <button class="btn btn-secondary" onclick="initProcess('interpreter')">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== GAME 4: Languages Quiz ==================== -->
+        <div class="tab-content" id="quiz">
+            <h2 class="section-title">❓ Languages Quiz</h2>
+            <p class="section-subtitle">16 multiple-choice questions covering Topic 3.3 — Low-level & high-level languages, compilers & interpreters.</p>
+
+            <div class="game-card">
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div></div>
+                    <div class="quiz-counter" id="quizCounter">0 / 16</div>
+                </div>
+
+                <div id="quizArea"></div>
+                <div id="quizResults" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ==================== GLOBAL STATE ====================
+    let totalScore = 0;
+    let streak = 0;
+
+    function addScore(pts) {
+        totalScore += pts;
+        document.getElementById('totalScore').textContent = totalScore;
+    }
+
+    function addStreak() {
+        streak++;
+        document.getElementById('streak').textContent = streak;
+    }
+
+    function resetStreak() {
+        streak = 0;
+        document.getElementById('streak').textContent = streak;
+    }
+
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function markTabComplete(tabId) {
+        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('completed');
+    }
+
+    // ==================== TAB NAVIGATION ====================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ==================== GAME 1: LANGUAGE LEVEL SORT ====================
+    const langItems = [
+        // Machine Code (6)
+        { text: 'Written entirely in binary (0s and 1s)', category: 'machine' },
+        { text: 'Directly executed by the CPU without any translation', category: 'machine' },
+        { text: 'Extremely difficult for humans to read and write', category: 'machine' },
+        { text: 'Specific to a particular processor architecture', category: 'machine' },
+        { text: 'The only language the CPU can actually execute', category: 'machine' },
+        { text: 'Every instruction is a pattern of binary digits', category: 'machine' },
+        // Assembly Language (6)
+        { text: 'Uses mnemonics like ADD, MOV, SUB, and LDA', category: 'assembly' },
+        { text: 'Requires an assembler to translate it to machine code', category: 'assembly' },
+        { text: 'One instruction maps to one machine code instruction', category: 'assembly' },
+        { text: 'Still processor-specific (a low-level language)', category: 'assembly' },
+        { text: 'Easier to read than binary but still complex', category: 'assembly' },
+        { text: 'Used where direct hardware control is needed (e.g. embedded systems)', category: 'assembly' },
+        // High-Level Language (6)
+        { text: 'Uses English-like keywords such as print, if, and while', category: 'high' },
+        { text: 'Requires a compiler or interpreter to translate', category: 'high' },
+        { text: 'One statement can translate to many machine code instructions', category: 'high' },
+        { text: 'Portable — can run on different processors with recompilation', category: 'high' },
+        { text: 'Examples include Python, Java, and C#', category: 'high' },
+        { text: 'Easier and faster for programmers to write and debug', category: 'high' }
+    ];
+
+    let selectedLangItem = null;
+
+    function initLangSort() {
+        const bankGrid = document.getElementById('langBankGrid');
+        bankGrid.innerHTML = '';
+        document.getElementById('machineCategory').innerHTML = '';
+        document.getElementById('assemblyCategory').innerHTML = '';
+        document.getElementById('highCategory').innerHTML = '';
+        selectedLangItem = null;
+
+        const shuffled = [...langItems].sort(() => Math.random() - 0.5);
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'lang-item';
+            el.textContent = item.text;
+            el.draggable = true;
+            el.dataset.category = item.category;
+            el.dataset.id = i;
+
+            el.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', i);
+                el.classList.add('dragging');
+            });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+            el.addEventListener('click', () => {
+                if (selectedLangItem === el) {
+                    el.classList.remove('selected');
+                    selectedLangItem = null;
+                } else {
+                    document.querySelectorAll('.lang-item.selected').forEach(s => s.classList.remove('selected'));
+                    el.classList.add('selected');
+                    selectedLangItem = el;
+                }
+            });
+
+            bankGrid.appendChild(el);
+        });
+
+        ['machineCategory', 'assemblyCategory', 'highCategory'].forEach(id => {
+            const zone = document.getElementById(id);
+            zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+            zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const dataId = e.dataTransfer.getData('text/plain');
+                const item = document.querySelector(`.lang-item[data-id="${dataId}"]`);
+                if (item) zone.appendChild(item);
+            });
+            zone.addEventListener('click', () => {
+                if (selectedLangItem && !zone.contains(selectedLangItem)) {
+                    zone.appendChild(selectedLangItem);
+                    selectedLangItem.classList.remove('selected');
+                    selectedLangItem = null;
+                }
+            });
+        });
+    }
+
+    function checkLangSort() {
+        const bankRemaining = document.querySelectorAll('#langBankGrid .lang-item').length;
+        if (bankRemaining > 0) {
+            showToast(`${bankRemaining} item(s) still in the bank!`, 'error');
+            return;
+        }
+
+        let correct = 0;
+        const categoryMap = {
+            machineCategory: 'machine',
+            assemblyCategory: 'assembly',
+            highCategory: 'high'
+        };
+
+        document.querySelectorAll('.lang-item').forEach(item => {
+            item.classList.remove('correct', 'incorrect');
+            const parent = item.parentElement;
+            const expected = item.dataset.category;
+            const actual = categoryMap[parent.id];
+
+            if (actual === expected) {
+                item.classList.add('correct');
+                correct++;
+            } else {
+                item.classList.add('incorrect');
+            }
+        });
+
+        addScore(correct * 5);
+        if (correct === 18) {
+            addStreak();
+            showToast(`Perfect! All 18 correct! +${correct * 5} pts`, 'success');
+            markTabComplete('langsort');
+        } else {
+            if (correct >= 12) addStreak(); else resetStreak();
+            showToast(`${correct}/18 correct (+${correct * 5} pts)`, correct >= 12 ? 'success' : 'error');
+        }
+    }
+
+    // ==================== GAME 2: TRANSLATOR MATCH (MEMORY) ====================
+    const allTransPairs = [
+        { id: 0, term: 'Compiler', def: 'Translates the entire source code into machine code in one go before execution' },
+        { id: 1, term: 'Interpreter', def: 'Translates and executes source code one line at a time' },
+        { id: 2, term: 'Object Code', def: 'The machine code file produced by a compiler' },
+        { id: 3, term: 'Source Code', def: 'The original program written in a high-level language' },
+        { id: 4, term: 'Assembler', def: 'Translates assembly language mnemonics into machine code' },
+        { id: 5, term: 'Syntax Error', def: 'A mistake in the grammar rules of the programming language' },
+        { id: 6, term: 'Machine Code', def: 'Binary instructions that can be directly executed by the CPU' },
+        { id: 7, term: 'High-Level Language', def: 'Uses English-like keywords and is portable across platforms' },
+        { id: 8, term: 'Low-Level Language', def: 'Closer to hardware with little abstraction from machine instructions' },
+        { id: 9, term: 'Executable File', def: 'A standalone file that can run without needing the translator again' }
+    ];
+
+    let memFlipped = [];
+    let memMatched = 0;
+    let memMoves = 0;
+    let memCanFlip = true;
+
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        memFlipped = [];
+        memMatched = 0;
+        memMoves = 0;
+        memCanFlip = true;
+        document.getElementById('memoryPairs').textContent = '0/8';
+        document.getElementById('memoryMoves').textContent = '0';
+
+        const shuffledPairs = [...allTransPairs].sort(() => Math.random() - 0.5).slice(0, 8);
+
+        const cards = [];
+        shuffledPairs.forEach(pair => {
+            cards.push({ pairId: pair.id, type: 'term', content: pair.term });
+            cards.push({ pairId: pair.id, type: 'def', content: pair.def });
+        });
+
+        cards.sort(() => Math.random() - 0.5);
+
+        cards.forEach((card, i) => {
+            const el = document.createElement('div');
+            el.className = 'memory-card';
+            el.dataset.index = i;
+            el.innerHTML = `<span class="card-back">🔒</span><span class="card-front">${card.content}</span>`;
+            el.addEventListener('click', () => flipCard(el, card));
+            grid.appendChild(el);
+        });
+    }
+
+    function flipCard(el, card) {
+        if (!memCanFlip || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+
+        el.classList.add('flipped');
+        memFlipped.push({ el, card });
+
+        if (memFlipped.length === 2) {
+            memMoves++;
+            document.getElementById('memoryMoves').textContent = memMoves;
+            memCanFlip = false;
+
+            const [first, second] = memFlipped;
+
+            if (first.card.pairId === second.card.pairId && first.card.type !== second.card.type) {
+                setTimeout(() => {
+                    first.el.classList.add('matched');
+                    second.el.classList.add('matched');
+                    memMatched++;
+                    document.getElementById('memoryPairs').textContent = `${memMatched}/8`;
+                    memFlipped = [];
+                    memCanFlip = true;
+                    addScore(10);
+                    addStreak();
+
+                    if (memMatched === 8) {
+                        const bonus = Math.max(0, 100 - (memMoves - 8) * 2);
+                        addScore(bonus);
+                        showToast(`All pairs matched! Bonus: +${bonus} pts`, 'success');
+                        markTabComplete('transmem');
+                    }
+                }, 400);
+            } else {
+                resetStreak();
+                setTimeout(() => {
+                    first.el.classList.remove('flipped');
+                    second.el.classList.remove('flipped');
+                    memFlipped = [];
+                    memCanFlip = true;
+                }, 800);
+            }
+        }
+    }
+
+    // ==================== GAME 3: TRANSLATION PROCESS BUILDER ====================
+    const compilerSteps = [
+        { id: 0, text: 'Programmer writes the complete source code in a high-level language' },
+        { id: 1, text: 'The entire source code file is passed to the compiler' },
+        { id: 2, text: 'The compiler checks ALL the code for syntax errors at once' },
+        { id: 3, text: 'If errors are found, an error report is produced listing them all — no executable is created' },
+        { id: 4, text: 'If no errors, the compiler translates all code into a single machine code file (object code)' },
+        { id: 5, text: 'The object code (executable) can be run repeatedly without the compiler' }
+    ];
+
+    const interpreterSteps = [
+        { id: 0, text: 'Programmer writes source code in a high-level language' },
+        { id: 1, text: 'The interpreter reads the first/next line of source code' },
+        { id: 2, text: 'That single line is checked for syntax errors' },
+        { id: 3, text: 'If an error is found, the interpreter stops and reports it immediately' },
+        { id: 4, text: 'If no error, the line is translated to machine code and executed straight away' },
+        { id: 5, text: 'The interpreter moves to the next line and repeats — translation is needed every time the program runs' }
+    ];
+
+    const processState = {
+        compiler: { slotContents: new Array(6).fill(null), complete: false },
+        interpreter: { slotContents: new Array(6).fill(null), complete: false }
+    };
+
+    function switchProcess(which) {
+        document.querySelectorAll('.process-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.process-panel').forEach(p => p.classList.remove('active'));
+
+        if (which === 'compiler') {
+            document.querySelectorAll('.process-tab')[0].classList.add('active');
+            document.getElementById('compilerPanel').classList.add('active');
+        } else {
+            document.querySelectorAll('.process-tab')[1].classList.add('active');
+            document.getElementById('interpreterPanel').classList.add('active');
+        }
+    }
+
+    function initProcess(which) {
+        const steps = which === 'compiler' ? compilerSteps : interpreterSteps;
+        const bankId = which + 'Bank';
+        const slotsId = which + 'Slots';
+        const state = processState[which];
+        state.slotContents = new Array(steps.length).fill(null);
+
+        const bank = document.getElementById(bankId);
+        const slotsContainer = document.getElementById(slotsId);
+        bank.innerHTML = '';
+        slotsContainer.innerHTML = '';
+
+        // Create slots
+        for (let i = 0; i < steps.length; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'process-slot';
+            slot.dataset.index = i;
+            slot.dataset.process = which;
+            slot.innerHTML = `<div class="slot-number">${i + 1}</div><div class="slot-content">Drop step ${i + 1} here</div>`;
+            slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
+            slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
+            slot.addEventListener('drop', e => dropIntoProcessSlot(e, which, i));
+            slot.addEventListener('click', () => returnFromProcessSlot(which, i));
+            slotsContainer.appendChild(slot);
+        }
+
+        // Create shuffled blocks
+        const shuffled = [...steps].sort(() => Math.random() - 0.5);
+        const blockClass = which === 'interpreter' ? 'process-block interp-block' : 'process-block';
+        shuffled.forEach(step => {
+            const block = document.createElement('div');
+            block.className = blockClass;
+            block.textContent = step.text;
+            block.draggable = true;
+            block.dataset.id = step.id;
+            block.dataset.process = which;
+            block.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text/plain', step.id + ':' + which);
+                block.classList.add('dragging');
+            });
+            block.addEventListener('dragend', () => block.classList.remove('dragging'));
+            block.addEventListener('click', () => {
+                if (block.parentElement.id === bankId) {
+                    const emptyIdx = state.slotContents.indexOf(null);
+                    if (emptyIdx !== -1) placeInProcessSlot(which, step.id, emptyIdx);
+                }
+            });
+            bank.appendChild(block);
+        });
+    }
+
+    function dropIntoProcessSlot(e, which, slotIndex) {
+        e.preventDefault();
+        const slot = document.querySelectorAll(`#${which}Slots .process-slot`)[slotIndex];
+        slot.classList.remove('drag-over');
+        const data = e.dataTransfer.getData('text/plain');
+        const [stepId, proc] = data.split(':');
+        if (proc !== which) return;
+        placeInProcessSlot(which, parseInt(stepId), slotIndex);
+    }
+
+    function placeInProcessSlot(which, stepId, slotIndex) {
+        const state = processState[which];
+        const steps = which === 'compiler' ? compilerSteps : interpreterSteps;
+
+        if (state.slotContents[slotIndex] !== null) {
+            returnFromProcessSlot(which, slotIndex);
+        }
+
+        const existingIdx = state.slotContents.indexOf(stepId);
+        if (existingIdx !== -1) {
+            returnFromProcessSlot(which, existingIdx);
+        }
+
+        const step = steps.find(s => s.id === stepId);
+        const block = document.querySelector(`.process-block[data-id="${stepId}"][data-process="${which}"]`);
+        if (!block || !step) return;
+
+        state.slotContents[slotIndex] = stepId;
+        const slot = document.querySelectorAll(`#${which}Slots .process-slot`)[slotIndex];
+        slot.classList.add('filled');
+        slot.querySelector('.slot-content').textContent = step.text;
+        slot.querySelector('.slot-content').style.color = 'var(--text-primary)';
+        block.style.display = 'none';
+    }
+
+    function returnFromProcessSlot(which, slotIndex) {
+        const state = processState[which];
+        const stepId = state.slotContents[slotIndex];
+        if (stepId === null) return;
+        state.slotContents[slotIndex] = null;
+        const slot = document.querySelectorAll(`#${which}Slots .process-slot`)[slotIndex];
+        slot.classList.remove('filled', 'correct', 'incorrect');
+        slot.querySelector('.slot-content').textContent = `Drop step ${slotIndex + 1} here`;
+        slot.querySelector('.slot-content').style.color = 'var(--text-muted)';
+
+        const block = document.querySelector(`.process-block[data-id="${stepId}"][data-process="${which}"]`);
+        if (block) {
+            block.style.display = '';
+            document.getElementById(which + 'Bank').appendChild(block);
+        }
+    }
+
+    function checkProcess(which) {
+        const state = processState[which];
+        const steps = which === 'compiler' ? compilerSteps : interpreterSteps;
+
+        if (state.slotContents.includes(null)) {
+            showToast('Place all steps first!', 'error');
+            return;
+        }
+
+        let correct = 0;
+        const slots = document.querySelectorAll(`#${which}Slots .process-slot`);
+        slots.forEach((slot, i) => {
+            slot.classList.remove('correct', 'incorrect', 'pop', 'shake');
+            if (state.slotContents[i] === i) {
+                slot.classList.add('correct', 'pop');
+                correct++;
+            } else {
+                slot.classList.add('incorrect', 'shake');
+            }
+            setTimeout(() => { slot.classList.remove('pop', 'shake'); }, 500);
+        });
+
+        if (correct === steps.length) {
+            state.complete = true;
+            addScore(60);
+            addStreak();
+            const label = which === 'compiler' ? 'Compiler' : 'Interpreter';
+            showToast(`${label} process perfect! +60 pts`, 'success');
+
+            if (processState.compiler.complete && processState.interpreter.complete) {
+                markTabComplete('builder');
+            }
+        } else {
+            addScore(correct * 10);
+            if (correct > 3) addStreak(); else resetStreak();
+            showToast(`${correct}/${steps.length} correct (+${correct * 10} pts)`, correct >= 4 ? 'success' : 'error');
+        }
+    }
+
+    // ==================== GAME 4: LANGUAGES QUIZ ====================
+    const quizQuestions = [
+        // 3.3.1 — Low-level vs High-level (8 questions)
+        {
+            topic: '3.3.1', q: 'What is a low-level language?',
+            options: ['A language that is easy for humans to understand', 'A language that is close to the hardware and provides little abstraction', 'A language used only for web development', 'A language that runs slowly'],
+            correct: 1,
+            explanation: 'Low-level languages (machine code and assembly) are close to the hardware, with little abstraction from the processor\'s instruction set. They are harder for humans to read but give direct control over hardware.'
+        },
+        {
+            topic: '3.3.1', q: 'Which of these is a characteristic of a high-level language?',
+            options: ['Written in binary', 'One instruction maps to one machine code instruction', 'Uses English-like keywords and is portable across platforms', 'Can only run on one specific processor'],
+            correct: 2,
+            explanation: 'High-level languages use English-like keywords (e.g. print, if, while), are portable across different processor architectures, and one statement can translate into many machine code instructions.'
+        },
+        {
+            topic: '3.3.1', q: 'Why might a programmer choose to write in assembly language rather than a high-level language?',
+            options: ['Assembly is easier to learn', 'Assembly gives direct control over hardware and can be more efficient', 'Assembly code is portable across all platforms', 'Assembly does not need any translation'],
+            correct: 1,
+            explanation: 'Assembly language gives programmers direct control over hardware resources and memory. It can produce more efficient, optimised code for tasks like embedded systems or device drivers, where performance is critical.'
+        },
+        {
+            topic: '3.3.1', q: 'What does "portable" mean in the context of programming languages?',
+            options: ['The program can run on a laptop', 'The source code can be recompiled to run on different processor architectures', 'The program is very small in file size', 'The program can be emailed to others'],
+            correct: 1,
+            explanation: 'Portability means the same high-level source code can be recompiled (or interpreted) to run on different types of processors or operating systems, without needing to be rewritten. Low-level code is not portable.'
+        },
+        {
+            topic: '3.3.1', q: 'What type of language does a CPU directly execute?',
+            options: ['Python', 'Assembly language', 'Machine code', 'HTML'],
+            correct: 2,
+            explanation: 'The CPU can only directly execute machine code — binary instructions (0s and 1s). All other languages must first be translated into machine code before the CPU can process them.'
+        },
+        {
+            topic: '3.3.1', q: 'What is an assembler?',
+            options: ['A person who writes code', 'A program that translates assembly language into machine code', 'A type of high-level language', 'A hardware component inside the CPU'],
+            correct: 1,
+            explanation: 'An assembler is a translator that converts assembly language mnemonics (like ADD, MOV, LDA) into their equivalent machine code binary instructions that the CPU can execute.'
+        },
+        {
+            topic: '3.3.1', q: 'Which statement about machine code is correct?',
+            options: ['It uses mnemonics like ADD and MOV', 'It is portable across different processors', 'It is processor-specific and written in binary', 'It is the easiest language for humans to read'],
+            correct: 2,
+            explanation: 'Machine code is written entirely in binary (0s and 1s) and is specific to a particular processor architecture. Different CPUs have different instruction sets, so machine code for one processor won\'t work on another.'
+        },
+        {
+            topic: '3.3.1', q: 'Why are high-level languages generally preferred for software development?',
+            options: ['They run faster than machine code', 'They are easier to write, read, debug, and are portable', 'They give better control over hardware', 'They don\'t need testing'],
+            correct: 1,
+            explanation: 'High-level languages are preferred because they are easier for humans to write, read, and debug due to English-like syntax. They are also portable and one line can do the work of many machine code instructions, making development faster.'
+        },
+        // 3.3.2 — Compilers vs Interpreters (8 questions)
+        {
+            topic: '3.3.2', q: 'How does a compiler translate source code?',
+            options: ['It translates one line at a time as the program runs', 'It translates the entire source code into machine code before the program is executed', 'It only checks for errors without producing output', 'It converts machine code back into source code'],
+            correct: 1,
+            explanation: 'A compiler reads the entire source code and translates it all into machine code (object code / executable) in one go, before any of the program is executed. The resulting file can then be run independently.'
+        },
+        {
+            topic: '3.3.2', q: 'How does an interpreter translate source code?',
+            options: ['It translates the whole program first, then runs it', 'It creates a standalone executable file', 'It translates and executes the code one line at a time', 'It only works with low-level languages'],
+            correct: 2,
+            explanation: 'An interpreter reads one line of source code at a time, translates it to machine code, and executes it immediately before moving to the next line. The source code must be translated every time the program is run.'
+        },
+        {
+            topic: '3.3.2', q: 'What is one advantage of using a compiler over an interpreter?',
+            options: ['Errors are reported one at a time for easy debugging', 'The compiled program runs faster because translation has already been done', 'The source code does not need to be free of errors', 'No translation step is needed'],
+            correct: 1,
+            explanation: 'Once compiled, the resulting executable (object code) runs at full speed because no translation is happening during execution. Interpreted programs are slower because each line must be translated every time the program runs.'
+        },
+        {
+            topic: '3.3.2', q: 'What is one advantage of using an interpreter over a compiler?',
+            options: ['The program executes faster', 'It produces a standalone executable file', 'Errors are found immediately as each line is processed, making debugging easier', 'It translates the entire program at once'],
+            correct: 2,
+            explanation: 'An interpreter stops and reports an error as soon as it encounters one, telling the programmer exactly which line caused the problem. This makes debugging easier during development. A compiler reports all errors at once, which can be overwhelming.'
+        },
+        {
+            topic: '3.3.2', q: 'What is "object code"?',
+            options: ['Code written in an object-oriented language', 'The machine code output produced by a compiler', 'The original source code before translation', 'Code written in assembly language'],
+            correct: 1,
+            explanation: 'Object code is the machine code file produced by a compiler after translating the source code. It is a binary executable that can be run directly by the CPU without needing the compiler or original source code.'
+        },
+        {
+            topic: '3.3.2', q: 'Why does an interpreted program need the interpreter installed to run?',
+            options: ['Because the interpreter is part of the operating system', 'Because the source code is translated line by line each time it runs', 'Because the interpreter stores the program\'s data', 'Because interpreters are faster than compilers'],
+            correct: 1,
+            explanation: 'An interpreter doesn\'t produce a standalone executable — it must translate the source code every time the program is run. Without the interpreter, the high-level source code cannot be converted to machine code and executed.'
+        },
+        {
+            topic: '3.3.2', q: 'A programmer is developing and testing a new Python program. Which translator is most useful during development?',
+            options: ['Compiler — because it runs the code faster', 'Assembler — because Python is low-level', 'Interpreter — because it reports errors line by line for easier debugging', 'No translator is needed for Python'],
+            correct: 2,
+            explanation: 'During development and testing, an interpreter is more useful because it reports errors immediately when each line is processed, making it easier to find and fix bugs quickly. Python is commonly used with an interpreter.'
+        },
+        {
+            topic: '3.3.2', q: 'A company distributes a finished program to customers. Why might they use a compiler rather than an interpreter?',
+            options: ['It is easier to debug compiled code', 'The compiled executable runs faster and the source code stays private', 'Compilers work with any language', 'Customers prefer interpreters'],
+            correct: 1,
+            explanation: 'Compiling produces a standalone executable that runs faster (no runtime translation). It also protects the source code — customers receive only the machine code executable, not the original readable source code.'
+        }
+    ];
+
+    let quizIndex = 0;
+    let quizScore = 0;
+    let quizStreak = 0;
+    let quizAnswered = false;
+    const quizTopicScores = { '3.3.1': { correct: 0, total: 0 }, '3.3.2': { correct: 0, total: 0 } };
+
+    function initQuiz() {
+        quizIndex = 0;
+        quizScore = 0;
+        quizStreak = 0;
+        quizAnswered = false;
+        Object.values(quizTopicScores).forEach(t => { t.correct = 0; t.total = 0; });
+        document.getElementById('quizResults').style.display = 'none';
+        document.getElementById('quizArea').style.display = 'block';
+        renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+        if (quizIndex >= quizQuestions.length) {
+            showQuizResults();
+            return;
+        }
+
+        const q = quizQuestions[quizIndex];
+        quizAnswered = false;
+        const pct = (quizIndex / quizQuestions.length) * 100;
+        document.getElementById('quizProgressFill').style.width = pct + '%';
+        document.getElementById('quizCounter').textContent = `${quizIndex + 1} / ${quizQuestions.length}`;
+
+        const letters = ['A', 'B', 'C', 'D'];
+        const badgeClass = q.topic === '3.3.1' ? 'badge-331' : 'badge-332';
+
+        let html = `
+            <div class="quiz-question-card">
+                <span class="quiz-topic-badge ${badgeClass}">${q.topic}</span>
+                <p class="quiz-question-text">${q.q}</p>
+                <div class="quiz-options">
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option" data-index="${i}" onclick="selectQuizOption(${i})">
+                            <div class="option-letter">${letters[i]}</div>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-explanation" id="quizExplanation">${q.explanation}</div>
+            </div>
+            <div class="btn-group" style="justify-content:center;">
+                <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuizQuestion()" style="display:none;">Next Question →</button>
+            </div>
+        `;
+
+        document.getElementById('quizArea').innerHTML = html;
+    }
+
+    function selectQuizOption(index) {
+        if (quizAnswered) return;
+        quizAnswered = true;
+
+        const q = quizQuestions[quizIndex];
+        quizTopicScores[q.topic].total++;
+        const options = document.querySelectorAll('.quiz-option');
+
+        options.forEach(opt => opt.classList.add('disabled'));
+        options[index].classList.add('selected');
+
+        if (index === q.correct) {
+            options[index].classList.add('correct');
+            quizScore++;
+            quizStreak++;
+            quizTopicScores[q.topic].correct++;
+            const streakBonus = quizStreak >= 3 ? 5 : 0;
+            addScore(10 + streakBonus);
+            addStreak();
+            if (streakBonus) showToast(`Correct! +10 pts (+${streakBonus} streak bonus)`, 'success');
+            else showToast('Correct! +10 pts', 'success');
+        } else {
+            options[index].classList.add('wrong');
+            options[q.correct].classList.add('correct');
+            quizStreak = 0;
+            resetStreak();
+            showToast('Incorrect!', 'error');
+        }
+
+        document.getElementById('quizExplanation').classList.add('show');
+        document.getElementById('quizNextBtn').style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+        quizIndex++;
+        renderQuizQuestion();
+    }
+
+    function showQuizResults() {
+        document.getElementById('quizArea').style.display = 'none';
+        document.getElementById('quizProgressFill').style.width = '100%';
+        document.getElementById('quizCounter').textContent = `${quizQuestions.length} / ${quizQuestions.length}`;
+
+        const pct = Math.round((quizScore / quizQuestions.length) * 100);
+
+        let grade = '';
+        if (pct >= 90) grade = 'Outstanding!';
+        else if (pct >= 70) grade = 'Great work!';
+        else if (pct >= 50) grade = 'Good effort!';
+        else grade = 'Keep revising!';
+
+        document.getElementById('quizResults').style.display = 'block';
+        document.getElementById('quizResults').innerHTML = `
+            <div class="quiz-results">
+                <div class="results-score">${quizScore}/${quizQuestions.length}</div>
+                <p style="font-size:1.3rem; margin-bottom:5px;">${grade}</p>
+                <p style="color:var(--text-secondary);">You scored ${pct}% overall</p>
+
+                <div class="results-breakdown">
+                    <div class="breakdown-item">
+                        <div class="label">3.3.1 Language Levels</div>
+                        <div class="value" style="color:var(--accent-violet);">${quizTopicScores['3.3.1'].correct}/${quizTopicScores['3.3.1'].total}</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="label">3.3.2 Translators</div>
+                        <div class="value" style="color:var(--accent-cyan);">${quizTopicScores['3.3.2'].correct}/${quizTopicScores['3.3.2'].total}</div>
+                    </div>
+                </div>
+
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="initQuiz()">🔄 Try Again</button>
+                </div>
+            </div>
+        `;
+
+        markTabComplete('quiz');
+    }
+
+    // ==================== INIT ====================
+    initLangSort();
+    initMemoryGame();
+    initProcess('compiler');
+    initProcess('interpreter');
+    initQuiz();
+    </script>
+</body>
+</html>
