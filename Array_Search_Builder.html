@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Array Search Builder | GCSE Computer Science Paper 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<style>
+:root {
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --bg-code: #0d1117;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-yellow: #d29922;
+    --accent-blue: #58a6ff;
+    --accent-purple: #a371f7;
+    --accent-cyan: #39c5cf;
+    --accent-orange: #f0883e;
+    --accent-emerald: #34d399;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --border-color: #30363d;
+    --success: #238636;
+    --error: #da3633;
+    --gradient-1: linear-gradient(135deg, #3fb950 0%, #39c5cf 100%);
+    --gradient-2: linear-gradient(135deg, #3fb950 0%, #58a6ff 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background effects */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(63, 185, 80, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57, 197, 207, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.1;
+    z-index: 0;
+}
+.orb-1 { background: var(--accent-green); top: -150px; left: -150px; }
+.orb-2 { background: var(--accent-cyan); bottom: -150px; right: -150px; }
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    padding: 2rem 1rem 3rem;
+}
+
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.75rem;
+}
+
+.header p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+.home-link:hover { color: var(--accent-blue); }
+
+/* Progress bar */
+.progress-bar-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-info {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.progress-stat {
+    text-align: center;
+}
+
+.progress-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-green);
+}
+
+.progress-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.progress-track {
+    flex: 1;
+    min-width: 200px;
+}
+
+.progress-track-bar {
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-track-fill {
+    height: 100%;
+    background: var(--gradient-1);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.progress-dots {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.75rem;
+    justify-content: center;
+}
+
+.progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-color);
+    transition: all 0.3s;
+}
+
+.progress-dot.current { background: var(--accent-green); transform: scale(1.2); }
+.progress-dot.correct { background: var(--accent-green); }
+.progress-dot.incorrect { background: var(--accent-red); }
+
+/* Problem card */
+.problem-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.problem-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.problem-number {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.problem-badge {
+    background: var(--gradient-1);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.problem-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.difficulty-badge {
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.difficulty-badge.q3 {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+}
+
+.difficulty-badge.q4 {
+    background: rgba(163, 113, 247, 0.15);
+    color: var(--accent-purple);
+    border: 1px solid var(--accent-purple);
+}
+
+.difficulty-badge.q6 {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+}
+
+.marks-badge {
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+    border: 1px solid var(--accent-green);
+}
+
+.problem-prompt {
+    padding: 1.25rem 1.5rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+.problem-prompt strong {
+    color: var(--text-primary);
+}
+
+.problem-prompt ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.problem-prompt li {
+    margin: 0.3rem 0;
+}
+
+/* Builder area */
+.builder-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.builder-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: #1c2128;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.panel-title .icon { color: var(--accent-yellow); }
+
+.panel-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg-dark);
+    padding: 0.2rem 0.6rem;
+    border-radius: 10px;
+}
+
+.block-pool {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 250px;
+}
+
+.solution-area {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 250px;
+}
+
+.solution-area.drag-over {
+    background: rgba(63, 185, 80, 0.05);
+}
+
+.empty-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Code blocks */
+.code-block-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-code);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.75rem, 1.5vw, 0.88rem);
+    line-height: 1.5;
+    cursor: grab;
+    transition: all 0.2s;
+    white-space: pre;
+    min-height: 44px;
+    user-select: none;
+    position: relative;
+}
+
+.code-block-item:hover {
+    border-color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.05);
+}
+
+.code-block-item.dragging {
+    opacity: 0.4;
+    border-color: var(--accent-green);
+}
+
+.code-block-item.distractor {
+    /* no visual difference - student shouldn't know */
+}
+
+.code-block-item .drag-handle {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.code-block-item .block-code {
+    flex: 1;
+    overflow-x: auto;
+}
+
+.code-block-item .remove-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    color: white;
+    font-size: 0.7rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    font-weight: 700;
+}
+
+.solution-area .code-block-item:hover .remove-btn {
+    display: flex;
+}
+
+.solution-area .code-block-item .line-num {
+    min-width: 24px;
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+    border-right: 1px solid var(--border-color);
+    margin-right: 0.25rem;
+}
+
+/* Syntax highlighting */
+.keyword { color: #ff7b72; }
+.string { color: #a5d6ff; }
+.number { color: #79c0ff; }
+.function { color: #d2a8ff; }
+.comment { color: #8b949e; font-style: italic; }
+.operator { color: #ff7b72; }
+.builtin { color: #ffa657; }
+
+/* Action bar */
+.action-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover:not(:disabled) {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
+.btn-run {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid var(--accent-blue);
+}
+.btn-run:hover:not(:disabled) {
+    background: rgba(88, 166, 255, 0.25);
+}
+
+.btn-submit {
+    background: var(--gradient-1);
+    color: white;
+    border: none;
+}
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(63, 185, 80, 0.3);
+}
+
+.btn-success {
+    background: var(--gradient-2);
+    color: white;
+    border: none;
+}
+.btn-success:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(63, 185, 80, 0.3);
+}
+
+/* Output panel */
+.output-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+.output-panel.visible { display: block; }
+
+.output-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border-color);
+}
+
+.output-section {
+    background: var(--bg-card);
+    padding: 1rem;
+}
+
+.output-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+
+.output-content {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    min-height: 60px;
+    background: var(--bg-dark);
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.output-content.error {
+    color: var(--accent-red);
+}
+
+.output-match {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+}
+
+.output-match.pass {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+}
+
+.output-match.fail {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+}
+
+.output-match.skip {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--accent-yellow);
+}
+
+/* Input panel for Skulpt */
+.input-panel {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border-color);
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-panel.active { display: flex; }
+
+.input-panel input {
+    flex: 1;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    outline: none;
+}
+
+.input-panel input:focus {
+    border-color: var(--accent-blue);
+}
+
+.input-panel button {
+    padding: 0.5rem 1rem;
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* Feedback panel */
+.feedback-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+.feedback-panel.visible { display: block; }
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.feedback-icon.correct {
+    background: rgba(63, 185, 80, 0.15);
+    color: var(--accent-green);
+    border: 2px solid var(--accent-green);
+}
+
+.feedback-icon.partial {
+    background: rgba(210, 153, 34, 0.15);
+    color: var(--accent-yellow);
+    border: 2px solid var(--accent-yellow);
+}
+
+.feedback-icon.incorrect {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--accent-red);
+    border: 2px solid var(--accent-red);
+}
+
+.feedback-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.feedback-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.feedback-marks {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.feedback-marks-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.mark-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.mark-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.mark-icon.awarded {
+    background: var(--accent-green);
+    color: white;
+}
+
+.mark-icon.missed {
+    background: var(--accent-red);
+    color: white;
+}
+
+.mark-icon.deducted {
+    background: var(--accent-orange);
+    color: white;
+}
+
+.mark-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.mark-desc strong {
+    color: var(--text-primary);
+}
+
+.mark-points {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.feedback-model {
+    padding: 1rem 1.5rem;
+}
+
+.feedback-model h4 {
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    margin-bottom: 0.75rem;
+}
+
+.model-code {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.feedback-actions {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Results screen */
+.results-screen {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.results-screen.visible { display: block; }
+
+.results-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.results-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    background: var(--gradient-2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.results-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin: 1rem 0;
+}
+
+.results-message {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.results-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.result-stat {
+    text-align: center;
+}
+
+.result-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.result-stat-value.green { color: var(--accent-green); }
+.result-stat-value.blue { color: var(--accent-blue); }
+.result-stat-value.purple { color: var(--accent-purple); }
+
+.result-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.results-per-challenge {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    text-align: left;
+}
+
+.results-per-challenge h3 {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+}
+
+.result-row-title {
+    color: var(--text-secondary);
+}
+
+.result-row-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+}
+
+.result-row-score.full { color: var(--accent-green); }
+.result-row-score.partial { color: var(--accent-yellow); }
+.result-row-score.low { color: var(--accent-red); }
+
+/* Game container */
+#gameContainer { display: block; }
+#gameContainer.hidden { display: none; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .builder-area {
+        grid-template-columns: 1fr;
+    }
+
+    .output-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    .progress-bar-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 600px) {
+    .problem-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .action-bar {
+        flex-direction: column;
+    }
+
+    .action-bar .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.4s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html" class="home-link">&larr; Back to CS Hub</a>
+        <div class="header-badge">Paper 2 Q6 Practice</div>
+        <h1>Array Search Builder</h1>
+        <p>Drag and drop code blocks to build complete 2D array and search programs. Practise the 15-mark Q6 with exam-style mark scheme feedback.</p>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar-container" id="progressBar">
+        <div class="progress-info">
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="challengeCounter">1/4</div>
+                <div class="progress-stat-label">Challenge</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="marksEarned">0</div>
+                <div class="progress-stat-label">Marks</div>
+            </div>
+            <div class="progress-stat">
+                <div class="progress-stat-value" id="marksMax">60</div>
+                <div class="progress-stat-label">Possible</div>
+            </div>
+        </div>
+        <div class="progress-track">
+            <div class="progress-track-bar">
+                <div class="progress-track-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-dots" id="progressDots"></div>
+        </div>
+    </div>
+
+    <!-- Game container -->
+    <div id="gameContainer">
+        <!-- Problem spec card -->
+        <div class="problem-card fade-in" id="problemCard">
+            <div class="problem-header">
+                <div class="problem-number">
+                    <span class="problem-badge" id="problemBadge">Challenge 1</span>
+                    <span class="problem-title" id="problemTitle"></span>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="difficulty-badge" id="difficultyBadge"></span>
+                    <span class="marks-badge" id="marksBadge"></span>
+                </div>
+            </div>
+            <div class="problem-prompt" id="problemPrompt"></div>
+        </div>
+
+        <!-- Builder area -->
+        <div class="builder-area" id="builderArea">
+            <!-- Block pool -->
+            <div class="builder-panel">
+                <div class="panel-header">
+                    <div class="panel-title"><span class="icon">&#9776;</span> Code Blocks</div>
+                    <div class="panel-count" id="poolCount">0 blocks</div>
+                </div>
+                <div class="block-pool" id="blockPool">
+                    <div class="empty-message">Loading blocks...</div>
+                </div>
+            </div>
+
+            <!-- Solution area -->
+            <div class="builder-panel">
+                <div class="panel-header">
+                    <div class="panel-title"><span class="icon">&#9998;</span> Your Solution</div>
+                    <div class="panel-count" id="solutionCount">0 lines</div>
+                </div>
+                <div class="solution-area" id="solutionArea">
+                    <div class="empty-message" id="solutionEmpty">Drag code blocks here or click to add</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action bar -->
+        <div class="action-bar" id="actionBar">
+            <button class="btn btn-secondary" onclick="clearSolution()">Clear All</button>
+            <button class="btn btn-run" onclick="runCode()">Run Code</button>
+            <button class="btn btn-submit" onclick="submitForMarking()">Submit for Marking</button>
+        </div>
+
+        <!-- Output panel -->
+        <div class="output-panel" id="outputPanel">
+            <div class="panel-header">
+                <div class="panel-title"><span class="icon">&#9654;</span> Output</div>
+            </div>
+            <div class="output-grid">
+                <div class="output-section">
+                    <div class="output-label">Your Output</div>
+                    <div class="output-content" id="userOutput">Click "Run Code" to execute</div>
+                </div>
+                <div class="output-section">
+                    <div class="output-label">Expected Output</div>
+                    <div class="output-content" id="expectedOutput"></div>
+                </div>
+            </div>
+            <div id="outputMatch"></div>
+            <div class="input-panel" id="inputPanel">
+                <input type="text" id="skulptInput" placeholder="Enter input..." onkeydown="if(event.key==='Enter')submitSkulptInput()">
+                <button onclick="submitSkulptInput()">Send</button>
+            </div>
+        </div>
+
+        <!-- Feedback panel -->
+        <div class="feedback-panel" id="feedbackPanel">
+            <div class="feedback-header">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div>
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div class="feedback-subtitle" id="feedbackSubtitle"></div>
+                </div>
+            </div>
+            <div class="feedback-marks" id="feedbackMarks"></div>
+            <div class="feedback-model" id="feedbackModel"></div>
+            <div class="feedback-actions">
+                <button class="btn btn-success" id="nextBtn" onclick="nextChallenge()">Next Challenge &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results screen -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-icon">&#127942;</div>
+        <h2 class="results-title">All Challenges Complete!</h2>
+        <div class="results-score" id="finalScore">0 / 60</div>
+        <p class="results-message" id="resultsMessage"></p>
+        <div class="results-breakdown" id="resultsBreakdown"></div>
+        <div class="results-per-challenge" id="resultsPerChallenge"></div>
+        <button class="btn btn-submit" onclick="restartGame()" style="margin: 0 auto;">Restart</button>
+    </div>
+</div>
+
+<script>
+// =================== CHALLENGES DATA ===================
+const challenges = [
+    {
+        title: "Hotel Room Booking",
+        difficulty: "Q6",
+        marks: 15,
+        prompt: `<strong>A hotel uses a 2D array</strong> to store room information. Each row contains: room number, room type, price per night, and availability (True/False).
+        <ul>
+            <li>Display all available rooms with their details</li>
+            <li>Ask the user to enter a room number to book</li>
+            <li>Use a linear search with a <code>found</code> flag to find the room</li>
+            <li>If found and available, confirm the booking and update availability to False</li>
+            <li>If found but already booked, display a message</li>
+            <li>If not found, display "Room not found"</li>
+        </ul>`,
+        testInputs: ["201"],
+        expectedOutput: "(Output depends on user input)",
+        skipOutputCheck: true,
+        correctBlocks: [
+            'rooms = [[101,"Single",75,True],[102,"Double",120,False],[201,"Double",120,True],[202,"Suite",250,True],[301,"Single",75,True]]',
+            'print("Available rooms:")',
+            'for i in range(len(rooms)):',
+            '    if rooms[i][3] == True:',
+            '        print("Room " + str(rooms[i][0]) + " - " + rooms[i][1] + " - £" + str(rooms[i][2]))',
+            'searchRoom = int(input("Enter room number to book: "))',
+            'found = False',
+            'i = 0',
+            'while i < len(rooms) and not found:',
+            '    if rooms[i][0] == searchRoom:',
+            '        found = True',
+            '    else:',
+            '        i = i + 1',
+            'if found:',
+            '    if rooms[i][3] == True:',
+            '        print("Booking confirmed for Room " + str(rooms[i][0]))',
+            '        print("Price: £" + str(rooms[i][2]) + " per night")',
+            '        rooms[i][3] = False',
+            '    else:',
+            '        print("Room already booked")',
+            'else:',
+            '    print("Room not found")'
+        ],
+        distractors: [
+            'while i < len(rooms) or not found:',
+            '    if rooms[i][0] = searchRoom:',
+            '        rooms[i][3] = True',
+            'searchRoom = input("Enter room number: ")',
+            '    i = i + 1'
+        ],
+        markScheme: [
+            { description: '2D array defined with room data', marks: 1, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Loop to display available rooms', marks: 1, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Filter by availability (== True)', marks: 1, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'Formatted output showing room details', marks: 1, checkType: 'blockPresent', blockIndex: 4 },
+            { description: 'int(input()) for room number search', marks: 1, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'found flag initialised to False', marks: 1, checkType: 'blockPresent', blockIndex: 6 },
+            { description: 'while loop with AND condition (not OR)', marks: 2, checkType: 'blockPresent', blockIndex: 8 },
+            { description: 'Correct == comparison in search', marks: 1, checkType: 'blockPresent', blockIndex: 9 },
+            { description: 'i incremented in else branch only', marks: 1, checkType: 'blockOrder', firstBlock: 11, secondBlock: 12 },
+            { description: 'Check availability before booking', marks: 1, checkType: 'blockPresent', blockIndex: 14 },
+            { description: 'Update array to mark room as booked', marks: 1, checkType: 'blockPresent', blockIndex: 17 },
+            { description: 'Not found message displayed', marks: 2, checkType: 'blockPresent', blockIndex: 21 }
+        ],
+        modelAnswer: 'rooms = [[101,"Single",75,True],[102,"Double",120,False],[201,"Double",120,True],[202,"Suite",250,True],[301,"Single",75,True]]\nprint("Available rooms:")\nfor i in range(len(rooms)):\n    if rooms[i][3] == True:\n        print("Room " + str(rooms[i][0]) + " - " + rooms[i][1] + " - £" + str(rooms[i][2]))\nsearchRoom = int(input("Enter room number to book: "))\nfound = False\ni = 0\nwhile i < len(rooms) and not found:\n    if rooms[i][0] == searchRoom:\n        found = True\n    else:\n        i = i + 1\nif found:\n    if rooms[i][3] == True:\n        print("Booking confirmed for Room " + str(rooms[i][0]))\n        print("Price: £" + str(rooms[i][2]) + " per night")\n        rooms[i][3] = False\n    else:\n        print("Room already booked")\nelse:\n    print("Room not found")'
+    },
+    {
+        title: "Library Book Search",
+        difficulty: "Q6",
+        marks: 15,
+        prompt: `<strong>A library uses a 2D array</strong> to store book information. Each row contains: title, author, year, and availability (True = on shelf, False = on loan).
+        <ul>
+            <li>Display all books that are currently available</li>
+            <li>Ask the user to enter a book title to search for (case-insensitive)</li>
+            <li>Use a linear search with a <code>found</code> flag</li>
+            <li>If found, display the book details and whether it is available or on loan</li>
+            <li>If not found, display "Book not found"</li>
+        </ul>`,
+        testInputs: ["great gatsby"],
+        expectedOutput: "(Output depends on user input)",
+        skipOutputCheck: true,
+        correctBlocks: [
+            'books = [["Great Gatsby","Fitzgerald",1925,True],["1984","Orwell",1949,False],["To Kill a Mockingbird","Lee",1960,True],["Pride and Prejudice","Austen",1813,True],["The Hobbit","Tolkien",1937,False]]',
+            'print("Available books:")',
+            'for i in range(len(books)):',
+            '    if books[i][3] == True:',
+            '        print(books[i][0] + " by " + books[i][1])',
+            'searchTitle = input("Enter book title to search: ")',
+            'found = False',
+            'i = 0',
+            'while i < len(books) and not found:',
+            '    if books[i][0].upper() == searchTitle.upper():',
+            '        found = True',
+            '    else:',
+            '        i = i + 1',
+            'if found:',
+            '    print("Title: " + books[i][0])',
+            '    print("Author: " + books[i][1])',
+            '    print("Year: " + str(books[i][2]))',
+            '    if books[i][3] == True:',
+            '        print("Status: Available")',
+            '    else:',
+            '        print("Status: On loan")',
+            'else:',
+            '    print("Book not found")'
+        ],
+        distractors: [
+            '    if books[i][0] == searchTitle:',
+            'while i < len(books) or not found:',
+            '    if books[i][0].lower() = searchTitle.lower():',
+            '    print("Year: " + books[i][2])',
+            'searchTitle = int(input("Enter book title: "))'
+        ],
+        markScheme: [
+            { description: '2D array defined with book data', marks: 1, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Loop to display available books', marks: 1, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Filter by availability', marks: 1, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'input() for search term (no int casting)', marks: 1, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'found flag initialised to False', marks: 1, checkType: 'blockPresent', blockIndex: 6 },
+            { description: 'while loop with AND condition', marks: 2, checkType: 'blockPresent', blockIndex: 8 },
+            { description: 'Case-insensitive comparison using .upper()', marks: 2, checkType: 'blockPresent', blockIndex: 9 },
+            { description: 'i incremented in else only', marks: 1, checkType: 'blockOrder', firstBlock: 11, secondBlock: 12 },
+            { description: 'Display book details when found', marks: 2, checkType: 'blockOrder', firstBlock: 14, secondBlock: 16 },
+            { description: 'Status check for available/on loan', marks: 1, checkType: 'blockPresent', blockIndex: 17 },
+            { description: 'Not found message', marks: 2, checkType: 'blockPresent', blockIndex: 22 }
+        ],
+        modelAnswer: 'books = [["Great Gatsby","Fitzgerald",1925,True],["1984","Orwell",1949,False],["To Kill a Mockingbird","Lee",1960,True],["Pride and Prejudice","Austen",1813,True],["The Hobbit","Tolkien",1937,False]]\nprint("Available books:")\nfor i in range(len(books)):\n    if books[i][3] == True:\n        print(books[i][0] + " by " + books[i][1])\nsearchTitle = input("Enter book title to search: ")\nfound = False\ni = 0\nwhile i < len(books) and not found:\n    if books[i][0].upper() == searchTitle.upper():\n        found = True\n    else:\n        i = i + 1\nif found:\n    print("Title: " + books[i][0])\n    print("Author: " + books[i][1])\n    print("Year: " + str(books[i][2]))\n    if books[i][3] == True:\n        print("Status: Available")\n    else:\n        print("Status: On loan")\nelse:\n    print("Book not found")'
+    },
+    {
+        title: "Student Records Lookup",
+        difficulty: "Q6",
+        marks: 15,
+        prompt: `<strong>A school uses a 2D array</strong> to store student records. Each row contains: student name, form group, total marks, and attendance count.
+        <ul>
+            <li>Display all students with their form group and total marks</li>
+            <li>Ask the user to enter a student name to search for</li>
+            <li>Use a linear search with a <code>found</code> flag</li>
+            <li>If found, display the full record and increase attendance by 1</li>
+            <li>Display the updated attendance value</li>
+            <li>If not found, display "Student not found"</li>
+        </ul>`,
+        testInputs: ["Charlie"],
+        expectedOutput: "(Output depends on user input)",
+        skipOutputCheck: true,
+        correctBlocks: [
+            'students = [["Alice","10A",87,45],["Bob","10B",62,38],["Charlie","10A",91,50],["Diana","10C",74,42],["Eve","10B",55,35]]',
+            'print("Student Records:")',
+            'for i in range(len(students)):',
+            '    print(students[i][0] + " - " + students[i][1] + " - Marks: " + str(students[i][2]))',
+            'searchName = input("Enter student name: ")',
+            'found = False',
+            'i = 0',
+            'while i < len(students) and not found:',
+            '    if students[i][0] == searchName:',
+            '        found = True',
+            '    else:',
+            '        i = i + 1',
+            'if found:',
+            '    print("Name: " + students[i][0])',
+            '    print("Form: " + students[i][1])',
+            '    print("Marks: " + str(students[i][2]))',
+            '    students[i][3] = students[i][3] + 1',
+            '    print("Attendance updated to: " + str(students[i][3]))',
+            'else:',
+            '    print("Student not found")'
+        ],
+        distractors: [
+            'while i < len(students) or not found:',
+            '    if students[i][0] = searchName:',
+            '    students[i][3] = 1',
+            '    print("Marks: " + students[i][2])',
+            'searchName = int(input("Enter student name: "))'
+        ],
+        markScheme: [
+            { description: '2D array defined with student data', marks: 1, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Loop to display all student records', marks: 1, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Formatted output with str() conversion', marks: 1, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'input() for search name', marks: 1, checkType: 'blockPresent', blockIndex: 4 },
+            { description: 'found flag initialised to False', marks: 1, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'while loop with AND condition', marks: 2, checkType: 'blockPresent', blockIndex: 7 },
+            { description: 'Correct == comparison for name', marks: 1, checkType: 'blockPresent', blockIndex: 8 },
+            { description: 'i incremented in else only', marks: 1, checkType: 'blockOrder', firstBlock: 10, secondBlock: 11 },
+            { description: 'Display full record when found', marks: 2, checkType: 'blockOrder', firstBlock: 13, secondBlock: 15 },
+            { description: 'Attendance incremented by 1 (not overwritten)', marks: 2, checkType: 'blockPresent', blockIndex: 16 },
+            { description: 'Not found message', marks: 2, checkType: 'blockPresent', blockIndex: 19 }
+        ],
+        modelAnswer: 'students = [["Alice","10A",87,45],["Bob","10B",62,38],["Charlie","10A",91,50],["Diana","10C",74,42],["Eve","10B",55,35]]\nprint("Student Records:")\nfor i in range(len(students)):\n    print(students[i][0] + " - " + students[i][1] + " - Marks: " + str(students[i][2]))\nsearchName = input("Enter student name: ")\nfound = False\ni = 0\nwhile i < len(students) and not found:\n    if students[i][0] == searchName:\n        found = True\n    else:\n        i = i + 1\nif found:\n    print("Name: " + students[i][0])\n    print("Form: " + students[i][1])\n    print("Marks: " + str(students[i][2]))\n    students[i][3] = students[i][3] + 1\n    print("Attendance updated to: " + str(students[i][3]))\nelse:\n    print("Student not found")'
+    },
+    {
+        title: "Product Stock Checker",
+        difficulty: "Q6",
+        marks: 15,
+        prompt: `<strong>A shop uses a 2D array</strong> to store product information. Each row contains: product code, product name, price, and stock level.
+        <ul>
+            <li>Display all products that have stock below 10 (low stock warning)</li>
+            <li>Ask the user to enter a product code to search for</li>
+            <li>Use a linear search with a <code>found</code> flag</li>
+            <li>If found, display the product details</li>
+            <li>If stock is below a reorder threshold of 5, display a reorder warning and increase stock by 20</li>
+            <li>If not found, display "Product not found"</li>
+        </ul>`,
+        testInputs: ["103"],
+        expectedOutput: "(Output depends on user input)",
+        skipOutputCheck: true,
+        correctBlocks: [
+            'products = [[101,"Keyboard",25.99,15],[102,"Mouse",12.99,3],[103,"Monitor",199.99,2],[104,"Headset",45.50,20],[105,"Webcam",35.00,8]]',
+            'print("Low stock items:")',
+            'for i in range(len(products)):',
+            '    if products[i][3] < 10:',
+            '        print(str(products[i][0]) + " - " + products[i][1] + " - Stock: " + str(products[i][3]))',
+            'searchCode = int(input("Enter product code: "))',
+            'found = False',
+            'i = 0',
+            'while i < len(products) and not found:',
+            '    if products[i][0] == searchCode:',
+            '        found = True',
+            '    else:',
+            '        i = i + 1',
+            'if found:',
+            '    print("Product: " + products[i][1])',
+            '    print("Price: £" + str(products[i][2]))',
+            '    print("Stock: " + str(products[i][3]))',
+            '    if products[i][3] < 5:',
+            '        print("WARNING: Stock below reorder level!")',
+            '        products[i][3] = products[i][3] + 20',
+            '        print("Stock reordered. New stock: " + str(products[i][3]))',
+            'else:',
+            '    print("Product not found")'
+        ],
+        distractors: [
+            'while i < len(products) or not found:',
+            '    if products[i][0] = searchCode:',
+            '        products[i][3] = 20',
+            'searchCode = input("Enter product code: ")',
+            '    if products[i][3] <= 5:'
+        ],
+        markScheme: [
+            { description: '2D array defined with product data', marks: 1, checkType: 'blockPresent', blockIndex: 0 },
+            { description: 'Loop to display low stock items', marks: 1, checkType: 'blockPresent', blockIndex: 2 },
+            { description: 'Filter by stock < 10', marks: 1, checkType: 'blockPresent', blockIndex: 3 },
+            { description: 'int(input()) for product code', marks: 1, checkType: 'blockPresent', blockIndex: 5 },
+            { description: 'found flag initialised to False', marks: 1, checkType: 'blockPresent', blockIndex: 6 },
+            { description: 'while loop with AND condition', marks: 2, checkType: 'blockPresent', blockIndex: 8 },
+            { description: 'Correct == comparison for product code', marks: 1, checkType: 'blockPresent', blockIndex: 9 },
+            { description: 'i incremented in else only', marks: 1, checkType: 'blockOrder', firstBlock: 11, secondBlock: 12 },
+            { description: 'Display product details when found', marks: 1, checkType: 'blockOrder', firstBlock: 14, secondBlock: 16 },
+            { description: 'Threshold check for reorder (< 5)', marks: 1, checkType: 'blockPresent', blockIndex: 17 },
+            { description: 'Stock updated by adding 20 (not overwriting)', marks: 2, checkType: 'blockPresent', blockIndex: 19 },
+            { description: 'Not found message', marks: 2, checkType: 'blockPresent', blockIndex: 22 }
+        ],
+        modelAnswer: 'products = [[101,"Keyboard",25.99,15],[102,"Mouse",12.99,3],[103,"Monitor",199.99,2],[104,"Headset",45.50,20],[105,"Webcam",35.00,8]]\nprint("Low stock items:")\nfor i in range(len(products)):\n    if products[i][3] < 10:\n        print(str(products[i][0]) + " - " + products[i][1] + " - Stock: " + str(products[i][3]))\nsearchCode = int(input("Enter product code: "))\nfound = False\ni = 0\nwhile i < len(products) and not found:\n    if products[i][0] == searchCode:\n        found = True\n    else:\n        i = i + 1\nif found:\n    print("Product: " + products[i][1])\n    print("Price: £" + str(products[i][2]))\n    print("Stock: " + str(products[i][3]))\n    if products[i][3] < 5:\n        print("WARNING: Stock below reorder level!")\n        products[i][3] = products[i][3] + 20\n        print("Stock reordered. New stock: " + str(products[i][3]))\nelse:\n    print("Product not found")'
+    }
+];
+
+// =================== GAME STATE ===================
+let currentChallenge = 0;
+let totalMarksEarned = 0;
+let challengeResults = [];
+let inputResolve = null;
+let inputQueue = [];
+let inputQueueIndex = 0;
+
+// =================== SYNTAX HIGHLIGHTING ===================
+function highlightSyntax(code) {
+    if (!code.trim()) return '&nbsp;';
+
+    code = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    const strings = [];
+    code = code.replace(/(".*?"|'.*?')/g, (m) => { strings.push(m); return `\x00S${strings.length - 1}\x00`; });
+    const comments = [];
+    code = code.replace(/(#.*)$/g, (m) => { comments.push(m); return `\x00C${comments.length - 1}\x00`; });
+
+    code = code.replace(/\b(import|def|return|if|else|elif|for|while|in|range|and|or|not|True|False|None)\b/g, '<span class="keyword">$1</span>');
+    code = code.replace(/\b(print|input|int|str|len|float|round|randint|isdigit|upper|lower|append)\b(?=[\(.])/g, '<span class="builtin">$1</span>');
+    code = code.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+
+    comments.forEach((c, i) => { code = code.replace(`\x00C${i}\x00`, `<span class="comment">${c}</span>`); });
+    strings.forEach((s, i) => { code = code.replace(`\x00S${i}\x00`, `<span class="string">${s}</span>`); });
+
+    return code;
+}
+
+// =================== INITIALIZATION ===================
+function initGame() {
+    currentChallenge = 0;
+    totalMarksEarned = 0;
+    challengeResults = [];
+
+    document.getElementById('gameContainer').classList.remove('hidden');
+    document.getElementById('resultsScreen').classList.remove('visible');
+
+    const dotsContainer = document.getElementById('progressDots');
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < challenges.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'progress-dot';
+        dotsContainer.appendChild(dot);
+    }
+
+    loadChallenge();
+}
+
+function loadChallenge() {
+    const ch = challenges[currentChallenge];
+
+    // Update progress
+    document.getElementById('challengeCounter').textContent = `${currentChallenge + 1}/${challenges.length}`;
+    document.getElementById('marksEarned').textContent = totalMarksEarned;
+    document.getElementById('progressFill').style.width = `${(currentChallenge / challenges.length) * 100}%`;
+
+    const dots = document.querySelectorAll('.progress-dot');
+    dots.forEach((d, i) => {
+        if (i === currentChallenge) d.className = 'progress-dot current';
+        else if (i < currentChallenge) {
+            // keep correct/incorrect from results
+        }
+    });
+
+    // Problem card
+    document.getElementById('problemBadge').textContent = `Challenge ${currentChallenge + 1}`;
+    document.getElementById('problemTitle').textContent = ch.title;
+    document.getElementById('difficultyBadge').textContent = ch.difficulty;
+    document.getElementById('difficultyBadge').className = `difficulty-badge ${ch.difficulty.toLowerCase()}`;
+    document.getElementById('marksBadge').textContent = `${ch.marks} marks`;
+    document.getElementById('problemPrompt').innerHTML = ch.prompt;
+
+    // Prepare blocks (shuffle correct + distractors together)
+    const allBlocks = [];
+    ch.correctBlocks.forEach((code, i) => {
+        allBlocks.push({ code, isDistractor: false, originalIndex: i });
+    });
+    ch.distractors.forEach((code, i) => {
+        allBlocks.push({ code, isDistractor: true, originalIndex: -1 });
+    });
+
+    // Fisher-Yates shuffle
+    for (let i = allBlocks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allBlocks[i], allBlocks[j]] = [allBlocks[j], allBlocks[i]];
+    }
+
+    // Render pool
+    const pool = document.getElementById('blockPool');
+    pool.innerHTML = '';
+    allBlocks.forEach((block, idx) => {
+        const el = createBlockElement(block.code, block.isDistractor, idx);
+        pool.appendChild(el);
+    });
+    updatePoolCount();
+
+    // Clear solution area
+    const solutionArea = document.getElementById('solutionArea');
+    solutionArea.innerHTML = '<div class="empty-message" id="solutionEmpty">Drag code blocks here or click to add</div>';
+    updateSolutionCount();
+
+    // Hide panels
+    document.getElementById('outputPanel').classList.remove('visible');
+    document.getElementById('feedbackPanel').classList.remove('visible');
+    document.getElementById('actionBar').style.display = '';
+
+    // Setup drag-drop for solution area
+    setupSolutionDrop();
+
+    // Scroll to top of problem
+    document.getElementById('problemCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function createBlockElement(code, isDistractor, poolIndex) {
+    const el = document.createElement('div');
+    el.className = 'code-block-item';
+    el.draggable = true;
+    el.dataset.code = code;
+    el.dataset.distractor = isDistractor;
+    el.dataset.poolIndex = poolIndex;
+
+    el.innerHTML = `
+        <span class="drag-handle">&#9776;</span>
+        <span class="block-code">${highlightSyntax(code)}</span>
+        <button class="remove-btn" onclick="event.stopPropagation(); removeFromSolution(this.parentElement);" title="Remove">&times;</button>
+    `;
+
+    // Drag events
+    el.addEventListener('dragstart', (e) => {
+        el.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', '');
+    });
+
+    el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+    });
+
+    // Click to add/move
+    el.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-btn')) return;
+        const pool = document.getElementById('blockPool');
+        const solution = document.getElementById('solutionArea');
+
+        if (el.parentElement === pool) {
+            addToSolution(el);
+        }
+    });
+
+    return el;
+}
+
+// =================== DRAG AND DROP ===================
+function setupSolutionDrop() {
+    const solution = document.getElementById('solutionArea');
+    const pool = document.getElementById('blockPool');
+
+    solution.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        solution.classList.add('drag-over');
+
+        const dragging = document.querySelector('.code-block-item.dragging');
+        if (!dragging) return;
+
+        const siblings = [...solution.querySelectorAll('.code-block-item:not(.dragging)')];
+        const afterElement = siblings.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = e.clientY - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset, element: child };
+            }
+            return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+
+        if (afterElement) {
+            solution.insertBefore(dragging, afterElement);
+        } else {
+            solution.appendChild(dragging);
+        }
+    });
+
+    solution.addEventListener('dragleave', () => {
+        solution.classList.remove('drag-over');
+    });
+
+    solution.addEventListener('drop', (e) => {
+        e.preventDefault();
+        solution.classList.remove('drag-over');
+
+        const dragging = document.querySelector('.code-block-item.dragging');
+        if (!dragging) return;
+
+        // If it was in the pool, move it to solution
+        if (dragging.parentElement === pool || dragging.parentElement !== solution) {
+            // Remove empty message
+            const empty = document.getElementById('solutionEmpty');
+            if (empty) empty.remove();
+
+            // Already positioned by dragover, just make sure it's in solution
+            if (dragging.parentElement !== solution) {
+                solution.appendChild(dragging);
+            }
+        }
+
+        updateSolutionCount();
+        updatePoolCount();
+        updateLineNumbers();
+    });
+
+    // Also allow dropping back to pool
+    pool.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    pool.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const dragging = document.querySelector('.code-block-item.dragging');
+        if (dragging && dragging.parentElement !== pool) {
+            pool.appendChild(dragging);
+            // Remove line number
+            const lineNum = dragging.querySelector('.line-num');
+            if (lineNum) lineNum.remove();
+            updateSolutionCount();
+            updatePoolCount();
+            updateLineNumbers();
+            showEmptyMessageIfNeeded();
+        }
+    });
+}
+
+function addToSolution(el) {
+    const solution = document.getElementById('solutionArea');
+    const empty = document.getElementById('solutionEmpty');
+    if (empty) empty.remove();
+
+    // Add line number
+    if (!el.querySelector('.line-num')) {
+        const lineNum = document.createElement('span');
+        lineNum.className = 'line-num';
+        el.insertBefore(lineNum, el.firstChild);
+    }
+
+    solution.appendChild(el);
+    updateSolutionCount();
+    updatePoolCount();
+    updateLineNumbers();
+}
+
+function removeFromSolution(el) {
+    const pool = document.getElementById('blockPool');
+    // Remove line number
+    const lineNum = el.querySelector('.line-num');
+    if (lineNum) lineNum.remove();
+
+    pool.appendChild(el);
+    updateSolutionCount();
+    updatePoolCount();
+    updateLineNumbers();
+    showEmptyMessageIfNeeded();
+}
+
+function clearSolution() {
+    const solution = document.getElementById('solutionArea');
+    const pool = document.getElementById('blockPool');
+    const blocks = [...solution.querySelectorAll('.code-block-item')];
+
+    blocks.forEach(b => {
+        const lineNum = b.querySelector('.line-num');
+        if (lineNum) lineNum.remove();
+        pool.appendChild(b);
+    });
+
+    showEmptyMessageIfNeeded();
+    updateSolutionCount();
+    updatePoolCount();
+}
+
+function showEmptyMessageIfNeeded() {
+    const solution = document.getElementById('solutionArea');
+    const blocks = solution.querySelectorAll('.code-block-item');
+    if (blocks.length === 0 && !document.getElementById('solutionEmpty')) {
+        const msg = document.createElement('div');
+        msg.className = 'empty-message';
+        msg.id = 'solutionEmpty';
+        msg.textContent = 'Drag code blocks here or click to add';
+        solution.appendChild(msg);
+    }
+}
+
+function updateLineNumbers() {
+    const solution = document.getElementById('solutionArea');
+    const blocks = solution.querySelectorAll('.code-block-item');
+    blocks.forEach((b, i) => {
+        let lineNum = b.querySelector('.line-num');
+        if (!lineNum) {
+            lineNum = document.createElement('span');
+            lineNum.className = 'line-num';
+            b.insertBefore(lineNum, b.firstChild);
+        }
+        lineNum.textContent = i + 1;
+    });
+}
+
+function updatePoolCount() {
+    const pool = document.getElementById('blockPool');
+    const count = pool.querySelectorAll('.code-block-item').length;
+    document.getElementById('poolCount').textContent = `${count} block${count !== 1 ? 's' : ''}`;
+}
+
+function updateSolutionCount() {
+    const solution = document.getElementById('solutionArea');
+    const count = solution.querySelectorAll('.code-block-item').length;
+    document.getElementById('solutionCount').textContent = `${count} line${count !== 1 ? 's' : ''}`;
+}
+
+// =================== SKULPT EXECUTION ===================
+function getSolutionCode() {
+    const solution = document.getElementById('solutionArea');
+    const blocks = solution.querySelectorAll('.code-block-item');
+    return [...blocks].map(b => b.dataset.code).join('\n');
+}
+
+function runCode() {
+    const code = getSolutionCode();
+    if (!code.trim()) {
+        alert('Add some code blocks to your solution first!');
+        return;
+    }
+
+    const ch = challenges[currentChallenge];
+    const outputPanel = document.getElementById('outputPanel');
+    outputPanel.classList.add('visible');
+
+    const userOutput = document.getElementById('userOutput');
+    const expectedOutput = document.getElementById('expectedOutput');
+    const matchEl = document.getElementById('outputMatch');
+
+    userOutput.textContent = '';
+    userOutput.classList.remove('error');
+    expectedOutput.textContent = ch.expectedOutput;
+    matchEl.innerHTML = '';
+
+    // Setup input queue
+    inputQueue = [...ch.testInputs];
+    inputQueueIndex = 0;
+
+    const inputPanelEl = document.getElementById('inputPanel');
+    inputPanelEl.classList.remove('active');
+
+    function builtinRead(x) {
+        if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) throw "File not found: '" + x + "'";
+        return Sk.builtinFiles["files"][x];
+    }
+
+    function inputFun(prompt) {
+        userOutput.textContent += prompt;
+        if (inputQueueIndex < inputQueue.length) {
+            const val = inputQueue[inputQueueIndex++];
+            userOutput.textContent += val + '\n';
+            return new Promise(resolve => resolve(val));
+        }
+        // Show input panel for manual input
+        return new Promise(resolve => {
+            inputResolve = resolve;
+            inputPanelEl.classList.add('active');
+            document.getElementById('skulptInput').focus();
+        });
+    }
+
+    Sk.configure({
+        output: (text) => { userOutput.textContent += text; },
+        read: builtinRead,
+        inputfun: inputFun,
+        inputfunTakesPrompt: true,
+        __future__: Sk.python3
+    });
+
+    Sk.misceval.asyncToPromise(() => {
+        return Sk.importMainWithBody("<stdin>", false, code, true);
+    }).then(() => {
+        inputPanelEl.classList.remove('active');
+        // Compare output
+        if (!ch.skipOutputCheck) {
+            const actual = userOutput.textContent.trim();
+            const expected = ch.expectedOutput.trim();
+            if (actual === expected) {
+                matchEl.innerHTML = '<div class="output-match pass" style="margin: 0.75rem 1rem;">&#10003; Output matches expected</div>';
+            } else {
+                matchEl.innerHTML = '<div class="output-match fail" style="margin: 0.75rem 1rem;">&#10007; Output differs from expected</div>';
+            }
+        } else {
+            matchEl.innerHTML = '<div class="output-match skip" style="margin: 0.75rem 1rem;">&#9888; Output depends on user input &mdash; submit for marking to check your solution</div>';
+        }
+    }).catch(err => {
+        inputPanelEl.classList.remove('active');
+        userOutput.textContent += '\n' + String(err);
+        userOutput.classList.add('error');
+        matchEl.innerHTML = '<div class="output-match fail" style="margin: 0.75rem 1rem;">&#10007; Error during execution</div>';
+    });
+}
+
+function submitSkulptInput() {
+    const input = document.getElementById('skulptInput');
+    const val = input.value;
+    input.value = '';
+
+    const userOutput = document.getElementById('userOutput');
+    userOutput.textContent += val + '\n';
+
+    document.getElementById('inputPanel').classList.remove('active');
+    if (inputResolve) {
+        inputResolve(val);
+        inputResolve = null;
+    }
+}
+
+// =================== MARKING ===================
+function submitForMarking() {
+    const ch = challenges[currentChallenge];
+    const solution = document.getElementById('solutionArea');
+    const blocks = [...solution.querySelectorAll('.code-block-item')];
+
+    if (blocks.length === 0) {
+        alert('Add some code blocks to your solution first!');
+        return;
+    }
+
+    const solutionCodes = blocks.map(b => b.dataset.code);
+    const solutionDistractors = blocks.filter(b => b.dataset.distractor === 'true');
+
+    let marksAwarded = 0;
+    let markDetails = [];
+
+    // Check each mark scheme point
+    ch.markScheme.forEach(point => {
+        let awarded = false;
+
+        if (point.checkType === 'blockPresent') {
+            const targetCode = ch.correctBlocks[point.blockIndex];
+            if (solutionCodes.includes(targetCode)) {
+                awarded = true;
+            }
+        } else if (point.checkType === 'blockOrder') {
+            const firstCode = ch.correctBlocks[point.firstBlock];
+            const secondCode = ch.correctBlocks[point.secondBlock];
+            const firstIdx = solutionCodes.indexOf(firstCode);
+            const secondIdx = solutionCodes.indexOf(secondCode);
+            if (firstIdx !== -1 && secondIdx !== -1 && firstIdx < secondIdx) {
+                awarded = true;
+            }
+        }
+
+        if (awarded) {
+            marksAwarded += point.marks;
+        }
+
+        markDetails.push({
+            description: point.description,
+            marks: point.marks,
+            awarded
+        });
+    });
+
+    // Deduct for distractors
+    let distractorDeductions = 0;
+    solutionDistractors.forEach(d => {
+        distractorDeductions++;
+        markDetails.push({
+            description: `Distractor included: <code>${escapeHtml(d.dataset.code.trim())}</code>`,
+            marks: -1,
+            awarded: false,
+            isDeduction: true
+        });
+    });
+
+    marksAwarded = Math.max(0, marksAwarded - distractorDeductions);
+    const maxMarks = ch.marks;
+    marksAwarded = Math.min(marksAwarded, maxMarks);
+
+    // Store result
+    challengeResults.push({
+        title: ch.title,
+        earned: marksAwarded,
+        max: maxMarks
+    });
+
+    totalMarksEarned += marksAwarded;
+    document.getElementById('marksEarned').textContent = totalMarksEarned;
+
+    // Show feedback
+    showFeedback(marksAwarded, maxMarks, markDetails, ch);
+
+    // Hide action bar
+    document.getElementById('actionBar').style.display = 'none';
+
+    // Update progress dot
+    const dots = document.querySelectorAll('.progress-dot');
+    const ratio = marksAwarded / maxMarks;
+    if (ratio >= 0.7) {
+        dots[currentChallenge].className = 'progress-dot correct';
+    } else {
+        dots[currentChallenge].className = 'progress-dot incorrect';
+    }
+}
+
+function showFeedback(earned, max, details, ch) {
+    const panel = document.getElementById('feedbackPanel');
+    panel.classList.add('visible');
+
+    const icon = document.getElementById('feedbackIcon');
+    const title = document.getElementById('feedbackTitle');
+    const subtitle = document.getElementById('feedbackSubtitle');
+
+    const ratio = earned / max;
+    if (ratio >= 0.8) {
+        icon.className = 'feedback-icon correct';
+        icon.textContent = '\u2713';
+        title.textContent = 'Excellent!';
+        subtitle.textContent = `You scored ${earned}/${max} marks`;
+    } else if (ratio >= 0.5) {
+        icon.className = 'feedback-icon partial';
+        icon.textContent = '~';
+        title.textContent = 'Good Effort';
+        subtitle.textContent = `You scored ${earned}/${max} marks`;
+    } else {
+        icon.className = 'feedback-icon incorrect';
+        icon.textContent = '\u2717';
+        title.textContent = 'Keep Practising';
+        subtitle.textContent = `You scored ${earned}/${max} marks`;
+    }
+
+    // Mark details
+    const marksEl = document.getElementById('feedbackMarks');
+    let marksHtml = `<div class="feedback-marks-summary">Score: <span style="color: var(--accent-green);">${earned}</span> / ${max}</div>`;
+
+    details.forEach(d => {
+        if (d.isDeduction) {
+            marksHtml += `
+                <div class="mark-item">
+                    <div class="mark-icon deducted">-1</div>
+                    <div>
+                        <div class="mark-desc">${d.description}</div>
+                        <div class="mark-points">-1 mark (distractor penalty)</div>
+                    </div>
+                </div>`;
+        } else {
+            marksHtml += `
+                <div class="mark-item">
+                    <div class="mark-icon ${d.awarded ? 'awarded' : 'missed'}">${d.awarded ? '\u2713' : '\u2717'}</div>
+                    <div>
+                        <div class="mark-desc">${d.description}</div>
+                        <div class="mark-points">${d.awarded ? d.marks + ' mark' + (d.marks > 1 ? 's' : '') + ' awarded' : d.marks + ' mark' + (d.marks > 1 ? 's' : '') + ' missed'}</div>
+                    </div>
+                </div>`;
+        }
+    });
+    marksEl.innerHTML = marksHtml;
+
+    // Model answer
+    const modelEl = document.getElementById('feedbackModel');
+    const lines = ch.modelAnswer.split('\n').map(line => highlightSyntax(line)).join('\n');
+    modelEl.innerHTML = `
+        <h4>Model Answer</h4>
+        <div class="model-code">${lines}</div>
+    `;
+
+    // Next button text
+    const nextBtn = document.getElementById('nextBtn');
+    if (currentChallenge === challenges.length - 1) {
+        nextBtn.textContent = 'View Results \u2192';
+    } else {
+        nextBtn.textContent = 'Next Challenge \u2192';
+    }
+
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// =================== NAVIGATION ===================
+function nextChallenge() {
+    currentChallenge++;
+    if (currentChallenge >= challenges.length) {
+        showResults();
+        return;
+    }
+    loadChallenge();
+}
+
+function showResults() {
+    document.getElementById('gameContainer').classList.add('hidden');
+    const screen = document.getElementById('resultsScreen');
+    screen.classList.add('visible');
+
+    const maxPossible = challenges.reduce((sum, c) => sum + c.marks, 0);
+    document.getElementById('finalScore').textContent = `${totalMarksEarned} / ${maxPossible}`;
+
+    const ratio = totalMarksEarned / maxPossible;
+    let msg = '';
+    if (ratio >= 0.8) msg = 'Outstanding! You really know your Python programming.';
+    else if (ratio >= 0.6) msg = 'Good work! Review the model answers for the ones you missed.';
+    else if (ratio >= 0.4) msg = 'Decent start. Keep practising with these exam-style questions.';
+    else msg = 'This is tough stuff \u2014 review the model answers and try again!';
+    document.getElementById('resultsMessage').textContent = msg;
+
+    // Breakdown stats
+    const fullMarks = challengeResults.filter(r => r.earned === r.max).length;
+    const breakdown = document.getElementById('resultsBreakdown');
+    breakdown.innerHTML = `
+        <div class="result-stat">
+            <div class="result-stat-value green">${totalMarksEarned}</div>
+            <div class="result-stat-label">Total Marks</div>
+        </div>
+        <div class="result-stat">
+            <div class="result-stat-value blue">${fullMarks}</div>
+            <div class="result-stat-label">Full Marks</div>
+        </div>
+        <div class="result-stat">
+            <div class="result-stat-value purple">${challenges.length}</div>
+            <div class="result-stat-label">Challenges</div>
+        </div>
+    `;
+
+    // Per-challenge breakdown
+    const perChallenge = document.getElementById('resultsPerChallenge');
+    let rows = '<h3>Per-Challenge Breakdown</h3>';
+    challengeResults.forEach((r, i) => {
+        const pct = r.earned / r.max;
+        const cls = pct >= 0.8 ? 'full' : pct >= 0.5 ? 'partial' : 'low';
+        rows += `
+            <div class="result-row">
+                <span class="result-row-title">${i + 1}. ${r.title}</span>
+                <span class="result-row-score ${cls}">${r.earned} / ${r.max}</span>
+            </div>`;
+    });
+    perChallenge.innerHTML = rows;
+
+    // Update progress
+    document.getElementById('progressFill').style.width = '100%';
+}
+
+function restartGame() {
+    initGame();
+}
+
+// =================== START ===================
+document.addEventListener('DOMContentLoaded', initGame);
+</script>
+</body>
+</html>
