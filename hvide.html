@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Blocks — Haute Vallée School</title>
+<script src="https://unpkg.com/blockly/blockly.min.js"></script>
+<script src="https://unpkg.com/blockly/python_compressed"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1019;--sf:#171a25;--sf2:#1d2131;--bd:#282d40;--tx:#e2e4f0;--dim:#8890a8;--ac:#5eead4;--acd:#2dd4bf;--acbg:rgba(94,234,212,.07);--code:#12141e;--or:#fb923c;--pk:#f472b6;--bl:#60a5fa;--yw:#fbbf24;--rd:#f87171;--pp:#a78bfa;--cbg:#0a0c12;--ct:#a8e6cf;--gold:#fcd34d}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.school-banner{background:linear-gradient(135deg,#0c2340 0%,#1a3f6f 50%,#0c2340 100%);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--gold);flex-shrink:0;position:relative;overflow:hidden}.school-banner::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E") repeat;opacity:.5}.school-info{position:relative;z-index:1}.school-name{font-family:'Fraunces',serif;font-size:15px;font-weight:900;color:#fff}.school-name span{color:var(--gold)}.school-dept{font-size:11px;font-weight:600;color:rgba(255,255,255,.7);margin-top:1px}.school-quote{position:relative;z-index:1;text-align:right;max-width:380px}.school-quote p{font-size:10px;font-style:italic;color:rgba(252,211,77,.8);line-height:1.4}.school-quote .attr{font-style:normal;font-size:9px;color:rgba(255,255,255,.45);margin-top:1px}
+header{display:flex;align-items:center;justify-content:space-between;padding:6px 20px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;z-index:10}.logo{display:flex;align-items:center;gap:10px}.logo-ico{width:28px;height:28px;background:linear-gradient(135deg,var(--ac),var(--bl));border-radius:7px;display:grid;place-items:center;font:700 13px/1 'Fraunces',serif;color:var(--bg)}.logo h1{font:700 14px/1 'Fraunces',serif}.logo h1 b{color:var(--ac)}.tag{font:600 8px/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:12px;background:var(--acbg);color:var(--ac);border:1px solid rgba(94,234,212,.18)}.acts{display:flex;gap:5px}.btn{font:600 11px 'DM Sans',sans-serif;padding:5px 12px;border-radius:6px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);cursor:pointer;transition:.15s}.btn:hover{background:var(--bd)}.btn-go{background:var(--ac);color:var(--bg);border-color:var(--ac);font-weight:700}.btn-go:hover{background:var(--acd)}.btn-x{background:0;border-color:var(--bd);color:var(--dim)}
+.wrap{display:flex;flex:1;overflow:hidden}.bpanel{flex:1;position:relative;min-width:0}#blocklyDiv{position:absolute;inset:0}.rpanel{width:400px;display:flex;flex-direction:column;border-left:1px solid var(--bd);flex-shrink:0;background:var(--sf)}.tabs{display:flex;border-bottom:1px solid var(--bd);flex-shrink:0}.tab{flex:1;padding:8px;text-align:center;font:600 10px 'JetBrains Mono',monospace;color:var(--dim);cursor:pointer;border:0;border-bottom:2px solid transparent;background:0;transition:.15s}.tab:hover{color:var(--tx)}.tab.on{color:var(--ac);border-bottom-color:var(--ac)}.pcontent{flex:1;overflow:hidden;display:flex;flex-direction:column}.pane{display:none;flex:1;overflow:auto;flex-direction:column}.pane.on{display:flex}
+#codeOut{flex:1;padding:12px;font:12px/1.65 'JetBrains Mono',monospace;color:var(--tx);background:var(--code);white-space:pre-wrap}#conOut{flex:1;padding:12px;font:12px/1.65 'JetBrains Mono',monospace;color:var(--ct);background:var(--cbg);white-space:pre-wrap}.cerr{color:var(--rd)}.cinfo{color:var(--dim);font-style:italic}
+.diag{background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:10px 12px;margin-top:8px}.diag-title{font:700 11px 'JetBrains Mono',monospace;color:var(--rd);margin-bottom:6px;display:flex;align-items:center;gap:6px}.diag-msg{font:12px/1.5 'DM Sans',sans-serif;color:var(--tx);margin-bottom:8px}.diag-hint{background:rgba(94,234,212,.06);border:1px solid rgba(94,234,212,.15);border-radius:6px;padding:8px 10px;font:12px/1.5 'DM Sans',sans-serif;color:var(--ac)}.diag-hint b{color:var(--acd);font-weight:700}.diag-code{font:11px 'JetBrains Mono',monospace;background:var(--code);padding:2px 5px;border-radius:3px;color:var(--or)}#helpP{padding:14px;background:var(--sf);font-size:11px;line-height:1.5}.hsec{margin-bottom:14px}.hsec h3{font:700 12px 'Fraunces',serif;color:var(--ac);margin-bottom:6px}.ht{width:100%;font-size:11px;border-collapse:collapse}.ht th{text-align:left;padding:3px 6px;color:var(--dim);font:600 8px/1 'JetBrains Mono',monospace;text-transform:uppercase;border-bottom:1px solid var(--bd)}.ht td{padding:3px 6px;border-bottom:1px solid rgba(40,45,64,.5)}.ht code{font:10px 'JetBrains Mono',monospace;background:var(--code);padding:1px 4px;border-radius:3px;color:var(--or)}
+.rh{width:5px;cursor:col-resize;background:var(--bd);flex-shrink:0;transition:.15s}.rh:hover,.rh.on{background:var(--ac)}.cbar{display:flex;align-items:center;gap:6px;padding:5px 16px;background:var(--sf2);border-top:1px solid var(--bd);flex-shrink:0;overflow-x:auto}.cbar label{font:700 8px 'JetBrains Mono',monospace;text-transform:uppercase;color:var(--dim);flex-shrink:0}.chip{font:600 10px 'DM Sans',sans-serif;padding:3px 10px;border-radius:14px;border:1px solid var(--bd);background:var(--sf);color:var(--dim);cursor:pointer;white-space:nowrap;transition:.15s}.chip:hover{border-color:var(--ac);color:var(--tx)}.chip.on{border-color:var(--ac);background:var(--acbg);color:var(--ac)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:1000}.modal{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:20px;min-width:320px;box-shadow:0 16px 48px rgba(0,0,0,.5)}.modal p{font-size:13px;margin-bottom:8px}.modal input{width:100%;padding:9px 11px;border-radius:6px;border:1px solid var(--bd);background:var(--code);color:var(--tx);font:13px 'JetBrains Mono',monospace;outline:0}.modal input:focus{border-color:var(--ac)}.modal button{margin-top:8px;width:100%}
+#canvasP{position:relative;background:#fff;overflow:hidden}#turtleCanvas{display:block;width:100%;height:100%}
+.kw{color:var(--pk)}.fn{color:var(--bl)}.st{color:var(--ac)}.cm{color:var(--dim);font-style:italic}.nb{color:var(--or)}
+.fcard{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:10px;overflow:hidden}.fcard-head{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--sf2);border-bottom:1px solid var(--bd)}.fcard-name{font:600 11px 'JetBrains Mono',monospace;color:var(--ac)}.fcard-size{font:10px 'JetBrains Mono',monospace;color:var(--dim)}.fcard-body{padding:10px;font:11px/1.6 'JetBrains Mono',monospace;color:var(--tx);white-space:pre-wrap;max-height:260px;overflow:auto;background:var(--code)}.fcard-acts{display:flex;gap:4px}.fcard-btn{font:600 9px 'DM Sans',sans-serif;padding:2px 8px;border-radius:4px;border:1px solid var(--bd);background:var(--sf);color:var(--dim);cursor:pointer}.fcard-btn:hover{border-color:var(--ac);color:var(--ac)}.blocklyToolboxDiv{background:var(--sf)!important}.blocklyFlyoutBackground{fill:var(--sf2)!important}.blocklyMainBackground{fill:var(--bg)!important}
+</style>
+</head>
+<body>
+<div class="school-banner"><div class="school-info"><div class="school-name">Haute Vallée <span>School</span></div><div class="school-dept">Department of Computer Science</div></div><div class="school-quote"><p>"Every expert was once a beginner. Learning to code is learning to create, to solve, and to shape the future — your future."</p><div class="attr">— GCSE Computer Science · Edexcel 1CP2</div></div></div>
+<header><div class="logo"><div class="logo-ico">Py</div><h1>Python <b>Blocks</b></h1><span class="tag">PLS v5 · Full</span></div><div class="acts"><button class="btn btn-x" id="btnClear">✕ Clear</button><button class="btn" id="btnCopy">⧉ Copy</button><button class="btn btn-go" id="btnRun">▶ Run</button></div></header>
+<div class="wrap"><div class="bpanel"><div id="blocklyDiv"></div></div><div class="rh" id="rh"></div>
+<div class="rpanel" id="rp"><div class="tabs"><button class="tab on" data-t="codeP">Python</button><button class="tab" data-t="conP">Console</button><button class="tab" data-t="canvasP">Canvas</button><button class="tab" data-t="filesP">Files</button><button class="tab" data-t="helpP">PLS Ref</button></div>
+<div class="pcontent">
+<div class="pane on" id="codeP"><div id="codeOut"><span class="cm"># Drag blocks to build your program…</span></div></div>
+<div class="pane" id="conP"><div id="conOut"><span class="cinfo">Press ▶ Run to execute</span></div></div>
+<div class="pane" id="canvasP"><canvas id="turtleCanvas"></canvas></div>
+<div class="pane" id="filesP"><div id="filesOut" style="padding:12px;font:12px/1.65 'JetBrains Mono',monospace;color:var(--tx);background:var(--code);height:100%;overflow:auto"><span class="cinfo">No files yet. Use File blocks to write files, then run your program.</span></div></div>
+<div class="pane" id="helpP">
+<div class="hsec"><h3>Quick Reference (PLS v5)</h3><p style="color:var(--dim)">Full Edexcel 1CP2 Programming Language Subset. Use toolbox categories on the left.</p></div>
+<div class="hsec"><h3>Subprograms</h3><table class="ht"><tr><th>Type</th><th>Python</th></tr><tr><td>Procedure</td><td><code>def myProc(a,b):</code></td></tr><tr><td>Function</td><td><code>def myFunc(a): return x</code></td></tr><tr><td>Call proc</td><td><code>myProc(a, b)</code></td></tr><tr><td>Call func</td><td><code>x = myFunc(a)</code></td></tr></table></div>
+<div class="hsec"><h3>File Handling</h3><table class="ht"><tr><th>Op</th><th>Python</th></tr><tr><td>Open</td><td><code>f = open("f.csv","r/w/a")</code></td></tr><tr><td>Read lines</td><td><code>f.readlines()</code></td></tr><tr><td>Write</td><td><code>f.write("text")</code></td></tr><tr><td>Close</td><td><code>f.close()</code></td></tr></table></div>
+<div class="hsec"><h3>Lists</h3><table class="ht"><tr><th>Op</th><th>Python</th></tr><tr><td>Create</td><td><code>myList = []</code></td></tr><tr><td>Append</td><td><code>myList.append(x)</code></td></tr><tr><td>Insert</td><td><code>myList.insert(i,x)</code></td></tr><tr><td>Delete</td><td><code>del myList[i]</code></td></tr></table></div>
+<div class="hsec"><h3>Libraries</h3><table class="ht"><tr><th>Module</th><th>Functions</th></tr><tr><td>random</td><td><code>randint(a,b)</code> <code>random()</code></td></tr><tr><td>math</td><td><code>ceil floor sqrt pi</code></td></tr><tr><td>time</td><td><code>sleep(sec)</code></td></tr></table></div>
+<div class="hsec"><h3>Turtle Graphics</h3><table class="ht"><tr><th>Command</th><th>Python</th></tr><tr><td>Create</td><td><code>t = turtle.Turtle()</code></td></tr><tr><td>Move</td><td><code>t.forward(d) t.back(d)</code></td></tr><tr><td>Turn</td><td><code>t.left(a) t.right(a)</code></td></tr><tr><td>Pen</td><td><code>t.penup() t.pendown()</code></td></tr><tr><td>Colour</td><td><code>t.pencolor("red")</code></td></tr><tr><td>Fill</td><td><code>t.begin_fill() t.end_fill()</code></td></tr><tr><td>Circle</td><td><code>t.circle(r)</code></td></tr><tr><td>Speed</td><td><code>t.speed(0-10)</code></td></tr></table></div>
+<div class="hsec"><h3>Format</h3><p style="color:var(--dim)"><code style="font:10px 'JetBrains Mono';background:var(--code);padding:1px 4px;border-radius:3px;color:var(--or)">{:&lt;&gt;^width.precf/d/s}</code></p></div>
+</div></div></div></div>
+<div class="cbar"><label>Demos:</label>
+<button class="chip" data-c="hello">Hello Name</button>
+<button class="chip" data-c="password">Password</button>
+<button class="chip" data-c="reverse">Reverse</button>
+<button class="chip" data-c="filewrite">File Write</button>
+<button class="chip" data-c="fileread">File Read</button>
+<button class="chip" data-c="funcarea">Function</button>
+<button class="chip" data-c="randomgame">Random Game</button>
+<button class="chip" data-c="turtlestar">Turtle Star</button>
+</div>
+<script>
+(function boot(){
+if(typeof Blockly==='undefined'||typeof python==='undefined')return setTimeout(boot,150);
+var pg=python.pythonGenerator,O=python.Order;
+allBlocks();allGens(pg,O);
+// Suppress Blockly's auto variable declarations (e.g. "f = None")
+pg.init=function(workspace){pg.nameDB_=new Blockly.Names(pg.RESERVED_WORDS_);pg.nameDB_.setVariableMap(workspace.getVariableMap());pg.isInitialized=true;};
+pg.finish=function(code){pg.isInitialized=false;pg.nameDB_.reset();return code;};
+var ws=mkWS();wireUI(ws,pg);
+})();
+
+function allBlocks(){
+var B=Blockly.Blocks;
+// Motivational hat block
+var HAT_PHRASES=[
+'\ud83d\ude80 Let\u2019s Go!','\u2728 Create!','\ud83d\udcaa You\u2019ve Got This!','\ud83e\udde0 Think & Build',
+'\ud83d\udd25 Let\u2019s Code!','\ud83c\udf1f Time to Shine!','\ud83d\udee0\ufe0f Make It Happen',
+'\ud83c\udfaf Your Code, Your Rules','\ud83d\ude80 Launch!','\ud83c\udf08 Dream \u2192 Build \u2192 Run',
+'\u26a1 Power Up!','\ud83c\udf31 Start Something Great','\ud83e\uddd1\u200d\ud83d\udcbb Code Like a Pro',
+'\ud83d\udca1 Idea \u2192 Reality','\ud83c\udfc6 Challenge Accepted!','\ud83d\udef8 To Infinity & Beyond!',
+'\ud83c\udfb6 Let\u2019s Compose!','\ud83e\uddea Experiment Time!','\ud83d\udc8e Build Something Brilliant'
+];
+B['p_start']={init:function(){
+var phrase=HAT_PHRASES[Math.floor(Math.random()*HAT_PHRASES.length)];
+this.appendDummyInput().appendField(phrase);
+this.setNextStatement(true);this.setPreviousStatement(false);
+this.setColour('#6366f1');
+this.setTooltip('The starting point of your program. Every great program begins here!');
+this.setDeletable(false);
+this.hat='cap';
+}};
+// I/O
+B['p_print']={init:function(){this.appendValueInput('V').appendField('print');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(330)}};
+B['p_print_t']={init:function(){this.appendDummyInput().appendField('print').appendField(new Blockly.FieldTextInput('Hello!'),'T');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(330)}};
+B['p_input']={init:function(){this.appendDummyInput().appendField('input("').appendField(new Blockly.FieldTextInput('Enter: '),'P').appendField('")');this.setOutput(true);this.setColour(330)}};
+// Variables
+B['p_setv']={init:function(){this.appendValueInput('V').appendField('set').appendField(new Blockly.FieldVariable('myVar'),'VAR').appendField('=');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(220)}};
+B['p_getv']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('myVar'),'VAR');this.setOutput(true);this.setColour(220)}};
+// Values
+B['p_strlit']={init:function(){this.appendDummyInput().appendField('"').appendField(new Blockly.FieldTextInput('Hello'),'T').appendField('"');this.setOutput(true);this.setColour(160)}};
+B['p_num']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldNumber(0),'N');this.setOutput(true);this.setColour(0)}};
+B['p_bool']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldDropdown([['True','True'],['False','False']]),'V');this.setOutput(true);this.setColour(30)}};
+B['p_none']={init:function(){this.appendDummyInput().appendField('None');this.setOutput(true);this.setColour(0)}};
+B['p_newline']={init:function(){this.appendDummyInput().appendField('"\\n"');this.setOutput(true);this.setColour(160)}};
+// String methods no-arg
+['upper','lower','isalpha','isalnum','isdigit','isupper','islower'].forEach(function(m){
+B['p_'+m]={init:function(){this.appendValueInput('S');this.appendDummyInput().appendField('.'+m+'()');this.setInputsInline(true);this.setOutput(true);this.setColour(160)}};});
+// String methods one-arg
+['find','index','split','strip','format'].forEach(function(m){
+B['p_'+m]={init:function(){this.appendValueInput('S');this.appendValueInput('A').appendField('.'+m+'(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(160)}};});
+B['p_len']={init:function(){this.appendValueInput('S').appendField('len(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(160)}};
+B['p_replace']={init:function(){this.appendValueInput('S');this.appendValueInput('OLD').appendField('.replace(');this.appendValueInput('NEW').appendField(',');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(160)}};
+// String ops
+B['p_cat']={init:function(){this.appendValueInput('A');this.appendValueInput('B').appendField('+');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};
+B['p_slice']={init:function(){this.appendValueInput('S');this.appendDummyInput().appendField('[').appendField(new Blockly.FieldNumber(0,0),'A').appendField(':').appendField(new Blockly.FieldNumber(2,0),'B').appendField(']');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};
+B['p_idx']={init:function(){this.appendValueInput('S');this.appendDummyInput().appendField('[').appendField(new Blockly.FieldNumber(0,0),'I').appendField(']');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};
+B['p_rep']={init:function(){this.appendValueInput('S');this.appendDummyInput().appendField('*').appendField(new Blockly.FieldNumber(10,1),'N');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};
+// Conversions
+['ord','chr','str','int','float','bool'].forEach(function(fn){
+B['p_'+fn]={init:function(){this.appendValueInput('V').appendField(fn+'(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};});
+B['p_round']={init:function(){this.appendValueInput('X').appendField('round(');this.appendDummyInput().appendField(',').appendField(new Blockly.FieldNumber(2,0),'N').appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};
+B['p_round_s']={init:function(){this.appendValueInput('X').appendField('round(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(45)}};
+// Lists
+B['p_list_empty']={init:function(){this.appendDummyInput().appendField('[] empty list');this.setOutput(true);this.setColour(190)}};
+B['p_list_create']={init:function(){this.appendDummyInput().appendField('[').appendField(new Blockly.FieldTextInput('1, 2, 3'),'IT').appendField(']');this.setOutput(true);this.setColour(190)}};
+B['p_list_append']={init:function(){this.appendValueInput('IT').appendField(new Blockly.FieldVariable('myList'),'VAR').appendField('.append(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(190)}};
+B['p_list_insert']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('myList'),'VAR').appendField('.insert(').appendField(new Blockly.FieldNumber(0,0),'IDX').appendField(',');this.appendValueInput('IT');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(190)}};
+B['p_list_del']={init:function(){this.appendDummyInput().appendField('del').appendField(new Blockly.FieldVariable('myList'),'VAR').appendField('[').appendField(new Blockly.FieldNumber(0,0),'IDX').appendField(']');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(190)}};
+B['p_list_get']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('myList'),'VAR').appendField('[').appendField(new Blockly.FieldNumber(0,0),'IDX').appendField(']');this.setOutput(true);this.setColour(190)}};
+B['p_list_set']={init:function(){this.appendValueInput('V').appendField(new Blockly.FieldVariable('myList'),'VAR').appendField('[').appendField(new Blockly.FieldNumber(0,0),'IDX').appendField('] =');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(190)}};
+B['p_list_len']={init:function(){this.appendDummyInput().appendField('len(').appendField(new Blockly.FieldVariable('myList'),'VAR').appendField(')');this.setOutput(true);this.setColour(190)}};
+// Loops
+B['p_foreach']={init:function(){this.appendValueInput('S').appendField('for').appendField(new Blockly.FieldVariable('item'),'VAR').appendField('in');this.appendStatementInput('DO').appendField('do');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(260)}};
+B['p_forr']={init:function(){this.appendDummyInput().appendField('for').appendField(new Blockly.FieldVariable('i'),'VAR').appendField('in range(').appendField(new Blockly.FieldNumber(0),'A').appendField(',').appendField(new Blockly.FieldNumber(10),'B').appendField(')');this.appendStatementInput('DO').appendField('do');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(260)}};
+B['p_forr3']={init:function(){this.appendDummyInput().appendField('for').appendField(new Blockly.FieldVariable('i'),'VAR').appendField('in range(').appendField(new Blockly.FieldNumber(0),'A').appendField(',').appendField(new Blockly.FieldNumber(10),'B').appendField(',').appendField(new Blockly.FieldNumber(1),'S').appendField(')');this.appendStatementInput('DO').appendField('do');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(260)}};
+B['p_while']={init:function(){this.appendValueInput('C').appendField('while');this.appendStatementInput('DO').appendField('do');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(260)}};
+// Selection
+B['p_if']={init:function(){this.appendValueInput('C').appendField('if');this.appendStatementInput('DO').appendField('then');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(30)}};
+B['p_ifelse']={init:function(){this.appendValueInput('C').appendField('if');this.appendStatementInput('DO').appendField('then');this.appendStatementInput('EL').appendField('else');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(30)}};
+B['p_elif']={init:function(){this.appendValueInput('C').appendField('elif');this.appendStatementInput('DO').appendField('then');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(30)}};
+B['p_ifelifelse']={init:function(){this.appendValueInput('C1').appendField('if');this.appendStatementInput('D1').appendField('then');this.appendValueInput('C2').appendField('elif');this.appendStatementInput('D2').appendField('then');this.appendStatementInput('EL').appendField('else');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(30)}};
+B['p_cmp']={init:function(){this.appendValueInput('A');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['==','=='],['!=','!='],['>','>'],['>=','>='],['<','<'],['<=','<='],['in','in'],['not in','not in']]),'O');this.appendValueInput('B');this.setInputsInline(true);this.setOutput(true);this.setColour(30)}};
+B['p_logic']={init:function(){this.appendValueInput('A');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['and','and'],['or','or']]),'O');this.appendValueInput('B');this.setInputsInline(true);this.setOutput(true);this.setColour(30)}};
+B['p_not']={init:function(){this.appendValueInput('V').appendField('not');this.setOutput(true);this.setColour(30)}};
+// Maths
+B['p_math']={init:function(){this.appendValueInput('A');this.appendDummyInput().appendField(new Blockly.FieldDropdown([['+','+'],['\u2212','-'],['\u00d7','*'],['\u00f7','/'],['//','//'],['**','**'],['%','%']]),'O');this.appendValueInput('B');this.setInputsInline(true);this.setOutput(true);this.setColour(0)}};
+// Subprograms
+B['p_def_proc']={init:function(){this.appendDummyInput().appendField('def').appendField(new Blockly.FieldTextInput('myProc'),'N').appendField('():');this.appendStatementInput('BODY');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(290)}};
+B['p_def_proc_p']={init:function(){this.appendDummyInput().appendField('def').appendField(new Blockly.FieldTextInput('myProc'),'N').appendField('(').appendField(new Blockly.FieldTextInput('pA, pB'),'P').appendField('):');this.appendStatementInput('BODY');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(290)}};
+B['p_def_func']={init:function(){this.appendDummyInput().appendField('def').appendField(new Blockly.FieldTextInput('myFunc'),'N').appendField('():');this.appendStatementInput('BODY');this.appendValueInput('RET').appendField('return');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(290)}};
+B['p_def_func_p']={init:function(){this.appendDummyInput().appendField('def').appendField(new Blockly.FieldTextInput('myFunc'),'N').appendField('(').appendField(new Blockly.FieldTextInput('pA, pB'),'P').appendField('):');this.appendStatementInput('BODY');this.appendValueInput('RET').appendField('return');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(290)}};
+B['p_return']={init:function(){this.appendValueInput('V').appendField('return');this.setPreviousStatement(true);this.setColour(290)}};
+B['p_call']={init:function(){this.appendDummyInput().appendField('call').appendField(new Blockly.FieldTextInput('myProc'),'N').appendField('()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(290)}};
+B['p_call_a']={init:function(){this.appendDummyInput().appendField('call').appendField(new Blockly.FieldTextInput('myProc'),'N').appendField('(').appendField(new Blockly.FieldTextInput('a, b'),'A').appendField(')');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(290)}};
+B['p_callfn']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldTextInput('myFunc'),'N').appendField('()');this.setOutput(true);this.setColour(290)}};
+B['p_callfn_a']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldTextInput('myFunc'),'N').appendField('(').appendField(new Blockly.FieldTextInput('a, b'),'A').appendField(')');this.setOutput(true);this.setColour(290)}};
+B['p_param']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldTextInput('pA'),'P');this.setOutput(true);this.setColour(290)}};
+// Files
+B['p_fopen']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('f'),'VAR').appendField('= open("').appendField(new Blockly.FieldTextInput('data.csv'),'FN').appendField('",').appendField(new Blockly.FieldDropdown([['"r"','r'],['"w"','w'],['"a"','a']]),'M').appendField(')');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(65)}};
+B['p_fclose']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('f'),'VAR').appendField('.close()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(65)}};
+B['p_freadline']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('f'),'VAR').appendField('.readline()');this.setOutput(true);this.setColour(65)}};
+B['p_freadlines']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('f'),'VAR').appendField('.readlines()');this.setOutput(true);this.setColour(65)}};
+B['p_fwrite']={init:function(){this.appendValueInput('V').appendField(new Blockly.FieldVariable('f'),'VAR').appendField('.write(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(65)}};
+B['p_fwritelines']={init:function(){this.appendValueInput('V').appendField(new Blockly.FieldVariable('f'),'VAR').appendField('.writelines(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(65)}};
+B['p_fforline']={init:function(){this.appendDummyInput().appendField('for').appendField(new Blockly.FieldVariable('line'),'LV').appendField('in').appendField(new Blockly.FieldVariable('f'),'FV').appendField(':');this.appendStatementInput('DO');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(65)}};
+// Libraries
+B['p_import']={init:function(){this.appendDummyInput().appendField('import').appendField(new Blockly.FieldDropdown([['random','random'],['math','math'],['time','time']]),'L');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(120)}};
+B['p_randint']={init:function(){this.appendDummyInput().appendField('random.randint(').appendField(new Blockly.FieldNumber(1),'A').appendField(',').appendField(new Blockly.FieldNumber(10),'B').appendField(')');this.setOutput(true);this.setColour(120)}};
+B['p_random']={init:function(){this.appendDummyInput().appendField('random.random()');this.setOutput(true);this.setColour(120)}};
+B['p_mceil']={init:function(){this.appendValueInput('V').appendField('math.ceil(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(120)}};
+B['p_mfloor']={init:function(){this.appendValueInput('V').appendField('math.floor(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(120)}};
+B['p_msqrt']={init:function(){this.appendValueInput('V').appendField('math.sqrt(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setOutput(true);this.setColour(120)}};
+B['p_mpi']={init:function(){this.appendDummyInput().appendField('math.pi');this.setOutput(true);this.setColour(120)}};
+B['p_tsleep']={init:function(){this.appendDummyInput().appendField('time.sleep(').appendField(new Blockly.FieldNumber(1,0),'S').appendField(')');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(120)}};
+// Turtle
+B['p_t_import']={init:function(){this.appendDummyInput().appendField('import turtle');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_create']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('= turtle.Turtle()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_forward']={init:function(){this.appendValueInput('D').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.forward(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_back']={init:function(){this.appendValueInput('D').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.back(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_left']={init:function(){this.appendValueInput('D').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.left(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_right']={init:function(){this.appendValueInput('D').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.right(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_setheading']={init:function(){this.appendValueInput('A').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.setheading(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_setposition']={init:function(){this.appendValueInput('X').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.setposition(');this.appendValueInput('Y').appendField(',');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_penup']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.penup()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_pendown']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.pendown()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_pencolor']={init:function(){this.appendValueInput('C').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.pencolor(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_pensize']={init:function(){this.appendValueInput('W').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.pensize(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_fillcolor']={init:function(){this.appendValueInput('C').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.fillcolor(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_begin_fill']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.begin_fill()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_end_fill']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.end_fill()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_circle']={init:function(){this.appendValueInput('R').appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.circle(');this.appendDummyInput().appendField(')');this.setInputsInline(true);this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_speed']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.speed(').appendField(new Blockly.FieldDropdown([['0 (instant)','0'],['1 (slowest)','1'],['3 (slow)','3'],['6 (normal)','6'],['10 (fast)','10']]),'S').appendField(')');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_hideturtle']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.hideturtle()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+B['p_t_showturtle']={init:function(){this.appendDummyInput().appendField(new Blockly.FieldVariable('t'),'VAR').appendField('.showturtle()');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour('#22d3ee')}};
+// Comment
+B['p_comment']={init:function(){this.appendDummyInput().appendField('#').appendField(new Blockly.FieldTextInput('comment'),'T');this.setPreviousStatement(true);this.setNextStatement(true);this.setColour(180)}};
+}
+
+function allGens(pg,O){
+var f=pg.forBlock,AT=O.ATOMIC,NO=O.NONE;
+function v(b,n){return pg.valueToCode(b,n,NO)||"''";}
+function s(b,n){return pg.statementToCode(b,n)||'    pass\n';}
+function vn(b,fld){return pg.getVariableName(b.getFieldValue(fld||'VAR'));}
+f['p_start']=function(b){return '';};
+f['p_print']=function(b){return 'print('+v(b,'V')+')\n';};
+f['p_print_t']=function(b){var t=b.getFieldValue('T').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/\t/g,'\\t');return 'print("'+t+'")\n';};
+f['p_input']=function(b){return ['input("'+b.getFieldValue('P')+'")',AT];};
+f['p_setv']=function(b){return vn(b)+' = '+v(b,'V')+'\n';};
+f['p_getv']=function(b){return [vn(b),AT];};
+f['p_strlit']=function(b){var t=b.getFieldValue('T').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/\t/g,'\\t').replace(/\r/g,'\\r');return ['"'+t+'"',AT];};
+f['p_num']=function(b){return [String(b.getFieldValue('N')),AT];};
+f['p_bool']=function(b){return [b.getFieldValue('V'),AT];};
+f['p_none']=function(){return ['None',AT];};
+f['p_newline']=function(){return ['"\\n"',AT];};
+['upper','lower','isalpha','isalnum','isdigit','isupper','islower'].forEach(function(m){f['p_'+m]=function(b){return [v(b,'S')+'.'+m+'()',AT];};});
+['find','index','split','strip','format'].forEach(function(m){f['p_'+m]=function(b){return [v(b,'S')+'.'+m+'('+v(b,'A')+')',AT];};});
+f['p_len']=function(b){return ['len('+v(b,'S')+')',AT];};
+f['p_replace']=function(b){return [v(b,'S')+'.replace('+v(b,'OLD')+', '+v(b,'NEW')+')',AT];};
+f['p_cat']=function(b){return [v(b,'A')+' + '+v(b,'B'),AT];};
+f['p_slice']=function(b){return [v(b,'S')+'['+b.getFieldValue('A')+':'+b.getFieldValue('B')+']',AT];};
+f['p_idx']=function(b){return [v(b,'S')+'['+b.getFieldValue('I')+']',AT];};
+f['p_rep']=function(b){return [v(b,'S')+' * '+b.getFieldValue('N'),AT];};
+['ord','chr','str','int','float','bool'].forEach(function(fn){f['p_'+fn]=function(b){return [fn+'('+v(b,'V')+')',AT];};});
+f['p_round']=function(b){return ['round('+v(b,'X')+', '+b.getFieldValue('N')+')',AT];};
+f['p_round_s']=function(b){return ['round('+v(b,'X')+')',AT];};
+f['p_list_empty']=function(){return ['[]',AT];};
+f['p_list_create']=function(b){return ['['+b.getFieldValue('IT')+']',AT];};
+f['p_list_append']=function(b){return vn(b)+'.append('+v(b,'IT')+')\n';};
+f['p_list_insert']=function(b){return vn(b)+'.insert('+b.getFieldValue('IDX')+', '+v(b,'IT')+')\n';};
+f['p_list_del']=function(b){return 'del '+vn(b)+'['+b.getFieldValue('IDX')+']\n';};
+f['p_list_get']=function(b){return [vn(b)+'['+b.getFieldValue('IDX')+']',AT];};
+f['p_list_set']=function(b){return vn(b)+'['+b.getFieldValue('IDX')+'] = '+v(b,'V')+'\n';};
+f['p_list_len']=function(b){return ['len('+vn(b)+')',AT];};
+f['p_foreach']=function(b){return 'for '+vn(b)+' in '+v(b,'S')+':\n'+s(b,'DO');};
+f['p_forr']=function(b){return 'for '+vn(b)+' in range('+b.getFieldValue('A')+', '+b.getFieldValue('B')+'):\n'+s(b,'DO');};
+f['p_forr3']=function(b){return 'for '+vn(b)+' in range('+b.getFieldValue('A')+', '+b.getFieldValue('B')+', '+b.getFieldValue('S')+'):\n'+s(b,'DO');};
+f['p_while']=function(b){return 'while '+v(b,'C')+':\n'+s(b,'DO');};
+f['p_if']=function(b){return 'if '+v(b,'C')+':\n'+s(b,'DO');};
+f['p_ifelse']=function(b){return 'if '+v(b,'C')+':\n'+s(b,'DO')+'else:\n'+s(b,'EL');};
+f['p_elif']=function(b){return 'elif '+v(b,'C')+':\n'+s(b,'DO');};
+f['p_ifelifelse']=function(b){return 'if '+v(b,'C1')+':\n'+s(b,'D1')+'elif '+v(b,'C2')+':\n'+s(b,'D2')+'else:\n'+s(b,'EL');};
+f['p_cmp']=function(b){return [v(b,'A')+' '+b.getFieldValue('O')+' '+v(b,'B'),AT];};
+f['p_logic']=function(b){return [v(b,'A')+' '+b.getFieldValue('O')+' '+v(b,'B'),AT];};
+f['p_not']=function(b){return ['not '+v(b,'V'),AT];};
+f['p_math']=function(b){return [v(b,'A')+' '+b.getFieldValue('O')+' '+v(b,'B'),AT];};
+// Subprograms
+f['p_def_proc']=function(b){return 'def '+b.getFieldValue('N')+'():\n'+s(b,'BODY')+'\n';};
+f['p_def_proc_p']=function(b){return 'def '+b.getFieldValue('N')+'('+b.getFieldValue('P')+'):\n'+s(b,'BODY')+'\n';};
+f['p_def_func']=function(b){return 'def '+b.getFieldValue('N')+'():\n'+s(b,'BODY')+'    return '+v(b,'RET')+'\n\n';};
+f['p_def_func_p']=function(b){return 'def '+b.getFieldValue('N')+'('+b.getFieldValue('P')+'):\n'+s(b,'BODY')+'    return '+v(b,'RET')+'\n\n';};
+f['p_return']=function(b){return 'return '+v(b,'V')+'\n';};
+f['p_call']=function(b){return b.getFieldValue('N')+'()\n';};
+f['p_call_a']=function(b){return b.getFieldValue('N')+'('+b.getFieldValue('A')+')\n';};
+f['p_callfn']=function(b){return [b.getFieldValue('N')+'()',AT];};
+f['p_callfn_a']=function(b){return [b.getFieldValue('N')+'('+b.getFieldValue('A')+')',AT];};
+f['p_param']=function(b){return [b.getFieldValue('P'),AT];};
+// Files
+f['p_fopen']=function(b){return vn(b)+' = open("'+b.getFieldValue('FN')+'", "'+b.getFieldValue('M')+'")\n';};
+f['p_fclose']=function(b){return vn(b)+'.close()\n';};
+f['p_freadline']=function(b){return [vn(b)+'.readline()',AT];};
+f['p_freadlines']=function(b){return [vn(b)+'.readlines()',AT];};
+f['p_fwrite']=function(b){return vn(b)+'.write('+v(b,'V')+')\n';};
+f['p_fwritelines']=function(b){return vn(b)+'.writelines('+v(b,'V')+')\n';};
+f['p_fforline']=function(b){return 'for '+vn(b,'LV')+' in '+vn(b,'FV')+':\n'+s(b,'DO');};
+// Libs
+f['p_import']=function(b){return 'import '+b.getFieldValue('L')+'\n';};
+f['p_randint']=function(b){return ['random.randint('+b.getFieldValue('A')+', '+b.getFieldValue('B')+')',AT];};
+f['p_random']=function(){return ['random.random()',AT];};
+f['p_mceil']=function(b){return ['math.ceil('+v(b,'V')+')',AT];};
+f['p_mfloor']=function(b){return ['math.floor('+v(b,'V')+')',AT];};
+f['p_msqrt']=function(b){return ['math.sqrt('+v(b,'V')+')',AT];};
+f['p_mpi']=function(){return ['math.pi',AT];};
+f['p_tsleep']=function(b){return 'time.sleep('+b.getFieldValue('S')+')\n';};
+f['p_comment']=function(b){return '# '+b.getFieldValue('T')+'\n';};
+// Turtle
+f['p_t_import']=function(){return 'import turtle\n';};
+f['p_t_create']=function(b){return vn(b)+' = turtle.Turtle()\n';};
+f['p_t_forward']=function(b){return vn(b)+'.forward('+v(b,'D')+')\n';};
+f['p_t_back']=function(b){return vn(b)+'.back('+v(b,'D')+')\n';};
+f['p_t_left']=function(b){return vn(b)+'.left('+v(b,'D')+')\n';};
+f['p_t_right']=function(b){return vn(b)+'.right('+v(b,'D')+')\n';};
+f['p_t_setheading']=function(b){return vn(b)+'.setheading('+v(b,'A')+')\n';};
+f['p_t_setposition']=function(b){return vn(b)+'.setposition('+v(b,'X')+', '+v(b,'Y')+')\n';};
+f['p_t_penup']=function(b){return vn(b)+'.penup()\n';};
+f['p_t_pendown']=function(b){return vn(b)+'.pendown()\n';};
+f['p_t_pencolor']=function(b){return vn(b)+'.pencolor('+v(b,'C')+')\n';};
+f['p_t_pensize']=function(b){return vn(b)+'.pensize('+v(b,'W')+')\n';};
+f['p_t_fillcolor']=function(b){return vn(b)+'.fillcolor('+v(b,'C')+')\n';};
+f['p_t_begin_fill']=function(b){return vn(b)+'.begin_fill()\n';};
+f['p_t_end_fill']=function(b){return vn(b)+'.end_fill()\n';};
+f['p_t_circle']=function(b){return vn(b)+'.circle('+v(b,'R')+')\n';};
+f['p_t_speed']=function(b){return vn(b)+'.speed('+b.getFieldValue('S')+')\n';};
+f['p_t_hideturtle']=function(b){return vn(b)+'.hideturtle()\n';};
+f['p_t_showturtle']=function(b){return vn(b)+'.showturtle()\n';};
+}
+
+function mkWS(){
+var tb={kind:'categoryToolbox',contents:[
+{kind:'category',name:'\ud83d\udce5 I/O',colour:'#f472b6',contents:[{kind:'block',type:'p_print'},{kind:'block',type:'p_print_t'},{kind:'block',type:'p_input'}]},
+{kind:'category',name:'\ud83d\udcdd Variables',colour:'#60a5fa',custom:'VARIABLE'},
+{kind:'category',name:'\ud83d\udce6 Values',colour:'#818cf8',contents:[{kind:'block',type:'p_strlit'},{kind:'block',type:'p_num'},{kind:'block',type:'p_bool'},{kind:'block',type:'p_none'},{kind:'block',type:'p_newline'}]},
+{kind:'category',name:'\ud83d\udd24 String Methods',colour:'#5eead4',contents:[{kind:'block',type:'p_len'},{kind:'block',type:'p_upper'},{kind:'block',type:'p_lower'},{kind:'block',type:'p_find'},{kind:'block',type:'p_index'},{kind:'block',type:'p_replace'},{kind:'block',type:'p_split'},{kind:'block',type:'p_strip'},{kind:'block',type:'p_isalpha'},{kind:'block',type:'p_isalnum'},{kind:'block',type:'p_isdigit'},{kind:'block',type:'p_isupper'},{kind:'block',type:'p_islower'},{kind:'block',type:'p_format'}]},
+{kind:'category',name:'\u2702\ufe0f String Ops',colour:'#fbbf24',contents:[{kind:'block',type:'p_cat'},{kind:'block',type:'p_slice'},{kind:'block',type:'p_idx'},{kind:'block',type:'p_rep'},{kind:'block',type:'p_ord'},{kind:'block',type:'p_chr'}]},
+{kind:'category',name:'\ud83d\udccb Lists',colour:'#34d399',contents:[{kind:'block',type:'p_list_empty'},{kind:'block',type:'p_list_create'},{kind:'block',type:'p_list_append'},{kind:'block',type:'p_list_insert'},{kind:'block',type:'p_list_del'},{kind:'block',type:'p_list_get'},{kind:'block',type:'p_list_set'},{kind:'block',type:'p_list_len'}]},
+{kind:'category',name:'\ud83d\udd01 Loops',colour:'#a78bfa',contents:[{kind:'block',type:'p_foreach'},{kind:'block',type:'p_forr'},{kind:'block',type:'p_forr3'},{kind:'block',type:'p_while'}]},
+{kind:'category',name:'\u2753 Selection',colour:'#fb923c',contents:[{kind:'block',type:'p_if'},{kind:'block',type:'p_ifelse'},{kind:'block',type:'p_elif'},{kind:'block',type:'p_ifelifelse'},{kind:'block',type:'p_cmp'},{kind:'block',type:'p_logic'},{kind:'block',type:'p_not'}]},
+{kind:'category',name:'\ud83e\uddee Maths',colour:'#f87171',contents:[{kind:'block',type:'p_math'},{kind:'block',type:'p_round'},{kind:'block',type:'p_round_s'}]},
+{kind:'category',name:'\ud83d\udd04 Casting',colour:'#fca5a5',contents:[{kind:'block',type:'p_str'},{kind:'block',type:'p_int'},{kind:'block',type:'p_float'},{kind:'block',type:'p_bool'}]},
+{kind:'sep'},
+{kind:'category',name:'\u2699\ufe0f Procedures',colour:'#c084fc',contents:[{kind:'block',type:'p_def_proc'},{kind:'block',type:'p_def_proc_p'},{kind:'block',type:'p_call'},{kind:'block',type:'p_call_a'},{kind:'block',type:'p_param'}]},
+{kind:'category',name:'\ud83d\udd27 Functions',colour:'#a78bfa',contents:[{kind:'block',type:'p_def_func'},{kind:'block',type:'p_def_func_p'},{kind:'block',type:'p_callfn'},{kind:'block',type:'p_callfn_a'},{kind:'block',type:'p_return'},{kind:'block',type:'p_param'}]},
+{kind:'sep'},
+{kind:'category',name:'\ud83d\udcc1 Files',colour:'#a3e635',contents:[{kind:'block',type:'p_fopen'},{kind:'block',type:'p_fclose'},{kind:'block',type:'p_freadline'},{kind:'block',type:'p_freadlines'},{kind:'block',type:'p_fwrite'},{kind:'block',type:'p_fwritelines'},{kind:'block',type:'p_fforline'}]},
+{kind:'category',name:'\ud83c\udfb2 Libraries',colour:'#22d3ee',contents:[{kind:'block',type:'p_import'},{kind:'label',text:'── Random ──'},{kind:'block',type:'p_randint'},{kind:'block',type:'p_random'},{kind:'label',text:'── Math ──'},{kind:'block',type:'p_mceil'},{kind:'block',type:'p_mfloor'},{kind:'block',type:'p_msqrt'},{kind:'block',type:'p_mpi'},{kind:'label',text:'── Time ──'},{kind:'block',type:'p_tsleep'}]},
+{kind:'sep'},
+{kind:'category',name:'\ud83d\udc22 Turtle',colour:'#22d3ee',contents:[{kind:'label',text:'── Setup ──'},{kind:'block',type:'p_t_import'},{kind:'block',type:'p_t_create'},{kind:'block',type:'p_t_speed'},{kind:'label',text:'── Movement ──'},{kind:'block',type:'p_t_forward'},{kind:'block',type:'p_t_back'},{kind:'block',type:'p_t_left'},{kind:'block',type:'p_t_right'},{kind:'label',text:'── Position ──'},{kind:'block',type:'p_t_setheading'},{kind:'block',type:'p_t_setposition'},{kind:'label',text:'── Pen ──'},{kind:'block',type:'p_t_penup'},{kind:'block',type:'p_t_pendown'},{kind:'block',type:'p_t_pencolor'},{kind:'block',type:'p_t_pensize'},{kind:'label',text:'── Fill ──'},{kind:'block',type:'p_t_fillcolor'},{kind:'block',type:'p_t_begin_fill'},{kind:'block',type:'p_t_end_fill'},{kind:'label',text:'── Shape ──'},{kind:'block',type:'p_t_circle'},{kind:'label',text:'── Other ──'},{kind:'block',type:'p_t_hideturtle'},{kind:'block',type:'p_t_showturtle'}]},
+{kind:'sep'},
+{kind:'category',name:'\ud83d\udcac Comment',colour:'#94a3b8',contents:[{kind:'block',type:'p_comment'}]}
+]};
+return Blockly.inject('blocklyDiv',{toolbox:tb,theme:Blockly.Theme.defineTheme('hvs',{base:Blockly.Themes.Classic,componentStyles:{workspaceBackgroundColour:'#0e1019',toolboxBackgroundColour:'#171a25',toolboxForegroundColour:'#e2e4f0',flyoutBackgroundColour:'#1d2131',flyoutForegroundColour:'#e2e4f0',flyoutOpacity:1,scrollbarColour:'#282d40',scrollbarOpacity:.6,insertionMarkerColour:'#5eead4'},fontStyle:{family:"'DM Sans',sans-serif",weight:'600',size:11}}),grid:{spacing:25,length:3,colour:'#1d2131',snap:true},zoom:{controls:true,wheel:true,startScale:.95,maxScale:2,minScale:.3},trashcan:true,move:{scrollbars:true,drag:true,wheel:true},renderer:'zelos',sounds:false});
+}
+
+function wireUI(ws,pg){
+function placeHat(){var e=ws.getBlocksByType('p_start');if(e.length>0)return;Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom('<xml><block type="p_start" x="30" y="30" deletable="false"></block></xml>'),ws)}
+placeHat();
+ws.addChangeListener(function(){var c=pg.workspaceToCode(ws);document.getElementById('codeOut').innerHTML=c.trim()?hl(c):'<span class="cm"># Drag blocks…</span>';});
+document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});t.classList.add('on');document.getElementById(t.dataset.t).classList.add('on')};});
+document.getElementById('btnRun').onclick=function(){doRun(ws,pg)};
+document.getElementById('btnClear').onclick=function(){ws.clear();placeHat();document.getElementById('conOut').innerHTML='<span class="cinfo">Cleared</span>'};
+document.getElementById('btnCopy').onclick=function(){navigator.clipboard.writeText(pg.workspaceToCode(ws)).then(function(){var b=document.getElementById('btnCopy');b.textContent='\u2713 Copied';setTimeout(function(){b.textContent='\u29c9 Copy'},1200)})};
+var rh=document.getElementById('rh'),rp=document.getElementById('rp'),drag=false;
+rh.onmousedown=function(e){drag=true;rh.classList.add('on');e.preventDefault()};
+document.onmousemove=function(e){if(!drag)return;var w=window.innerWidth-e.clientX;if(w>200&&w<800){rp.style.width=w+'px';Blockly.svgResize(ws)}};
+document.onmouseup=function(){drag=false;rh.classList.remove('on')};
+window.onresize=function(){Blockly.svgResize(ws)};
+document.onkeydown=function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();doRun(ws,pg)}};
+setupDemos(ws);
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function doRun(ws,pg){
+var isTurtle=pg.workspaceToCode(ws).indexOf('turtle.Turtle()')>=0;
+var targetTab=isTurtle?'canvasP':'conP';
+document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});document.querySelector('[data-t="'+targetTab+'"]').classList.add('on');document.getElementById(targetTab).classList.add('on');
+var con=document.getElementById('conOut');con.innerHTML='';
+var code=pg.workspaceToCode(ws);if(!code.trim()){con.innerHTML='<span class="cinfo">No blocks!</span>';return;}
+try{
+var js=transpile(code);var out=[];
+function render(){con.innerHTML=out.map(function(l){return '<div>'+esc(l)+'</div>'}).join('')}
+var env={
+__print:function(){out.push([].slice.call(arguments).map(function(a){if(Array.isArray(a))return '['+a.map(function(x){return typeof x==='string'?"'"+x+"'":String(x)}).join(', ')+']';if(a===true)return'True';if(a===false)return'False';if(a==null)return'None';return String(a)}).join(' '));render()},
+__input:function(p){out.push(p);render();return new Promise(function(res){var bg=document.createElement('div');bg.className='modal-bg';bg.innerHTML='<div class="modal"><p>'+esc(p)+'</p><input id="mi" autofocus><button class="btn btn-go">OK</button></div>';document.body.appendChild(bg);var inp=bg.querySelector('#mi');setTimeout(function(){inp.focus()},50);function go(){var v=inp.value;bg.remove();res(env.__py(v))}inp.onkeydown=function(e){if(e.key==='Enter')go()};bg.querySelector('button').onclick=go})},
+__len:function(s){return(typeof s==='string'||Array.isArray(s))?s.length:String(s).length},
+__ord:function(c){return String(c).charCodeAt(0)},
+__chr:function(n){return env.__py(String.fromCharCode(n))},
+__str:function(v){if(v===true)return env.__py('True');if(v===false)return env.__py('False');if(v==null)return env.__py('None');return env.__py(String(v))},
+__int:function(v){return parseInt(v,10)},__float:function(v){return parseFloat(v)},__bool:function(v){return Boolean(v)},
+__round:function(x,n){return n!==undefined?Math.round(x*Math.pow(10,n))/Math.pow(10,n):Math.round(x)},
+__range:function(a,b,st){if(b===undefined){b=a;a=0}if(st===undefined)st=1;var r=[];if(st>0)for(var i=a;i<b;i+=st)r.push(i);else for(var i=a;i>b;i+=st)r.push(i);return r},
+__list:function(v){return Array.isArray(v)?v:typeof v==='string'?v.split(''):[]},
+__files:window.__persistFiles||(window.__persistFiles={}),
+__open:function(fn,mode){var fs=env.__files;if(mode==='r'){var lines=(fs[fn]||'').split('\n');var obj={_fn:fn,_m:'r',_l:lines,_p:0,readline:function(){return this._p<this._l.length?env.__py(this._l[this._p++]+(this._p<this._l.length?'\n':'')):env.__py('')},readlines:function(){return this._l.map(function(l,i,a){return env.__py(l+(i<a.length-1?'\n':''))})},close:function(){}};obj[Symbol.iterator]=function(){var i=0,ll=lines;return{next:function(){if(i<ll.length){var v=ll[i]+(i<ll.length-1?'\n':'');i++;return{value:env.__py(v),done:false}}return{done:true}}};};return obj}if(mode==='w')return{_fn:fn,_b:'',write:function(s){this._b+=String(s)},writelines:function(lst){var self=this;(Array.isArray(lst)?lst:[lst]).forEach(function(s){self._b+=String(s)})},close:function(){fs[this._fn]=this._b}};if(mode==='a')return{_fn:fn,_b:fs[fn]||'',write:function(s){this._b+=String(s)},writelines:function(lst){var self=this;(Array.isArray(lst)?lst:[lst]).forEach(function(s){self._b+=String(s)})},close:function(){fs[this._fn]=this._b}}},
+math:{ceil:Math.ceil,floor:Math.floor,sqrt:Math.sqrt,pi:Math.PI},
+random:{randint:function(a,b){return Math.floor(Math.random()*(b-a+1))+a},random:function(){return Math.random()}},
+time:{sleep:function(s){return new Promise(function(r){setTimeout(r,s*1000)})}},
+__turtle:(function(){
+var cv=document.getElementById('turtleCanvas'),ctx=cv.getContext('2d');
+function resize(){var p=cv.parentElement;if(!p)return;cv.width=p.clientWidth;cv.height=p.clientHeight}
+function drawBg(){resize();ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);var cx0=cv.width/2,cy0=cv.height/2;ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;for(var x=cx0%25;x<cv.width;x+=25){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cv.height);ctx.stroke()}for(var y=cy0%25;y<cv.height;y+=25){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cv.width,y);ctx.stroke()}ctx.strokeStyle='#d1d5db';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,cy0);ctx.lineTo(cv.width,cy0);ctx.stroke();ctx.beginPath();ctx.moveTo(cx0,0);ctx.lineTo(cx0,cv.height);ctx.stroke()}
+var turtles=[];
+function fullRedraw(){drawBg();turtles.forEach(function(t){
+var cx0=cv.width/2,cy0=cv.height/2;
+t._trails.forEach(function(seg){ctx.strokeStyle=seg.c;ctx.lineWidth=seg.w;ctx.beginPath();ctx.moveTo(cx0+seg.x1,cy0-seg.y1);ctx.lineTo(cx0+seg.x2,cy0-seg.y2);ctx.stroke()});
+t._fills.forEach(function(fl){if(fl.pts.length<2)return;ctx.fillStyle=fl.c;ctx.beginPath();ctx.moveTo(cx0+fl.pts[0][0],cy0-fl.pts[0][1]);for(var i=1;i<fl.pts.length;i++)ctx.lineTo(cx0+fl.pts[i][0],cy0-fl.pts[i][1]);ctx.closePath();ctx.fill()});
+if(t._visible){var ax=cx0+t._x,ay=cy0-t._y,a=-t._heading*Math.PI/180;ctx.save();ctx.translate(ax,ay);ctx.rotate(a);ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(-6,5);ctx.lineTo(-3,0);ctx.lineTo(-6,-5);ctx.closePath();ctx.fillStyle='#22d3ee';ctx.fill();ctx.strokeStyle='#0e7490';ctx.lineWidth=1;ctx.stroke();ctx.restore()}
+})}
+return{
+create:function(){
+var t={_x:0,_y:0,_heading:90,_pen:true,_penColor:'#000',_penSize:2,_fillColor:'#000',_filling:false,_fillPts:[],_speed:6,_visible:true,_trails:[],_fills:[]};
+turtles.push(t);
+function delay(){if(t._speed===0)return Promise.resolve();var ms=Math.max(5,200-t._speed*18);return new Promise(function(r){setTimeout(r,ms)})}
+function move(dist){
+var rad=t._heading*Math.PI/180,dx=Math.cos(rad)*dist,dy=Math.sin(rad)*dist;
+var x1=t._x,y1=t._y;t._x+=dx;t._y+=dy;
+if(t._pen)t._trails.push({x1:x1,y1:y1,x2:t._x,y2:t._y,c:t._penColor,w:t._penSize});
+if(t._filling)t._fillPts.push([t._x,t._y]);
+fullRedraw();return delay();
+}
+t.forward=function(d){return move(Number(d))};
+t.back=function(d){return move(-Number(d))};
+t.left=function(a){t._heading+=Number(a);fullRedraw();return delay()};
+t.right=function(a){t._heading-=Number(a);fullRedraw();return delay()};
+t.setheading=function(a){t._heading=Number(a);fullRedraw();return delay()};
+t.setposition=function(x,y){
+var x1=t._x,y1=t._y;t._x=Number(x);t._y=Number(y);
+if(t._pen)t._trails.push({x1:x1,y1:y1,x2:t._x,y2:t._y,c:t._penColor,w:t._penSize});
+if(t._filling)t._fillPts.push([t._x,t._y]);
+fullRedraw();return delay()};
+t.penup=function(){t._pen=false;return Promise.resolve()};
+t.pendown=function(){t._pen=true;return Promise.resolve()};
+t.pencolor=function(c){t._penColor=String(c).replace(/^["']|["']$/g,'');return Promise.resolve()};
+t.pensize=function(w){t._penSize=Number(w);return Promise.resolve()};
+t.fillcolor=function(c){t._fillColor=String(c).replace(/^["']|["']$/g,'');return Promise.resolve()};
+t.begin_fill=function(){t._filling=true;t._fillPts=[[t._x,t._y]];return Promise.resolve()};
+t.end_fill=function(){t._filling=false;if(t._fillPts.length>=2)t._fills.push({c:t._fillColor,pts:t._fillPts.slice()});t._fillPts=[];fullRedraw();return Promise.resolve()};
+t.circle=function(r){
+var r0=Number(r),steps=36,ang=360/steps,sd=2*Math.abs(r0)*Math.sin(Math.PI/steps);
+var chain=Promise.resolve();
+var dir=r0>=0?1:-1;
+for(var i=0;i<steps;i++)(function(){chain=chain.then(function(){return move(sd*dir)}).then(function(){t._heading+=ang*dir;fullRedraw();return delay()})})();
+return chain;
+};
+t.speed=function(s){t._speed=Number(s);return Promise.resolve()};
+t.hideturtle=function(){t._visible=false;fullRedraw();return Promise.resolve()};
+t.showturtle=function(){t._visible=true;fullRedraw();return Promise.resolve()};
+fullRedraw();return t;
+},
+_reset:function(){turtles=[];drawBg();}
+};
+})(),
+__py:function(val){if(typeof val!=='string')return val;var s=new String(val);s.upper=function(){return env.__py(val.toUpperCase())};s.lower=function(){return env.__py(val.toLowerCase())};s.find=function(sub){return val.indexOf(String(sub))};s.index=function(sub){var i=val.indexOf(String(sub));if(i===-1)throw new Error("substring not found");return i};s.replace=function(a,b){return env.__py(val.split(String(a)).join(String(b)))};s.split=function(sep){return val.split(String(sep))};s.strip=function(ch){if(!ch)return env.__py(val.trim());var c=String(ch).replace(/[-[\]{}()*+?.,\\^$|#\s]/g,'\\$&');return env.__py(val.replace(new RegExp('^['+c+']+|['+c+']+$','g'),''))};s.isalpha=function(){return val.length>0&&/^[a-zA-Z]+$/.test(val)};s.isalnum=function(){return val.length>0&&/^[a-zA-Z0-9]+$/.test(val)};s.isdigit=function(){return val.length>0&&/^[0-9]+$/.test(val)};s.isupper=function(){return val===val.toUpperCase()&&/[a-zA-Z]/.test(val)};s.islower=function(){return val===val.toLowerCase()&&/[a-zA-Z]/.test(val)};
+s.format=function(){var args=[].slice.call(arguments);var i=0;return env.__py(val.replace(/\{([^}]*)\}/g,function(m,spec){var idx=parseInt(spec);var a=(!isNaN(idx)?args[idx]:args[i++]);if(a===undefined)a='';var fmt=spec.replace(/^\d+/,'').replace(/^:/,'');if(fmt){var align=fmt.match(/^([<>^])/);var width=fmt.match(/(\d+)/);var prec=fmt.match(/\.(\d+)/);var type=fmt.match(/(d|f|s)$/);var sv=String(a);if(type&&type[1]==='f'&&typeof a==='number')sv=a.toFixed(prec?parseInt(prec[1]):6);else if(type&&type[1]==='d')sv=String(Math.floor(Number(a)));else if(prec&&typeof a==='number')sv=a.toFixed(parseInt(prec[1]));if(width){var w=parseInt(width[1]);if(sv.length<w){var pad=' '.repeat(w-sv.length);if(align&&align[1]==='<')sv=sv+pad;else if(align&&align[1]==='^'){var lp=Math.floor(pad.length/2);sv=' '.repeat(lp)+sv+' '.repeat(pad.length-lp)}else sv=pad+sv}}return sv}return String(a)}))};
+s.valueOf=function(){return val};s.toString=function(){return val};return s}
+};
+if(isTurtle)env.__turtle._reset();
+var keys=Object.keys(env),vals=keys.map(function(k){return env[k]});
+var fn=new Function(keys.join(','),'"use strict";return(async()=>{\n'+js+'\n})();');
+fn.apply(null,vals).then(function(){con.innerHTML+=out.length?'<div style="margin-top:8px" class="cinfo">\u2014 done \u2014</div>':'<span class="cinfo">Finished (no output)</span>';renderFiles(env.__files)}).catch(function(e){con.innerHTML+=diagnose(e,code);renderFiles(env.__files)});
+}catch(e){con.innerHTML=diagnose(e,code)}
+}
+
+function diagnose(err, pyCode){
+var m=err.message||String(err);
+var rules=[
+// ── Variable errors ──
+{p:/(\w+) is not defined/i, fn:function(match){
+  var v=match[1];
+  // Map JS runtime names back to Python
+  var pyName=v;
+  if(v.startsWith('__'))return null; // internal - skip
+  return{what:'Variable <span class="diag-code">'+esc(pyName)+'</span> has not been created yet.',
+    hint:'Make sure you have a <b>set '+esc(pyName)+' =</b> block before you try to use it. Variables must be created before they can be read. Check your block order — does the set block come before the block that uses it?'};}},
+// ── Type errors: method on wrong type ──
+{p:/(\w+)\.(upper|lower|find|index|replace|split|strip|isalpha|isalnum|isdigit|isupper|islower|format)\s+is not a function/i, fn:function(match){
+  return{what:'<span class="diag-code">.'+esc(match[2])+'()</span> only works on strings, but <span class="diag-code">'+esc(match[1])+'</span> isn\'t a string right now.',
+    hint:'Use a <b>str()</b> casting block to convert the value to a string first, or check that you assigned a string to this variable. If you used <b>input()</b>, it returns a string — but if you converted it with <b>int()</b>, it\'s now a number.'};}},
+{p:/(\w+)\.(append|insert)\s+is not a function/i, fn:function(match){
+  return{what:'<span class="diag-code">.'+esc(match[2])+'()</span> only works on lists, but <span class="diag-code">'+esc(match[1])+'</span> isn\'t a list.',
+    hint:'Make sure you created the variable as a list first using <b>set '+esc(match[1])+' = [] empty list</b> before calling .'+esc(match[2])+'() on it.'};}},
+// ── is not a function (general) ──
+{p:/(\w+) is not a function/i, fn:function(match){
+  var n=match[1];
+  return{what:'<span class="diag-code">'+esc(n)+'</span> is not a function — it can\'t be called with ().',
+    hint:'Check that you\'ve defined <b>'+esc(n)+'</b> as a function or procedure using a <b>def</b> block before calling it. Also check spelling — function names are case-sensitive.'};}},
+// ── is not iterable ──
+{p:/(\w+) is not iterable/i, fn:function(match){
+  return{what:'<span class="diag-code">'+esc(match[1])+'</span> can\'t be looped over — it\'s not a list, string, or file.',
+    hint:'A <b>for...in</b> loop needs a list, string, or file to iterate over. Make sure the variable contains the right type. If it\'s a file, check it was opened with <b>"r"</b> mode.'};}},
+// ── substring not found (.index) ──
+{p:/substring not found/i, fn:function(){
+  return{what:'<span class="diag-code">.index()</span> couldn\'t find the substring in the string.',
+    hint:'Unlike <b>.find()</b> which returns -1 when not found, <b>.index()</b> raises an error. Use <b>.find()</b> instead if the substring might not exist, then check if the result is -1.'};}},
+// ── Cannot read properties of null/undefined ──
+{p:/Cannot read propert(?:y|ies) of (null|undefined)/i, fn:function(){
+  return{what:'Tried to access a property of a variable that has no value.',
+    hint:'A variable is empty (<b>None</b>) when you try to use it. Check that you\'ve assigned a value to it first with a <b>set</b> block. This often happens when a function doesn\'t return a value — make sure functions have a <b>return</b> block.'};}},
+// ── NaN / number conversion ──
+{p:/NaN|not a number/i, fn:function(){
+  return{what:'A calculation produced <span class="diag-code">NaN</span> (Not a Number).',
+    hint:'This usually happens when you try to convert a non-numeric string to a number. For example, <b>int("hello")</b> can\'t work. Make sure the value you\'re converting actually contains digits. If using <b>input()</b>, the user may have typed something unexpected.'};}},
+// ── Division by zero ──
+{p:/division by zero|Infinity/i, fn:function(){
+  return{what:'Division by zero!',
+    hint:'You\'re dividing a number by 0, which isn\'t allowed in maths. Check your divisor — is it a variable that hasn\'t been set, or a counter that hasn\'t been incremented?'};}},
+// ── Maximum call stack (infinite recursion) ──
+{p:/Maximum call stack|too much recursion/i, fn:function(){
+  return{what:'Infinite loop or recursion detected — the program ran out of memory.',
+    hint:'Check your <b>while</b> loop — does the condition ever become False? Make sure the variable in the condition is being changed inside the loop. If you\'re calling a function from itself, make sure there\'s a base case that stops the recursion.'};}},
+// ── Unexpected token (syntax) ──
+{p:/Unexpected token '?(\w+)'?/i, fn:function(match){
+  return{what:'Syntax error — the program couldn\'t understand the code near <span class="diag-code">'+esc(match[1])+'</span>.',
+    hint:'This is usually caused by blocks not connecting properly. Try disconnecting and reconnecting the blocks in the area that looks wrong. Check that all blocks have their required inputs filled in.'};}},
+// ── Assignment to constant ──
+{p:/Assignment to constant/i, fn:function(){
+  return{what:'Tried to change a value that can\'t be changed.',
+    hint:'This can happen if a loop variable name conflicts with another variable. Try renaming one of your variables to avoid the conflict.'};}},
+// ── Turtle errors ──
+{p:/\.forward is not a function|\.back is not a function|\.left is not a function|\.right is not a function|\.penup is not a function|\.pendown is not a function|\.circle is not a function/i, fn:function(){
+  return{what:'Turtle method called on something that isn\'t a turtle.',
+    hint:'Make sure you have an <b>import turtle</b> block and a <b>t = turtle.Turtle()</b> block before using turtle commands. The variable must be created with <b>turtle.Turtle()</b> first.'};}},
+{p:/Cannot read.*properties of undefined.*(?:forward|back|left|right|penup|pendown|circle|pencolor|fillcolor|begin_fill|end_fill|hideturtle|speed)/i, fn:function(){
+  return{what:'Turtle variable doesn\'t exist yet.',
+    hint:'You need to create a turtle first with <b>t = turtle.Turtle()</b> before calling methods on it. Make sure the <b>import turtle</b> block and <b>create</b> block come before any turtle commands.'};}},
+// ── File not found (empty file read) ──
+{p:/Cannot read|_l is undefined/i, fn:function(){
+  return{what:'File read error — the file may not exist yet.',
+    hint:'Make sure you\'ve written to the file and closed it <b>before</b> trying to read it. Run your File Write program first, then your File Read program. Files persist between runs in the same session.'};}}
+];
+
+// Try each rule
+for(var i=0;i<rules.length;i++){
+  var match=m.match(rules[i].p);
+  if(match){
+    var d=rules[i].fn(match);
+    if(d)return '<div class="diag"><div class="diag-title">\u26a0\ufe0f Error Diagnosis</div>'+
+      '<div class="diag-msg">'+d.what+'</div>'+
+      '<div class="diag-hint">\ud83d\udca1 <b>Hint:</b> '+d.hint+'</div></div>';
+  }
+}
+
+// Fallback — show raw error with generic advice
+return '<div class="diag"><div class="diag-title">\u26a0\ufe0f Error</div>'+
+  '<div class="diag-msg">'+esc(m)+'</div>'+
+  '<div class="diag-hint">\ud83d\udca1 <b>Hint:</b> Check that all blocks have their inputs connected. Make sure variables are set before being used. If a block expects a string, number, or list, check you\'re giving it the right type.</div></div>';
+}
+
+function transpile(py){
+var lines=py.split('\n'),out=[],decl={},stack=[];
+// stack tracks indent levels of open blocks
+
+function closeToIndent(targetInd){
+  // close blocks until stack top <= targetInd
+  var s='';
+  while(stack.length>0&&stack[stack.length-1]>=targetInd){
+    stack.pop();s+='}';
+  }
+  return s;
+}
+
+for(var i=0;i<lines.length;i++){
+var raw=lines[i],indLen=raw.search(/\S/),ln=raw.trim(),m;
+if(indLen<0)indLen=0;
+if(!ln){continue}
+if(ln[0]==='#'){out.push('//'+ln.slice(1));continue}
+var o=ln;
+if(/^import\s+/.test(o)){out.push('// '+o);continue}
+
+// Close blocks for dedent, but handle elif/else specially
+var isElif=(/^elif\s/).test(o);
+var isElse=(o==='else:');
+if(isElif||isElse){
+  // close inner blocks down to this indent level + 1 step (the if/elif body)
+  // then the elif/else line itself provides the connecting brace
+  var cls=closeToIndent(indLen+1);
+  // We need exactly one } to close the previous if/elif body
+  // closeToIndent may have closed it, or we need to ensure one }
+  if(!cls)cls='}';
+  if(isElif){
+    m=o.match(/^elif\s+(.+)\s*:$/);
+    out.push(cls+'else if('+cx(m[1])+'){');
+    stack.push(indLen+1);
+  } else {
+    out.push(cls+'else{');
+    stack.push(indLen+1);
+  }
+  continue;
+}
+
+// For non-elif/else lines, close blocks that have ended
+var cls=closeToIndent(indLen);
+if(cls)out.push(cls);
+
+m=o.match(/^def\s+(\w+)\s*\(([^)]*)\)\s*:$/);
+if(m){out.push('async function '+m[1]+'('+m[2].trim()+'){');decl[m[1]]=1;stack.push(indLen+1);continue}
+m=o.match(/^return\s+(.+)$/);if(m){out.push('return '+cx(m[1])+';');continue}
+if(o==='return'){out.push('return;');continue}
+m=o.match(/^for\s+(\w+)\s+in\s+range\(([^)]+)\)\s*:$/);
+if(m){decl[m[1]]=1;out.push('for(let '+m[1]+' of __range('+cx(m[2])+')){');stack.push(indLen+1);continue}
+m=o.match(/^for\s+(\w+)\s+in\s+(.+)\s*:$/);
+if(m){decl[m[1]]=1;out.push('for(let '+m[1]+' of '+cx(m[2])+'){');stack.push(indLen+1);continue}
+m=o.match(/^while\s+(.+)\s*:$/);if(m){out.push('while('+cx(m[1])+'){');stack.push(indLen+1);continue}
+m=o.match(/^if\s+(.+)\s*:$/);if(m){out.push('if('+cx(m[1])+'){');stack.push(indLen+1);continue}
+if(o==='pass'){out.push('//pass');continue}
+
+o=cx(o);
+o=o.replace(/^print\(/,'__print(');
+m=o.match(/^del\s+(\w+)\[(.+)\]$/);if(m){out.push(m[1]+'.splice('+m[2]+',1);');continue}
+m=o.match(/^(\w+)\s*=\s*(.+)$/);
+if(m&&o.indexOf('==')===-1){
+var vn=m[1],vv=m[2];
+if(vv.indexOf('__open(')<0&&vv.indexOf('.readlines(')<0&&vv.indexOf('.readline(')<0&&vv.indexOf('__turtle.create(')<0)vv='__py('+vv+')';
+o=(decl[vn]?'':'let ')+vn+' = '+vv;decl[vn]=1;
+}
+if(o.indexOf('__input(')>=0)o=o.replace(/__input\(/g,'await __input(');
+if(o.indexOf('time.sleep(')>=0)o=o.replace(/time\.sleep\(/g,'await time.sleep(');
+if(/\.(?:forward|back|left|right|circle|setposition|setheading|penup|pendown|pencolor|pensize|fillcolor|begin_fill|end_fill|hideturtle|showturtle|speed)\s*\(/.test(o))o='await '+o;
+o=o.replace(/(?<!function\s)(\w+)\s*\(/g,function(match,name){
+if(['__print','__input','__len','__ord','__chr','__str','__int','__float','__bool','__round','__range','__list','__open','__py','Math','parseInt','parseFloat','String','Number','Array','__turtle'].indexOf(name)>=0)return match;
+if(['push','splice','indexOf','slice','join','map','forEach','filter','includes','append','insert','write','writelines','readline','readlines','close','toFixed','charCodeAt','fromCharCode','toUpperCase','toLowerCase','trim','test','replace','split','find','index','strip','upper','lower','isalpha','isalnum','isdigit','isupper','islower','format','ceil','floor','sqrt','randint','random','sleep','forward','back','left','right','circle','setposition','setheading','penup','pendown','pencolor','pensize','fillcolor','begin_fill','end_fill','hideturtle','showturtle','speed','create'].indexOf(name)>=0)return match;
+if(decl[name])return 'await '+name+'(';
+return match;
+});
+out.push(o+';');
+}
+// Close any remaining open blocks
+var finalCls=closeToIndent(0);
+if(finalCls)out.push(finalCls);
+return out.join('\n').replace(/;;/g,';');
+}
+
+function cx(e){
+e=e.replace(/turtle\.Turtle\(\)/g,'__turtle.create()');
+e=e.replace(/(?<!\w)open\(/g,'__open(');
+e=e.replace(/(?<!\w)len\(/g,'__len(');e=e.replace(/(?<!\w)ord\(/g,'__ord(');e=e.replace(/(?<!\w)chr\(/g,'__chr(');
+e=e.replace(/(?<![.\w])str\(/g,'__str(');e=e.replace(/(?<![.\w])int\(/g,'__int(');e=e.replace(/(?<![.\w])float\(/g,'__float(');e=e.replace(/(?<![.\w])bool\(/g,'__bool(');
+e=e.replace(/(?<![.\w])list\(/g,'__list(');e=e.replace(/(?<!\w)range\(/g,'__range(');e=e.replace(/(?<!\w)input\(/g,'__input(');e=e.replace(/(?<!\w)round\(/g,'__round(');
+e=e.replace(/\bTrue\b/g,'true');e=e.replace(/\bFalse\b/g,'false');e=e.replace(/\bNone\b/g,'null');
+e=e.replace(/\bnot\s+in\b/g,'\x01NI\x01');e=e.replace(/\band\b/g,'&&');e=e.replace(/\bor\b/g,'||');e=e.replace(/(?<![_a-zA-Z])\bnot\b/g,'!');e=e.replace(/\x01NI\x01/g,'not in');
+var m2=e.match(/^(.+)\s+not\s+in\s+(.+)$/);if(m2)return'!String('+cx(m2[2])+').includes('+cx(m2[1])+')';
+var m3=e.match(/^(.+?)\s+in\s+(?!range|__)(.*?)$/);if(m3&&m3[2])return'String('+cx(m3[2])+').includes('+cx(m3[1])+')';
+return e;
+}
+
+function renderFiles(files){
+var fp=document.getElementById('filesOut');
+var names=Object.keys(files);
+if(!names.length){fp.innerHTML='<span class="cinfo">No files yet. Use File blocks to write files, then run your program.</span>';return}
+var h='';
+names.forEach(function(fn){
+  var content=files[fn];
+  var lines=content.split('\n');
+  var size=content.length;
+  var sizeStr=size<1024?size+' B':(size/1024).toFixed(1)+' KB';
+  h+='<div class="fcard">';
+  h+='<div class="fcard-head"><span class="fcard-name">\ud83d\udcc4 '+esc(fn)+'</span><div style="display:flex;align-items:center;gap:8px"><span class="fcard-size">'+sizeStr+' \u00b7 '+lines.length+' line'+(lines.length!==1?'s':'')+'</span><div class="fcard-acts"><button class="fcard-btn" onclick="navigator.clipboard.writeText(window.__persistFiles[\''+esc(fn).replace(/'/g,"\\'")+'\'])">Copy</button><button class="fcard-btn" onclick="(function(fn){var b=new Blob([window.__persistFiles[fn]],{type:\'text/csv\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=fn;a.click()})(\''+esc(fn).replace(/'/g,"\\'")+'\')">Download</button></div></div></div>';
+  h+='<div class="fcard-body">'+esc(content)+'</div>';
+  h+='</div>';
+});
+// Show file count summary
+h='<div style="margin-bottom:10px;font:600 10px \'JetBrains Mono\',monospace;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">\ud83d\udcc1 Virtual File System \u00b7 '+names.length+' file'+(names.length!==1?'s':'')+'</div>'+h;
+fp.innerHTML=h;
+// Flash the Files tab to indicate update
+var ftab=document.querySelector('[data-t="filesP"]');
+if(ftab&&!ftab.classList.contains('on')){ftab.style.color='var(--ac)';ftab.style.textShadow='0 0 8px rgba(94,234,212,.4)';setTimeout(function(){ftab.style.color='';ftab.style.textShadow=''},2000)}
+}
+
+function hl(c){
+var h=c.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+h=h.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g,'<span class="st">$&</span>');
+h=h.replace(/\b(import|def|for|in|if|else|elif|while|return|and|or|not|True|False|None|pass|del)\b/g,'<span class="kw">$1</span>');
+h=h.replace(/\b(print|input|len|ord|chr|str|int|float|bool|range|round|list|open|append|insert|write|read|readline|readlines|writelines|close|format|forward|back|left|right|circle|setposition|setheading|penup|pendown|pencolor|pensize|fillcolor|begin_fill|end_fill|hideturtle|showturtle|speed|Turtle)\b(?=\s*[\(.])/g,'<span class="fn">$1</span>');
+h=h.replace(/\b(random|math|time|turtle)\b\./g,'<span class="fn">$1</span>.');
+h=h.replace(/(#.*)/g,'<span class="cm">$1</span>');
+h=h.replace(/\b(\d+\.?\d*)\b/g,'<span class="nb">$1</span>');
+return h;
+}
+
+function setupDemos(ws){
+function ld(vars,xml){ws.clear();vars.forEach(function(n){ws.createVariable(n)});
+// Inject hat block as parent of the first block in the demo
+xml=xml.replace('<block type="p_','<block type="p_start" x="30" y="30" deletable="false"><next><block type="p_').replace(/<\/xml>$/,'</next></block></xml>');
+Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(xml),ws);ws.scrollCenter();document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});document.querySelector('[data-t="codeP"]').classList.add('on');document.getElementById('codeP').classList.add('on')}
+var D={
+hello:{v:['name'],x:'<xml><block type="p_setv" x="30" y="30"><field name="VAR">name</field><value name="V"><block type="p_input"><field name="P">What is your name? </field></block></value><next><block type="p_print"><value name="V"><block type="p_cat"><value name="A"><block type="p_strlit"><field name="T">Hello, </field></block></value><value name="B"><block type="p_upper"><value name="S"><block type="p_getv"><field name="VAR">name</field></block></value></block></value></block></value></block></next></block></xml>'},
+password:{v:['password'],x:'<xml><block type="p_setv" x="30" y="30"><field name="VAR">password</field><value name="V"><block type="p_input"><field name="P">Enter password: </field></block></value><next><block type="p_ifelse"><value name="C"><block type="p_cmp"><value name="A"><block type="p_len"><value name="S"><block type="p_getv"><field name="VAR">password</field></block></value></block></value><field name="O">&gt;=</field><value name="B"><block type="p_num"><field name="N">8</field></block></value></block></value><statement name="DO"><block type="p_print_t"><field name="T">Password accepted!</field></block></statement><statement name="EL"><block type="p_print_t"><field name="T">Too short!</field></block></statement></block></next></block></xml>'},
+reverse:{v:['text','rev','ch'],x:'<xml><block type="p_setv" x="30" y="30"><field name="VAR">text</field><value name="V"><block type="p_input"><field name="P">Text: </field></block></value><next><block type="p_setv"><field name="VAR">rev</field><value name="V"><block type="p_strlit"><field name="T"></field></block></value><next><block type="p_foreach"><field name="VAR">ch</field><value name="S"><block type="p_getv"><field name="VAR">text</field></block></value><statement name="DO"><block type="p_setv"><field name="VAR">rev</field><value name="V"><block type="p_cat"><value name="A"><block type="p_getv"><field name="VAR">ch</field></block></value><value name="B"><block type="p_getv"><field name="VAR">rev</field></block></value></block></value></block></statement><next><block type="p_print"><value name="V"><block type="p_getv"><field name="VAR">rev</field></block></value></block></next></block></next></block></next></block></xml>'},
+filewrite:{v:['f'],x:'<xml><block type="p_fopen" x="30" y="30"><field name="VAR">f</field><field name="FN">scores.csv</field><field name="M">w</field><next><block type="p_fwrite"><field name="VAR">f</field><value name="V"><block type="p_cat"><value name="A"><block type="p_strlit"><field name="T">Name,Score</field></block></value><value name="B"><block type="p_newline"></block></value></block></value><next><block type="p_fwrite"><field name="VAR">f</field><value name="V"><block type="p_cat"><value name="A"><block type="p_strlit"><field name="T">Alice,95</field></block></value><value name="B"><block type="p_newline"></block></value></block></value><next><block type="p_fwrite"><field name="VAR">f</field><value name="V"><block type="p_cat"><value name="A"><block type="p_strlit"><field name="T">Bob,87</field></block></value><value name="B"><block type="p_newline"></block></value></block></value><next><block type="p_fclose"><field name="VAR">f</field><next><block type="p_print_t"><field name="T">File written! Check Files tab.</field></block></next></block></next></block></next></block></next></block></next></block></xml>'},
+fileread:{v:['f','line'],x:'<xml><block type="p_comment" x="30" y="30"><field name="T">Run File Write first!</field><next><block type="p_fopen"><field name="VAR">f</field><field name="FN">scores.csv</field><field name="M">r</field><next><block type="p_fforline"><field name="LV">line</field><field name="FV">f</field><statement name="DO"><block type="p_print"><value name="V"><block type="p_strip"><value name="S"><block type="p_getv"><field name="VAR">line</field></block></value><value name="A"><block type="p_newline"></block></value></block></value></block></statement><next><block type="p_fclose"><field name="VAR">f</field></block></next></block></next></block></next></block></xml>'},
+funcarea:{v:['result'],x:'<xml><block type="p_def_func_p" x="30" y="30"><field name="N">calcArea</field><field name="P">pW, pH</field><statement name="BODY"><block type="p_comment"><field name="T">rectangle area</field></block></statement><value name="RET"><block type="p_math"><value name="A"><block type="p_param"><field name="P">pW</field></block></value><field name="O">\u00d7</field><value name="B"><block type="p_param"><field name="P">pH</field></block></value></block></value><next><block type="p_setv"><field name="VAR">result</field><value name="V"><block type="p_callfn_a"><field name="N">calcArea</field><field name="A">5, 3</field></block></value><next><block type="p_print"><value name="V"><block type="p_cat"><value name="A"><block type="p_strlit"><field name="T">Area = </field></block></value><value name="B"><block type="p_strlit"><value name="V"><block type="p_getv"><field name="VAR">result</field></block></value></block></value></block></value></block></next></block></next></block></xml>'},
+randomgame:{v:['target','guess','attempts'],x:'<xml><block type="p_import" x="30" y="30"><field name="L">random</field><next><block type="p_setv"><field name="VAR">target</field><value name="V"><block type="p_randint"><field name="A">1</field><field name="B">10</field></block></value><next><block type="p_setv"><field name="VAR">guess</field><value name="V"><block type="p_num"><field name="N">0</field></block></value><next><block type="p_setv"><field name="VAR">attempts</field><value name="V"><block type="p_num"><field name="N">0</field></block></value><next><block type="p_print_t"><field name="T">Guess 1-10!</field><next><block type="p_while"><value name="C"><block type="p_cmp"><value name="A"><block type="p_getv"><field name="VAR">guess</field></block></value><field name="O">!=</field><value name="B"><block type="p_getv"><field name="VAR">target</field></block></value></block></value><statement name="DO"><block type="p_setv"><field name="VAR">guess</field><value name="V"><block type="p_int"><value name="V"><block type="p_input"><field name="P">Guess: </field></block></value></block></value><next><block type="p_setv"><field name="VAR">attempts</field><value name="V"><block type="p_math"><value name="A"><block type="p_getv"><field name="VAR">attempts</field></block></value><field name="O">+</field><value name="B"><block type="p_num"><field name="N">1</field></block></value></block></value><next><block type="p_ifelifelse"><value name="C1"><block type="p_cmp"><value name="A"><block type="p_getv"><field name="VAR">guess</field></block></value><field name="O">&lt;</field><value name="B"><block type="p_getv"><field name="VAR">target</field></block></value></block></value><statement name="D1"><block type="p_print_t"><field name="T">Too low!</field></block></statement><value name="C2"><block type="p_cmp"><value name="A"><block type="p_getv"><field name="VAR">guess</field></block></value><field name="O">&gt;</field><value name="B"><block type="p_getv"><field name="VAR">target</field></block></value></block></value><statement name="D2"><block type="p_print_t"><field name="T">Too high!</field></block></statement><statement name="EL"><block type="p_print_t"><field name="T">Correct!</field></block></statement></block></next></block></next></block></statement><next><block type="p_print"><value name="V"><block type="p_cat"><value name="A"><block type="p_strlit"><field name="T">Took </field></block></value><value name="B"><block type="p_cat"><value name="A"><block type="p_strlit"><value name="V"><block type="p_getv"><field name="VAR">attempts</field></block></value></block></value><value name="B"><block type="p_strlit"><field name="T"> guesses</field></block></value></block></value></block></value></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>'}
+,
+turtlestar:{v:['t','i'],x:'<xml><block type="p_t_import" x="30" y="30"><next><block type="p_t_create"><field name="VAR">t</field><next><block type="p_t_speed"><field name="VAR">t</field><field name="S">6</field><next><block type="p_t_pencolor"><field name="VAR">t</field><value name="C"><block type="p_strlit"><field name="T">blue</field></block></value><next><block type="p_t_fillcolor"><field name="VAR">t</field><value name="C"><block type="p_strlit"><field name="T">yellow</field></block></value><next><block type="p_t_begin_fill"><field name="VAR">t</field><next><block type="p_forr"><field name="VAR">i</field><field name="A">0</field><field name="B">5</field><statement name="DO"><block type="p_t_forward"><field name="VAR">t</field><value name="D"><block type="p_num"><field name="N">100</field></block></value><next><block type="p_t_right"><field name="VAR">t</field><value name="D"><block type="p_num"><field name="N">144</field></block></value></block></next></block></statement><next><block type="p_t_end_fill"><field name="VAR">t</field><next><block type="p_t_hideturtle"><field name="VAR">t</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>'}
+};
+document.querySelectorAll('.chip').forEach(function(ch){ch.onclick=function(){var d=D[ch.dataset.c];if(!d)return;document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});ch.classList.add('on');ld(d.v,d.x)}});
+}
+</script></body></html>
