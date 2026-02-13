@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Chase | GCSE Computer Science</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #050a15;
+    --bg-card: #0c1629;
+    --bg-card-hover: #132040;
+    --accent-blue: #2563eb;
+    --accent-electric: #3b82f6;
+    --accent-red: #dc2626;
+    --accent-gold: #f59e0b;
+    --accent-cyan: #06b6d4;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --success: #22c55e;
+    --error: #ef4444;
+    --border-color: #1e3a5f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 1.5rem;
+}
+
+/* Background effects */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(180px);
+    opacity: 0.12;
+    z-index: 0;
+    animation: orbFloat 8s ease-in-out infinite;
+}
+.orb-1 { background: var(--accent-blue); top: -200px; left: -200px; }
+.orb-2 { background: var(--accent-cyan); bottom: -200px; right: -200px; animation-delay: 3s; }
+.orb-3 { background: var(--accent-red); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 5s; opacity: 0.06; }
+
+@keyframes orbFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-30px); }
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.home-link:hover { color: var(--accent-cyan); }
+
+/* Screens */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Intro Screen */
+.intro-center {
+    text-align: center;
+    max-width: 750px;
+    margin: 0 auto;
+    padding-top: 3vh;
+}
+
+.game-title {
+    font-size: clamp(3rem, 7vw, 5rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent-electric), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+    letter-spacing: -1px;
+}
+
+.game-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-weight: 400;
+}
+
+.instructions-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    backdrop-filter: blur(10px);
+}
+
+.instructions-box h3 {
+    color: var(--accent-cyan);
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.instructions-box p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.controls-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.75rem;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    color: white;
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
+}
+.btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(37, 99, 235, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-electric);
+}
+
+.btn-start {
+    padding: 1.1rem 3rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    color: white;
+    border-radius: 16px;
+    box-shadow: 0 6px 30px rgba(37, 99, 235, 0.4);
+}
+.btn-start:hover {
+    box-shadow: 0 8px 40px rgba(37, 99, 235, 0.6);
+    transform: translateY(-3px);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 500;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+}
+
+.status-dot.custom { background: var(--accent-gold); }
+
+/* Offer Screen */
+.offer-center {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-top: 3vh;
+}
+
+.offer-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.offer-desc {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+}
+
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.offer-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.offer-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 18px;
+}
+
+.offer-card.high::before { background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), transparent); }
+.offer-card.mid::before { background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), transparent); }
+.offer-card.low::before { background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), transparent); }
+
+.offer-card:hover::before, .offer-card.selected::before { opacity: 1; }
+
+.offer-card:hover {
+    transform: translateY(-4px);
+}
+
+.offer-card.selected {
+    transform: translateY(-4px);
+}
+.offer-card.high.selected { border-color: var(--accent-red); box-shadow: 0 0 30px rgba(220, 38, 38, 0.3); }
+.offer-card.mid.selected { border-color: var(--accent-electric); box-shadow: 0 0 30px rgba(37, 99, 235, 0.3); }
+.offer-card.low.selected { border-color: var(--success); box-shadow: 0 0 30px rgba(34, 197, 94, 0.3); }
+
+.offer-label {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.offer-card.high .offer-label { color: var(--accent-red); }
+.offer-card.mid .offer-label { color: var(--accent-electric); }
+.offer-card.low .offer-label { color: var(--success); }
+
+.offer-amount {
+    font-size: 2.75rem;
+    font-weight: 900;
+    margin-bottom: 0.75rem;
+}
+
+.offer-card.high .offer-amount { color: var(--accent-red); }
+.offer-card.mid .offer-amount { color: var(--accent-electric); }
+.offer-card.low .offer-amount { color: var(--accent-gold); }
+
+.offer-detail {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.offer-risk {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.offer-card.high .offer-risk { background: rgba(220, 38, 38, 0.15); color: var(--accent-red); }
+.offer-card.mid .offer-risk { background: rgba(37, 99, 235, 0.15); color: var(--accent-electric); }
+.offer-card.low .offer-risk { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+
+/* Game Screen */
+.game-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    min-height: 70vh;
+}
+
+/* Chase Board */
+.board-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.25rem;
+    backdrop-filter: blur(10px);
+}
+
+.board-title {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.chase-board {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.board-step {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    transition: all 0.4s;
+    min-height: 52px;
+}
+
+.board-step.home-zone {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.2);
+}
+
+.board-step.caught-zone {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.2);
+}
+
+.step-number {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 22px;
+    text-align: center;
+}
+
+.step-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.home-zone .step-label { color: var(--success); }
+.caught-zone .step-label { color: var(--accent-red); }
+
+.step-markers {
+    display: flex;
+    gap: 0.4rem;
+    margin-left: auto;
+}
+
+.marker {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: markerPop 0.4s ease;
+}
+
+.marker-player {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    color: white;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
+}
+
+.marker-chaser {
+    background: linear-gradient(135deg, var(--accent-red), #f97316);
+    color: white;
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+}
+
+@keyframes markerPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.board-step.active-player {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+}
+
+.board-step.active-chaser {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.3);
+}
+
+.board-score-box {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    text-align: center;
+}
+
+.board-score-box .score-line {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.25rem;
+}
+
+.board-score-box .score-line span {
+    font-weight: 700;
+}
+
+/* Question Panel */
+.question-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.question-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.question-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.question-prize {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.question-text {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.option-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.5rem;
+    min-height: 68px;
+    border-radius: 16px;
+    background: var(--bg-card-hover);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+}
+
+.option-btn:hover:not(.disabled) {
+    border-color: var(--accent-electric);
+    background: rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+}
+
+.option-btn .option-letter {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--accent-electric);
+}
+
+.option-btn.correct {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.15);
+}
+.option-btn.correct .option-letter {
+    background: var(--success);
+    color: white;
+}
+
+.option-btn.wrong {
+    border-color: var(--error);
+    background: rgba(239, 68, 68, 0.15);
+}
+.option-btn.wrong .option-letter {
+    background: var(--error);
+    color: white;
+}
+
+.option-btn.disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+/* Feedback area */
+.feedback-area {
+    display: none;
+    padding: 1.25rem;
+    border-radius: 14px;
+    margin-bottom: 1.25rem;
+    font-size: 1.15rem;
+    line-height: 1.5;
+}
+
+.feedback-area.show { display: block; animation: fadeIn 0.3s ease; }
+
+.feedback-area.correct-feedback {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.feedback-area.wrong-feedback {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.feedback-result {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 0.4rem;
+}
+
+.feedback-result.correct-text { color: var(--success); }
+.feedback-result.wrong-text { color: var(--error); }
+
+.chaser-result {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.explanation-text {
+    color: var(--accent-cyan);
+    font-size: 1.05rem;
+    margin-top: 0.5rem;
+}
+
+.btn-next {
+    padding: 1rem 2.5rem;
+    font-size: 1.3rem;
+}
+
+/* Results Screen */
+.results-center {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    padding-top: 5vh;
+}
+
+.result-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+.result-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+}
+
+.result-title.win {
+    background: linear-gradient(135deg, var(--accent-gold), var(--success));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.result-title.lose {
+    background: linear-gradient(135deg, var(--accent-red), #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.result-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.result-prize {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--accent-gold);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 40px rgba(245, 158, 11, 0.3);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent-electric);
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.results-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.celebrate { animation: celebrate 0.6s ease 3; }
+.shake { animation: shake 0.4s ease 2; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+    }
+    .board-panel {
+        order: -1;
+    }
+    .chase-board {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 4px;
+    }
+    .board-step {
+        flex-direction: column;
+        min-width: 65px;
+        min-height: auto;
+        padding: 0.5rem;
+        text-align: center;
+    }
+    .step-markers {
+        margin-left: 0;
+        flex-direction: column;
+    }
+    .marker { width: 32px; height: 32px; font-size: 0.85rem; }
+    .offers-grid { grid-template-columns: 1fr; }
+    .options-grid { grid-template-columns: 1fr; }
+    .question-text { font-size: 1.5rem; }
+}
+
+@media (max-width: 600px) {
+    body { font-size: 1.25rem; }
+    .game-title { font-size: 2.5rem; }
+    .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+<div class="glow-orb orb-3"></div>
+
+<div class="container">
+    <div class="page-header">
+        <a href="index.html" class="home-link">&larr; Back to CS Hub</a>
+    </div>
+
+    <!-- INTRO SCREEN -->
+    <div id="intro-screen" class="screen active">
+        <div class="intro-center">
+            <div class="game-title">The Chase</div>
+            <div class="game-subtitle">Can you outrun the Chaser?</div>
+
+            <div class="instructions-box">
+                <h3>How to Play</h3>
+                <p>Answer multiple-choice questions to race home before the Chaser catches you. Get a question right and you move one step closer to home. Get it wrong and the Chaser advances instead. Choose your risk level: a higher prize means the Chaser starts closer!</p>
+            </div>
+
+            <div class="controls-row">
+                <button class="btn btn-secondary" onclick="triggerFileUpload()">Load Questions</button>
+                <button class="btn btn-secondary" onclick="downloadTemplate()">Download Template</button>
+                <button class="btn btn-secondary" onclick="resetToDefault()">Reset to Default</button>
+            </div>
+            <input type="file" id="file-input" accept=".json" style="display:none" onchange="handleFileUpload(event)">
+
+            <div class="status-indicator" id="status-indicator">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Using default questions (20 Qs)</span>
+            </div>
+
+            <br>
+            <button class="btn btn-start" onclick="showOfferScreen()">Start Game</button>
+        </div>
+    </div>
+
+    <!-- OFFER SCREEN -->
+    <div id="offer-screen" class="screen">
+        <div class="offer-center">
+            <div class="offer-title">Choose Your Offer</div>
+            <div class="offer-desc">How brave are you? A higher prize means the Chaser starts closer.</div>
+
+            <div class="offers-grid">
+                <div class="offer-card high" onclick="selectOffer('high', this)">
+                    <div class="offer-label">High Risk</div>
+                    <div class="offer-amount">&pound;50,000</div>
+                    <div class="offer-detail">Chaser starts just 3 steps behind you. Only 5 steps to home.</div>
+                    <div class="offer-risk">3-step head start</div>
+                </div>
+                <div class="offer-card mid" onclick="selectOffer('mid', this)">
+                    <div class="offer-label">Standard</div>
+                    <div class="offer-amount">&pound;25,000</div>
+                    <div class="offer-detail">Chaser starts 4 steps behind you. A balanced challenge.</div>
+                    <div class="offer-risk">4-step head start</div>
+                </div>
+                <div class="offer-card low" onclick="selectOffer('low', this)">
+                    <div class="offer-label">Low Risk</div>
+                    <div class="offer-amount">&pound;5,000</div>
+                    <div class="offer-detail">Chaser starts 5 steps behind you. Safer but less reward.</div>
+                    <div class="offer-risk">5-step head start</div>
+                </div>
+            </div>
+
+            <button class="btn btn-start" id="accept-offer-btn" style="opacity:0.4; pointer-events:none;" onclick="startGame()">Accept Offer</button>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="game-layout">
+            <div class="board-panel">
+                <div class="board-title">The Chase Board</div>
+                <div class="chase-board" id="chase-board"></div>
+                <div class="board-score-box">
+                    <div class="score-line">Correct: <span id="score-correct" style="color:var(--success)">0</span></div>
+                    <div class="score-line">Wrong: <span id="score-wrong" style="color:var(--error)">0</span></div>
+                </div>
+            </div>
+
+            <div class="question-panel">
+                <div class="question-header">
+                    <div class="question-number" id="question-number">Question 1</div>
+                    <div class="question-prize" id="question-prize"></div>
+                </div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options-grid" id="options-grid"></div>
+                <div class="feedback-area" id="feedback-area"></div>
+                <div style="text-align:center;">
+                    <button class="btn btn-primary btn-next" id="next-btn" style="display:none;" onclick="nextQuestion()">Next Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div id="results-screen" class="screen">
+        <div class="results-center">
+            <div class="result-icon" id="result-icon"></div>
+            <div class="result-title" id="result-title"></div>
+            <div class="result-subtitle" id="result-subtitle"></div>
+            <div class="result-prize" id="result-prize"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-correct">0</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-wrong">0</div>
+                    <div class="stat-label">Wrong Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-questions">0</div>
+                    <div class="stat-label">Questions Faced</div>
+                </div>
+            </div>
+
+            <div class="results-buttons">
+                <button class="btn btn-primary" onclick="playAgain()">Play Again</button>
+                <button class="btn btn-secondary" onclick="backToMenu()">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== DEFAULT DATA ==========
+const DEFAULT_DATA = {
+    title: "GCSE Computer Science",
+    questions: [
+        {
+            question: "Which of these is an example of an input device?",
+            options: ["Monitor", "Printer", "Microphone", "Speaker"],
+            correct: 2,
+            explanation: "A microphone captures sound as input. Monitors, printers, and speakers are output devices."
+        },
+        {
+            question: "What does CPU stand for?",
+            options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"],
+            correct: 0,
+            explanation: "CPU stands for Central Processing Unit \u2014 the main processor in a computer."
+        },
+        {
+            question: "Which of these is NOT a type of malware?",
+            options: ["Trojan", "Firewall", "Ransomware", "Spyware"],
+            correct: 1,
+            explanation: "A firewall is a security measure, not malware. It blocks unauthorized access."
+        },
+        {
+            question: "What is the denary value of the binary number 1011?",
+            options: ["9", "11", "13", "15"],
+            correct: 1,
+            explanation: "1011 = 8 + 0 + 2 + 1 = 11"
+        },
+        {
+            question: "Which network topology has all devices connected to a central hub?",
+            options: ["Mesh", "Ring", "Star", "Bus"],
+            correct: 2,
+            explanation: "In a star topology, all devices connect to a central switch or hub."
+        },
+        {
+            question: "What does RAM stand for?",
+            options: ["Read Access Memory", "Random Access Memory", "Rapid Application Memory", "Run Access Module"],
+            correct: 1,
+            explanation: "RAM = Random Access Memory. It's volatile memory used for currently running programs."
+        },
+        {
+            question: "Which sorting algorithm repeatedly compares adjacent pairs?",
+            options: ["Merge Sort", "Insertion Sort", "Bubble Sort", "Quick Sort"],
+            correct: 2,
+            explanation: "Bubble sort compares and swaps adjacent elements repeatedly until sorted."
+        },
+        {
+            question: "What is the purpose of the ALU in a CPU?",
+            options: ["Store programs", "Perform calculations", "Manage memory", "Control peripherals"],
+            correct: 1,
+            explanation: "The ALU (Arithmetic Logic Unit) performs mathematical and logical operations."
+        },
+        {
+            question: "Which of these is a high-level programming language?",
+            options: ["Machine Code", "Assembly", "Python", "Binary"],
+            correct: 2,
+            explanation: "Python is a high-level language. Machine code and assembly are low-level."
+        },
+        {
+            question: "How many bits are in one byte?",
+            options: ["4", "8", "16", "32"],
+            correct: 1,
+            explanation: "1 byte = 8 bits. This is the standard unit of data."
+        },
+        {
+            question: "What protocol is used to send emails?",
+            options: ["HTTP", "FTP", "SMTP", "TCP"],
+            correct: 2,
+            explanation: "SMTP (Simple Mail Transfer Protocol) is used for sending emails."
+        },
+        {
+            question: "Which data structure follows LIFO (Last In First Out)?",
+            options: ["Queue", "Stack", "Array", "Tree"],
+            correct: 1,
+            explanation: "A stack follows LIFO \u2014 the last item pushed is the first one popped."
+        },
+        {
+            question: "What is the hexadecimal equivalent of denary 255?",
+            options: ["EF", "F0", "FF", "FE"],
+            correct: 2,
+            explanation: "255 = 15\u00d716 + 15 = FF in hexadecimal."
+        },
+        {
+            question: "Which search algorithm requires data to be sorted first?",
+            options: ["Linear Search", "Binary Search", "Hash Search", "Sequential Search"],
+            correct: 1,
+            explanation: "Binary search divides sorted data in half each time, requiring sorted data."
+        },
+        {
+            question: "What does SQL stand for?",
+            options: ["Simple Query Language", "Structured Question Language", "Structured Query Language", "System Query Logic"],
+            correct: 2,
+            explanation: "SQL = Structured Query Language, used for managing databases."
+        },
+        {
+            question: "Which of these is an example of utility software?",
+            options: ["Word processor", "Web browser", "Disk defragmenter", "Spreadsheet"],
+            correct: 2,
+            explanation: "Disk defragmenter is utility software that maintains the system."
+        },
+        {
+            question: "What is the purpose of an operating system?",
+            options: ["Run applications only", "Manage hardware and software resources", "Connect to the internet", "Store files"],
+            correct: 1,
+            explanation: "An OS manages hardware, software, memory, and provides a user interface."
+        },
+        {
+            question: "Which type of testing uses extreme or boundary values?",
+            options: ["Normal testing", "Boundary testing", "Erroneous testing", "Random testing"],
+            correct: 1,
+            explanation: "Boundary testing checks values at the edges of valid ranges."
+        },
+        {
+            question: "What does IDE stand for?",
+            options: ["Integrated Design Environment", "Internal Development Engine", "Integrated Development Environment", "Interactive Debug Editor"],
+            correct: 2,
+            explanation: "IDE = Integrated Development Environment \u2014 a tool for writing and testing code."
+        },
+        {
+            question: "Which law protects personal data stored on computer systems?",
+            options: ["Copyright Act", "Data Protection Act", "Computer Misuse Act", "Freedom of Information Act"],
+            correct: 1,
+            explanation: "The Data Protection Act (2018/GDPR) regulates how personal data is collected, stored, and used."
+        }
+    ]
+};
+
+// ========== STATE ==========
+let currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+let customFileName = null;
+let selectedOffer = null;
+let prizeAmount = 0;
+let prizeLabel = '';
+
+// Game state
+let totalSteps = 8;
+let playerPos = 0;   // 0 = home (bottom), higher = further from home
+let chaserPos = 0;
+let homePos = 0;      // the index representing home (always 0 after mapping)
+let questions = [];
+let currentQ = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let gameOver = false;
+
+// ========== SCREEN NAVIGATION ==========
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// ========== FILE UPLOAD ==========
+function triggerFileUpload() {
+    document.getElementById('file-input').click();
+}
+
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            const err = validateData(data);
+            if (err) {
+                alert('Invalid JSON: ' + err);
+                return;
+            }
+            currentData = data;
+            customFileName = file.name;
+            updateStatus();
+        } catch (ex) {
+            alert('Error parsing JSON file: ' + ex.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function validateData(data) {
+    if (!data.questions || !Array.isArray(data.questions)) return 'Missing "questions" array.';
+    if (data.questions.length < 7) return 'Need at least 7 questions (found ' + data.questions.length + ').';
+    for (let i = 0; i < data.questions.length; i++) {
+        const q = data.questions[i];
+        if (!q.question) return 'Question ' + (i + 1) + ' missing "question" text.';
+        if (!q.options || q.options.length !== 4) return 'Question ' + (i + 1) + ' must have exactly 4 options.';
+        if (typeof q.correct !== 'number' || q.correct < 0 || q.correct > 3) return 'Question ' + (i + 1) + ' has invalid "correct" index (must be 0-3).';
+    }
+    return null;
+}
+
+function downloadTemplate() {
+    const template = {
+        title: "My Quiz Topic",
+        questions: [
+            { question: "What is 2 + 2?", options: ["3", "4", "5", "6"], correct: 1, explanation: "2 + 2 = 4" },
+            { question: "What colour is the sky?", options: ["Red", "Green", "Blue", "Yellow"], correct: 2, explanation: "The sky appears blue due to light scattering." },
+            { question: "Sample question 3?", options: ["Option A", "Option B", "Option C", "Option D"], correct: 0, explanation: "Explanation here." },
+            { question: "Sample question 4?", options: ["Option A", "Option B", "Option C", "Option D"], correct: 1, explanation: "Explanation here." },
+            { question: "Sample question 5?", options: ["Option A", "Option B", "Option C", "Option D"], correct: 2, explanation: "Explanation here." },
+            { question: "Sample question 6?", options: ["Option A", "Option B", "Option C", "Option D"], correct: 3, explanation: "Explanation here." },
+            { question: "Sample question 7?", options: ["Option A", "Option B", "Option C", "Option D"], correct: 0, explanation: "Explanation here." }
+        ]
+    };
+    const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'chase_questions_template.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function resetToDefault() {
+    currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    customFileName = null;
+    updateStatus();
+}
+
+function updateStatus() {
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    if (customFileName) {
+        dot.className = 'status-dot custom';
+        text.textContent = 'Loaded: ' + customFileName + ' (' + currentData.questions.length + ' Qs)';
+    } else {
+        dot.className = 'status-dot';
+        text.textContent = 'Using default questions (' + currentData.questions.length + ' Qs)';
+    }
+}
+
+// ========== OFFER SCREEN ==========
+function showOfferScreen() {
+    showScreen('offer-screen');
+    selectedOffer = null;
+    document.querySelectorAll('.offer-card').forEach(c => c.classList.remove('selected'));
+    const btn = document.getElementById('accept-offer-btn');
+    btn.style.opacity = '0.4';
+    btn.style.pointerEvents = 'none';
+}
+
+function selectOffer(level, el) {
+    document.querySelectorAll('.offer-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedOffer = level;
+    const btn = document.getElementById('accept-offer-btn');
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+}
+
+// ========== START GAME ==========
+function startGame() {
+    if (!selectedOffer) return;
+
+    // Configure based on offer
+    const config = {
+        high: { steps: 8, headStart: 3, prize: 50000, label: '\u00a350,000' },
+        mid:  { steps: 8, headStart: 4, prize: 25000, label: '\u00a325,000' },
+        low:  { steps: 8, headStart: 5, prize: 5000, label: '\u00a35,000' }
+    };
+
+    const c = config[selectedOffer];
+    totalSteps = c.steps;
+    prizeAmount = c.prize;
+    prizeLabel = c.label;
+
+    // Player starts at headStart steps from home (bottom=0=home)
+    // Board positions: 0=HOME, totalSteps-1=top (CAUGHT zone)
+    // Player starts at position (headStart) from bottom => position headStart
+    // Actually let's think of it as:
+    // Position 0 = HOME (bottom)
+    // Position totalSteps-1 = top
+    // Player starts c.headStart steps above home
+    // Chaser starts at top (totalSteps-1)
+    // Player moves DOWN toward 0 (home), Chaser moves DOWN toward player
+
+    playerPos = c.headStart;
+    chaserPos = totalSteps - 1;
+
+    // Shuffle questions
+    questions = shuffleArray([...currentData.questions]);
+    currentQ = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    gameOver = false;
+
+    showScreen('game-screen');
+    document.getElementById('question-prize').textContent = 'Playing for ' + prizeLabel;
+    buildBoard();
+    showQuestion();
+}
+
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// ========== BOARD ==========
+function buildBoard() {
+    const board = document.getElementById('chase-board');
+    board.innerHTML = '';
+
+    // Build from top (caught zone) to bottom (home)
+    for (let i = totalSteps - 1; i >= 0; i--) {
+        const step = document.createElement('div');
+        step.className = 'board-step';
+        step.id = 'step-' + i;
+
+        if (i === 0) {
+            step.classList.add('home-zone');
+        }
+        if (i === totalSteps - 1) {
+            step.classList.add('caught-zone');
+        }
+
+        let labelHTML = '';
+        if (i === 0) {
+            labelHTML = '<span class="step-label">HOME</span>';
+        } else if (i === totalSteps - 1) {
+            labelHTML = '<span class="step-label">START</span>';
+        } else {
+            labelHTML = '<span class="step-number">' + i + '</span>';
+        }
+
+        step.innerHTML = labelHTML + '<div class="step-markers" id="markers-' + i + '"></div>';
+        board.appendChild(step);
+    }
+
+    updateBoard();
+}
+
+function updateBoard() {
+    // Clear all markers and highlights
+    for (let i = 0; i < totalSteps; i++) {
+        document.getElementById('markers-' + i).innerHTML = '';
+        const step = document.getElementById('step-' + i);
+        step.classList.remove('active-player', 'active-chaser');
+    }
+
+    // Place chaser
+    const chaserMarkers = document.getElementById('markers-' + chaserPos);
+    if (chaserMarkers) {
+        chaserMarkers.innerHTML += '<div class="marker marker-chaser">C</div>';
+        document.getElementById('step-' + chaserPos).classList.add('active-chaser');
+    }
+
+    // Place player (on top if same position)
+    const playerMarkers = document.getElementById('markers-' + playerPos);
+    if (playerMarkers) {
+        playerMarkers.innerHTML += '<div class="marker marker-player">P</div>';
+        document.getElementById('step-' + playerPos).classList.add('active-player');
+    }
+
+    // Update score
+    document.getElementById('score-correct').textContent = correctCount;
+    document.getElementById('score-wrong').textContent = wrongCount;
+}
+
+// ========== QUESTIONS ==========
+function showQuestion() {
+    if (gameOver) return;
+
+    // Check if we ran out of questions
+    if (currentQ >= questions.length) {
+        // Recycle: shuffle again
+        questions = shuffleArray([...currentData.questions]);
+        currentQ = 0;
+    }
+
+    const q = questions[currentQ];
+    document.getElementById('question-number').textContent = 'Question ' + (correctCount + wrongCount + 1);
+    document.getElementById('question-text').textContent = q.question;
+
+    const grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+
+    const letters = ['A', 'B', 'C', 'D'];
+    q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = '<span class="option-letter">' + letters[idx] + '</span><span>' + escapeHTML(opt) + '</span>';
+        btn.addEventListener('click', () => handleAnswer(idx));
+        grid.appendChild(btn);
+    });
+
+    // Hide feedback and next button
+    const fb = document.getElementById('feedback-area');
+    fb.className = 'feedback-area';
+    fb.innerHTML = '';
+    document.getElementById('next-btn').style.display = 'none';
+}
+
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function handleAnswer(chosenIdx) {
+    const q = questions[currentQ];
+    const correct = chosenIdx === q.correct;
+    const buttons = document.querySelectorAll('.option-btn');
+
+    // Disable all buttons
+    buttons.forEach((btn, idx) => {
+        btn.classList.add('disabled');
+        if (idx === q.correct) btn.classList.add('correct');
+        if (idx === chosenIdx && !correct) btn.classList.add('wrong');
+    });
+
+    // Chaser logic
+    let chaserCorrect = false;
+    if (correct) {
+        // Player got it right: chaser has 70% chance
+        chaserCorrect = Math.random() < 0.7;
+    } else {
+        // Player got it wrong: chaser always gets it right
+        chaserCorrect = true;
+    }
+
+    // Update positions
+    if (correct) {
+        correctCount++;
+        playerPos--; // Move toward home (0)
+    } else {
+        wrongCount++;
+    }
+
+    if (chaserCorrect) {
+        chaserPos--; // Chaser moves toward player
+    }
+
+    // Build feedback
+    const fb = document.getElementById('feedback-area');
+    let fbClass = correct ? 'correct-feedback' : 'wrong-feedback';
+    let resultText = correct ? 'Correct!' : 'Wrong!';
+    let resultClass = correct ? 'correct-text' : 'wrong-text';
+
+    let chaserText = '';
+    if (chaserCorrect) {
+        chaserText = 'The Chaser also got it right and advances one step.';
+    } else {
+        chaserText = 'The Chaser got it wrong! No advance for them.';
+    }
+
+    let explanationHTML = '';
+    if (q.explanation) {
+        explanationHTML = '<div class="explanation-text">' + escapeHTML(q.explanation) + '</div>';
+    }
+
+    fb.className = 'feedback-area show ' + fbClass;
+    fb.innerHTML = '<div class="feedback-result ' + resultClass + '">' + resultText + '</div>' +
+        '<div class="chaser-result">' + chaserText + '</div>' +
+        explanationHTML;
+
+    // Animate board update
+    setTimeout(() => {
+        updateBoard();
+    }, 300);
+
+    // Check win/lose conditions
+    setTimeout(() => {
+        if (playerPos <= 0) {
+            playerPos = 0;
+            updateBoard();
+            endGame(true);
+            return;
+        }
+        if (chaserPos <= playerPos) {
+            updateBoard();
+            endGame(false);
+            return;
+        }
+        document.getElementById('next-btn').style.display = 'inline-flex';
+    }, 600);
+}
+
+function nextQuestion() {
+    currentQ++;
+    showQuestion();
+}
+
+// ========== END GAME ==========
+function endGame(won) {
+    gameOver = true;
+
+    setTimeout(() => {
+        showScreen('results-screen');
+
+        const icon = document.getElementById('result-icon');
+        const title = document.getElementById('result-title');
+        const subtitle = document.getElementById('result-subtitle');
+        const prize = document.getElementById('result-prize');
+
+        if (won) {
+            icon.textContent = '\u{1F3C6}';
+            title.textContent = 'You Escaped!';
+            title.className = 'result-title win celebrate';
+            subtitle.textContent = 'You outran the Chaser and made it home safely!';
+            prize.textContent = prizeLabel;
+            prize.style.display = 'block';
+        } else {
+            icon.textContent = '\u{1F6A8}';
+            title.textContent = 'Caught!';
+            title.className = 'result-title lose shake';
+            subtitle.textContent = 'The Chaser caught up and took you down!';
+            prize.textContent = '\u00a30';
+            prize.style.display = 'block';
+        }
+
+        document.getElementById('stat-correct').textContent = correctCount;
+        document.getElementById('stat-wrong').textContent = wrongCount;
+        document.getElementById('stat-questions').textContent = correctCount + wrongCount;
+    }, 800);
+}
+
+function playAgain() {
+    showScreen('offer-screen');
+    selectedOffer = null;
+    document.querySelectorAll('.offer-card').forEach(c => c.classList.remove('selected'));
+    const btn = document.getElementById('accept-offer-btn');
+    btn.style.opacity = '0.4';
+    btn.style.pointerEvents = 'none';
+}
+
+function backToMenu() {
+    showScreen('intro-screen');
+}
+</script>
+</body>
+</html>

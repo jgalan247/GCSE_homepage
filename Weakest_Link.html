@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weakest Link | GCSE Computer Science Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0a0a0a;
+    --bg-card: #1a1a1a;
+    --bg-card-hover: #252525;
+    --accent-orange: #f97316;
+    --accent-amber: #f59e0b;
+    --accent-red: #dc2626;
+    --accent-gold: #eab308;
+    --accent-purple: #9333ea;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #52525b;
+    --success: #22c55e;
+    --error: #ef4444;
+    --chain-active: #f97316;
+    --chain-banked: #22c55e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 1.5rem;
+}
+
+/* Background effects */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.12;
+    z-index: 0;
+    animation: orbFloat 8s ease-in-out infinite;
+}
+.orb-1 { background: var(--accent-orange); top: -150px; left: -150px; }
+.orb-2 { background: var(--accent-amber); bottom: -150px; right: -150px; animation-delay: 3s; }
+.orb-3 { background: var(--accent-purple); top: 50%; left: 50%; animation-delay: 5s; opacity: 0.06; }
+
+@keyframes orbFloat {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* Utility */
+.screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+.screen.active { display: flex; }
+
+.home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+.home-link:hover { color: var(--accent-orange); }
+
+/* Glass card */
+.glass-card {
+    background: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(249, 115, 22, 0.15);
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-amber));
+    color: #000;
+    box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+}
+.btn-primary:hover { box-shadow: 0 6px 30px rgba(249, 115, 22, 0.5); }
+
+.btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid rgba(249, 115, 22, 0.3);
+}
+.btn-secondary:hover { border-color: var(--accent-orange); }
+
+.btn-danger {
+    background: var(--accent-red);
+    color: white;
+}
+
+.btn-small {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.95rem;
+}
+
+/* Form inputs */
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--accent-orange); }
+.form-input::placeholder { color: var(--text-muted); }
+
+/* ========================
+   INTRO SCREEN
+   ======================== */
+#intro-screen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.intro-back { position: absolute; top: 1.5rem; left: 2rem; }
+
+.intro-title {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #c2410c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+}
+
+.intro-subtitle {
+    font-size: 1.2rem;
+    color: var(--accent-amber);
+    font-weight: 500;
+    font-style: italic;
+    margin-bottom: 2.5rem;
+    opacity: 0.8;
+}
+
+.intro-panel {
+    max-width: 560px;
+    width: 100%;
+}
+
+.intro-panel .glass-card { text-align: left; }
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+.form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.player-names-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+}
+
+.file-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+}
+.status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-orange);
+}
+.status-dot.loaded { background: var(--success); }
+
+.start-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1.1rem;
+    font-size: 1.3rem;
+}
+
+/* ========================
+   GAME SCREEN
+   ======================== */
+#game-screen {
+    flex-direction: column;
+    height: 100vh;
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.5rem;
+    background: rgba(10, 10, 10, 0.9);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+}
+.game-header-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+    letter-spacing: 1px;
+}
+.game-header-info {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 1rem;
+}
+.game-header-info span { color: var(--text-secondary); }
+.game-header-info strong { color: var(--text-primary); }
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Money chain */
+.chain-panel {
+    background: rgba(10, 10, 10, 0.95);
+    border-right: 1px solid rgba(249, 115, 22, 0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0.8rem;
+    overflow-y: auto;
+}
+
+.chain-banked {
+    text-align: center;
+    padding: 0.8rem;
+    margin-bottom: 0.6rem;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 12px;
+}
+.chain-banked-label {
+    font-size: 0.8rem;
+    color: var(--success);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.chain-banked-amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--success);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.chain-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.chain-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    position: relative;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+}
+.chain-step::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: transparent;
+    transition: all 0.3s;
+    border-radius: 6px;
+}
+.chain-step.active {
+    color: #000;
+    font-weight: 800;
+    font-size: 1.25rem;
+    border-left-color: var(--accent-orange);
+    z-index: 1;
+}
+.chain-step.active::before {
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-amber));
+    box-shadow: 0 0 25px rgba(249, 115, 22, 0.5), 0 0 50px rgba(249, 115, 22, 0.2);
+}
+.chain-step.below-active {
+    color: var(--text-muted);
+    opacity: 0.4;
+}
+.chain-step span {
+    position: relative;
+    z-index: 2;
+}
+
+/* Main question area */
+.question-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+}
+
+.round-timer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+}
+
+.round-badge {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-amber);
+    background: rgba(249, 115, 22, 0.1);
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(249, 115, 22, 0.2);
+}
+
+.timer-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 100px;
+    text-align: center;
+}
+.timer-display.warning { color: var(--accent-amber); }
+.timer-display.danger { color: var(--error); animation: timerPulse 0.5s infinite; }
+
+@keyframes timerPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.current-player {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.current-player-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+}
+.current-player-name {
+    font-size: 2.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.question-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.question-text {
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+    max-width: 800px;
+}
+
+.answer-text {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--accent-amber);
+    background: rgba(249, 115, 22, 0.08);
+    border: 1px dashed rgba(249, 115, 22, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    max-width: 700px;
+    transition: opacity 0.3s;
+}
+.answer-text.hidden-answer {
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Teacher controls */
+.teacher-controls {
+    display: flex;
+    gap: 0.8rem;
+    padding: 1rem 2rem 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: rgba(10, 10, 10, 0.5);
+    border-top: 1px solid rgba(249, 115, 22, 0.1);
+}
+
+.ctrl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 80px;
+    min-width: 160px;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+}
+.ctrl-btn:hover { transform: translateY(-3px); }
+.ctrl-btn:active { transform: translateY(0); }
+
+.ctrl-correct {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: white;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+}
+.ctrl-correct:hover { box-shadow: 0 6px 30px rgba(34, 197, 94, 0.5); }
+
+.ctrl-wrong {
+    background: linear-gradient(135deg, #b91c1c, #dc2626);
+    color: white;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+}
+.ctrl-wrong:hover { box-shadow: 0 6px 30px rgba(220, 38, 38, 0.5); }
+
+.ctrl-bank {
+    background: linear-gradient(135deg, #b45309, #f59e0b);
+    color: #000;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+}
+.ctrl-bank:hover { box-shadow: 0 6px 30px rgba(245, 158, 11, 0.5); }
+
+.ctrl-secondary {
+    min-height: 50px;
+    min-width: auto;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.ctrl-secondary:hover { border-color: var(--accent-orange); color: var(--text-primary); }
+
+/* Bank flash animation */
+@keyframes bankFlash {
+    0% { background-color: rgba(34, 197, 94, 0.3); }
+    100% { background-color: transparent; }
+}
+.bank-flash { animation: bankFlash 0.6s ease-out; }
+
+/* ========================
+   VOTE OFF SCREEN
+   ======================== */
+#voteoff-screen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.voteoff-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent-orange);
+    margin-bottom: 0.3rem;
+}
+.voteoff-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.voteoff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 2rem;
+}
+
+.voteoff-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 1.2rem;
+    text-align: center;
+    transition: all 0.2s;
+}
+.voteoff-card:hover { border-color: var(--accent-red); }
+
+.voteoff-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.voteoff-stats {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+}
+.voteoff-stats .stat-good { color: var(--success); font-weight: 600; }
+.voteoff-stats .stat-bad { color: var(--error); font-weight: 600; }
+
+.voteoff-btn {
+    width: 100%;
+    padding: 0.6rem;
+    background: rgba(220, 38, 38, 0.15);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+    border-radius: 10px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.voteoff-btn:hover {
+    background: var(--accent-red);
+    color: white;
+}
+
+/* Elimination dramatic overlay */
+.elimination-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+.elimination-overlay.active { display: flex; }
+
+.elimination-name {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-red);
+    margin-bottom: 0.5rem;
+}
+.elimination-message {
+    font-size: 1.5rem;
+    color: var(--accent-amber);
+    font-style: italic;
+    margin-bottom: 2rem;
+}
+
+/* ========================
+   HEAD TO HEAD SCREEN
+   ======================== */
+#headtohead-screen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.h2h-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent-orange);
+    margin-bottom: 0.5rem;
+}
+.h2h-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.h2h-players {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.h2h-player {
+    text-align: center;
+    min-width: 160px;
+}
+.h2h-player-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+.h2h-player-score {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+}
+.h2h-vs {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+
+.h2h-question-area {
+    max-width: 750px;
+    margin-bottom: 1.5rem;
+}
+.h2h-player-turn {
+    font-size: 1rem;
+    color: var(--accent-amber);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.h2h-question-text {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+.h2h-answer-text {
+    font-size: 1.4rem;
+    color: var(--accent-amber);
+    background: rgba(249, 115, 22, 0.08);
+    border: 1px dashed rgba(249, 115, 22, 0.3);
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    display: inline-block;
+    transition: opacity 0.3s;
+}
+.h2h-answer-text.hidden-answer { opacity: 0; user-select: none; }
+
+.h2h-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* ========================
+   RESULTS SCREEN
+   ======================== */
+#results-screen {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2rem;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.results-crown { font-size: 4rem; margin-bottom: 0.3rem; }
+.results-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+}
+.results-prize {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--success);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 2rem;
+}
+
+.results-table {
+    width: 100%;
+    max-width: 900px;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+.results-table th {
+    padding: 0.8rem 1rem;
+    background: var(--bg-card);
+    color: var(--accent-orange);
+    font-weight: 700;
+    text-align: left;
+    border-bottom: 2px solid var(--accent-orange);
+}
+.results-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+}
+.results-table tr:hover td { background: rgba(249, 115, 22, 0.05); }
+.results-table .eliminated-row { opacity: 0.5; }
+.results-table .winner-row td { color: var(--accent-gold); font-weight: 600; }
+
+.results-actions { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+/* ========================
+   RESPONSIVE
+   ======================== */
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+    .chain-panel {
+        flex-direction: row;
+        border-right: none;
+        border-bottom: 1px solid rgba(249, 115, 22, 0.15);
+        padding: 0.5rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    .chain-banked { margin-bottom: 0; margin-right: 0.8rem; white-space: nowrap; }
+    .chain-list {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 0;
+    }
+    .chain-step {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    .chain-step.active { font-size: 1rem; }
+    .question-text { font-size: 1.6rem; }
+    .answer-text { font-size: 1.2rem; }
+}
+
+@media (max-width: 600px) {
+    .teacher-controls { padding: 0.8rem; gap: 0.5rem; }
+    .ctrl-btn { min-height: 65px; min-width: 110px; font-size: 1.1rem; padding: 0.8rem 1rem; }
+    .player-names-grid { grid-template-columns: 1fr; }
+    .h2h-players { flex-direction: column; gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+<div class="glow-orb orb-3"></div>
+
+<!-- ========== INTRO SCREEN ========== -->
+<div id="intro-screen" class="screen active">
+    <div class="intro-back">
+        <a href="index.html" class="home-link">&larr; Back to CS Hub</a>
+    </div>
+
+    <div class="intro-title">WEAKEST LINK</div>
+    <div class="intro-subtitle">"You ARE the weakest link... Goodbye!"</div>
+
+    <div class="intro-panel">
+        <div class="glass-card">
+            <div class="form-group">
+                <label for="num-players">Number of Players / Teams</label>
+                <input type="number" id="num-players" class="form-input" min="2" max="8" value="6" style="max-width:120px;">
+            </div>
+
+            <div class="form-group">
+                <label>Player / Team Names</label>
+                <div id="player-names-container" class="player-names-grid"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="round-time">Round Time (seconds)</label>
+                <input type="number" id="round-time" class="form-input" min="30" max="600" value="120" style="max-width:140px;">
+            </div>
+
+            <div class="form-group">
+                <label>Question Set</label>
+                <div class="file-actions">
+                    <button class="btn btn-secondary btn-small" id="btn-load-questions">Load Questions</button>
+                    <button class="btn btn-secondary btn-small" id="btn-download-template">Download Template</button>
+                    <button class="btn btn-secondary btn-small" id="btn-reset-default">Reset to Default</button>
+                </div>
+                <input type="file" id="file-input" accept=".json" style="display:none;">
+                <div class="status-indicator" id="question-status">
+                    <span class="status-dot" id="status-dot"></span>
+                    <span id="status-text">Using default questions (35 Qs)</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary start-btn" id="btn-start">Start Game</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== GAME SCREEN ========== -->
+<div id="game-screen" class="screen">
+    <div class="game-header">
+        <div class="game-header-title">WEAKEST LINK</div>
+        <div class="game-header-info">
+            <span>Round <strong id="display-round">1</strong></span>
+            <span>Qs: <strong id="display-qcount">0/35</strong></span>
+        </div>
+    </div>
+
+    <div class="game-layout">
+        <!-- Money Chain -->
+        <div class="chain-panel">
+            <div class="chain-banked">
+                <div class="chain-banked-label">Banked</div>
+                <div class="chain-banked-amount" id="chain-banked-amount">&pound;0</div>
+            </div>
+            <div class="chain-list" id="chain-list"></div>
+        </div>
+
+        <!-- Question Area -->
+        <div class="question-panel">
+            <div class="round-timer-bar">
+                <div class="round-badge" id="round-badge">Round 1</div>
+                <div class="timer-display" id="timer-display">2:00</div>
+            </div>
+
+            <div class="current-player">
+                <div class="current-player-label">Question for</div>
+                <div class="current-player-name" id="current-player-name">Player 1</div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-text" id="question-text">Loading question...</div>
+                <div class="answer-text" id="answer-text">Answer here</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Controls -->
+    <div class="teacher-controls">
+        <button class="ctrl-btn ctrl-correct" id="btn-correct" title="Mark correct, move up chain">&#10003; Correct</button>
+        <button class="ctrl-btn ctrl-wrong" id="btn-wrong" title="Mark wrong, reset chain">&#10007; Wrong</button>
+        <button class="ctrl-btn ctrl-bank" id="btn-bank" title="Bank current chain value">&#128176; Bank</button>
+        <button class="ctrl-btn ctrl-secondary" id="btn-pause">&#9208; Pause</button>
+        <button class="ctrl-btn ctrl-secondary" id="btn-toggle-answer">&#128065; Hide Answer</button>
+        <button class="ctrl-btn ctrl-secondary" id="btn-end-round">End Round</button>
+    </div>
+</div>
+
+<!-- ========== VOTE OFF SCREEN ========== -->
+<div id="voteoff-screen" class="screen">
+    <div class="voteoff-title">Vote Off</div>
+    <div class="voteoff-subtitle">Who is the weakest link? Teacher: select a player to eliminate.</div>
+    <div class="voteoff-grid" id="voteoff-grid"></div>
+    <div id="voteoff-skip-area" style="margin-top:1rem;">
+        <button class="btn btn-secondary" id="btn-skip-voteoff">Skip Vote (No elimination)</button>
+    </div>
+</div>
+
+<!-- Elimination overlay -->
+<div class="elimination-overlay" id="elimination-overlay">
+    <div class="elimination-name" id="elimination-name">Player Name</div>
+    <div class="elimination-message">You ARE the weakest link... Goodbye!</div>
+    <button class="btn btn-primary" id="btn-next-round" style="font-size:1.2rem;">Next Round</button>
+</div>
+
+<!-- ========== HEAD TO HEAD SCREEN ========== -->
+<div id="headtohead-screen" class="screen">
+    <div class="h2h-title">Head to Head</div>
+    <div class="h2h-subtitle">5 questions each &mdash; most correct wins!</div>
+
+    <div class="h2h-players">
+        <div class="h2h-player">
+            <div class="h2h-player-name" id="h2h-p1-name">Player 1</div>
+            <div class="h2h-player-score" id="h2h-p1-score" style="color:var(--accent-orange);">0</div>
+        </div>
+        <div class="h2h-vs">VS</div>
+        <div class="h2h-player">
+            <div class="h2h-player-name" id="h2h-p2-name">Player 2</div>
+            <div class="h2h-player-score" id="h2h-p2-score" style="color:var(--accent-amber);">0</div>
+        </div>
+    </div>
+
+    <div class="h2h-question-area">
+        <div class="h2h-player-turn" id="h2h-turn">Player 1's question</div>
+        <div class="h2h-question-text" id="h2h-question">Question?</div>
+        <div class="h2h-answer-text" id="h2h-answer">Answer</div>
+    </div>
+
+    <div class="h2h-controls">
+        <button class="ctrl-btn ctrl-correct" id="h2h-correct">&#10003; Correct</button>
+        <button class="ctrl-btn ctrl-wrong" id="h2h-wrong">&#10007; Wrong</button>
+        <button class="ctrl-btn ctrl-secondary" id="h2h-toggle-answer">&#128065; Hide Answer</button>
+    </div>
+</div>
+
+<!-- ========== RESULTS SCREEN ========== -->
+<div id="results-screen" class="screen">
+    <div class="results-crown">&#128081;</div>
+    <div class="results-title" id="results-winner-name">Winner!</div>
+    <div class="results-prize" id="results-prize">&pound;0</div>
+
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>Correct</th>
+                <th>Wrong</th>
+                <th>Banked</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="results-tbody"></tbody>
+    </table>
+
+    <div class="results-actions">
+        <button class="btn btn-primary" id="btn-play-again">Play Again</button>
+        <a href="index.html" class="btn btn-secondary">Back to CS Hub</a>
+    </div>
+</div>
+
+<script>
+/* ============================================================
+   DEFAULT DATA
+   ============================================================ */
+const DEFAULT_DATA = {
+    title: "GCSE Computer Science",
+    moneyChain: [100, 200, 500, 1000, 2000, 5000, 10000, 25000],
+    questions: [
+        { question: "What does CPU stand for?", answer: "Central Processing Unit" },
+        { question: "How many bits are in a byte?", answer: "8" },
+        { question: "What type of memory loses its contents when power is off?", answer: "RAM" },
+        { question: "What does HTML stand for?", answer: "HyperText Markup Language" },
+        { question: "What sorting algorithm compares adjacent pairs?", answer: "Bubble Sort" },
+        { question: "What does LAN stand for?", answer: "Local Area Network" },
+        { question: "Name the three types of programming error.", answer: "Syntax, Logic, Runtime" },
+        { question: "What number system uses base 16?", answer: "Hexadecimal" },
+        { question: "What is the binary for denary 10?", answer: "1010" },
+        { question: "What does SQL stand for?", answer: "Structured Query Language" },
+        { question: "What type of malware demands payment to unlock files?", answer: "Ransomware" },
+        { question: "Name the law that protects personal data.", answer: "Data Protection Act" },
+        { question: "What does FDE stand for in the CPU cycle?", answer: "Fetch Decode Execute" },
+        { question: "What topology connects all devices to a central hub?", answer: "Star" },
+        { question: "What does IDE stand for?", answer: "Integrated Development Environment" },
+        { question: "What data structure follows FIFO?", answer: "Queue" },
+        { question: "What data structure follows LIFO?", answer: "Stack" },
+        { question: "Name one type of secondary storage.", answer: "Hard drive / SSD / Optical / Magnetic" },
+        { question: "What does ASCII stand for?", answer: "American Standard Code for Information Interchange" },
+        { question: "How many values can 4 bits represent?", answer: "16" },
+        { question: "What protocol is used to browse the web securely?", answer: "HTTPS" },
+        { question: "What does ROM stand for?", answer: "Read Only Memory" },
+        { question: "What is the purpose of a compiler?", answer: "Translate high-level code to machine code" },
+        { question: "What is the denary value of binary 11111111?", answer: "255" },
+        { question: "What type of testing uses invalid data?", answer: "Erroneous testing" },
+        { question: "Name the law that prevents unauthorized computer access.", answer: "Computer Misuse Act" },
+        { question: "What does WAN stand for?", answer: "Wide Area Network" },
+        { question: "What is meant by open source software?", answer: "Source code is freely available" },
+        { question: "What searching algorithm requires sorted data?", answer: "Binary Search" },
+        { question: "What does GPU stand for?", answer: "Graphics Processing Unit" },
+        { question: "Name one advantage of a mesh network topology.", answer: "No single point of failure / redundancy" },
+        { question: "What is the hexadecimal value of binary 1111?", answer: "F" },
+        { question: "What is the purpose of defragmentation?", answer: "Rearrange file fragments to improve access speed" },
+        { question: "What does Boolean mean in data types?", answer: "True or False" },
+        { question: "What unit of measurement is 1024 bytes?", answer: "Kilobyte" }
+    ]
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+let customFileName = null;
+
+let players = [];           // { name, correct, wrong, banked, eliminated, eliminatedRound }
+let activePlayers = [];     // indices into players[]
+let currentPlayerIdx = 0;   // index into activePlayers
+let questionPool = [];      // shuffled questions
+let questionIndex = 0;
+let round = 1;
+let chainPosition = 0;     // 0 = nothing, 1..8 = chain steps
+let totalBanked = 0;
+let roundTime = 120;
+let timeLeft = 120;
+let timerInterval = null;
+let timerPaused = false;
+let answerVisible = true;
+
+// Head-to-head state
+let h2hPlayers = [];        // two player indices
+let h2hScores = [0, 0];
+let h2hTurn = 0;            // 0 or 1
+let h2hQuestionNum = 0;     // 0..9 (5 each)
+let h2hAnswerVisible = true;
+
+/* ============================================================
+   HELPER — format money
+   ============================================================ */
+function formatMoney(val) {
+    return '\u00A3' + val.toLocaleString();
+}
+
+/* ============================================================
+   SCREEN MANAGEMENT
+   ============================================================ */
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+/* ============================================================
+   INTRO SCREEN LOGIC
+   ============================================================ */
+const numPlayersInput = document.getElementById('num-players');
+const playerNamesContainer = document.getElementById('player-names-container');
+
+function buildPlayerInputs() {
+    const n = Math.max(2, Math.min(8, parseInt(numPlayersInput.value) || 6));
+    playerNamesContainer.innerHTML = '';
+    for (let i = 0; i < n; i++) {
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'form-input';
+        inp.placeholder = 'Player ' + (i + 1);
+        inp.id = 'pname-' + i;
+        playerNamesContainer.appendChild(inp);
+    }
+}
+numPlayersInput.addEventListener('change', buildPlayerInputs);
+numPlayersInput.addEventListener('input', buildPlayerInputs);
+buildPlayerInputs();
+
+// File upload
+document.getElementById('btn-load-questions').addEventListener('click', () => {
+    document.getElementById('file-input').click();
+});
+
+document.getElementById('file-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        try {
+            const data = JSON.parse(ev.target.result);
+            if (!data.questions || !Array.isArray(data.questions) || data.questions.length < 10) {
+                alert('Invalid JSON: needs a "questions" array with at least 10 entries.');
+                return;
+            }
+            for (const q of data.questions) {
+                if (!q.question || !q.answer) {
+                    alert('Each question must have "question" and "answer" fields.');
+                    return;
+                }
+            }
+            gameData = {
+                title: data.title || 'Custom Quiz',
+                moneyChain: data.moneyChain || DEFAULT_DATA.moneyChain,
+                questions: data.questions
+            };
+            customFileName = file.name;
+            document.getElementById('status-dot').classList.add('loaded');
+            document.getElementById('status-text').textContent = 'Loaded: ' + file.name + ' (' + data.questions.length + ' Qs)';
+        } catch (err) {
+            alert('Error parsing JSON: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+});
+
+// Download template
+document.getElementById('btn-download-template').addEventListener('click', () => {
+    const template = {
+        title: "My Quiz Topic",
+        moneyChain: [100, 200, 500, 1000, 2000, 5000, 10000, 25000],
+        questions: [
+            { question: "Example question 1?", answer: "Answer 1" },
+            { question: "Example question 2?", answer: "Answer 2" },
+            { question: "Example question 3?", answer: "Answer 3" },
+            { question: "Example question 4?", answer: "Answer 4" },
+            { question: "Example question 5?", answer: "Answer 5" },
+            { question: "Example question 6?", answer: "Answer 6" },
+            { question: "Example question 7?", answer: "Answer 7" },
+            { question: "Example question 8?", answer: "Answer 8" },
+            { question: "Example question 9?", answer: "Answer 9" },
+            { question: "Example question 10?", answer: "Answer 10" }
+        ]
+    };
+    const blob = new Blob([JSON.stringify(template, null, 4)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'weakest_link_template.json';
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// Reset to default
+document.getElementById('btn-reset-default').addEventListener('click', () => {
+    gameData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    customFileName = null;
+    document.getElementById('status-dot').classList.remove('loaded');
+    document.getElementById('status-text').textContent = 'Using default questions (35 Qs)';
+});
+
+// Start game
+document.getElementById('btn-start').addEventListener('click', startGame);
+
+function startGame() {
+    const n = Math.max(2, Math.min(8, parseInt(numPlayersInput.value) || 6));
+    roundTime = Math.max(30, Math.min(600, parseInt(document.getElementById('round-time').value) || 120));
+
+    players = [];
+    for (let i = 0; i < n; i++) {
+        const inp = document.getElementById('pname-' + i);
+        const name = (inp && inp.value.trim()) || ('Player ' + (i + 1));
+        players.push({ name, correct: 0, wrong: 0, banked: 0, eliminated: false, eliminatedRound: null });
+    }
+    activePlayers = players.map((_, i) => i);
+    currentPlayerIdx = 0;
+
+    // Shuffle questions
+    questionPool = [...gameData.questions];
+    for (let i = questionPool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questionPool[i], questionPool[j]] = [questionPool[j], questionPool[i]];
+    }
+    questionIndex = 0;
+
+    round = 1;
+    chainPosition = 0;
+    totalBanked = 0;
+    answerVisible = true;
+
+    buildChainUI();
+    startRound();
+    showScreen('game-screen');
+}
+
+/* ============================================================
+   MONEY CHAIN UI
+   ============================================================ */
+function buildChainUI() {
+    const list = document.getElementById('chain-list');
+    list.innerHTML = '';
+    const chain = gameData.moneyChain;
+    // Render top to bottom (highest first)
+    for (let i = chain.length - 1; i >= 0; i--) {
+        const step = document.createElement('div');
+        step.className = 'chain-step';
+        step.dataset.level = i + 1;
+        step.innerHTML = '<span>' + formatMoney(chain[i]) + '</span>';
+        list.appendChild(step);
+    }
+    updateChainUI();
+}
+
+function updateChainUI() {
+    document.getElementById('chain-banked-amount').textContent = formatMoney(totalBanked);
+    const steps = document.querySelectorAll('.chain-step');
+    steps.forEach(step => {
+        const level = parseInt(step.dataset.level);
+        step.classList.remove('active', 'below-active');
+        if (level === chainPosition) {
+            step.classList.add('active');
+        } else if (level < chainPosition) {
+            step.classList.add('below-active');
+        }
+    });
+}
+
+function getCurrentChainValue() {
+    if (chainPosition === 0) return 0;
+    return gameData.moneyChain[chainPosition - 1] || 0;
+}
+
+/* ============================================================
+   ROUND LOGIC
+   ============================================================ */
+function startRound() {
+    timeLeft = roundTime;
+    timerPaused = false;
+    chainPosition = 0;
+    document.getElementById('display-round').textContent = round;
+    document.getElementById('round-badge').textContent = 'Round ' + round;
+    document.getElementById('btn-pause').innerHTML = '&#9208; Pause';
+    updateChainUI();
+    updateTimerDisplay();
+    loadNextQuestion();
+    startTimer();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        if (timerPaused) return;
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            endRound();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(Math.max(0, timeLeft) / 60);
+    const s = Math.max(0, timeLeft) % 60;
+    const display = document.getElementById('timer-display');
+    display.textContent = m + ':' + String(s).padStart(2, '0');
+    display.classList.remove('warning', 'danger');
+    if (timeLeft <= 10) display.classList.add('danger');
+    else if (timeLeft <= 30) display.classList.add('warning');
+}
+
+function loadNextQuestion() {
+    if (questionIndex >= questionPool.length) {
+        // Out of questions
+        clearInterval(timerInterval);
+        goToFinale();
+        return;
+    }
+
+    const pIdx = activePlayers[currentPlayerIdx];
+    document.getElementById('current-player-name').textContent = players[pIdx].name;
+
+    const q = questionPool[questionIndex];
+    document.getElementById('question-text').textContent = q.question;
+    document.getElementById('answer-text').textContent = q.answer;
+
+    // Reset answer visibility
+    answerVisible = true;
+    document.getElementById('answer-text').classList.remove('hidden-answer');
+    document.getElementById('btn-toggle-answer').innerHTML = '&#128065; Hide Answer';
+
+    document.getElementById('display-qcount').textContent = (questionIndex + 1) + '/' + questionPool.length;
+}
+
+function advancePlayer() {
+    currentPlayerIdx = (currentPlayerIdx + 1) % activePlayers.length;
+}
+
+/* ============================================================
+   TEACHER CONTROLS
+   ============================================================ */
+document.getElementById('btn-correct').addEventListener('click', () => {
+    const pIdx = activePlayers[currentPlayerIdx];
+    players[pIdx].correct++;
+    chainPosition = Math.min(chainPosition + 1, gameData.moneyChain.length);
+    updateChainUI();
+    questionIndex++;
+    advancePlayer();
+    loadNextQuestion();
+});
+
+document.getElementById('btn-wrong').addEventListener('click', () => {
+    const pIdx = activePlayers[currentPlayerIdx];
+    players[pIdx].wrong++;
+    chainPosition = 0;
+    updateChainUI();
+    questionIndex++;
+    advancePlayer();
+    loadNextQuestion();
+});
+
+document.getElementById('btn-bank').addEventListener('click', () => {
+    const val = getCurrentChainValue();
+    if (val > 0) {
+        const pIdx = activePlayers[currentPlayerIdx];
+        totalBanked += val;
+        players[pIdx].banked += val;
+        chainPosition = 0;
+        updateChainUI();
+        // Flash effect
+        const bankedEl = document.querySelector('.chain-banked');
+        bankedEl.classList.remove('bank-flash');
+        void bankedEl.offsetWidth; // trigger reflow
+        bankedEl.classList.add('bank-flash');
+    }
+    // Bank does not advance question or player — it just banks before answering
+    // The next click of Correct/Wrong will advance
+});
+
+document.getElementById('btn-pause').addEventListener('click', () => {
+    timerPaused = !timerPaused;
+    document.getElementById('btn-pause').innerHTML = timerPaused ? '&#9654; Resume' : '&#9208; Pause';
+});
+
+document.getElementById('btn-toggle-answer').addEventListener('click', () => {
+    answerVisible = !answerVisible;
+    document.getElementById('answer-text').classList.toggle('hidden-answer', !answerVisible);
+    document.getElementById('btn-toggle-answer').innerHTML = answerVisible ? '&#128065; Hide Answer' : '&#128065; Show Answer';
+});
+
+document.getElementById('btn-end-round').addEventListener('click', () => {
+    // Bank any current chain value before ending
+    const val = getCurrentChainValue();
+    if (val > 0) {
+        totalBanked += val;
+        chainPosition = 0;
+        updateChainUI();
+    }
+    clearInterval(timerInterval);
+    endRound();
+});
+
+/* ============================================================
+   END OF ROUND / VOTE OFF
+   ============================================================ */
+function endRound() {
+    clearInterval(timerInterval);
+
+    // If only 2 players left, go to head-to-head
+    if (activePlayers.length <= 2) {
+        goToFinale();
+        return;
+    }
+
+    // Show vote off screen
+    showVoteOff();
+}
+
+function showVoteOff() {
+    const grid = document.getElementById('voteoff-grid');
+    grid.innerHTML = '';
+
+    activePlayers.forEach(pIdx => {
+        const p = players[pIdx];
+        const card = document.createElement('div');
+        card.className = 'voteoff-card';
+
+        const totalAnswered = p.correct + p.wrong;
+        const pct = totalAnswered > 0 ? Math.round((p.correct / totalAnswered) * 100) : 0;
+
+        card.innerHTML =
+            '<div class="voteoff-name">' + p.name + '</div>' +
+            '<div class="voteoff-stats">' +
+                'Correct: <span class="stat-good">' + p.correct + '</span><br>' +
+                'Wrong: <span class="stat-bad">' + p.wrong + '</span><br>' +
+                'Accuracy: ' + pct + '%<br>' +
+                'Banked: ' + formatMoney(p.banked) +
+            '</div>' +
+            '<button class="voteoff-btn" data-pidx="' + pIdx + '">Vote Off</button>';
+        grid.appendChild(card);
+    });
+
+    grid.querySelectorAll('.voteoff-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const pIdx = parseInt(btn.dataset.pidx);
+            eliminatePlayer(pIdx);
+        });
+    });
+
+    showScreen('voteoff-screen');
+}
+
+document.getElementById('btn-skip-voteoff').addEventListener('click', () => {
+    // Skip vote, go to next round
+    round++;
+    if (activePlayers.length <= 2 || questionIndex >= questionPool.length) {
+        goToFinale();
+    } else {
+        startRound();
+        showScreen('game-screen');
+    }
+});
+
+function eliminatePlayer(pIdx) {
+    players[pIdx].eliminated = true;
+    players[pIdx].eliminatedRound = round;
+    activePlayers = activePlayers.filter(i => i !== pIdx);
+
+    // Reset current player index to be safe
+    currentPlayerIdx = 0;
+
+    // Show dramatic elimination
+    document.getElementById('elimination-name').textContent = players[pIdx].name;
+    document.getElementById('elimination-overlay').classList.add('active');
+}
+
+document.getElementById('btn-next-round').addEventListener('click', () => {
+    document.getElementById('elimination-overlay').classList.remove('active');
+    round++;
+
+    if (activePlayers.length <= 2 || questionIndex >= questionPool.length) {
+        goToFinale();
+    } else {
+        startRound();
+        showScreen('game-screen');
+    }
+});
+
+/* ============================================================
+   HEAD TO HEAD (FINALE)
+   ============================================================ */
+function goToFinale() {
+    clearInterval(timerInterval);
+
+    if (activePlayers.length < 2) {
+        // Only one player left, they win
+        showResults(activePlayers[0]);
+        return;
+    }
+
+    // Check if we have enough questions for head-to-head
+    const remainingQs = questionPool.length - questionIndex;
+    if (remainingQs < 2) {
+        // Not enough questions, determine winner by stats
+        const p1 = players[activePlayers[0]];
+        const p2 = players[activePlayers[1]];
+        const winner = p1.correct >= p2.correct ? activePlayers[0] : activePlayers[1];
+        showResults(winner);
+        return;
+    }
+
+    h2hPlayers = [activePlayers[0], activePlayers[1]];
+    h2hScores = [0, 0];
+    h2hTurn = 0;
+    h2hQuestionNum = 0;
+    h2hAnswerVisible = true;
+
+    document.getElementById('h2h-p1-name').textContent = players[h2hPlayers[0]].name;
+    document.getElementById('h2h-p2-name').textContent = players[h2hPlayers[1]].name;
+    document.getElementById('h2h-p1-score').textContent = '0';
+    document.getElementById('h2h-p2-score').textContent = '0';
+
+    loadH2HQuestion();
+    showScreen('headtohead-screen');
+}
+
+function loadH2HQuestion() {
+    if (h2hQuestionNum >= 10 || questionIndex >= questionPool.length) {
+        // End of head-to-head
+        endH2H();
+        return;
+    }
+
+    const playerIdx = h2hPlayers[h2hTurn];
+    document.getElementById('h2h-turn').textContent = players[playerIdx].name + "'s question";
+
+    const q = questionPool[questionIndex];
+    document.getElementById('h2h-question').textContent = q.question;
+    document.getElementById('h2h-answer').textContent = q.answer;
+
+    h2hAnswerVisible = true;
+    document.getElementById('h2h-answer').classList.remove('hidden-answer');
+    document.getElementById('h2h-toggle-answer').innerHTML = '&#128065; Hide Answer';
+}
+
+document.getElementById('h2h-correct').addEventListener('click', () => {
+    h2hScores[h2hTurn]++;
+    const playerIdx = h2hPlayers[h2hTurn];
+    players[playerIdx].correct++;
+    document.getElementById('h2h-p1-score').textContent = h2hScores[0];
+    document.getElementById('h2h-p2-score').textContent = h2hScores[1];
+    h2hAdvance();
+});
+
+document.getElementById('h2h-wrong').addEventListener('click', () => {
+    const playerIdx = h2hPlayers[h2hTurn];
+    players[playerIdx].wrong++;
+    h2hAdvance();
+});
+
+document.getElementById('h2h-toggle-answer').addEventListener('click', () => {
+    h2hAnswerVisible = !h2hAnswerVisible;
+    document.getElementById('h2h-answer').classList.toggle('hidden-answer', !h2hAnswerVisible);
+    document.getElementById('h2h-toggle-answer').innerHTML = h2hAnswerVisible ? '&#128065; Hide Answer' : '&#128065; Show Answer';
+});
+
+function h2hAdvance() {
+    h2hQuestionNum++;
+    questionIndex++;
+    h2hTurn = h2hQuestionNum % 2;
+    loadH2HQuestion();
+}
+
+function endH2H() {
+    let winnerIdx;
+    if (h2hScores[0] > h2hScores[1]) {
+        winnerIdx = h2hPlayers[0];
+    } else if (h2hScores[1] > h2hScores[0]) {
+        winnerIdx = h2hPlayers[1];
+    } else {
+        // Tie — sudden death
+        if (questionIndex < questionPool.length) {
+            // Continue with one more question each until tie breaks
+            // For simplicity, give it to the player with better overall accuracy
+            const a1 = players[h2hPlayers[0]].correct / Math.max(1, players[h2hPlayers[0]].correct + players[h2hPlayers[0]].wrong);
+            const a2 = players[h2hPlayers[1]].correct / Math.max(1, players[h2hPlayers[1]].correct + players[h2hPlayers[1]].wrong);
+            winnerIdx = a1 >= a2 ? h2hPlayers[0] : h2hPlayers[1];
+        } else {
+            winnerIdx = h2hPlayers[0];
+        }
+    }
+    showResults(winnerIdx);
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function showResults(winnerIdx) {
+    document.getElementById('results-winner-name').textContent = players[winnerIdx].name + ' Wins!';
+    document.getElementById('results-prize').textContent = formatMoney(totalBanked);
+
+    const tbody = document.getElementById('results-tbody');
+    tbody.innerHTML = '';
+
+    // Sort: winner first, then by correct desc, eliminated last
+    const sorted = players.map((p, i) => ({ ...p, idx: i }));
+    sorted.sort((a, b) => {
+        if (a.idx === winnerIdx) return -1;
+        if (b.idx === winnerIdx) return 1;
+        if (a.eliminated && !b.eliminated) return 1;
+        if (!a.eliminated && b.eliminated) return -1;
+        return b.correct - a.correct;
+    });
+
+    sorted.forEach((p, rank) => {
+        const tr = document.createElement('tr');
+        if (p.eliminated) tr.className = 'eliminated-row';
+        if (p.idx === winnerIdx) tr.className = 'winner-row';
+
+        let status = 'Active';
+        if (p.idx === winnerIdx) status = 'Winner';
+        else if (p.eliminated) status = 'Eliminated R' + p.eliminatedRound;
+        else status = 'Runner-up';
+
+        tr.innerHTML =
+            '<td>' + (rank + 1) + '</td>' +
+            '<td>' + p.name + '</td>' +
+            '<td>' + p.correct + '</td>' +
+            '<td>' + p.wrong + '</td>' +
+            '<td>' + formatMoney(p.banked) + '</td>' +
+            '<td>' + status + '</td>';
+        tbody.appendChild(tr);
+    });
+
+    showScreen('results-screen');
+}
+
+document.getElementById('btn-play-again').addEventListener('click', () => {
+    showScreen('intro-screen');
+});
+</script>
+</body>
+</html>

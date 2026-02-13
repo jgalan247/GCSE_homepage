@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blockbusters | GCSE Computer Science Revision</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-dark: #0a0e17;
+    --bg-card: #12182a;
+    --bg-card-hover: #1a2340;
+    --accent-gold: #f59e0b;
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-purple: #a855f7;
+    --text-primary: #ffffff;
+    --text-secondary: #8892b0;
+    --text-muted: #5a6380;
+    --success: #00f5a0;
+    --error: #ff4757;
+    --hex-default: #1e293b;
+    --hex-claimed: #f59e0b;
+    --hex-blocked: #374151;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background effects */
+.bg-grid {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image:
+        linear-gradient(rgba(245, 158, 11, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.glow-orb {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.12;
+    z-index: 0;
+    animation: floatOrb 8s ease-in-out infinite;
+}
+.orb-1 { background: var(--accent-gold); top: -150px; left: -150px; }
+.orb-2 { background: var(--accent-blue); bottom: -150px; right: -150px; }
+.orb-3 { background: var(--accent-purple); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 3s; }
+
+@keyframes floatOrb {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-30px); }
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0 1.5rem;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+.back-link:hover { color: var(--accent-gold); }
+
+.header-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Screens */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Intro screen */
+.intro-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    backdrop-filter: blur(20px);
+    text-align: center;
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.intro-card h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #fbbf24 50%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.intro-card .subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.intro-card .instructions {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: left;
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+}
+
+.instructions strong { color: var(--accent-gold); }
+
+.btn-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 0.6rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--accent-gold);
+}
+.btn-outline:hover {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--accent-gold);
+}
+
+.btn-secondary {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--accent-blue);
+}
+.btn-secondary:hover {
+    background: rgba(59, 130, 246, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-gold), #d97706);
+    color: #000;
+    font-size: 1.05rem;
+    padding: 0.8rem 2.5rem;
+    border-radius: 0.75rem;
+    margin-top: 0.5rem;
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.btn-reset {
+    background: rgba(255, 71, 87, 0.1);
+    border: 1px solid rgba(255, 71, 87, 0.25);
+    color: var(--error);
+}
+.btn-reset:hover {
+    background: rgba(255, 71, 87, 0.2);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 2rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+}
+
+.status-indicator.custom .status-dot { background: var(--accent-cyan); }
+
+/* Game screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.game-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.game-stats {
+    display: flex;
+    gap: 1.25rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.stat-label { color: var(--text-muted); }
+.stat-value { color: var(--accent-gold); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+/* Hex grid */
+.hex-grid-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+}
+
+.hex-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.hex-row {
+    display: flex;
+    gap: 8px;
+}
+
+.hex-row.offset {
+    margin-left: 52px;
+}
+
+/* Edge indicators */
+.edge-label {
+    position: absolute;
+    color: var(--accent-blue);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+.edge-label.left {
+    left: -28px;
+    top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.edge-label.right {
+    right: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hex {
+    width: 90px;
+    height: 90px;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: var(--hex-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.hex-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.hex-letter {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hex:hover:not(.claimed):not(.blocked) {
+    background: var(--bg-card-hover);
+    transform: scale(1.08);
+    z-index: 2;
+}
+
+.hex.claimed {
+    background: var(--hex-claimed);
+    cursor: default;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+.hex.claimed .hex-letter { color: #000; }
+
+.hex.blocked {
+    background: var(--hex-blocked);
+    cursor: default;
+    opacity: 0.6;
+}
+.hex.blocked .hex-letter { color: var(--text-muted); }
+
+.hex.edge-left {
+    box-shadow: inset 4px 0 0 var(--accent-blue);
+}
+.hex.edge-right {
+    box-shadow: inset -4px 0 0 var(--accent-blue);
+}
+
+.hex.claimed.edge-left {
+    box-shadow: inset 4px 0 0 var(--accent-blue), 0 0 20px rgba(245, 158, 11, 0.3);
+}
+.hex.claimed.edge-right {
+    box-shadow: inset -4px 0 0 var(--accent-blue), 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.hex.winning-path {
+    animation: pulseGold 1s ease-in-out infinite;
+}
+
+@keyframes pulseGold {
+    0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(245, 158, 11, 0.8), 0 0 60px rgba(245, 158, 11, 0.3); }
+}
+
+/* Question modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    animation: modalIn 0.3s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.9) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--accent-gold), #d97706);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #000;
+    margin-bottom: 1rem;
+}
+
+.modal-question {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.modal-input-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.modal-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--bg-dark);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.modal-input:focus {
+    border-color: var(--accent-gold);
+}
+
+.modal-submit {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--accent-gold), #d97706);
+    border: none;
+    border-radius: 0.5rem;
+    color: #000;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.modal-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.modal-feedback {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: none;
+}
+
+.modal-feedback.correct {
+    display: block;
+    background: rgba(0, 245, 160, 0.1);
+    border: 1px solid rgba(0, 245, 160, 0.3);
+    color: var(--success);
+}
+
+.modal-feedback.wrong {
+    display: block;
+    background: rgba(255, 71, 87, 0.1);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    color: var(--error);
+}
+
+/* Results screen */
+.results-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 1rem;
+    padding: 2.5rem;
+    backdrop-filter: blur(20px);
+    text-align: center;
+    max-width: 550px;
+    margin: 2rem auto;
+}
+
+.results-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.results-card h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.results-card h2.win {
+    background: linear-gradient(135deg, var(--accent-gold), #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.results-card h2.lose {
+    color: var(--text-secondary);
+}
+
+.results-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+.results-stat {
+    text-align: center;
+}
+
+.results-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent-gold);
+}
+
+.results-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.results-btn-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+/* Confetti */
+.confetti-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+}
+
+.confetti-piece {
+    position: absolute;
+    top: -20px;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .hex {
+        width: 65px;
+        height: 65px;
+    }
+    .hex-letter { font-size: 1.3rem; }
+    .hex-row.offset { margin-left: 38px; }
+    .hex-row { gap: 5px; }
+    .hex-grid { gap: 4px; }
+    .intro-card { padding: 1.5rem; }
+    .intro-card h1 { font-size: 2rem; }
+    .edge-label { display: none; }
+    .container { padding: 1rem; }
+}
+
+/* Hidden file input */
+#fileInput { display: none; }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+<div class="glow-orb orb-3"></div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            CS Hub
+        </a>
+        <div class="header-title">Blockbusters</div>
+        <div style="width: 70px;"></div>
+    </div>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="screen active">
+        <div class="intro-card">
+            <h1>Blockbusters</h1>
+            <p class="subtitle">GCSE Computer Science Revision</p>
+
+            <div class="instructions">
+                <strong>How to play:</strong> Click a hexagon to answer a question. Get it right to claim the hex in <strong>gold</strong>. Get it wrong and it turns grey.
+                <br><br>
+                <strong>Goal:</strong> Connect a path of gold hexes from the <strong>left side</strong> to the <strong>right side</strong> of the board. Claimed hexes must be adjacent to form a connected path.
+                <br><br>
+                You can load your own question sets using a JSON file, or play with the built-in GCSE CS A-Z questions.
+            </div>
+
+            <div class="btn-row">
+                <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 10v3a1 1 0 01-1 1H3a1 1 0 01-1-1v-3M11 5L8 2 5 5M8 2v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Load Questions
+                </button>
+                <button class="btn btn-secondary" onclick="downloadTemplate()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 10v3a1 1 0 01-1 1H3a1 1 0 01-1-1v-3M5 7l3 3 3-3M8 2v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Download Template
+                </button>
+                <button class="btn btn-reset" onclick="resetToDefault()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 0111.3-2.8M14 2v3.2h-3.2M14 8a6 6 0 01-11.3 2.8M2 14v-3.2h3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Reset to Default
+                </button>
+            </div>
+
+            <input type="file" id="fileInput" accept=".json" onchange="loadQuestions(event)">
+
+            <div id="status-indicator" class="status-indicator">
+                <span class="status-dot"></span>
+                <span id="status-text">Using default questions</span>
+            </div>
+
+            <br>
+            <button class="btn btn-primary" onclick="startGame()">Start Game</button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <div class="game-title" id="game-topic">GCSE CS A-Z</div>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Score:</span>
+                    <span class="stat-value" id="score-display">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Answered:</span>
+                    <span class="stat-value" id="answered-display">0 / 20</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hex-grid-wrapper">
+            <div class="hex-grid" id="hex-grid">
+                <span class="edge-label left">START</span>
+                <span class="edge-label right">FINISH</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <div class="results-card">
+            <div class="results-icon" id="results-icon"></div>
+            <h2 id="results-title"></h2>
+            <p id="results-subtitle" style="color: var(--text-secondary); margin-bottom: 0.5rem;"></p>
+
+            <div class="results-stats">
+                <div class="results-stat">
+                    <div class="results-stat-value" id="results-score">0</div>
+                    <div class="results-stat-label">Score</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="results-correct">0</div>
+                    <div class="results-stat-label">Correct</div>
+                </div>
+                <div class="results-stat">
+                    <div class="results-stat-value" id="results-total">0</div>
+                    <div class="results-stat-label">Answered</div>
+                </div>
+            </div>
+
+            <div class="results-btn-row">
+                <button class="btn btn-primary" onclick="startGame()">Play Again</button>
+                <button class="btn btn-outline" onclick="showScreen('intro-screen')">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Question Modal -->
+<div class="modal-overlay" id="question-modal">
+    <div class="modal">
+        <div class="modal-letter" id="modal-letter"></div>
+        <p class="modal-question" id="modal-question"></p>
+        <div class="modal-input-row" id="modal-input-row">
+            <input type="text" class="modal-input" id="modal-input" placeholder="Type your answer..." autocomplete="off">
+            <button class="modal-submit" id="modal-submit" onclick="submitAnswer()">Go</button>
+        </div>
+        <div class="modal-feedback" id="modal-feedback"></div>
+    </div>
+</div>
+
+<!-- Confetti container -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ── Default Questions ──
+const DEFAULT_DATA = {
+    title: "GCSE CS A-Z",
+    questions: [
+        { letter: "A", question: "What A is a step-by-step set of instructions to solve a problem?", answer: "Algorithm", accept: ["Algorithm"] },
+        { letter: "B", question: "What B is the number system that uses only 0 and 1?", answer: "Binary", accept: ["Binary"] },
+        { letter: "C", question: "What C is the hardware that processes instructions in a computer?", answer: "CPU", accept: ["CPU", "Central Processing Unit", "Processor"] },
+        { letter: "D", question: "What D is used to find and fix errors in a program?", answer: "Debugging", accept: ["Debugging", "Debug"] },
+        { letter: "E", question: "What E is the process of converting data into a coded form for security?", answer: "Encryption", accept: ["Encryption"] },
+        { letter: "F", question: "What F is the cycle of Fetch-Decode-Execute performed by the CPU?", answer: "FDE Cycle", accept: ["FDE Cycle", "FDE", "Fetch Decode Execute", "Fetch-Decode-Execute"] },
+        { letter: "G", question: "What G is the processor speed measured in hertz?", answer: "GHz", accept: ["GHz", "Gigahertz", "Clock Speed"] },
+        { letter: "H", question: "What H is the number system using base-16 with digits 0-9 and A-F?", answer: "Hexadecimal", accept: ["Hexadecimal", "Hex"] },
+        { letter: "I", question: "What I is a programming construct that checks a condition (if/else)?", answer: "If statement", accept: ["If statement", "If", "Selection", "If-else"] },
+        { letter: "J", question: "What J is a high-level programming language often used for web apps?", answer: "Java", accept: ["Java", "JavaScript"] },
+        { letter: "K", question: "What K is approximately 1000 bytes of data storage?", answer: "Kilobyte", accept: ["Kilobyte", "KB"] },
+        { letter: "L", question: "What L is a programming construct that repeats code (for/while)?", answer: "Loop", accept: ["Loop", "Iteration"] },
+        { letter: "M", question: "What M is software designed to damage or gain unauthorized access?", answer: "Malware", accept: ["Malware"] },
+        { letter: "N", question: "What N is two or more computers connected together to share resources?", answer: "Network", accept: ["Network"] },
+        { letter: "O", question: "What O is the software that manages hardware and provides a user interface?", answer: "Operating System", accept: ["Operating System", "OS"] },
+        { letter: "P", question: "What P is a set of rules governing data transmission between devices?", answer: "Protocol", accept: ["Protocol"] },
+        { letter: "Q", question: "What Q is a data structure that follows First In First Out?", answer: "Queue", accept: ["Queue"] },
+        { letter: "R", question: "What R is the type of memory that loses its contents when powered off?", answer: "RAM", accept: ["RAM", "Random Access Memory"] },
+        { letter: "S", question: "What S is a reusable block of code that performs a specific task?", answer: "Subroutine", accept: ["Subroutine", "Sub", "Function", "Procedure"] },
+        { letter: "T", question: "What T is a network layout showing how devices are connected?", answer: "Topology", accept: ["Topology", "Network Topology"] },
+        { letter: "U", question: "What U is software that performs maintenance tasks like disk defragmentation?", answer: "Utility Software", accept: ["Utility Software", "Utility", "Utilities"] },
+        { letter: "V", question: "What V is used to check that data meets certain rules before processing?", answer: "Validation", accept: ["Validation"] },
+        { letter: "W", question: "What W is a type of network covering a large geographical area?", answer: "WAN", accept: ["WAN", "Wide Area Network"] },
+        { letter: "X", question: "What X is a logic gate that outputs true when inputs differ?", answer: "XOR", accept: ["XOR", "Exclusive OR"] },
+        { letter: "Y", question: "What Y represents the unit of digital storage equal to 2^80 bytes?", answer: "Yottabyte", accept: ["Yottabyte", "YB"] },
+        { letter: "Z", question: "What Z is a type of file compression that reduces storage space?", answer: "ZIP", accept: ["ZIP", "Zip"] }
+    ]
+};
+
+// ── State ──
+let currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+let grid = [];         // 4 rows x 5 cols: { letter, state: 'default'|'claimed'|'blocked', row, col }
+let hexQuestions = {};  // map of "row,col" -> question object
+let score = 0;
+let answered = 0;
+let correctCount = 0;
+let currentHex = null;
+let gameOver = false;
+let customFileName = null;
+
+// ── Screen Management ──
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// ── File Loading ──
+function loadQuestions(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (!validateData(data)) {
+                alert('Invalid JSON format. Each question needs "letter", "question", and "answer" fields.');
+                return;
+            }
+            currentData = data;
+            customFileName = file.name;
+            updateStatus();
+        } catch (err) {
+            alert('Error reading JSON file: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function validateData(data) {
+    if (!data.questions || !Array.isArray(data.questions) || data.questions.length === 0) return false;
+    return data.questions.every(q => q.letter && q.question && q.answer);
+}
+
+function downloadTemplate() {
+    const template = {
+        title: "My Question Set",
+        questions: [
+            { letter: "A", question: "What A is...?", answer: "Answer", accept: ["Answer", "Alt Answer"] },
+            { letter: "B", question: "What B is...?", answer: "Answer", accept: ["Answer"] },
+            { letter: "C", question: "What C is...?", answer: "Answer", accept: ["Answer"] }
+        ]
+    };
+    const blob = new Blob([JSON.stringify(template, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'blockbusters-template.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function resetToDefault() {
+    currentData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    customFileName = null;
+    updateStatus();
+}
+
+function updateStatus() {
+    const indicator = document.getElementById('status-indicator');
+    const text = document.getElementById('status-text');
+    if (customFileName) {
+        indicator.classList.add('custom');
+        text.textContent = 'Loaded: ' + customFileName;
+    } else {
+        indicator.classList.remove('custom');
+        text.textContent = 'Using default questions';
+    }
+}
+
+// ── Game Setup ──
+function startGame() {
+    score = 0;
+    answered = 0;
+    correctCount = 0;
+    gameOver = false;
+    currentHex = null;
+
+    // Build letter pool from available questions
+    const questionsByLetter = {};
+    currentData.questions.forEach(q => {
+        const letter = q.letter.toUpperCase().charAt(0);
+        if (!questionsByLetter[letter]) questionsByLetter[letter] = [];
+        questionsByLetter[letter].push(q);
+    });
+
+    const availableLetters = Object.keys(questionsByLetter);
+    if (availableLetters.length < 5) {
+        alert('You need at least 5 different letters in your question set to fill the grid.');
+        return;
+    }
+
+    // Pick 20 letters for the grid
+    let gridLetters = [];
+    // Distribute letters as evenly as possible
+    while (gridLetters.length < 20) {
+        const shuffled = shuffleArray([...availableLetters]);
+        for (const letter of shuffled) {
+            if (gridLetters.length < 20) gridLetters.push(letter);
+        }
+    }
+    gridLetters = shuffleArray(gridLetters);
+
+    // Build grid
+    grid = [];
+    hexQuestions = {};
+    for (let r = 0; r < 4; r++) {
+        grid[r] = [];
+        for (let c = 0; c < 5; c++) {
+            const letter = gridLetters[r * 5 + c];
+            grid[r][c] = { letter, state: 'default', row: r, col: c };
+            // Randomly pick a question for this letter
+            const pool = questionsByLetter[letter];
+            hexQuestions[`${r},${c}`] = pool[Math.floor(Math.random() * pool.length)];
+        }
+    }
+
+    // Set title
+    document.getElementById('game-topic').textContent = currentData.title || 'Blockbusters';
+
+    renderGrid();
+    updateGameStats();
+    showScreen('game-screen');
+}
+
+function renderGrid() {
+    const container = document.getElementById('hex-grid');
+    // Remove old hex rows but keep edge labels
+    const labels = container.querySelectorAll('.edge-label');
+    container.innerHTML = '';
+    labels.forEach(l => container.appendChild(l));
+
+    for (let r = 0; r < 4; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'hex-row' + (r % 2 === 1 ? ' offset' : '');
+
+        for (let c = 0; c < 5; c++) {
+            const cell = grid[r][c];
+            const hex = document.createElement('div');
+            hex.className = 'hex';
+            hex.id = `hex-${r}-${c}`;
+            if (cell.state === 'claimed') hex.classList.add('claimed');
+            if (cell.state === 'blocked') hex.classList.add('blocked');
+            if (c === 0) hex.classList.add('edge-left');
+            if (c === 4) hex.classList.add('edge-right');
+
+            hex.innerHTML = `<div class="hex-inner"><span class="hex-letter">${cell.letter}</span></div>`;
+            hex.addEventListener('click', () => onHexClick(r, c));
+            rowDiv.appendChild(hex);
+        }
+        container.appendChild(rowDiv);
+    }
+}
+
+function updateHexDisplay(r, c) {
+    const hex = document.getElementById(`hex-${r}-${c}`);
+    if (!hex) return;
+    const cell = grid[r][c];
+    hex.className = 'hex';
+    if (cell.state === 'claimed') hex.classList.add('claimed');
+    if (cell.state === 'blocked') hex.classList.add('blocked');
+    if (c === 0) hex.classList.add('edge-left');
+    if (c === 4) hex.classList.add('edge-right');
+}
+
+function updateGameStats() {
+    document.getElementById('score-display').textContent = score;
+    document.getElementById('answered-display').textContent = `${answered} / 20`;
+}
+
+// ── Hex Click ──
+function onHexClick(r, c) {
+    if (gameOver) return;
+    const cell = grid[r][c];
+    if (cell.state !== 'default') return;
+
+    currentHex = { r, c };
+    const q = hexQuestions[`${r},${c}`];
+
+    document.getElementById('modal-letter').textContent = cell.letter;
+    document.getElementById('modal-question').textContent = q.question;
+    document.getElementById('modal-input').value = '';
+    document.getElementById('modal-feedback').className = 'modal-feedback';
+    document.getElementById('modal-feedback').style.display = 'none';
+    document.getElementById('modal-input-row').style.display = 'flex';
+    document.getElementById('modal-submit').disabled = false;
+
+    document.getElementById('question-modal').classList.add('active');
+    setTimeout(() => document.getElementById('modal-input').focus(), 100);
+}
+
+// ── Answer Submission ──
+function submitAnswer() {
+    if (!currentHex || gameOver) return;
+
+    const input = document.getElementById('modal-input').value.trim();
+    if (!input) return;
+
+    const { r, c } = currentHex;
+    const q = hexQuestions[`${r},${c}`];
+    const feedback = document.getElementById('modal-feedback');
+
+    const acceptList = [q.answer];
+    if (q.accept && Array.isArray(q.accept)) {
+        q.accept.forEach(a => { if (!acceptList.includes(a)) acceptList.push(a); });
+    }
+
+    const isCorrect = acceptList.some(a => a.toLowerCase().trim() === input.toLowerCase().trim());
+
+    answered++;
+
+    if (isCorrect) {
+        grid[r][c].state = 'claimed';
+        score += 10;
+        correctCount++;
+        feedback.className = 'modal-feedback correct';
+        feedback.textContent = 'Correct!';
+        feedback.style.display = 'block';
+        document.getElementById('modal-input-row').style.display = 'none';
+
+        updateHexDisplay(r, c);
+        updateGameStats();
+
+        const winPath = checkWin();
+        if (winPath) {
+            gameOver = true;
+            setTimeout(() => {
+                closeModal();
+                highlightWinPath(winPath);
+                setTimeout(() => showResults(true), 1200);
+            }, 800);
+        } else if (answered >= 20) {
+            gameOver = true;
+            setTimeout(() => {
+                closeModal();
+                setTimeout(() => showResults(false), 400);
+            }, 800);
+        } else {
+            setTimeout(() => closeModal(), 700);
+        }
+    } else {
+        grid[r][c].state = 'blocked';
+        feedback.className = 'modal-feedback wrong';
+        feedback.innerHTML = `Wrong! The answer was: <strong>${q.answer}</strong>`;
+        feedback.style.display = 'block';
+        document.getElementById('modal-input-row').style.display = 'none';
+
+        updateHexDisplay(r, c);
+        updateGameStats();
+
+        if (answered >= 20) {
+            gameOver = true;
+            setTimeout(() => {
+                closeModal();
+                setTimeout(() => showResults(false), 400);
+            }, 1500);
+        } else {
+            setTimeout(() => closeModal(), 1500);
+        }
+    }
+}
+
+function closeModal() {
+    document.getElementById('question-modal').classList.remove('active');
+    currentHex = null;
+}
+
+// ── Adjacency + BFS ──
+function getNeighbors(row, col) {
+    const neighbors = [];
+    // Same row
+    if (col > 0) neighbors.push([row, col - 1]);
+    if (col < 4) neighbors.push([row, col + 1]);
+    // Row above and below depend on parity
+    if (row % 2 === 0) {
+        // Even row
+        if (row > 0) {
+            if (col > 0) neighbors.push([row - 1, col - 1]);
+            neighbors.push([row - 1, col]);
+        }
+        if (row < 3) {
+            if (col > 0) neighbors.push([row + 1, col - 1]);
+            neighbors.push([row + 1, col]);
+        }
+    } else {
+        // Odd row
+        if (row > 0) {
+            neighbors.push([row - 1, col]);
+            if (col < 4) neighbors.push([row - 1, col + 1]);
+        }
+        if (row < 3) {
+            neighbors.push([row + 1, col]);
+            if (col < 4) neighbors.push([row + 1, col + 1]);
+        }
+    }
+    return neighbors.filter(([r, c]) => r >= 0 && r < 4 && c >= 0 && c < 5);
+}
+
+function checkWin() {
+    // BFS from all claimed hexes in column 0
+    const visited = {};
+    const parent = {};
+    const queue = [];
+
+    for (let r = 0; r < 4; r++) {
+        if (grid[r][0].state === 'claimed') {
+            const key = `${r},0`;
+            queue.push([r, 0]);
+            visited[key] = true;
+            parent[key] = null;
+        }
+    }
+
+    while (queue.length > 0) {
+        const [cr, cc] = queue.shift();
+        if (cc === 4) {
+            // Reconstruct path
+            const path = [];
+            let key = `${cr},${cc}`;
+            while (key) {
+                const [pr, pc] = key.split(',').map(Number);
+                path.push([pr, pc]);
+                key = parent[key];
+            }
+            return path;
+        }
+
+        for (const [nr, nc] of getNeighbors(cr, cc)) {
+            const nkey = `${nr},${nc}`;
+            if (!visited[nkey] && grid[nr][nc].state === 'claimed') {
+                visited[nkey] = true;
+                parent[nkey] = `${cr},${cc}`;
+                queue.push([nr, nc]);
+            }
+        }
+    }
+    return null;
+}
+
+function highlightWinPath(path) {
+    path.forEach(([r, c]) => {
+        const hex = document.getElementById(`hex-${r}-${c}`);
+        if (hex) hex.classList.add('winning-path');
+    });
+}
+
+// ── Results ──
+function showResults(won) {
+    document.getElementById('results-icon').textContent = won ? '🏆' : '🎮';
+    const title = document.getElementById('results-title');
+    title.textContent = won ? 'Path Complete!' : 'Game Over';
+    title.className = won ? 'win' : 'lose';
+    document.getElementById('results-subtitle').textContent = won
+        ? 'You connected a path from left to right!'
+        : 'You ran out of hexes without completing a path.';
+    document.getElementById('results-score').textContent = score;
+    document.getElementById('results-correct').textContent = correctCount;
+    document.getElementById('results-total').textContent = answered;
+
+    showScreen('results-screen');
+
+    if (won) launchConfetti();
+}
+
+// ── Confetti ──
+function launchConfetti() {
+    const container = document.getElementById('confetti-container');
+    container.innerHTML = '';
+    const colors = ['#f59e0b', '#3b82f6', '#06b6d4', '#a855f7', '#fbbf24', '#00f5a0', '#ff4757'];
+
+    for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 8 + 6) + 'px';
+        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        piece.style.animationDelay = (Math.random() * 1.5) + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(piece);
+    }
+
+    setTimeout(() => { container.innerHTML = ''; }, 5000);
+}
+
+// ── Utilities ──
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// ── Keyboard Handling ──
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && document.getElementById('question-modal').classList.contains('active')) {
+        const inputRow = document.getElementById('modal-input-row');
+        if (inputRow.style.display !== 'none') {
+            submitAnswer();
+        }
+    }
+    if (e.key === 'Escape' && document.getElementById('question-modal').classList.contains('active')) {
+        // Only allow escape if feedback is showing (already answered)
+        const feedback = document.getElementById('modal-feedback');
+        if (feedback.style.display === 'block') {
+            closeModal();
+        }
+    }
+});
+
+// ── Init ──
+updateStatus();
+</script>
+</body>
+</html>
