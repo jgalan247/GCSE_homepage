@@ -442,6 +442,37 @@ items.push(ch);
 });
 return{title:raw.title||'',items:items};
 }
+// Project ideas / showcase format with projectIdeas[]
+if(raw.projectIdeas&&Array.isArray(raw.projectIdeas)){
+var items=[];
+// Intro card with overview, learning objectives, and concepts
+var intro={title:'Overview',taskType:'introduction'};
+var ctx=[];
+if(raw.description)ctx.push(raw.description);
+if(raw.topic)ctx.push('Topics: '+raw.topic);
+if(raw.estimatedTime)ctx.push('Time: '+raw.estimatedTime+' minutes');
+intro.context=ctx;
+if(raw.learningObjectives&&raw.learningObjectives.length){intro.instruction='Learning Objectives:';intro.tasks=raw.learningObjectives}
+if(raw.concepts&&raw.concepts.length)intro.note='Key concepts: '+raw.concepts.map(function(c){return c.label}).join(', ');
+items.push(intro);
+// One card per project idea
+raw.projectIdeas.forEach(function(p){
+var ch={title:p.title||'Project',taskType:'project_idea'};
+ch.context=[p.description||''];
+if(p.conceptMapping){ch.instruction='How to use each concept:';ch.tasks=Object.keys(p.conceptMapping).map(function(k){return k.charAt(0).toUpperCase()+k.slice(1)+': '+p.conceptMapping[k]})}
+if(p.sampleCode&&Array.isArray(p.sampleCode))ch.sampleAnswer=p.sampleCode.join('\n');
+items.push(ch);
+});
+// Rubric card if present
+if(raw.rubric&&raw.rubric.categories){
+var rub={title:'Marking Rubric',taskType:'rubric'};
+rub.context=['Levels: '+raw.rubric.levels.join(' → ')];
+rub.tasks=[];
+raw.rubric.categories.forEach(function(cat){cat.criteria.forEach(function(c){rub.tasks.push(cat.name+': '+c)})});
+items.push(rub);
+}
+return{title:raw.title||'',items:items};
+}
 // Single simple object — wrap in array
 return{title:'',items:[raw]};
 }
