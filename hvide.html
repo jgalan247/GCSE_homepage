@@ -731,7 +731,19 @@ return '<div class="diag"><div class="diag-title">\u26a0\ufe0f Error</div>'+
 }
 
 function transpile(py){
-var lines=py.split('\n'),out=[],decl={},stack=[];
+// Preprocess: join continuation lines (multi-line lists, dicts, function calls)
+var rawLines=py.split('\n'),joined=[],depth=0,buf='';
+for(var j=0;j<rawLines.length;j++){
+var rl=rawLines[j];
+// Count bracket depth, ignoring brackets inside strings
+var stripped=rl.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g,'');
+for(var k=0;k<stripped.length;k++){if('([{'.indexOf(stripped[k])>=0)depth++;else if(')]}'.indexOf(stripped[k])>=0)depth--;}
+if(buf){buf+=' '+rl.trim()}else{buf=rl}
+if(depth<=0){joined.push(buf);buf='';depth=0}
+}
+if(buf)joined.push(buf);
+
+var lines=joined,out=[],decl={},stack=[];
 // stack tracks indent levels of open blocks
 
 function closeToIndent(targetInd){
@@ -794,10 +806,11 @@ m=o.match(/^del\s+(\w+)\[(.+)\]$/);if(m){out.push(m[1]+'.splice('+m[2]+',1);');c
 m=o.match(/^(\w+)\s*=\s*(.+)$/);
 if(m&&o.indexOf('==')===-1){
 var vn=m[1],vv=m[2];
-if(vv.indexOf('__open(')<0&&vv.indexOf('.readlines(')<0&&vv.indexOf('.readline(')<0&&vv.indexOf('__turtle.create(')<0)vv='__py('+vv+')';
+if(vv.indexOf('__open(')<0&&vv.indexOf('.readlines(')<0&&vv.indexOf('.readline(')<0&&vv.indexOf('__turtle.create(')<0&&vv.charAt(0)!=='[')vv='__py('+vv+')';
 o=(decl[vn]?'':'let ')+vn+' = '+vv;decl[vn]=1;
 }
-if(o.indexOf('__input(')>=0)o=o.replace(/__input\(/g,'await __input(');
+// Wrap await __input(...) in parens so chained methods like .lower().strip() work
+if(o.indexOf('__input(')>=0){var _io=o,_ir='',_ii=_io.indexOf('__input(');while(_ii>=0){_ir+=_io.substring(0,_ii);var _id=0,_ie=_ii+7;for(var _ij=_ie;_ij<_io.length;_ij++){if(_io[_ij]==='(')_id++;else if(_io[_ij]===')'){_id--;if(_id===0){_ie=_ij;break}}}_ir+='(await __input'+_io.substring(_ii+7,_ie+1)+')';_io=_io.substring(_ie+1);_ii=_io.indexOf('__input(')}_ir+=_io;o=_ir;}
 if(o.indexOf('time.sleep(')>=0)o=o.replace(/time\.sleep\(/g,'await time.sleep(');
 if(/\.(?:forward|back|left|right|circle|setposition|setheading|penup|pendown|pencolor|pensize|fillcolor|begin_fill|end_fill|hideturtle|showturtle|speed)\s*\(/.test(o))o='await '+o;
 o=o.replace(/(?<!function\s)(\w+)\s*\(/g,function(match,name){
