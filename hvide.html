@@ -6,6 +6,10 @@
 <script src="https://unpkg.com/blockly/blockly.min.js"></script>
 <script src="https://unpkg.com/blockly/python_compressed"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 <style>
 :root{--bg:#0e1019;--sf:#171a25;--sf2:#1d2131;--bd:#282d40;--tx:#e2e4f0;--dim:#8890a8;--ac:#5eead4;--acd:#2dd4bf;--acbg:rgba(94,234,212,.07);--code:#12141e;--or:#fb923c;--pk:#f472b6;--bl:#60a5fa;--yw:#fbbf24;--rd:#f87171;--pp:#a78bfa;--cbg:#0a0c12;--ct:#a8e6cf;--gold:#fcd34d}
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
@@ -19,13 +23,20 @@ header{display:flex;align-items:center;justify-content:space-between;padding:6px
 #canvasP{position:relative;background:#fff;overflow:hidden}#turtleCanvas{display:block;width:100%;height:100%}
 .kw{color:var(--pk)}.fn{color:var(--bl)}.st{color:var(--ac)}.cm{color:var(--dim);font-style:italic}.nb{color:var(--or)}
 .fcard{background:var(--sf);border:1px solid var(--bd);border-radius:8px;margin-bottom:10px;overflow:hidden}.fcard-head{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--sf2);border-bottom:1px solid var(--bd)}.fcard-name{font:600 11px 'JetBrains Mono',monospace;color:var(--ac)}.fcard-size{font:10px 'JetBrains Mono',monospace;color:var(--dim)}.fcard-body{padding:10px;font:11px/1.6 'JetBrains Mono',monospace;color:var(--tx);white-space:pre-wrap;max-height:260px;overflow:auto;background:var(--code)}.fcard-acts{display:flex;gap:4px}.fcard-btn{font:600 9px 'DM Sans',sans-serif;padding:2px 8px;border-radius:4px;border:1px solid var(--bd);background:var(--sf);color:var(--dim);cursor:pointer}.fcard-btn:hover{border-color:var(--ac);color:var(--ac)}.blocklyToolboxDiv{background:var(--sf)!important}.blocklyFlyoutBackground{fill:var(--sf2)!important}.blocklyMainBackground{fill:var(--bg)!important}
+.editor-toggle{display:flex;align-items:center;gap:2px;background:var(--sf2);border:1px solid var(--bd);border-radius:16px;padding:2px;margin-right:6px}.editor-toggle .chip{border:0;background:0;border-radius:14px;padding:3px 10px}.editor-toggle .chip.on{background:var(--acbg);color:var(--ac);border:1px solid rgba(94,234,212,.25)}
+#cmWrap{position:absolute;inset:0;z-index:5;display:none}#cmWrap .CodeMirror{height:100%;font-family:'JetBrains Mono',monospace;font-size:13px}
+.challenge-card{padding:16px}.challenge-card .ch-title{font:700 15px 'Fraunces',serif;color:var(--ac);margin-bottom:4px}.challenge-card .ch-marks{display:inline-block;font:700 10px 'JetBrains Mono',monospace;background:var(--acbg);color:var(--ac);border:1px solid rgba(94,234,212,.18);padding:2px 8px;border-radius:10px;margin-bottom:10px}.challenge-card .ch-context{font:13px/1.6 'DM Sans',sans-serif;color:var(--dim);margin-bottom:10px}.challenge-card .ch-instruction{font:600 13px/1.5 'DM Sans',sans-serif;color:var(--tx);margin-bottom:6px}.challenge-card .ch-tasks{list-style:none;padding:0;margin:0 0 10px}.challenge-card .ch-tasks li{font:13px/1.6 'DM Sans',sans-serif;color:var(--tx);padding:4px 0 4px 20px;position:relative}.challenge-card .ch-tasks li::before{content:'\2022';position:absolute;left:6px;color:var(--ac)}.challenge-card .ch-note{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.18);border-radius:6px;padding:8px 10px;font:12px/1.5 'DM Sans',sans-serif;color:var(--yw);margin-bottom:10px}.challenge-card .ch-starter{background:var(--code);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font:11px/1.6 'JetBrains Mono',monospace;color:var(--dim);white-space:pre-wrap;margin-top:6px}.challenge-card .ch-starter-label{font:700 9px 'JetBrains Mono',monospace;text-transform:uppercase;color:var(--dim);margin-bottom:4px;letter-spacing:.05em}
+.challenge-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--bd);flex-shrink:0;background:var(--sf2)}.challenge-nav button{font:600 11px 'DM Sans',sans-serif;padding:5px 14px;border-radius:6px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;transition:.15s}.challenge-nav button:hover:not(:disabled){border-color:var(--ac);color:var(--ac)}.challenge-nav button:disabled{opacity:.35;cursor:default}.challenge-nav .ch-counter{font:600 10px 'JetBrains Mono',monospace;color:var(--dim)}
+.upload-area{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;padding:32px}.upload-area .upload-icon{font-size:36px;opacity:.5}.upload-area p{font:13px/1.5 'DM Sans',sans-serif;color:var(--dim);text-align:center;max-width:260px}.upload-area label{font:600 11px 'DM Sans',sans-serif;padding:8px 20px;border-radius:8px;border:1px dashed var(--bd);background:var(--sf2);color:var(--ac);cursor:pointer;transition:.15s}.upload-area label:hover{border-color:var(--ac);background:var(--acbg)}
+.ch-load-btn{font:600 10px 'DM Sans',sans-serif;padding:4px 12px;border-radius:5px;border:1px solid var(--bd);background:var(--sf2);color:var(--ac);cursor:pointer;transition:.15s;margin-top:6px;display:inline-block}.ch-load-btn:hover{border-color:var(--ac);background:var(--acbg)}
+.challenge-card details summary{list-style:none}.challenge-card details summary::-webkit-details-marker{display:none}.challenge-card details summary::before{content:'▸ '}.challenge-card details[open] summary::before{content:'▾ '}.challenge-card details[open] summary{margin-bottom:4px}
 </style>
 </head>
 <body>
 <div class="school-banner"><div class="school-info"><div class="school-name">Haute Vallée <span>School</span></div><div class="school-dept">Department of Computer Science</div></div><div class="school-quote"><p>"Every expert was once a beginner. Learning to code is learning to create, to solve, and to shape the future — your future."</p><div class="attr">— GCSE Computer Science · Edexcel 1CP2</div></div></div>
-<header><div class="logo"><div class="logo-ico">Py</div><h1>Python <b>Blocks</b></h1><span class="tag">PLS v5 · Full</span></div><div class="acts"><button class="btn btn-x" id="btnClear">✕ Clear</button><button class="btn" id="btnCopy">⧉ Copy</button><button class="btn btn-go" id="btnRun">▶ Run</button></div></header>
-<div class="wrap"><div class="bpanel"><div id="blocklyDiv"></div></div><div class="rh" id="rh"></div>
-<div class="rpanel" id="rp"><div class="tabs"><button class="tab on" data-t="codeP">Python</button><button class="tab" data-t="conP">Console</button><button class="tab" data-t="canvasP">Canvas</button><button class="tab" data-t="filesP">Files</button><button class="tab" data-t="helpP">PLS Ref</button></div>
+<header><div class="logo"><div class="logo-ico">Py</div><h1>Python <b>Blocks</b></h1><span class="tag">PLS v5 · Full</span></div><div class="acts"><div class="editor-toggle"><button class="chip on" id="modeBlocks">Blocks</button><button class="chip" id="modePython">Python</button></div><button class="btn btn-x" id="btnClear">✕ Clear</button><button class="btn" id="btnCopy">⧉ Copy</button><button class="btn" id="btnDownload">⬇ Download</button><button class="btn btn-go" id="btnRun">▶ Run</button></div></header>
+<div class="wrap"><div class="bpanel"><div id="blocklyDiv"></div><div id="cmWrap"><textarea id="cmEditor"></textarea></div></div><div class="rh" id="rh"></div>
+<div class="rpanel" id="rp"><div class="tabs"><button class="tab on" data-t="codeP">Python</button><button class="tab" data-t="conP">Console</button><button class="tab" data-t="canvasP">Canvas</button><button class="tab" data-t="filesP">Files</button><button class="tab" data-t="helpP">PLS Ref</button><button class="tab" data-t="challengeP">Challenges</button></div>
 <div class="pcontent">
 <div class="pane on" id="codeP"><div id="codeOut"><span class="cm"># Drag blocks to build your program…</span></div></div>
 <div class="pane" id="conP"><div id="conOut"><span class="cinfo">Press ▶ Run to execute</span></div></div>
@@ -39,7 +50,13 @@ header{display:flex;align-items:center;justify-content:space-between;padding:6px
 <div class="hsec"><h3>Libraries</h3><table class="ht"><tr><th>Module</th><th>Functions</th></tr><tr><td>random</td><td><code>randint(a,b)</code> <code>random()</code></td></tr><tr><td>math</td><td><code>ceil floor sqrt pi</code></td></tr><tr><td>time</td><td><code>sleep(sec)</code></td></tr></table></div>
 <div class="hsec"><h3>Turtle Graphics</h3><table class="ht"><tr><th>Command</th><th>Python</th></tr><tr><td>Create</td><td><code>t = turtle.Turtle()</code></td></tr><tr><td>Move</td><td><code>t.forward(d) t.back(d)</code></td></tr><tr><td>Turn</td><td><code>t.left(a) t.right(a)</code></td></tr><tr><td>Pen</td><td><code>t.penup() t.pendown()</code></td></tr><tr><td>Colour</td><td><code>t.pencolor("red")</code></td></tr><tr><td>Fill</td><td><code>t.begin_fill() t.end_fill()</code></td></tr><tr><td>Circle</td><td><code>t.circle(r)</code></td></tr><tr><td>Speed</td><td><code>t.speed(0-10)</code></td></tr></table></div>
 <div class="hsec"><h3>Format</h3><p style="color:var(--dim)"><code style="font:10px 'JetBrains Mono';background:var(--code);padding:1px 4px;border-radius:3px;color:var(--or)">{:&lt;&gt;^width.precf/d/s}</code></p></div>
-</div></div></div></div>
+</div>
+<div class="pane" id="challengeP">
+<div id="challengeEmpty" class="upload-area"><div class="upload-icon">📋</div><p>Load a challenge set to display coding tasks alongside the editor.</p><label for="challengeFile">Load Challenges (.json)<input type="file" id="challengeFile" accept=".json" style="display:none"></label></div>
+<div id="challengeContent" style="display:none;flex:1;overflow:auto"></div>
+<div id="challengeNav" class="challenge-nav" style="display:none"><button id="chPrev">← Prev</button><span class="ch-counter" id="chCounter">1 of 1</span><button id="chNext">Next →</button></div>
+</div>
+</div></div></div>
 <div class="cbar"><label>Demos:</label>
 <button class="chip" data-c="hello">Hello Name</button>
 <button class="chip" data-c="password">Password</button>
@@ -52,7 +69,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:6px
 </div>
 <script>
 (function boot(){
-if(typeof Blockly==='undefined'||typeof python==='undefined')return setTimeout(boot,150);
+if(typeof Blockly==='undefined'||typeof python==='undefined'||typeof CodeMirror==='undefined')return setTimeout(boot,150);
 var pg=python.pythonGenerator,O=python.Order;
 allBlocks();allGens(pg,O);
 // Suppress Blockly's auto variable declarations (e.g. "f = None")
@@ -313,30 +330,205 @@ return Blockly.inject('blocklyDiv',{toolbox:tb,theme:Blockly.Theme.defineTheme('
 }
 
 function wireUI(ws,pg){
+var editorMode='blocks'; // 'blocks' or 'python'
+var cmEditor=CodeMirror.fromTextArea(document.getElementById('cmEditor'),{mode:'python',theme:'dracula',lineNumbers:true,indentUnit:4,tabSize:4,indentWithTabs:false,lineWrapping:true,matchBrackets:true,extraKeys:{'Tab':function(cm){cm.replaceSelection('    ','end')}}});
+
+// --- Challenges state ---
+var challenges=[],chIdx=0;
+
+function getCode(){
+if(editorMode==='python')return cmEditor.getValue();
+return pg.workspaceToCode(ws);
+}
+
 function placeHat(){var e=ws.getBlocksByType('p_start');if(e.length>0)return;Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom('<xml><block type="p_start" x="30" y="30" deletable="false"></block></xml>'),ws)}
 placeHat();
 ws.addChangeListener(function(){var c=pg.workspaceToCode(ws);document.getElementById('codeOut').innerHTML=c.trim()?hl(c):'<span class="cm"># Drag blocks…</span>';});
+
+// --- Tab switching ---
 document.querySelectorAll('.tab').forEach(function(t){t.onclick=function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});t.classList.add('on');document.getElementById(t.dataset.t).classList.add('on')};});
-document.getElementById('btnRun').onclick=function(){doRun(ws,pg)};
-document.getElementById('btnClear').onclick=function(){ws.clear();placeHat();document.getElementById('conOut').innerHTML='<span class="cinfo">Cleared</span>'};
-document.getElementById('btnCopy').onclick=function(){navigator.clipboard.writeText(pg.workspaceToCode(ws)).then(function(){var b=document.getElementById('btnCopy');b.textContent='\u2713 Copied';setTimeout(function(){b.textContent='\u29c9 Copy'},1200)})};
+
+// --- Blocks / Python toggle ---
+var btnBlocks=document.getElementById('modeBlocks'),btnPython=document.getElementById('modePython');
+var cmWrap=document.getElementById('cmWrap'),bDiv=document.getElementById('blocklyDiv');
+
+btnBlocks.onclick=function(){
+if(editorMode==='blocks')return;
+editorMode='blocks';
+btnBlocks.classList.add('on');btnPython.classList.remove('on');
+cmWrap.style.display='none';bDiv.style.display='';
+Blockly.svgResize(ws);
+};
+btnPython.onclick=function(){
+if(editorMode==='python')return;
+editorMode='python';
+btnPython.classList.add('on');btnBlocks.classList.remove('on');
+// Sync blocks → CodeMirror (one-way)
+var bc=pg.workspaceToCode(ws);
+if(bc.trim()&&!cmEditor.getValue().trim())cmEditor.setValue(bc);
+cmWrap.style.display='block';bDiv.style.display='none';
+cmEditor.refresh();
+};
+
+// --- Run / Copy / Download (dual-mode) ---
+document.getElementById('btnRun').onclick=function(){doRun(ws,pg,getCode)};
+document.getElementById('btnClear').onclick=function(){
+if(editorMode==='python'){cmEditor.setValue('');document.getElementById('conOut').innerHTML='<span class="cinfo">Cleared</span>'}
+else{ws.clear();placeHat();document.getElementById('conOut').innerHTML='<span class="cinfo">Cleared</span>'}
+};
+document.getElementById('btnCopy').onclick=function(){navigator.clipboard.writeText(getCode()).then(function(){var b=document.getElementById('btnCopy');b.textContent='\u2713 Copied';setTimeout(function(){b.textContent='\u29c9 Copy'},1200)})};
+function buildHeader(){
+if(!challenges.length)return '';
+var ch=challenges[chIdx];
+var lines=['"""'];
+if(challengeTitle)lines.push(challengeTitle);
+if(ch.title)lines.push(ch.title);
+lines.push('');
+if(ch.context&&ch.context.length)ch.context.forEach(function(p){lines.push(p);lines.push('')});
+if(ch.instruction){lines.push(ch.instruction);lines.push('')}
+if(ch.tasks&&ch.tasks.length){lines.push('Requirements:');ch.tasks.forEach(function(t,i){lines.push('  '+(i+1)+'. '+t)});lines.push('')}
+if(ch.marks)lines.push('Marks: '+ch.marks);
+if(ch.note)lines.push('Note: '+ch.note);
+lines.push('"""');lines.push('');
+return lines.join('\n');
+}
+document.getElementById('btnDownload').onclick=function(){var code=getCode();if(!code.trim())return;var header=buildHeader();var full=header+code;var fname='my_program.py';if(challenges.length){var ch=challenges[chIdx];var slug=(ch.title||'challenge').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');fname=slug+'.py'}var blob=new Blob([full],{type:'text/x-python'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(a.href)},1000);var b=document.getElementById('btnDownload');b.textContent='\u2713 Downloaded';setTimeout(function(){b.textContent='\u2b07 Download'},1200)};
+
+// --- Resize handle ---
 var rh=document.getElementById('rh'),rp=document.getElementById('rp'),drag=false;
 rh.onmousedown=function(e){drag=true;rh.classList.add('on');e.preventDefault()};
-document.onmousemove=function(e){if(!drag)return;var w=window.innerWidth-e.clientX;if(w>200&&w<800){rp.style.width=w+'px';Blockly.svgResize(ws)}};
+document.onmousemove=function(e){if(!drag)return;var w=window.innerWidth-e.clientX;if(w>200&&w<800){rp.style.width=w+'px';Blockly.svgResize(ws);cmEditor.refresh()}};
 document.onmouseup=function(){drag=false;rh.classList.remove('on')};
-window.onresize=function(){Blockly.svgResize(ws)};
-document.onkeydown=function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();doRun(ws,pg)}};
+window.onresize=function(){Blockly.svgResize(ws);cmEditor.refresh()};
+document.onkeydown=function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();doRun(ws,pg,getCode)}};
+
+// --- Challenges ---
+var challengeTitle='';
+
+function normalise(raw){
+// Flat array of simple objects — already correct format
+if(Array.isArray(raw))return{title:'',items:raw};
+// Single rich object with activities[] containing tasks[]
+if(raw.activities&&Array.isArray(raw.activities)){
+var items=[];
+raw.activities.forEach(function(act){
+act.tasks.forEach(function(t){
+var ch={title:(act.title||'Activity')+' — '+(t.label||t.id||'Task'),marks:t.marks};
+// Context from activity description
+if(act.description)ch.context=[act.description];
+ch.instruction=t.instruction||'';
+// Bullet tasks from marking criteria
+if(t.marking&&t.marking.criteria)ch.tasks=t.marking.criteria;
+// Fields list (for combined tasks)
+if(t.fields&&Array.isArray(t.fields))ch.tasks=(ch.tasks||[]).concat(t.fields.map(function(f){return f.name+': '+f.validation+' ('+f.validationType+')'}));
+// Hint as note
+if(t.hint)ch.note=t.hint;
+// Code snippet as read-only display code
+if(t.codeSnippet&&Array.isArray(t.codeSnippet))ch.codeSnippet=t.codeSnippet.join('\n');
+// Starter code
+if(t.starterCode)ch.starterCode=typeof t.starterCode==='string'?t.starterCode:t.starterCode.join('\n');
+// Sample answer (hidden until requested)
+if(t.sampleAnswer)ch.sampleAnswer=Array.isArray(t.sampleAnswer)?t.sampleAnswer.join('\n'):t.sampleAnswer;
+// Bug info
+if(t.bug)ch.bug=t.bug;
+// Test cases
+if(t.testCases)ch.testCases=t.testCases;
+// Expected answer for free-text
+if(t.expectedAnswer)ch.expectedAnswer=t.expectedAnswer;
+// Task type badge
+ch.taskType=t.type||'';
+items.push(ch);
+});
+});
+return{title:raw.title||'',items:items};
+}
+// Single simple object — wrap in array
+return{title:'',items:[raw]};
+}
+
+function loadInEditor(code){
+// Switch to Python mode and load code
+if(editorMode!=='python'){btnPython.click()}
+cmEditor.setValue(code);
+cmEditor.refresh();
+}
+
+function renderChallenge(){
+if(!challenges.length)return;
+var ch=challenges[chIdx];
+var h='<div class="challenge-card">';
+if(challengeTitle)h+='<div style="font:600 9px \'JetBrains Mono\',monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:6px">'+esc(challengeTitle)+'</div>';
+h+='<div class="ch-title">'+esc(ch.title||'Challenge '+(chIdx+1))+'</div>';
+// Marks + type badges
+var badges='';
+if(ch.marks)badges+='<span class="ch-marks">'+ch.marks+' mark'+(ch.marks!==1?'s':'')+'</span>';
+if(ch.taskType){var tl=ch.taskType.replace(/_/g,' ');badges+=' <span class="ch-marks" style="background:rgba(251,191,36,.08);color:var(--yw);border-color:rgba(251,191,36,.2)">'+esc(tl)+'</span>'}
+if(badges)h+='<div style="margin-bottom:10px">'+badges+'</div>';
+if(ch.context&&ch.context.length){ch.context.forEach(function(p){h+='<div class="ch-context">'+esc(p)+'</div>'})}
+if(ch.instruction)h+='<div class="ch-instruction">'+esc(ch.instruction)+'</div>';
+// Code snippet (read-only display) + load button
+if(ch.codeSnippet){h+='<div class="ch-starter-label">Code</div><div class="ch-starter">'+hl(ch.codeSnippet)+'</div>';h+='<button class="ch-load-btn" data-load="snippet">Load in Editor</button>'}
+// Test cases table
+if(ch.testCases&&ch.testCases.length){h+='<div class="ch-starter-label" style="margin-top:10px">Test Cases</div><table class="ht" style="margin-bottom:10px"><tr><th>Input</th><th>Expected Output</th></tr>';ch.testCases.forEach(function(tc){h+='<tr><td><code>'+esc(tc.input)+'</code></td><td><code>'+esc(tc.expectedOutput)+'</code></td></tr>'});h+='</table>'}
+// Bug info
+if(ch.bug)h+='<div class="ch-note">Bug is on line '+ch.bug.line+'. '+esc(ch.bug.description)+'</div>';
+// Task bullet list (marking criteria or string tasks)
+if(ch.tasks&&ch.tasks.length){h+='<ul class="ch-tasks">';ch.tasks.forEach(function(t){h+='<li>'+esc(t)+'</li>'});h+='</ul>'}
+if(ch.note)h+='<div class="ch-note">💡 '+esc(ch.note)+'</div>';
+// Starter code + load button
+if(ch.starterCode){h+='<div class="ch-starter-label">Starter Code</div>';h+='<div class="ch-starter">'+hl(ch.starterCode)+'</div>';h+='<button class="ch-load-btn" data-load="starter">Load in Editor</button>'}
+// Sample answer toggle
+if(ch.sampleAnswer){h+='<details style="margin-top:10px"><summary style="font:600 10px \'JetBrains Mono\',monospace;color:var(--ac);cursor:pointer;padding:4px 0">Show Sample Answer</summary><div class="ch-starter" style="margin-top:4px">'+hl(ch.sampleAnswer)+'</div><button class="ch-load-btn" data-load="answer" style="margin-top:4px">Load in Editor</button></details>'}
+h+='</div>';
+document.getElementById('challengeContent').innerHTML=h;
+document.getElementById('chCounter').textContent=(chIdx+1)+' of '+challenges.length;
+document.getElementById('chPrev').disabled=chIdx===0;
+document.getElementById('chNext').disabled=chIdx===challenges.length-1;
+// Wire load buttons
+document.querySelectorAll('.ch-load-btn').forEach(function(btn){
+btn.onclick=function(){
+var src=btn.dataset.load;
+var code=src==='snippet'?ch.codeSnippet:src==='starter'?ch.starterCode:ch.sampleAnswer;
+if(code)loadInEditor(code);
+btn.textContent='\u2713 Loaded';setTimeout(function(){btn.textContent='Load in Editor'},1200);
+};
+});
+}
+
+document.getElementById('challengeFile').onchange=function(e){
+var file=e.target.files[0];if(!file)return;
+var reader=new FileReader();
+reader.onload=function(ev){
+try{
+var raw=JSON.parse(ev.target.result);
+var result=normalise(raw);
+challenges=result.items;
+challengeTitle=result.title;
+if(!challenges.length){alert('No challenges found in this file.');return}
+chIdx=0;
+document.getElementById('challengeEmpty').style.display='none';
+document.getElementById('challengeContent').style.display='';
+document.getElementById('challengeNav').style.display='';
+renderChallenge();
+}catch(err){alert('Invalid JSON file: '+err.message)}
+};
+reader.readAsText(file);
+};
+document.getElementById('chPrev').onclick=function(){if(chIdx>0){chIdx--;renderChallenge()}};
+document.getElementById('chNext').onclick=function(){if(chIdx<challenges.length-1){chIdx++;renderChallenge()}};
+
 setupDemos(ws);
 }
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-function doRun(ws,pg){
-var isTurtle=pg.workspaceToCode(ws).indexOf('turtle.Turtle()')>=0;
+function doRun(ws,pg,getCode){
+var code=typeof getCode==='function'?getCode():pg.workspaceToCode(ws);
+var isTurtle=code.indexOf('turtle.Turtle()')>=0;
 var targetTab=isTurtle?'canvasP':'conP';
 document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});document.querySelectorAll('.pane').forEach(function(x){x.classList.remove('on')});document.querySelector('[data-t="'+targetTab+'"]').classList.add('on');document.getElementById(targetTab).classList.add('on');
 var con=document.getElementById('conOut');con.innerHTML='';
-var code=pg.workspaceToCode(ws);if(!code.trim()){con.innerHTML='<span class="cinfo">No blocks!</span>';return;}
+if(!code.trim()){con.innerHTML='<span class="cinfo">No code to run!</span>';return;}
 try{
 var js=transpile(code);var out=[];
 function render(){con.innerHTML=out.map(function(l){return '<div>'+esc(l)+'</div>'}).join('')}
@@ -654,6 +846,6 @@ randomgame:{v:['target','guess','attempts'],x:'<xml><block type="p_import" x="30
 ,
 turtlestar:{v:['t','i'],x:'<xml><block type="p_t_import" x="30" y="30"><next><block type="p_t_create"><field name="VAR">t</field><next><block type="p_t_speed"><field name="VAR">t</field><field name="S">6</field><next><block type="p_t_pencolor"><field name="VAR">t</field><value name="C"><block type="p_strlit"><field name="T">blue</field></block></value><next><block type="p_t_fillcolor"><field name="VAR">t</field><value name="C"><block type="p_strlit"><field name="T">yellow</field></block></value><next><block type="p_t_begin_fill"><field name="VAR">t</field><next><block type="p_forr"><field name="VAR">i</field><field name="A">0</field><field name="B">5</field><statement name="DO"><block type="p_t_forward"><field name="VAR">t</field><value name="D"><block type="p_num"><field name="N">100</field></block></value><next><block type="p_t_right"><field name="VAR">t</field><value name="D"><block type="p_num"><field name="N">144</field></block></value></block></next></block></statement><next><block type="p_t_end_fill"><field name="VAR">t</field><next><block type="p_t_hideturtle"><field name="VAR">t</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></xml>'}
 };
-document.querySelectorAll('.chip').forEach(function(ch){ch.onclick=function(){var d=D[ch.dataset.c];if(!d)return;document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});ch.classList.add('on');ld(d.v,d.x)}});
+document.querySelectorAll('.cbar .chip').forEach(function(ch){ch.onclick=function(){var d=D[ch.dataset.c];if(!d)return;document.querySelectorAll('.cbar .chip').forEach(function(x){x.classList.remove('on')});ch.classList.add('on');ld(d.v,d.x)}});
 }
 </script></body></html>
