@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 3: Computer Systems | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #a855f7;
+            --accent-glow: rgba(139, 92, 246, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b7280;
+            --border-color: #2a2a3a;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            --gradient-2: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none; z-index: 0;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.9rem; margin-bottom: 1rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent-primary); }
+
+        /* Hero */
+        .hero { text-align: center; padding: 3rem 2rem; position: relative; }
+        .hero::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-block; background: var(--gradient-1);
+            color: var(--bg-dark); padding: 0.5rem 1.5rem; border-radius: 50px;
+            font-weight: 600; font-size: 0.85rem; letter-spacing: 0.1em;
+            text-transform: uppercase; margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 1rem;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.8rem;
+            font-weight: 600; color: var(--accent-primary);
+        }
+        .stat-label {
+            font-size: 0.75rem; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .progress-bar-container { flex: 1; min-width: 200px; max-width: 400px; }
+        .progress-bar { height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill {
+            height: 100%; background: var(--gradient-1);
+            border-radius: 10px; transition: width 0.5s ease; width: 0%;
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 2rem; padding: 0.4rem; background: var(--bg-card);
+            border-radius: 15px; border: 1px solid var(--border-color);
+        }
+        .nav-tab {
+            padding: 0.7rem 1rem; background: transparent; border: none;
+            color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            border-radius: 10px; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-tab.active { background: var(--gradient-1); color: var(--bg-dark); font-weight: 600; }
+
+        /* Sections */
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; transition: all 0.3s ease;
+        }
+        .card:hover { border-color: var(--accent-primary); box-shadow: 0 0 30px var(--accent-glow); }
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .card-icon {
+            width: 50px; height: 50px; background: var(--gradient-1);
+            border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+        }
+        .card-title { font-size: 1.2rem; font-weight: 600; }
+
+        /* Key Point Callout */
+        .key-point {
+            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(168,85,247,0.1));
+            border: 1px solid rgba(139,92,246,0.3); border-left: 4px solid var(--accent-primary);
+            border-radius: 12px; padding: 1.25rem; margin: 1rem 0;
+        }
+        .key-point-label {
+            font-size: 0.75rem; font-weight: 600; color: var(--accent-primary);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
+        }
+        .key-point p { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        /* Definition Grid */
+        .definition-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+        }
+        .definition-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .definition-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: var(--gradient-1);
+        }
+        .definition-card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+            font-weight: 600; color: var(--accent-primary); margin-bottom: 0.5rem;
+        }
+        .definition-text { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; }
+
+        /* Accordion */
+        .accordion { margin-bottom: 1rem; }
+        .accordion-header {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s; font-weight: 500;
+        }
+        .accordion-header:hover { border-color: var(--accent-primary); }
+        .accordion-header.open { border-radius: 12px 12px 0 0; border-color: var(--accent-primary); }
+        .accordion-arrow { transition: transform 0.3s; font-size: 0.8rem; }
+        .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+        .accordion-body {
+            display: none; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-top: none; border-radius: 0 0 12px 12px; padding: 1.5rem;
+            color: var(--text-secondary); line-height: 1.7;
+        }
+        .accordion-body.open { display: block; }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem; border: none; border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: var(--gradient-1); color: var(--bg-dark); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--accent-glow); }
+        .btn-secondary { background: var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover { background: #3a3a4a; }
+        .btn-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+            max-width: 800px; margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0.75rem; text-align: center; font-size: 0.8rem;
+            position: relative; perspective: 600px;
+        }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-primary); transform: scale(1.03); }
+        .memory-card .card-front, .memory-card .card-back {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            justify-content: center; padding: 0.75rem; border-radius: 10px;
+            backface-visibility: hidden; transition: transform 0.4s;
+        }
+        .memory-card .card-back {
+            background: var(--gradient-1); color: var(--bg-dark);
+            font-weight: 600; font-size: 1.5rem;
+        }
+        .memory-card .card-front {
+            background: var(--bg-card); transform: rotateY(180deg);
+            color: var(--text-primary); font-size: 0.78rem; line-height: 1.4;
+        }
+        .memory-card.flipped .card-back, .memory-card.matched .card-back { transform: rotateY(180deg); }
+        .memory-card.flipped .card-front, .memory-card.matched .card-front { transform: rotateY(0); }
+        .memory-card.matched { border-color: var(--success); opacity: 0.8; pointer-events: none; }
+
+        /* Categorize */
+        .category-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .category-box {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 200px; transition: border-color 0.3s;
+        }
+        .category-box.drag-over { border-color: var(--accent-primary); background: rgba(139,92,246,0.05); }
+        .category-box h4 {
+            font-size: 1rem; margin-bottom: 1rem; color: var(--accent-primary);
+            text-align: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .category-items { display: flex; flex-direction: column; gap: 0.5rem; min-height: 50px; }
+        .category-item, .bank-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: grab; transition: all 0.3s; font-size: 0.9rem;
+            user-select: none;
+        }
+        .category-item:hover, .bank-item:hover { border-color: var(--accent-primary); }
+        .category-item.correct, .bank-item.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .category-item.incorrect, .bank-item.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .items-bank { margin-bottom: 2rem; }
+        .items-bank h4 { margin-bottom: 1rem; color: var(--text-secondary); }
+        .items-bank-grid {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+            padding: 1rem; background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; min-height: 60px;
+        }
+
+        /* Parsons / Ordering */
+        .parsons-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .parsons-bank, .parsons-solution {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .parsons-bank h4, .parsons-solution h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .parsons-solution { border-color: rgba(139,92,246,0.3); }
+        .parsons-block {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: grab;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+            transition: all 0.3s; user-select: none;
+        }
+        .parsons-block:hover { border-color: var(--accent-primary); }
+        .parsons-block.dragging { opacity: 0.4; }
+        .parsons-block.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .parsons-block.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+
+        /* Fill in Blank */
+        .fill-blank-container { max-width: 700px; margin: 0 auto; }
+        .fill-blank-row {
+            display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .fill-blank-label { color: var(--text-secondary); font-size: 0.9rem; min-width: 60px; font-weight: 600; }
+        .fill-blank-inputs { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .fill-blank-input {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 6px; padding: 0.3rem 0.6rem; color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            min-width: 50px; width: 50px; text-align: center; outline: none; transition: border-color 0.3s;
+        }
+        .fill-blank-input:focus { border-color: var(--accent-primary); }
+        .fill-blank-input.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .fill-blank-input.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+
+        /* Sentence Bank (Apply tab) */
+        .sentence-bank-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .sentence-bank, .answer-area {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .answer-area { border-color: rgba(139,92,246,0.3); }
+        .sentence-bank h4, .answer-area h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .sentence-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;
+            font-size: 0.88rem; line-height: 1.5; transition: all 0.3s; user-select: none;
+        }
+        .sentence-item:hover { border-color: var(--accent-primary); }
+        .sentence-item.selected { border-color: var(--accent-primary); background: rgba(139,92,246,0.1); }
+        .sentence-item.in-answer { opacity: 0.4; pointer-events: none; }
+        .mark-scheme-reveal {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem; display: none;
+        }
+        .mark-scheme-reveal.show { display: block; }
+        .mark-point {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);
+        }
+        .mark-point:last-child { border-bottom: none; }
+        .mark-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+        .mark-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .score-display {
+            text-align: center; padding: 1.5rem; background: var(--bg-card);
+            border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 1rem;
+        }
+        .score-value { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; }
+        .score-label { color: var(--text-secondary); font-size: 0.9rem; }
+
+        /* Quiz (Challenge tab) */
+        .quiz-question { margin-bottom: 2rem; }
+        .quiz-question h4 {
+            margin-bottom: 1rem; font-size: 1rem; line-height: 1.5;
+            padding: 1rem; background: var(--bg-card); border-radius: 10px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .quiz-options { display: grid; gap: 0.5rem; }
+        .quiz-option {
+            padding: 0.9rem 1rem; background: var(--bg-card-hover);
+            border: 2px solid var(--border-color); border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; display: flex;
+            align-items: center; gap: 0.75rem; font-size: 0.9rem;
+        }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-primary); }
+        .quiz-option.selected { border-color: var(--accent-primary); background: rgba(139,92,246,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(16,185,129,0.15); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+        .option-letter {
+            width: 28px; height: 28px; border-radius: 50%; background: var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .quiz-feedback {
+            padding: 1rem; border-radius: 10px; margin-top: 0.5rem;
+            font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--error); }
+
+        /* Timer */
+        .timer-bar {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .timer-display { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--accent-primary); }
+        .timer-progress { flex: 1; margin: 0 1.5rem; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--gradient-1); border-radius: 3px; transition: width 1s linear; width: 100%; }
+
+        /* Review Tab */
+        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .review-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; text-align: center;
+        }
+        .review-card h4 { font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-secondary); }
+        .review-score {
+            font-family: 'JetBrains Mono', monospace; font-size: 2rem;
+            font-weight: 700; margin-bottom: 0.25rem;
+        }
+        .review-score.high { color: var(--success); }
+        .review-score.mid { color: var(--warning); }
+        .review-score.low { color: var(--error); }
+        .review-bar { height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 0.5rem; }
+        .review-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+        .review-summary {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 2rem; margin-top: 1.5rem; text-align: center;
+        }
+
+        /* Trace Table */
+        .trace-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .trace-table th, .trace-table td {
+            border: 1px solid var(--border-color); padding: 0.6rem 1rem;
+            text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+        }
+        .trace-table th { background: rgba(139,92,246,0.15); color: var(--accent-primary); }
+        .trace-table td { background: var(--bg-card); }
+        .trace-table tr.active-row td { background: rgba(139,92,246,0.08); border-color: var(--accent-primary); }
+
+        /* FDE Step-Through */
+        .fde-steps { display: flex; flex-direction: column; gap: 1rem; }
+        .fde-step {
+            padding: 1rem 1.25rem; background: var(--bg-card-hover); border: 2px solid var(--border-color);
+            border-radius: 12px; transition: all 0.4s; opacity: 0.4;
+        }
+        .fde-step.active { opacity: 1; border-color: var(--accent-primary); box-shadow: 0 0 20px var(--accent-glow); }
+        .fde-step.done { opacity: 0.7; border-color: var(--success); }
+        .fde-step-num {
+            display: inline-block; width: 28px; height: 28px; border-radius: 50%;
+            background: var(--gradient-1); color: var(--bg-dark); font-weight: 700;
+            text-align: center; line-height: 28px; font-size: 0.8rem; margin-right: 0.75rem;
+        }
+        .fde-step-title { font-weight: 600; color: var(--text-primary); }
+        .fde-step-desc { color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.4rem; line-height: 1.5; }
+        .register-display {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.75rem;
+            margin-top: 1.5rem; padding: 1rem; background: var(--bg-card);
+            border: 1px solid var(--border-color); border-radius: 12px;
+        }
+        .register-box { text-align: center; padding: 0.5rem; }
+        .register-name {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+            color: var(--accent-primary); font-weight: 600; margin-bottom: 0.25rem;
+        }
+        .register-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+            color: var(--text-primary); background: var(--bg-card-hover);
+            border: 1px solid var(--border-color); border-radius: 6px;
+            padding: 0.3rem 0.5rem; transition: all 0.3s;
+        }
+        .register-value.highlight { border-color: var(--accent-primary); background: rgba(139,92,246,0.1); }
+
+        /* Storage Comparison */
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid var(--border-color); padding: 0.75rem 1rem;
+            text-align: center; font-size: 0.88rem;
+        }
+        .comparison-table th { background: rgba(139,92,246,0.15); color: var(--accent-primary); font-weight: 600; }
+        .comparison-table td { background: var(--bg-card); }
+        .rating-high { color: #10b981; font-weight: 600; }
+        .rating-medium { color: #f59e0b; font-weight: 600; }
+        .rating-low { color: #ef4444; font-weight: 600; }
+
+        /* Logic Gate Selector */
+        .gate-selector {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 8px; padding: 0.5rem 1rem; color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+            outline: none; cursor: pointer; appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b5cf6' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 0.75rem center;
+            padding-right: 2rem;
+        }
+        .gate-selector:focus { border-color: var(--accent-primary); }
+        .gate-selector option { background: var(--bg-card); color: var(--text-primary); }
+
+        /* Exam Question Display */
+        .exam-q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .marks-badge {
+            background: rgba(139,92,246,0.2); color: var(--accent-primary);
+            padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;
+            font-weight: 600; border: 1px solid rgba(139,92,246,0.3);
+        }
+        .model-answer {
+            background: rgba(139,92,246,0.05); border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 12px; padding: 1.25rem; margin-top: 1rem;
+            color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem;
+            border-radius: 12px; font-weight: 500; z-index: 100;
+            transform: translateY(100px); opacity: 0; transition: all 0.4s ease;
+            max-width: 350px;
+        }
+        .notification.show { transform: translateY(0); opacity: 1; }
+        .notification.success { background: rgba(16,185,129,0.9); color: white; }
+        .notification.error { background: rgba(239,68,68,0.9); color: white; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .parsons-container, .sentence-bank-container { grid-template-columns: 1fr; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-tab { padding: 0.5rem 0.7rem; font-size: 0.75rem; }
+            .progress-tracker { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .memory-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <a href="index.html" class="back-link">&#8592; Back to CS Hub</a>
+
+        <div class="hero">
+            <div class="hero-badge">Topic 3 &mdash; Paper 1</div>
+            <h1>Computer Systems</h1>
+            <p>CPU, storage, operating systems, languages &amp; logic gates &mdash; understand how computers work.</p>
+        </div>
+
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">&#128214; Learn</button>
+            <button class="nav-tab" data-section="explore">&#128269; Explore</button>
+            <button class="nav-tab" data-section="practice">&#129513; Practice</button>
+            <button class="nav-tab" data-section="recall">&#129504; Recall</button>
+            <button class="nav-tab" data-section="apply">&#128221; Apply</button>
+            <button class="nav-tab" data-section="challenge">&#9889; Challenge</button>
+            <button class="nav-tab" data-section="review">&#128202; Review</button>
+        </div>
+
+        <!-- ===== LEARN TAB ===== -->
+        <div id="learn" class="section active">
+            <div class="section-header">
+                <h2>&#128214; Core Theory</h2>
+                <p>Key definitions, concepts, and terminology for Topic 3</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128187;</div>
+                    <div class="card-title">CPU Components</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">CPU</div>
+                        <div class="definition-text">The Central Processing Unit that fetches, decodes and executes instructions.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">ALU</div>
+                        <div class="definition-text">Arithmetic Logic Unit &mdash; performs calculations and logical comparisons.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">CU</div>
+                        <div class="definition-text">Control Unit &mdash; manages the fetch-decode-execute cycle, directs data flow.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">MAR</div>
+                        <div class="definition-text">Memory Address Register &mdash; holds the address of the memory location to be read/written.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">MDR</div>
+                        <div class="definition-text">Memory Data Register &mdash; holds the data that has been fetched or is to be stored.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">ACC</div>
+                        <div class="definition-text">Accumulator &mdash; stores the results of calculations from the ALU.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">PC</div>
+                        <div class="definition-text">Program Counter &mdash; holds the address of the next instruction to be executed.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Cache</div>
+                        <div class="definition-text">Small, fast memory inside the CPU that stores frequently used data.</div>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>The FDE cycle: 1) Fetch instruction from RAM (address in PC &rarr; MAR, instruction &rarr; MDR), 2) Decode (CU interprets instruction), 3) Execute (ALU performs operation, result &rarr; ACC)</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128190;</div>
+                    <div class="card-title">Memory &amp; Storage</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">RAM</div>
+                        <div class="definition-text">Random Access Memory &mdash; volatile, fast, stores running programs and data.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">ROM</div>
+                        <div class="definition-text">Read Only Memory &mdash; non-volatile, stores the boot-up instructions (BIOS/firmware).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">HDD</div>
+                        <div class="definition-text">Hard Disk Drive &mdash; magnetic storage, large capacity, moving parts, slower.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">SSD</div>
+                        <div class="definition-text">Solid State Drive &mdash; flash memory, fast, no moving parts, more expensive.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Optical</div>
+                        <div class="definition-text">CD/DVD/Blu-ray &mdash; uses laser to read/write, portable, lower capacity.</div>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>Von Neumann architecture: Instructions and data are stored in the same memory, accessed via a shared bus.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#9881;&#65039;</div>
+                    <div class="card-title">Systems &amp; Software</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Embedded System</div>
+                        <div class="definition-text">A computer built into a larger device for a specific purpose (e.g., washing machine, traffic lights).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Operating System</div>
+                        <div class="definition-text">Software that manages hardware and provides a user interface.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Utility Software</div>
+                        <div class="definition-text">Programs that maintain/optimise the system (e.g., defragmenter, antivirus).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128221;</div>
+                    <div class="card-title">Languages &amp; Translators</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Compiler</div>
+                        <div class="definition-text">Translates all source code into machine code before execution.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Interpreter</div>
+                        <div class="definition-text">Translates and executes source code one line at a time.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Assembler</div>
+                        <div class="definition-text">Translates assembly language into machine code.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128268;</div>
+                    <div class="card-title">Logic Gates</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">AND gate</div>
+                        <div class="definition-text">Output is 1 only when BOTH inputs are 1.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">OR gate</div>
+                        <div class="definition-text">Output is 1 when AT LEAST ONE input is 1.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">NOT gate</div>
+                        <div class="definition-text">Output is the opposite of the input (inverts it).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">XOR gate</div>
+                        <div class="definition-text">Output is 1 when inputs are DIFFERENT.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accordions -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128218;</div>
+                    <div class="card-title">Deep Dive</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        FDE Cycle &mdash; Detailed Steps <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>FETCH:</strong></p>
+                        <ol style="margin-left:1.5rem;margin-bottom:0.75rem;">
+                            <li>The address in the PC is copied to the MAR.</li>
+                            <li>The address is sent along the address bus to RAM.</li>
+                            <li>The instruction stored at that address is returned via the data bus and placed in the MDR.</li>
+                            <li>The instruction is copied from the MDR to the CIR (Current Instruction Register).</li>
+                            <li>The PC is incremented by 1 (PC + 1) so it points to the next instruction.</li>
+                        </ol>
+                        <p><strong>DECODE:</strong></p>
+                        <ul style="margin-left:1.5rem;margin-bottom:0.75rem;">
+                            <li>The CU decodes the instruction held in the CIR.</li>
+                            <li>It determines what operation needs to be performed and what data is needed.</li>
+                        </ul>
+                        <p><strong>EXECUTE:</strong></p>
+                        <ul style="margin-left:1.5rem;">
+                            <li>The instruction is carried out &mdash; this might involve the ALU performing a calculation, data being read/written to memory, or a result being stored in the ACC.</li>
+                            <li>The cycle then repeats from the FETCH stage.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Primary vs Secondary Storage <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <table class="trace-table" style="margin:0;">
+                            <thead>
+                                <tr><th>Feature</th><th>Primary Storage</th><th>Secondary Storage</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Examples</td><td>RAM, ROM, Cache</td><td>HDD, SSD, Optical, USB</td></tr>
+                                <tr><td>Volatility</td><td>RAM is volatile; ROM is non-volatile</td><td>Non-volatile</td></tr>
+                                <tr><td>Speed</td><td>Very fast</td><td>Slower (SSD faster than HDD)</td></tr>
+                                <tr><td>Capacity</td><td>Small (GBs)</td><td>Large (TBs)</td></tr>
+                                <tr><td>Purpose</td><td>Stores running programs &amp; data</td><td>Long-term file storage</td></tr>
+                                <tr><td>Cost per GB</td><td>Expensive</td><td>Cheaper</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Compiler vs Interpreter <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <table class="trace-table" style="margin:0;">
+                            <thead>
+                                <tr><th>Feature</th><th>Compiler</th><th>Interpreter</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Translation</td><td>Translates all code at once</td><td>Translates one line at a time</td></tr>
+                                <tr><td>Executable</td><td>Creates a standalone .exe file</td><td>No executable produced</td></tr>
+                                <tr><td>Execution speed</td><td>Faster (already compiled)</td><td>Slower (translates each time)</td></tr>
+                                <tr><td>Error reporting</td><td>All errors after full analysis</td><td>Stops at first error found</td></tr>
+                                <tr><td>Debugging</td><td>Harder &mdash; errors reported together</td><td>Easier &mdash; stops at the error line</td></tr>
+                                <tr><td>Use case</td><td>Distributing finished software</td><td>Testing / development</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Logic Gate Truth Tables <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;">
+                            <div>
+                                <h4 style="color:var(--accent-primary);margin-bottom:0.5rem;">AND Gate</h4>
+                                <table class="trace-table" style="margin:0;">
+                                    <thead><tr><th>A</th><th>B</th><th>Q</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>0</td><td>0</td><td>0</td></tr>
+                                        <tr><td>0</td><td>1</td><td>0</td></tr>
+                                        <tr><td>1</td><td>0</td><td>0</td></tr>
+                                        <tr><td>1</td><td>1</td><td>1</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--accent-primary);margin-bottom:0.5rem;">OR Gate</h4>
+                                <table class="trace-table" style="margin:0;">
+                                    <thead><tr><th>A</th><th>B</th><th>Q</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>0</td><td>0</td><td>0</td></tr>
+                                        <tr><td>0</td><td>1</td><td>1</td></tr>
+                                        <tr><td>1</td><td>0</td><td>1</td></tr>
+                                        <tr><td>1</td><td>1</td><td>1</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--accent-primary);margin-bottom:0.5rem;">NOT Gate</h4>
+                                <table class="trace-table" style="margin:0;">
+                                    <thead><tr><th>A</th><th>Q</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>0</td><td>1</td></tr>
+                                        <tr><td>1</td><td>0</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--accent-primary);margin-bottom:0.5rem;">XOR Gate</h4>
+                                <table class="trace-table" style="margin:0;">
+                                    <thead><tr><th>A</th><th>B</th><th>Q</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>0</td><td>0</td><td>0</td></tr>
+                                        <tr><td>0</td><td>1</td><td>1</td></tr>
+                                        <tr><td>1</td><td>0</td><td>1</td></tr>
+                                        <tr><td>1</td><td>1</td><td>0</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EXPLORE TAB ===== -->
+        <div id="explore" class="section">
+            <div class="section-header">
+                <h2>&#128269; Explore &amp; Visualise</h2>
+                <p>Step through the FDE cycle, build truth tables, and compare storage</p>
+            </div>
+
+            <!-- FDE Cycle Step-Through -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#9881;&#65039;</div>
+                    <div class="card-title">FDE Cycle Step-Through</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">
+                    Walk through the Fetch-Decode-Execute cycle step by step. Watch how the registers change at each stage.
+                </p>
+
+                <div class="fde-steps" id="fdeSteps">
+                    <div class="fde-step" id="fdeStep0">
+                        <span class="fde-step-num">1</span>
+                        <span class="fde-step-title">FETCH: PC &rarr; MAR</span>
+                        <div class="fde-step-desc">The address held in the Program Counter (PC) is copied to the Memory Address Register (MAR).</div>
+                    </div>
+                    <div class="fde-step" id="fdeStep1">
+                        <span class="fde-step-num">2</span>
+                        <span class="fde-step-title">FETCH: RAM &rarr; MDR</span>
+                        <div class="fde-step-desc">The address is sent to RAM via the address bus. The instruction stored at that address is returned via the data bus and placed in the MDR.</div>
+                    </div>
+                    <div class="fde-step" id="fdeStep2">
+                        <span class="fde-step-num">3</span>
+                        <span class="fde-step-title">FETCH: MDR &rarr; CIR, PC+1</span>
+                        <div class="fde-step-desc">The instruction is copied from the MDR to the CIR (Current Instruction Register). The PC is incremented by 1 to point to the next instruction.</div>
+                    </div>
+                    <div class="fde-step" id="fdeStep3">
+                        <span class="fde-step-num">4</span>
+                        <span class="fde-step-title">DECODE</span>
+                        <div class="fde-step-desc">The Control Unit (CU) decodes the instruction held in the CIR, determining the operation and data needed.</div>
+                    </div>
+                    <div class="fde-step" id="fdeStep4">
+                        <span class="fde-step-num">5</span>
+                        <span class="fde-step-title">EXECUTE</span>
+                        <div class="fde-step-desc">The ALU executes the instruction (e.g., performs a calculation). The result is stored in the Accumulator (ACC).</div>
+                    </div>
+                </div>
+
+                <div class="register-display" id="registerDisplay">
+                    <div class="register-box"><div class="register-name">PC</div><div class="register-value" id="regPC">0042</div></div>
+                    <div class="register-box"><div class="register-name">MAR</div><div class="register-value" id="regMAR">----</div></div>
+                    <div class="register-box"><div class="register-name">MDR</div><div class="register-value" id="regMDR">----</div></div>
+                    <div class="register-box"><div class="register-name">CIR</div><div class="register-value" id="regCIR">----</div></div>
+                    <div class="register-box"><div class="register-name">ACC</div><div class="register-value" id="regACC">----</div></div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="stepFDE()">Next Step &#8594;</button>
+                    <button class="btn btn-secondary" onclick="resetFDE()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Logic Gate Truth Table Builder -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128268;</div>
+                    <div class="card-title">Logic Gate Truth Table Builder</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Select a gate type to see its truth table, or explore a combined two-gate circuit.</p>
+
+                <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;">
+                    <label style="color:var(--text-secondary);font-weight:500;">Gate Type:</label>
+                    <select class="gate-selector" id="gateSelect" onchange="renderGateTruthTable()">
+                        <option value="AND">AND</option>
+                        <option value="OR">OR</option>
+                        <option value="NOT">NOT</option>
+                        <option value="XOR">XOR</option>
+                        <option value="COMBINED">(A AND B) OR (NOT A)</option>
+                    </select>
+                </div>
+
+                <div id="gateTruthTable"></div>
+            </div>
+
+            <!-- Storage Comparison Table -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128190;</div>
+                    <div class="card-title">Storage Comparison</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Compare different storage technologies across key metrics.</p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>HDD</th>
+                            <th>SSD</th>
+                            <th>Optical</th>
+                            <th>Cloud</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:600;color:var(--text-primary);">Speed</td>
+                            <td class="rating-medium">Medium</td>
+                            <td class="rating-high">High</td>
+                            <td class="rating-low">Low</td>
+                            <td class="rating-medium">Medium</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;color:var(--text-primary);">Cost per GB</td>
+                            <td class="rating-high">Low cost</td>
+                            <td class="rating-medium">Medium cost</td>
+                            <td class="rating-high">Low cost</td>
+                            <td class="rating-low">High cost</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;color:var(--text-primary);">Capacity</td>
+                            <td class="rating-high">High (TBs)</td>
+                            <td class="rating-medium">Medium (TBs)</td>
+                            <td class="rating-low">Low (GBs)</td>
+                            <td class="rating-high">High (scalable)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;color:var(--text-primary);">Durability</td>
+                            <td class="rating-low">Low (moving parts)</td>
+                            <td class="rating-high">High (no moving parts)</td>
+                            <td class="rating-low">Low (scratches)</td>
+                            <td class="rating-high">High (redundancy)</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;color:var(--text-primary);">Portability</td>
+                            <td class="rating-low">Low (heavy)</td>
+                            <td class="rating-medium">Medium</td>
+                            <td class="rating-high">High (lightweight)</td>
+                            <td class="rating-high">High (any device)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== PRACTICE TAB ===== -->
+        <div id="practice" class="section">
+            <div class="section-header">
+                <h2>&#129513; Guided Practice</h2>
+                <p>Apply your knowledge with interactive exercises</p>
+            </div>
+
+            <!-- Categorize: Primary vs Secondary Storage -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128194;</div>
+                    <div class="card-title">Categorise: Primary vs Secondary Storage</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each item into the correct category.</p>
+                <div class="items-bank" id="storageBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="storageBankGrid"></div>
+                </div>
+                <div class="category-container" id="storageCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkStorage()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetStorage()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Parsons: FDE Cycle Steps -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128290;</div>
+                    <div class="card-title">Order the Steps: FDE Cycle</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag the steps into the correct order.</p>
+                <div class="parsons-container">
+                    <div class="parsons-bank" id="fdeBank">
+                        <h4>Available Steps</h4>
+                    </div>
+                    <div class="parsons-solution" id="fdeSolution">
+                        <h4>Correct Order</h4>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkFDESteps()">Check Order</button>
+                    <button class="btn btn-secondary" onclick="resetFDESteps()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Categorize: Compiler vs Interpreter -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128194;</div>
+                    <div class="card-title">Categorise: Compiler vs Interpreter</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each feature into the correct category.</p>
+                <div class="items-bank" id="translatorBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="translatorBankGrid"></div>
+                </div>
+                <div class="category-container" id="translatorCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkTranslators()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetTranslators()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Fill-in-blank: Logic gate outputs -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#9999;&#65039;</div>
+                    <div class="card-title">Fill in the Blanks: Logic Gate Outputs</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Complete the output column for each truth table. Enter 0 or 1.</p>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:600px;margin:0 auto;">
+                    <div>
+                        <h4 style="color:var(--accent-primary);margin-bottom:0.75rem;text-align:center;">AND Gate</h4>
+                        <table class="trace-table" id="fillAndTable">
+                            <thead><tr><th>A</th><th>B</th><th>Output</th></tr></thead>
+                            <tbody>
+                                <tr><td>0</td><td>0</td><td><input class="fill-blank-input" data-answer="0" style="width:40px;"></td></tr>
+                                <tr><td>0</td><td>1</td><td><input class="fill-blank-input" data-answer="0" style="width:40px;"></td></tr>
+                                <tr><td>1</td><td>0</td><td><input class="fill-blank-input" data-answer="0" style="width:40px;"></td></tr>
+                                <tr><td>1</td><td>1</td><td><input class="fill-blank-input" data-answer="1" style="width:40px;"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4 style="color:var(--accent-primary);margin-bottom:0.75rem;text-align:center;">OR Gate</h4>
+                        <table class="trace-table" id="fillOrTable">
+                            <thead><tr><th>A</th><th>B</th><th>Output</th></tr></thead>
+                            <tbody>
+                                <tr><td>0</td><td>0</td><td><input class="fill-blank-input" data-answer="0" style="width:40px;"></td></tr>
+                                <tr><td>0</td><td>1</td><td><input class="fill-blank-input" data-answer="1" style="width:40px;"></td></tr>
+                                <tr><td>1</td><td>0</td><td><input class="fill-blank-input" data-answer="1" style="width:40px;"></td></tr>
+                                <tr><td>1</td><td>1</td><td><input class="fill-blank-input" data-answer="1" style="width:40px;"></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="checkFillGates()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetFillGates()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RECALL TAB ===== -->
+        <div id="recall" class="section">
+            <div class="section-header">
+                <h2>&#129504; Retrieval Practice</h2>
+                <p>Test your memory by matching terms with definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#127183;</div>
+                    <div class="card-title">Memory Match</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Find all 8 matching pairs. Click two cards to flip them.</p>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="resetMemoryGame()">Reset Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== APPLY TAB ===== -->
+        <div id="apply" class="section">
+            <div class="section-header">
+                <h2>&#128221; Exam Practice</h2>
+                <p>Build answers using sentence banks, then reveal the mark scheme</p>
+            </div>
+
+            <div id="examQuestionsContainer"></div>
+        </div>
+
+        <!-- ===== CHALLENGE TAB ===== -->
+        <div id="challenge" class="section">
+            <div class="section-header">
+                <h2>&#9889; Challenge</h2>
+                <p>No hints, no help &mdash; prove your mastery</p>
+            </div>
+
+            <div class="timer-bar">
+                <span style="color:var(--text-secondary);">Time Remaining:</span>
+                <div class="timer-progress"><div class="timer-fill" id="timerFill"></div></div>
+                <div class="timer-display" id="timerDisplay">5:00</div>
+            </div>
+
+            <div id="challengeContainer"></div>
+            <div class="btn-group" style="justify-content:center;">
+                <button class="btn btn-primary" onclick="submitChallenge()" id="btnSubmitChallenge">Submit All Answers</button>
+            </div>
+        </div>
+
+        <!-- ===== REVIEW TAB ===== -->
+        <div id="review" class="section">
+            <div class="section-header">
+                <h2>&#128202; Performance Review</h2>
+                <p>See how you performed across each sub-topic</p>
+            </div>
+
+            <div class="review-grid" id="reviewGrid"></div>
+
+            <div class="review-summary" id="reviewSummary">
+                <h3 style="margin-bottom:1rem;">Overall Performance</h3>
+                <div class="score-value" id="overallScore" style="color:var(--accent-primary);">0%</div>
+                <p class="score-label" id="overallLabel">Complete activities to see your results</p>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="switchTab('learn')">Revise Again</button>
+                    <button class="btn btn-secondary" onclick="switchTab('challenge')">Retry Challenge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+    // ===== STATE =====
+    let state = {
+        activitiesCompleted: 0,
+        correctAnswers: 0,
+        streak: 0,
+        totalActivities: 8
+    };
+
+    const topicScores = {
+        'CPU & FDE': { correct: 0, total: 0 },
+        'Storage': { correct: 0, total: 0 },
+        'Embedded Systems': { correct: 0, total: 0 },
+        'OS & Utilities': { correct: 0, total: 0 },
+        'Languages & Translators': { correct: 0, total: 0 },
+        'Logic Gates': { correct: 0, total: 0 }
+    };
+
+    function updateProgress() {
+        document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+        document.getElementById('correctAnswers').textContent = state.correctAnswers;
+        document.getElementById('streakCount').textContent = state.streak;
+        const pct = Math.round((state.activitiesCompleted / state.totalActivities) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+    }
+
+    function showNotification(msg, type = 'success') {
+        const el = document.getElementById('notification');
+        el.textContent = msg;
+        el.className = 'notification ' + type + ' show';
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function switchTab(sectionId) {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const tab = document.querySelector(`.nav-tab[data-section="${sectionId}"]`);
+        if (tab) tab.classList.add('active');
+        document.getElementById(sectionId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (sectionId === 'review') renderReview();
+        if (sectionId === 'challenge' && !challengeTimerStarted) startChallengeTimer();
+    }
+
+    // Tab switching
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.section));
+    });
+
+    // Accordion
+    function toggleAccordion(header) {
+        header.classList.toggle('open');
+        header.nextElementSibling.classList.toggle('open');
+    }
+
+    // ===== SCORING HELPER =====
+    function addScore(topic, correct, total) {
+        if (topicScores[topic]) {
+            topicScores[topic].correct += correct;
+            topicScores[topic].total += total;
+        }
+    }
+
+    // ===== EXPLORE: FDE CYCLE STEP-THROUGH =====
+    let fdeStep = -1;
+    const fdeRegisterStates = [
+        { PC: '0042', MAR: '0042', MDR: '----', CIR: '----', ACC: '----' },
+        { PC: '0042', MAR: '0042', MDR: 'ADD 5', CIR: '----', ACC: '----' },
+        { PC: '0043', MAR: '0042', MDR: 'ADD 5', CIR: 'ADD 5', ACC: '----' },
+        { PC: '0043', MAR: '0042', MDR: 'ADD 5', CIR: 'ADD 5', ACC: '----' },
+        { PC: '0043', MAR: '0042', MDR: 'ADD 5', CIR: 'ADD 5', ACC: '0012' }
+    ];
+
+    function stepFDE() {
+        if (fdeStep >= 4) return;
+        fdeStep++;
+
+        // Update step highlights
+        for (let i = 0; i <= 4; i++) {
+            const el = document.getElementById('fdeStep' + i);
+            el.classList.remove('active', 'done');
+            if (i < fdeStep) el.classList.add('done');
+            else if (i === fdeStep) el.classList.add('active');
+        }
+
+        // Update registers
+        const regs = fdeRegisterStates[fdeStep];
+        const regIds = ['PC', 'MAR', 'MDR', 'CIR', 'ACC'];
+        const prev = fdeStep > 0 ? fdeRegisterStates[fdeStep - 1] : { PC: '0042', MAR: '----', MDR: '----', CIR: '----', ACC: '----' };
+
+        regIds.forEach(r => {
+            const el = document.getElementById('reg' + r);
+            el.textContent = regs[r];
+            if (regs[r] !== prev[r]) {
+                el.classList.add('highlight');
+            } else {
+                el.classList.remove('highlight');
+            }
+        });
+
+        if (fdeStep === 4) {
+            showNotification('FDE cycle complete! The instruction ADD 5 was executed.');
+            addScore('CPU & FDE', 1, 1);
+            state.activitiesCompleted++;
+            updateProgress();
+        }
+    }
+
+    function resetFDE() {
+        fdeStep = -1;
+        for (let i = 0; i <= 4; i++) {
+            document.getElementById('fdeStep' + i).classList.remove('active', 'done');
+        }
+        document.getElementById('regPC').textContent = '0042';
+        document.getElementById('regMAR').textContent = '----';
+        document.getElementById('regMDR').textContent = '----';
+        document.getElementById('regCIR').textContent = '----';
+        document.getElementById('regACC').textContent = '----';
+        document.querySelectorAll('.register-value').forEach(el => el.classList.remove('highlight'));
+    }
+
+    // ===== EXPLORE: LOGIC GATE TRUTH TABLE BUILDER =====
+    function renderGateTruthTable() {
+        const gate = document.getElementById('gateSelect').value;
+        const container = document.getElementById('gateTruthTable');
+
+        if (gate === 'NOT') {
+            const rows = [
+                { a: 0, q: 1 },
+                { a: 1, q: 0 }
+            ];
+            container.innerHTML = `
+                <table class="trace-table" style="max-width:300px;margin:0 auto;">
+                    <thead><tr><th>A</th><th>NOT A</th></tr></thead>
+                    <tbody>${rows.map(r => `<tr><td>${r.a}</td><td style="color:var(--accent-primary);font-weight:600;">${r.q}</td></tr>`).join('')}</tbody>
+                </table>
+                <div class="key-point" style="max-width:500px;margin:1rem auto 0;">
+                    <div class="key-point-label">Rule</div>
+                    <p>NOT inverts the input: 0 becomes 1, 1 becomes 0.</p>
+                </div>
+            `;
+        } else if (gate === 'COMBINED') {
+            const inputs = [[0,0],[0,1],[1,0],[1,1]];
+            const rows = inputs.map(([a,b]) => {
+                const andResult = a & b;
+                const notA = a ? 0 : 1;
+                const finalResult = andResult | notA;
+                return { a, b, and: andResult, notA, q: finalResult };
+            });
+            container.innerHTML = `
+                <p style="color:var(--text-secondary);margin-bottom:1rem;text-align:center;">Circuit: <strong style="color:var(--accent-primary);">(A AND B) OR (NOT A)</strong></p>
+                <table class="trace-table" style="max-width:600px;margin:0 auto;">
+                    <thead><tr><th>A</th><th>B</th><th>A AND B</th><th>NOT A</th><th>Output</th></tr></thead>
+                    <tbody>${rows.map(r => `<tr><td>${r.a}</td><td>${r.b}</td><td>${r.and}</td><td>${r.notA}</td><td style="color:var(--accent-primary);font-weight:600;">${r.q}</td></tr>`).join('')}</tbody>
+                </table>
+                <div class="key-point" style="max-width:600px;margin:1rem auto 0;">
+                    <div class="key-point-label">How it works</div>
+                    <p>First compute A AND B. Then compute NOT A. Finally, OR the two intermediate results together to get the final output.</p>
+                </div>
+            `;
+        } else {
+            const inputs = [[0,0],[0,1],[1,0],[1,1]];
+            const gateFn = { AND: (a,b) => a & b, OR: (a,b) => a | b, XOR: (a,b) => a ^ b };
+            const rules = {
+                AND: 'AND outputs 1 only when BOTH inputs are 1.',
+                OR: 'OR outputs 1 when AT LEAST ONE input is 1.',
+                XOR: 'XOR outputs 1 when the inputs are DIFFERENT.'
+            };
+            const rows = inputs.map(([a,b]) => ({ a, b, q: gateFn[gate](a,b) }));
+            container.innerHTML = `
+                <table class="trace-table" style="max-width:400px;margin:0 auto;">
+                    <thead><tr><th>A</th><th>B</th><th>${gate}</th></tr></thead>
+                    <tbody>${rows.map(r => `<tr><td>${r.a}</td><td>${r.b}</td><td style="color:var(--accent-primary);font-weight:600;">${r.q}</td></tr>`).join('')}</tbody>
+                </table>
+                <div class="key-point" style="max-width:500px;margin:1rem auto 0;">
+                    <div class="key-point-label">Rule</div>
+                    <p>${rules[gate]}</p>
+                </div>
+            `;
+        }
+    }
+
+    renderGateTruthTable();
+
+    // ===== PRACTICE: CATEGORIZE PRIMARY VS SECONDARY STORAGE =====
+    const storageItems = [
+        { text: 'RAM', category: 'Primary Storage' },
+        { text: 'ROM', category: 'Primary Storage' },
+        { text: 'Cache', category: 'Primary Storage' },
+        { text: 'Volatile', category: 'Primary Storage' },
+        { text: 'Stores running programs', category: 'Primary Storage' },
+        { text: 'Fast access', category: 'Primary Storage' },
+        { text: 'Small capacity', category: 'Primary Storage' },
+        { text: 'HDD', category: 'Secondary Storage' },
+        { text: 'SSD', category: 'Secondary Storage' },
+        { text: 'Optical', category: 'Secondary Storage' },
+        { text: 'Non-volatile', category: 'Secondary Storage' },
+        { text: 'Stores files permanently', category: 'Secondary Storage' },
+        { text: 'Larger capacity', category: 'Secondary Storage' },
+        { text: 'Slower access', category: 'Secondary Storage' }
+    ];
+
+    let storageChecked = false;
+
+    function initStorage() {
+        const bankGrid = document.getElementById('storageBankGrid');
+        const catContainer = document.getElementById('storageCategories');
+        const categories = ['Primary Storage', 'Secondary Storage'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropStorageItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...storageItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'st' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'st' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropStorageItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    function checkStorage() {
+        if (storageChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#storageCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('storageBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! Well done!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Storage', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Storage', 0, 1);
+        }
+        state.activitiesCompleted++;
+        storageChecked = true;
+        updateProgress();
+    }
+
+    function resetStorage() {
+        storageChecked = false;
+        initStorage();
+    }
+
+    initStorage();
+
+    // ===== PRACTICE: FDE CYCLE STEPS (PARSONS) =====
+    const fdeParsonsSteps = [
+        { id: 1, text: '1. PC sends address to MAR', order: 1 },
+        { id: 2, text: '2. Data at that address is copied from RAM to MDR', order: 2 },
+        { id: 3, text: '3. PC is incremented by 1', order: 3 },
+        { id: 4, text: '4. CU decodes the instruction', order: 4 },
+        { id: 5, text: '5. ALU executes the instruction', order: 5 }
+    ];
+    let fdeStepsChecked = false;
+
+    function initFDESteps() {
+        const bank = document.getElementById('fdeBank');
+        const solution = document.getElementById('fdeSolution');
+        bank.innerHTML = '<h4>Available Steps</h4>';
+        solution.innerHTML = '<h4>Correct Order</h4>';
+
+        const shuffled = [...fdeParsonsSteps].sort(() => Math.random() - 0.5);
+        shuffled.forEach(step => {
+            const el = document.createElement('div');
+            el.className = 'parsons-block';
+            el.draggable = true;
+            el.textContent = step.text;
+            el.dataset.order = step.order;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'fde' + step.id); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bank.appendChild(el);
+        });
+
+        [bank, solution].forEach(container => {
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                const dragging = document.querySelector('.parsons-block.dragging');
+                if (!dragging) return;
+                const blocks = [...container.querySelectorAll('.parsons-block:not(.dragging)')];
+                const after = blocks.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = e.clientY - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) return { offset, element: child };
+                    return closest;
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+                if (after) container.insertBefore(dragging, after);
+                else container.appendChild(dragging);
+            });
+        });
+    }
+
+    function checkFDESteps() {
+        if (fdeStepsChecked) return;
+        const blocks = document.getElementById('fdeSolution').querySelectorAll('.parsons-block');
+        let allCorrect = true;
+        blocks.forEach((block, i) => {
+            if (parseInt(block.dataset.order) === i + 1) {
+                block.classList.add('correct');
+            } else {
+                block.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (blocks.length !== fdeParsonsSteps.length) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('Perfect order!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('CPU & FDE', 1, 1);
+        } else {
+            showNotification('Not quite right. Check the order.', 'error');
+            state.streak = 0;
+            addScore('CPU & FDE', 0, 1);
+        }
+        state.activitiesCompleted++;
+        fdeStepsChecked = true;
+        updateProgress();
+    }
+
+    function resetFDESteps() {
+        fdeStepsChecked = false;
+        initFDESteps();
+    }
+
+    initFDESteps();
+
+    // ===== PRACTICE: CATEGORIZE COMPILER VS INTERPRETER =====
+    const translatorItems = [
+        { text: 'Translates all code at once', category: 'Compiler' },
+        { text: 'Creates executable file', category: 'Compiler' },
+        { text: 'Faster execution after compilation', category: 'Compiler' },
+        { text: 'Errors reported after full analysis', category: 'Compiler' },
+        { text: 'Used for distributing software', category: 'Compiler' },
+        { text: 'Translates one line at a time', category: 'Interpreter' },
+        { text: 'No executable file produced', category: 'Interpreter' },
+        { text: 'Slower execution', category: 'Interpreter' },
+        { text: 'Easier to debug (stops at error)', category: 'Interpreter' },
+        { text: 'Used for testing/development', category: 'Interpreter' }
+    ];
+
+    let translatorChecked = false;
+
+    function initTranslators() {
+        const bankGrid = document.getElementById('translatorBankGrid');
+        const catContainer = document.getElementById('translatorCategories');
+        const categories = ['Compiler', 'Interpreter'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTranslatorItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...translatorItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'tr' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'tr' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropTranslatorItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    function checkTranslators() {
+        if (translatorChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#translatorCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('translatorBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! Well done!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Languages & Translators', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Languages & Translators', 0, 1);
+        }
+        state.activitiesCompleted++;
+        translatorChecked = true;
+        updateProgress();
+    }
+
+    function resetTranslators() {
+        translatorChecked = false;
+        initTranslators();
+    }
+
+    initTranslators();
+
+    // ===== PRACTICE: FILL IN BLANK LOGIC GATES =====
+    let fillGatesChecked = false;
+
+    function checkFillGates() {
+        if (fillGatesChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#fillAndTable .fill-blank-input, #fillOrTable .fill-blank-input').forEach(input => {
+            const answer = input.dataset.answer;
+            const val = input.value.trim();
+            if (val === answer) {
+                input.classList.add('correct');
+            } else {
+                input.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (allCorrect) {
+            showNotification('All gate outputs correct!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Logic Gates', 1, 1);
+        } else {
+            showNotification('Some outputs are wrong. Check the red fields.', 'error');
+            state.streak = 0;
+            addScore('Logic Gates', 0, 1);
+        }
+        state.activitiesCompleted++;
+        fillGatesChecked = true;
+        updateProgress();
+    }
+
+    function resetFillGates() {
+        fillGatesChecked = false;
+        document.querySelectorAll('#fillAndTable .fill-blank-input, #fillOrTable .fill-blank-input').forEach(input => {
+            input.value = '';
+            input.classList.remove('correct', 'incorrect');
+        });
+    }
+
+    // ===== RECALL: MEMORY GAME =====
+    const memoryPairs = [
+        { term: 'MAR', definition: 'Holds the address of the next memory location to be read/written' },
+        { term: 'ALU', definition: 'Performs calculations and logical comparisons within the CPU' },
+        { term: 'RAM', definition: 'Volatile memory that stores running programs and data' },
+        { term: 'ROM', definition: 'Non-volatile memory that stores boot-up instructions' },
+        { term: 'Compiler', definition: 'Translates all source code into machine code at once before execution' },
+        { term: 'Cache', definition: 'Small fast memory inside CPU storing frequently used data' },
+        { term: 'Embedded System', definition: 'Computer built into a device for a dedicated purpose' },
+        { term: 'NOT gate', definition: 'Logic gate that inverts its input \u2014 outputs the opposite' }
+    ];
+
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let memoryLocked = false;
+
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        matchedPairs = 0;
+        flippedCards = [];
+        memoryLocked = false;
+
+        const cards = [];
+        memoryPairs.forEach((pair, i) => {
+            cards.push({ pairId: i, text: pair.term, type: 'term' });
+            cards.push({ pairId: i, text: pair.definition, type: 'def' });
+        });
+        cards.sort(() => Math.random() - 0.5);
+
+        cards.forEach((card, idx) => {
+            const el = document.createElement('div');
+            el.className = 'memory-card';
+            el.dataset.pairId = card.pairId;
+            el.dataset.idx = idx;
+            el.innerHTML = `<div class="card-back">?</div><div class="card-front">${card.text}</div>`;
+            el.addEventListener('click', () => flipCard(el));
+            grid.appendChild(el);
+        });
+    }
+
+    function flipCard(card) {
+        if (memoryLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        card.classList.add('flipped');
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+            memoryLocked = true;
+            const [a, b] = flippedCards;
+            if (a.dataset.pairId === b.dataset.pairId) {
+                a.classList.add('matched');
+                b.classList.add('matched');
+                matchedPairs++;
+                flippedCards = [];
+                memoryLocked = false;
+                if (matchedPairs === memoryPairs.length) {
+                    showNotification('All pairs matched! Excellent memory!');
+                    state.activitiesCompleted++;
+                    state.correctAnswers++;
+                    state.streak++;
+                    addScore('CPU & FDE', 1, 1);
+                    updateProgress();
+                }
+            } else {
+                setTimeout(() => {
+                    a.classList.remove('flipped');
+                    b.classList.remove('flipped');
+                    flippedCards = [];
+                    memoryLocked = false;
+                }, 1000);
+            }
+        }
+    }
+
+    function resetMemoryGame() { initMemoryGame(); }
+    initMemoryGame();
+
+    // ===== APPLY: EXAM QUESTIONS WITH SENTENCE BANK =====
+    const examQuestions = [
+        {
+            id: 1,
+            question: 'Describe the purpose of the ALU within the CPU. (2 marks)',
+            marks: 2,
+            topic: 'CPU & FDE',
+            sentences: [
+                { id: 1, text: 'The ALU (Arithmetic Logic Unit) performs mathematical calculations such as addition and subtraction.', points: ['calc'] },
+                { id: 2, text: 'It also carries out logical comparisons such as greater than, less than, and equal to.', points: ['logic'] },
+                { id: 3, text: 'The ALU stores data in the accumulator before it is needed.', points: [], distractor: true },
+                { id: 4, text: 'The ALU fetches instructions from memory.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'calc', description: 'Performs arithmetic/calculations (e.g., addition, subtraction)', mark: 1 },
+                { point: 'logic', description: 'Performs logical comparisons (e.g., greater than, equal to)', mark: 1 }
+            ],
+            modelAnswer: 'The ALU (Arithmetic Logic Unit) performs mathematical calculations such as addition and subtraction. It also carries out logical comparisons such as greater than, less than, and equal to.'
+        },
+        {
+            id: 2,
+            question: 'Explain two differences between a compiler and an interpreter. (4 marks)',
+            marks: 4,
+            topic: 'Languages & Translators',
+            sentences: [
+                { id: 1, text: 'A compiler translates the entire source code into machine code in one go before the program is run.', points: ['comp_all'] },
+                { id: 2, text: 'An interpreter translates and executes the code one line at a time.', points: ['int_line'] },
+                { id: 3, text: 'A compiler produces a standalone executable file that can be distributed and run without the compiler.', points: ['comp_exe'] },
+                { id: 4, text: 'An interpreter does not create an executable; the source code and interpreter are needed every time.', points: ['int_no_exe'] },
+                { id: 5, text: 'A compiler is slower than an interpreter at running programs.', points: [], distractor: true },
+                { id: 6, text: 'An interpreter can only be used with Python.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'comp_all', description: 'Compiler translates all code at once before execution', mark: 1 },
+                { point: 'int_line', description: 'Interpreter translates and executes one line at a time', mark: 1 },
+                { point: 'comp_exe', description: 'Compiler creates a standalone executable file', mark: 1 },
+                { point: 'int_no_exe', description: 'Interpreter does not produce an executable; source code needed each time', mark: 1 }
+            ],
+            modelAnswer: 'A compiler translates the entire source code into machine code in one go before execution, producing a standalone executable that can be distributed. An interpreter translates and executes code one line at a time, meaning no executable is created and the source code and interpreter are needed every time the program is run.'
+        },
+        {
+            id: 3,
+            question: 'Complete this truth table for an AND gate and an OR gate with inputs A=0,B=0; A=0,B=1; A=1,B=0; A=1,B=1. (3 marks)',
+            marks: 3,
+            topic: 'Logic Gates',
+            sentences: [
+                { id: 1, text: 'AND outputs: 0, 0, 0, 1', points: ['and'] },
+                { id: 2, text: 'OR outputs: 0, 1, 1, 1', points: ['or'] },
+                { id: 3, text: 'The AND gate only outputs 1 when both inputs are 1.', points: ['explain'] },
+                { id: 4, text: 'AND outputs: 0, 1, 1, 1', points: [], distractor: true },
+                { id: 5, text: 'OR outputs: 0, 0, 0, 1', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'and', description: 'Correct AND outputs: 0, 0, 0, 1', mark: 1 },
+                { point: 'or', description: 'Correct OR outputs: 0, 1, 1, 1', mark: 1 },
+                { point: 'explain', description: 'Explains AND rule: outputs 1 only when both inputs are 1', mark: 1 }
+            ],
+            modelAnswer: 'AND gate truth table outputs: 0, 0, 0, 1 (only outputs 1 when both inputs are 1). OR gate truth table outputs: 0, 1, 1, 1 (outputs 1 when at least one input is 1). The AND gate only outputs 1 when both inputs are 1.'
+        }
+    ];
+
+    let currentExamQ = 0;
+    let examAnswers = {};
+
+    function renderExamQuestion(idx) {
+        const container = document.getElementById('examQuestionsContainer');
+        const q = examQuestions[idx];
+        const shuffledSentences = [...q.sentences].sort(() => Math.random() - 0.5);
+        examAnswers[idx] = [];
+
+        container.innerHTML = `
+            <div class="card">
+                <div class="exam-q-header">
+                    <span style="color:var(--text-muted)">Question ${idx + 1} of ${examQuestions.length}</span>
+                    <span class="marks-badge">${q.marks} marks</span>
+                </div>
+                <h4 style="margin-bottom:1.5rem;line-height:1.6;white-space:pre-line;">${q.question}</h4>
+
+                <div class="sentence-bank-container">
+                    <div class="sentence-bank">
+                        <h4>Sentence Bank</h4>
+                        <div id="sentenceBank">
+                            ${shuffledSentences.map(s =>
+                                `<div class="sentence-item" data-sid="${s.id}" onclick="toggleExamSentence(${idx},${s.id},this)">${s.text}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="answer-area">
+                        <h4>Your Answer</h4>
+                        <div id="answerArea"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="submitExamAnswer(${idx})">Submit Answer</button>
+                    ${idx > 0 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx - 1})">&larr; Previous</button>` : ''}
+                    ${idx < examQuestions.length - 1 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx + 1})">Next &rarr;</button>` : ''}
+                </div>
+
+                <div class="mark-scheme-reveal" id="markSchemeReveal"></div>
+            </div>
+        `;
+        currentExamQ = idx;
+    }
+
+    function toggleExamSentence(qIdx, sid, el) {
+        const answerArea = document.getElementById('answerArea');
+        if (examAnswers[qIdx].includes(sid)) {
+            examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+            el.classList.remove('in-answer');
+            const inAnswer = answerArea.querySelector(`[data-sid="${sid}"]`);
+            if (inAnswer) inAnswer.remove();
+        } else {
+            examAnswers[qIdx].push(sid);
+            el.classList.add('in-answer');
+            const clone = document.createElement('div');
+            clone.className = 'sentence-item selected';
+            clone.dataset.sid = sid;
+            clone.textContent = el.textContent;
+            clone.onclick = () => {
+                examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+                el.classList.remove('in-answer');
+                clone.remove();
+            };
+            answerArea.appendChild(clone);
+        }
+    }
+
+    function submitExamAnswer(qIdx) {
+        const q = examQuestions[qIdx];
+        const selected = examAnswers[qIdx] || [];
+        const pointsAwarded = [];
+
+        selected.forEach(sid => {
+            const sentence = q.sentences.find(s => s.id === sid);
+            if (sentence) {
+                sentence.points.forEach(p => { if (!pointsAwarded.includes(p)) pointsAwarded.push(p); });
+            }
+        });
+
+        let marksAwarded = 0;
+        q.markScheme.forEach(m => { if (pointsAwarded.includes(m.point)) marksAwarded++; });
+
+        const reveal = document.getElementById('markSchemeReveal');
+        let scoreColor = marksAwarded === q.marks ? 'var(--success)' : marksAwarded >= q.marks / 2 ? 'var(--warning)' : 'var(--error)';
+
+        reveal.innerHTML = `
+            <div class="score-display" style="border-color:${scoreColor};">
+                <div class="score-value" style="color:${scoreColor}">${marksAwarded}/${q.marks}</div>
+                <div class="score-label">${marksAwarded === q.marks ? 'Full marks!' : marksAwarded >= q.marks / 2 ? 'Good effort!' : 'Keep practising!'}</div>
+            </div>
+            <h4 style="margin:1rem 0 0.75rem;">Mark Scheme</h4>
+            ${q.markScheme.map(m => `
+                <div class="mark-point">
+                    <span class="mark-icon">${pointsAwarded.includes(m.point) ? '\u2713' : '\u2717'}</span>
+                    <span class="mark-text" style="color:${pointsAwarded.includes(m.point) ? 'var(--success)' : 'var(--error)'}">[${m.mark} mark] ${m.description}</span>
+                </div>
+            `).join('')}
+            <h4 style="margin:1rem 0 0.5rem;">Model Answer</h4>
+            <div class="model-answer">${q.modelAnswer}</div>
+        `;
+        reveal.classList.add('show');
+
+        state.correctAnswers += marksAwarded;
+        state.activitiesCompleted++;
+        addScore(q.topic, marksAwarded, q.marks);
+        if (marksAwarded === q.marks) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+    }
+
+    renderExamQuestion(0);
+
+    // ===== CHALLENGE: TIMED QUIZ =====
+    const challengeQuestions = [
+        {
+            topic: 'CPU & FDE',
+            q: 'Which register holds the address of the NEXT instruction to be fetched?',
+            options: ['MAR', 'MDR', 'ACC', 'PC'],
+            correct: 3,
+            explanation: 'The Program Counter (PC) always holds the address of the next instruction to be fetched.'
+        },
+        {
+            topic: 'Storage',
+            q: 'Which storage medium would be MOST suitable for a portable music player?',
+            options: ['HDD', 'Optical disc', 'SSD/Flash', 'Magnetic tape'],
+            correct: 2,
+            explanation: 'SSD/Flash is lightweight, durable (no moving parts), and has fast access \u2014 ideal for portable devices.'
+        },
+        {
+            topic: 'Embedded Systems',
+            q: 'Which is NOT an example of an embedded system?',
+            options: ['Washing machine controller', 'Traffic light system', 'Desktop PC', 'Car engine management'],
+            correct: 2,
+            explanation: 'A desktop PC is a general-purpose computer, not embedded in another device for a specific purpose.'
+        },
+        {
+            topic: 'Languages & Translators',
+            q: 'What does an assembler do?',
+            options: ['Translates high-level code to machine code', 'Translates assembly language to machine code', 'Runs Python programs line by line', 'Compiles C++ programs'],
+            correct: 1,
+            explanation: 'An assembler specifically converts assembly language (low-level) into machine code.'
+        },
+        {
+            topic: 'Logic Gates',
+            q: 'What is the output of XOR when both inputs are 1?',
+            options: ['0', '1', 'Undefined', 'Error'],
+            correct: 0,
+            explanation: 'XOR outputs 1 only when inputs are DIFFERENT. Both being 1 means they are the same, so output is 0.'
+        }
+    ];
+
+    let challengeTimerStarted = false;
+    let challengeTimer = null;
+    let challengeTimeLeft = 300;
+    let challengeSubmitted = false;
+
+    function startChallengeTimer() {
+        challengeTimerStarted = true;
+        challengeTimeLeft = 300;
+        updateTimerDisplay();
+        challengeTimer = setInterval(() => {
+            challengeTimeLeft--;
+            updateTimerDisplay();
+            if (challengeTimeLeft <= 0) {
+                clearInterval(challengeTimer);
+                submitChallenge();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(challengeTimeLeft / 60);
+        const secs = challengeTimeLeft % 60;
+        document.getElementById('timerDisplay').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timerFill').style.width = (challengeTimeLeft / 300 * 100) + '%';
+        if (challengeTimeLeft < 60) {
+            document.getElementById('timerDisplay').style.color = 'var(--error)';
+            document.getElementById('timerFill').style.background = 'var(--error)';
+        }
+    }
+
+    function initChallenge() {
+        const container = document.getElementById('challengeContainer');
+        container.innerHTML = challengeQuestions.map((q, qi) => `
+            <div class="quiz-question" data-topic="${q.topic}">
+                <h4>Q${qi + 1}. ${q.q}</h4>
+                <div class="quiz-options">
+                    ${q.options.map((opt, oi) => `
+                        <div class="quiz-option" data-q="${qi}" data-opt="${oi}" onclick="selectChallengeOption(${qi},${oi},this)">
+                            <span class="option-letter">${String.fromCharCode(65 + oi)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-feedback" id="challengeFb${qi}"></div>
+            </div>
+        `).join('');
+    }
+
+    function selectChallengeOption(qi, oi, el) {
+        if (challengeSubmitted) return;
+        document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function submitChallenge() {
+        if (challengeSubmitted) return;
+        challengeSubmitted = true;
+        if (challengeTimer) clearInterval(challengeTimer);
+
+        let totalCorrect = 0;
+        challengeQuestions.forEach((q, qi) => {
+            const selected = document.querySelector(`.quiz-option[data-q="${qi}"].selected`);
+            const fb = document.getElementById(`challengeFb${qi}`);
+            const correct = document.querySelector(`.quiz-option[data-q="${qi}"][data-opt="${q.correct}"]`);
+            correct.classList.add('correct');
+
+            if (selected && parseInt(selected.dataset.opt) === q.correct) {
+                totalCorrect++;
+                fb.className = 'quiz-feedback show correct';
+                fb.textContent = '\u2713 ' + q.explanation;
+                addScore(q.topic, 1, 1);
+            } else {
+                if (selected) selected.classList.add('incorrect');
+                fb.className = 'quiz-feedback show incorrect';
+                fb.textContent = '\u2717 ' + q.explanation;
+                addScore(q.topic, 0, 1);
+            }
+            document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.add('disabled'));
+        });
+
+        state.correctAnswers += totalCorrect;
+        state.activitiesCompleted++;
+        if (totalCorrect === challengeQuestions.length) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+        showNotification(`Challenge: ${totalCorrect}/${challengeQuestions.length} correct`);
+    }
+
+    initChallenge();
+
+    // ===== REVIEW TAB =====
+    function renderReview() {
+        const grid = document.getElementById('reviewGrid');
+        grid.innerHTML = '';
+        let totalCorrect = 0, totalPossible = 0;
+
+        Object.entries(topicScores).forEach(([topic, scores]) => {
+            const pct = scores.total > 0 ? Math.round((scores.correct / scores.total) * 100) : 0;
+            totalCorrect += scores.correct;
+            totalPossible += scores.total;
+            const cls = pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low';
+            const color = pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--error)';
+            grid.innerHTML += `
+                <div class="review-card">
+                    <h4>${topic}</h4>
+                    <div class="review-score ${cls}">${pct}%</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">${scores.correct}/${scores.total} points</div>
+                    <div class="review-bar"><div class="review-fill" style="width:${pct}%;background:${color}"></div></div>
+                </div>
+            `;
+        });
+
+        const overall = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
+        document.getElementById('overallScore').textContent = overall + '%';
+        document.getElementById('overallScore').style.color =
+            overall >= 70 ? 'var(--success)' : overall >= 40 ? 'var(--warning)' : 'var(--error)';
+        document.getElementById('overallLabel').textContent =
+            overall >= 70 ? 'Great work! You have a strong understanding.' :
+            overall >= 40 ? 'Good progress. Review the weaker areas.' :
+            totalPossible === 0 ? 'Complete activities to see your results.' :
+            'Keep practising. Focus on the red areas.';
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 4: Networks &amp; Security | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-primary: #0ea5e9;
+            --accent-secondary: #6366f1;
+            --accent-glow: rgba(14, 165, 233, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b7280;
+            --border-color: #2a2a3a;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --gradient-2: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none; z-index: 0;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.9rem; margin-bottom: 1rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent-primary); }
+
+        .hero { text-align: center; padding: 3rem 2rem; position: relative; }
+        .hero::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-block; background: var(--gradient-1);
+            color: var(--bg-dark); padding: 0.5rem 1.5rem; border-radius: 50px;
+            font-weight: 600; font-size: 0.85rem; letter-spacing: 0.1em;
+            text-transform: uppercase; margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 1rem;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        .progress-tracker {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.8rem;
+            font-weight: 600; color: var(--accent-primary);
+        }
+        .stat-label {
+            font-size: 0.75rem; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .progress-bar-container { flex: 1; min-width: 200px; max-width: 400px; }
+        .progress-bar { height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill {
+            height: 100%; background: var(--gradient-1);
+            border-radius: 10px; transition: width 0.5s ease; width: 0%;
+        }
+
+        .nav-tabs {
+            display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 2rem; padding: 0.4rem; background: var(--bg-card);
+            border-radius: 15px; border: 1px solid var(--border-color);
+        }
+        .nav-tab {
+            padding: 0.7rem 1rem; background: transparent; border: none;
+            color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            border-radius: 10px; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-tab.active { background: var(--gradient-1); color: var(--bg-dark); font-weight: 600; }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); }
+
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; transition: all 0.3s ease;
+        }
+        .card:hover { border-color: var(--accent-primary); box-shadow: 0 0 30px var(--accent-glow); }
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .card-icon {
+            width: 50px; height: 50px; background: var(--gradient-1);
+            border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+        }
+        .card-title { font-size: 1.2rem; font-weight: 600; }
+
+        .key-point {
+            background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(99,102,241,0.1));
+            border: 1px solid rgba(14,165,233,0.3); border-left: 4px solid var(--accent-primary);
+            border-radius: 12px; padding: 1.25rem; margin: 1rem 0;
+        }
+        .key-point-label {
+            font-size: 0.75rem; font-weight: 600; color: var(--accent-primary);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
+        }
+        .key-point p { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        .definition-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+        }
+        .definition-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .definition-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: var(--gradient-1);
+        }
+        .definition-card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+            font-weight: 600; color: var(--accent-primary); margin-bottom: 0.5rem;
+        }
+        .definition-text { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; }
+
+        .accordion { margin-bottom: 1rem; }
+        .accordion-header {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s; font-weight: 500;
+        }
+        .accordion-header:hover { border-color: var(--accent-primary); }
+        .accordion-header.open { border-radius: 12px 12px 0 0; border-color: var(--accent-primary); }
+        .accordion-arrow { transition: transform 0.3s; font-size: 0.8rem; }
+        .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+        .accordion-body {
+            display: none; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-top: none; border-radius: 0 0 12px 12px; padding: 1.5rem;
+            color: var(--text-secondary); line-height: 1.7;
+        }
+        .accordion-body.open { display: block; }
+
+        .btn {
+            padding: 0.75rem 1.5rem; border: none; border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: var(--gradient-1); color: var(--bg-dark); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--accent-glow); }
+        .btn-secondary { background: var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover { background: #3a3a4a; }
+        .btn-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        .memory-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+            max-width: 800px; margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0.75rem; text-align: center; font-size: 0.8rem;
+            position: relative; perspective: 600px;
+        }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-primary); transform: scale(1.03); }
+        .memory-card .card-front, .memory-card .card-back {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            justify-content: center; padding: 0.75rem; border-radius: 10px;
+            backface-visibility: hidden; transition: transform 0.4s;
+        }
+        .memory-card .card-back {
+            background: var(--gradient-1); color: var(--bg-dark);
+            font-weight: 600; font-size: 1.5rem;
+        }
+        .memory-card .card-front {
+            background: var(--bg-card); transform: rotateY(180deg);
+            color: var(--text-primary); font-size: 0.78rem; line-height: 1.4;
+        }
+        .memory-card.flipped .card-back, .memory-card.matched .card-back { transform: rotateY(180deg); }
+        .memory-card.flipped .card-front, .memory-card.matched .card-front { transform: rotateY(0); }
+        .memory-card.matched { border-color: var(--success); opacity: 0.8; pointer-events: none; }
+
+        .category-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .category-box {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 200px; transition: border-color 0.3s;
+        }
+        .category-box.drag-over { border-color: var(--accent-primary); background: rgba(14,165,233,0.05); }
+        .category-box h4 {
+            font-size: 1rem; margin-bottom: 1rem; color: var(--accent-primary);
+            text-align: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .category-items { display: flex; flex-direction: column; gap: 0.5rem; min-height: 50px; }
+        .category-item, .bank-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: grab; transition: all 0.3s; font-size: 0.9rem;
+            user-select: none;
+        }
+        .category-item:hover, .bank-item:hover { border-color: var(--accent-primary); }
+        .category-item.correct, .bank-item.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .category-item.incorrect, .bank-item.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .items-bank { margin-bottom: 2rem; }
+        .items-bank h4 { margin-bottom: 1rem; color: var(--text-secondary); }
+        .items-bank-grid {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+            padding: 1rem; background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; min-height: 60px;
+        }
+
+        .parsons-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .parsons-bank, .parsons-solution {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .parsons-bank h4, .parsons-solution h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .parsons-solution { border-color: rgba(14,165,233,0.3); }
+        .parsons-block {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: grab;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+            transition: all 0.3s; user-select: none;
+        }
+        .parsons-block:hover { border-color: var(--accent-primary); }
+        .parsons-block.dragging { opacity: 0.4; }
+        .parsons-block.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .parsons-block.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+
+        .fill-blank-container { max-width: 700px; margin: 0 auto; }
+        .fill-blank-line {
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+            margin-bottom: 0.75rem; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 2;
+        }
+        .fill-blank-input {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 6px; padding: 0.3rem 0.6rem; color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            min-width: 100px; outline: none; transition: border-color 0.3s;
+        }
+        .fill-blank-input:focus { border-color: var(--accent-primary); }
+        .fill-blank-input.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .fill-blank-input.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .hint-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-muted);
+            padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .hint-btn:hover { border-color: var(--warning); color: var(--warning); }
+
+        .sentence-bank-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .sentence-bank, .answer-area {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .answer-area { border-color: rgba(14,165,233,0.3); }
+        .sentence-bank h4, .answer-area h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .sentence-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;
+            font-size: 0.88rem; line-height: 1.5; transition: all 0.3s; user-select: none;
+        }
+        .sentence-item:hover { border-color: var(--accent-primary); }
+        .sentence-item.selected { border-color: var(--accent-primary); background: rgba(14,165,233,0.1); }
+        .sentence-item.in-answer { opacity: 0.4; pointer-events: none; }
+        .mark-scheme-reveal {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem; display: none;
+        }
+        .mark-scheme-reveal.show { display: block; }
+        .mark-point {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);
+        }
+        .mark-point:last-child { border-bottom: none; }
+        .mark-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+        .mark-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .score-display {
+            text-align: center; padding: 1.5rem; background: var(--bg-card);
+            border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 1rem;
+        }
+        .score-value { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; }
+        .score-label { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .quiz-question { margin-bottom: 2rem; }
+        .quiz-question h4 {
+            margin-bottom: 1rem; font-size: 1rem; line-height: 1.5;
+            padding: 1rem; background: var(--bg-card); border-radius: 10px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .quiz-options { display: grid; gap: 0.5rem; }
+        .quiz-option {
+            padding: 0.9rem 1rem; background: var(--bg-card-hover);
+            border: 2px solid var(--border-color); border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; display: flex;
+            align-items: center; gap: 0.75rem; font-size: 0.9rem;
+        }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-primary); }
+        .quiz-option.selected { border-color: var(--accent-primary); background: rgba(14,165,233,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(16,185,129,0.15); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+        .option-letter {
+            width: 28px; height: 28px; border-radius: 50%; background: var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .quiz-feedback {
+            padding: 1rem; border-radius: 10px; margin-top: 0.5rem;
+            font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--error); }
+
+        .timer-bar {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .timer-display { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--accent-primary); }
+        .timer-progress { flex: 1; margin: 0 1.5rem; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--gradient-1); border-radius: 3px; transition: width 1s linear; width: 100%; }
+
+        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .review-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; text-align: center;
+        }
+        .review-card h4 { font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-secondary); }
+        .review-score {
+            font-family: 'JetBrains Mono', monospace; font-size: 2rem;
+            font-weight: 700; margin-bottom: 0.25rem;
+        }
+        .review-score.high { color: var(--success); }
+        .review-score.mid { color: var(--warning); }
+        .review-score.low { color: var(--error); }
+        .review-bar { height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 0.5rem; }
+        .review-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+        .review-summary {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 2rem; margin-top: 1.5rem; text-align: center;
+        }
+
+        .exam-q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .marks-badge {
+            background: rgba(14,165,233,0.2); color: var(--accent-primary);
+            padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;
+            font-weight: 600; border: 1px solid rgba(14,165,233,0.3);
+        }
+        .model-answer {
+            background: rgba(14,165,233,0.05); border: 1px solid rgba(14,165,233,0.2);
+            border-radius: 12px; padding: 1.25rem; margin-top: 1rem;
+            color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem;
+        }
+
+        /* Topology Diagrams */
+        .topology-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .topology-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; text-align: center;
+        }
+        .topology-card h4 { color: var(--accent-primary); margin-bottom: 1rem; }
+        .topology-diagram {
+            position: relative; width: 220px; height: 220px; margin: 0 auto 1rem;
+        }
+        .topo-node {
+            width: 36px; height: 36px; background: var(--gradient-1); border-radius: 50%;
+            position: absolute; display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; font-weight: 700; color: var(--bg-dark); z-index: 2;
+        }
+        .topo-hub {
+            width: 44px; height: 44px; background: linear-gradient(135deg, #f59e0b, #f97316);
+            border-radius: 50%; position: absolute; display: flex; align-items: center;
+            justify-content: center; font-size: 0.6rem; font-weight: 700; color: var(--bg-dark); z-index: 2;
+        }
+        .topo-line {
+            position: absolute; background: var(--border-color); z-index: 1;
+        }
+        .topo-backbone {
+            position: absolute; background: var(--accent-primary); opacity: 0.4; z-index: 1;
+        }
+        .topology-details {
+            display: none; text-align: left; margin-top: 1rem;
+            padding: 1rem; background: var(--bg-card-hover); border-radius: 10px;
+            font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;
+        }
+        .topology-details.show { display: block; }
+        .topology-toggle {
+            background: var(--gradient-1); color: var(--bg-dark); border: none;
+            padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600;
+            cursor: pointer; font-size: 0.85rem; margin-top: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Packet Switching */
+        .packet-step {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem;
+            display: none; animation: fadeIn 0.4s ease;
+        }
+        .packet-step.active { display: block; }
+        .packet-step h4 { color: var(--accent-primary); margin-bottom: 0.75rem; }
+        .packet-step p { color: var(--text-secondary); line-height: 1.6; }
+        .step-indicator {
+            display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;
+        }
+        .step-dot {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: var(--border-color); transition: all 0.3s;
+        }
+        .step-dot.active { background: var(--accent-primary); transform: scale(1.3); }
+        .step-dot.completed { background: var(--success); }
+        .packet-visual {
+            background: var(--bg-card-hover); border-radius: 10px; padding: 1rem;
+            margin-top: 1rem; text-align: center; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem; color: var(--accent-primary);
+        }
+
+        /* Protocol Matcher */
+        .protocol-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .protocol-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 12px; padding: 1.25rem; cursor: pointer; transition: all 0.3s;
+            text-align: center;
+        }
+        .protocol-card:hover { border-color: var(--accent-primary); }
+        .protocol-card.revealed { border-color: var(--accent-primary); background: rgba(14,165,233,0.05); }
+        .protocol-name {
+            font-family: 'JetBrains Mono', monospace; font-weight: 600;
+            color: var(--accent-primary); font-size: 1.1rem; margin-bottom: 0.5rem;
+        }
+        .protocol-desc {
+            color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;
+            display: none;
+        }
+        .protocol-card.revealed .protocol-desc { display: block; }
+        .protocol-hint { color: var(--text-muted); font-size: 0.8rem; }
+        .protocol-card.revealed .protocol-hint { display: none; }
+
+        .notification {
+            position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem;
+            border-radius: 12px; font-weight: 500; z-index: 100;
+            transform: translateY(100px); opacity: 0; transition: all 0.4s ease;
+            max-width: 350px;
+        }
+        .notification.show { transform: translateY(0); opacity: 1; }
+        .notification.success { background: rgba(14,165,233,0.9); color: white; }
+        .notification.error { background: rgba(239,68,68,0.9); color: white; }
+
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .parsons-container, .sentence-bank-container { grid-template-columns: 1fr; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-tab { padding: 0.5rem 0.7rem; font-size: 0.75rem; }
+            .progress-tracker { flex-direction: column; text-align: center; }
+            .topology-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .memory-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <a href="index.html" class="back-link">&#8592; Back to CS Hub</a>
+
+        <div class="hero">
+            <div class="hero-badge">Topic 4 &mdash; Paper 1</div>
+            <h1>Networks &amp; Security</h1>
+            <p>Network types, topologies, protocols &amp; cyber security &mdash; understand how computers communicate and stay safe.</p>
+        </div>
+
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">&#128214; Learn</button>
+            <button class="nav-tab" data-section="explore">&#128269; Explore</button>
+            <button class="nav-tab" data-section="practice">&#129513; Practice</button>
+            <button class="nav-tab" data-section="recall">&#129504; Recall</button>
+            <button class="nav-tab" data-section="apply">&#128221; Apply</button>
+            <button class="nav-tab" data-section="challenge">&#9889; Challenge</button>
+            <button class="nav-tab" data-section="review">&#128202; Review</button>
+        </div>
+
+        <!-- ===== LEARN TAB ===== -->
+        <div id="learn" class="section active">
+            <div class="section-header">
+                <h2>&#128214; Core Theory</h2>
+                <p>Key definitions, concepts, and terminology for Topic 4</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128268;</div>
+                    <div class="card-title">Network Types</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">LAN</div>
+                        <div class="definition-text">Local Area Network &mdash; covers a small geographical area like a school or office. Usually owned and maintained by a single organisation.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">WAN</div>
+                        <div class="definition-text">Wide Area Network &mdash; covers a large geographical area, connects LANs together (e.g., the internet). Often uses third-party infrastructure.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Client-Server</div>
+                        <div class="definition-text">A network model where a central server provides services (files, email, web pages) to client devices. The server manages security and resources.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Peer-to-Peer</div>
+                        <div class="definition-text">A network model where all devices have equal status and share resources directly with each other. No central server is needed.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128300;</div>
+                    <div class="card-title">Network Topologies</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Star Topology</div>
+                        <div class="definition-text">All devices connect to a central switch/hub. If one cable fails, only that device is affected. If the switch fails, the whole network goes down.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Mesh Topology</div>
+                        <div class="definition-text">Every device connects to every other device (full mesh) or many others (partial mesh). Highly redundant but expensive to set up.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Bus Topology</div>
+                        <div class="definition-text">All devices connect to a single backbone cable with terminators at each end. Cheap but if the backbone fails, the entire network goes down.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128225;</div>
+                    <div class="card-title">Wired &amp; Wireless</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Wi-Fi</div>
+                        <div class="definition-text">Wireless networking using radio waves, based on IEEE 802.11 standards. Provides mobility but can suffer from interference and is less secure than wired.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Ethernet</div>
+                        <div class="definition-text">Wired networking standard using cables (typically Cat5e/Cat6). Provides faster, more reliable and more secure connections than wireless.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Bluetooth</div>
+                        <div class="definition-text">Short-range wireless technology for connecting nearby devices (headphones, keyboards). Low power consumption, range typically under 10 metres.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128220;</div>
+                    <div class="card-title">Protocols &amp; Data Transmission</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Protocol</div>
+                        <div class="definition-text">A set of rules that govern how data is transmitted across a network. Protocols ensure devices can communicate even if made by different manufacturers.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">TCP/IP</div>
+                        <div class="definition-text">Transmission Control Protocol/Internet Protocol &mdash; the main protocol stack for internet communication. TCP handles reliable delivery; IP handles addressing.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">HTTP / HTTPS</div>
+                        <div class="definition-text">HyperText Transfer Protocol (Secure) &mdash; used for accessing web pages. HTTPS encrypts the data for secure browsing.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">FTP</div>
+                        <div class="definition-text">File Transfer Protocol &mdash; used for uploading and downloading files to/from a server.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">SMTP</div>
+                        <div class="definition-text">Simple Mail Transfer Protocol &mdash; used for sending emails from a client to a mail server, or between mail servers.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">POP / IMAP</div>
+                        <div class="definition-text">Protocols for receiving emails. POP downloads emails and removes them from the server. IMAP synchronises emails across multiple devices.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Packet Switching</div>
+                        <div class="definition-text">Data is broken into packets, sent independently across the network via potentially different routes, and reassembled at the destination.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">IP Address</div>
+                        <div class="definition-text">A unique numerical address that identifies a device on a network. Can be IPv4 (e.g., 192.168.1.1) or IPv6.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">MAC Address</div>
+                        <div class="definition-text">A unique hardware address burned into a network interface card. Used for device identification on a local network. Cannot be changed by software.</div>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>The TCP/IP model has 4 layers: Application, Transport, Internet, Network Interface. Each layer has a specific role in preparing and transmitting data.</p>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>A packet contains: source IP, destination IP, packet number, payload (data), and a checksum for error detection.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128274;</div>
+                    <div class="card-title">Threats &amp; Security</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Firewall</div>
+                        <div class="definition-text">Hardware or software that monitors and filters network traffic based on security rules. Blocks unauthorised access while allowing legitimate traffic.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Encryption</div>
+                        <div class="definition-text">Scrambling data so only authorised parties with the decryption key can read it. Protects data during transmission and storage.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Malware</div>
+                        <div class="definition-text">Malicious software designed to damage, disrupt or gain unauthorised access to systems. Includes viruses, worms, trojans, ransomware, and spyware.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Phishing</div>
+                        <div class="definition-text">Fraudulent attempt to obtain sensitive information (passwords, bank details) by impersonating a trusted source via email or fake websites.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">SQL Injection</div>
+                        <div class="definition-text">Inserting malicious SQL code into input fields to manipulate a database. Can be used to view, modify or delete data.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Brute Force</div>
+                        <div class="definition-text">Systematically trying every possible combination to crack a password. Longer, more complex passwords take exponentially longer to crack.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128218;</div>
+                    <div class="card-title">Detailed Notes</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Star Topology &mdash; Advantages &amp; Disadvantages <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Advantages:</strong></p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li>If one cable fails, only that device is affected &mdash; the rest of the network continues working.</li>
+                            <li>Easy to add or remove devices without disrupting the network.</li>
+                            <li>Each device has a dedicated connection, so there are no data collisions.</li>
+                            <li>Better performance under heavy traffic than bus topology.</li>
+                        </ul>
+                        <p><strong>Disadvantages:</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li>If the central switch/hub fails, the entire network goes down.</li>
+                            <li>Requires more cable than bus topology (one cable per device to the switch).</li>
+                            <li>More expensive to install due to the switch and extra cabling.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Mesh Topology &mdash; Advantages &amp; Disadvantages <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Advantages:</strong></p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li>High redundancy &mdash; if one connection fails, data can take an alternative route.</li>
+                            <li>Very reliable; ideal for critical systems (e.g., military, banking).</li>
+                            <li>No single point of failure in a full mesh.</li>
+                            <li>Data can be transmitted simultaneously from multiple devices.</li>
+                        </ul>
+                        <p><strong>Disadvantages:</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li>Most expensive topology to install &mdash; requires many cables and ports.</li>
+                            <li>Complex to set up and manage.</li>
+                            <li>Full mesh requires n(n-1)/2 connections, which grows rapidly.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Bus Topology &mdash; Advantages &amp; Disadvantages <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Advantages:</strong></p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li>Cheap to install &mdash; requires less cable than star or mesh.</li>
+                            <li>Simple to set up for small networks.</li>
+                            <li>Easy to extend by adding devices to the backbone cable.</li>
+                        </ul>
+                        <p><strong>Disadvantages:</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li>If the backbone cable fails, the entire network goes down.</li>
+                            <li>Performance degrades as more devices are added (shared bandwidth).</li>
+                            <li>Data collisions can occur as all devices share the same cable.</li>
+                            <li>Difficult to troubleshoot faults.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Client-Server vs Peer-to-Peer Comparison <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Client-Server:</strong></p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li>Central server manages files, security and user accounts.</li>
+                            <li>Easier to back up data centrally.</li>
+                            <li>Better security &mdash; access rights controlled from the server.</li>
+                            <li>More expensive &mdash; requires dedicated server hardware and software.</li>
+                            <li>If the server fails, clients cannot access shared resources.</li>
+                        </ul>
+                        <p><strong>Peer-to-Peer:</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li>No central server needed &mdash; cheaper to set up.</li>
+                            <li>Each device is responsible for its own security and backups.</li>
+                            <li>Easy to set up for small networks (e.g., home networks).</li>
+                            <li>Less secure &mdash; no centralised control over access.</li>
+                            <li>Difficult to manage as the network grows.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        TCP/IP 4-Layer Model Explained <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Layer 4 &mdash; Application:</strong> Provides network services to the user (e.g., HTTP, FTP, SMTP, POP/IMAP). This is where data is created.</p>
+                        <p style="margin-top:0.75rem;"><strong>Layer 3 &mdash; Transport:</strong> TCP breaks data into packets and ensures reliable delivery. Adds port numbers and manages flow control. Requests re-sends of missing packets.</p>
+                        <p style="margin-top:0.75rem;"><strong>Layer 2 &mdash; Internet:</strong> IP adds source and destination IP addresses. Routers use this layer to direct packets across the network.</p>
+                        <p style="margin-top:0.75rem;"><strong>Layer 1 &mdash; Network Interface:</strong> Handles the physical transmission of data using Ethernet, Wi-Fi, etc. Adds MAC addresses for local delivery.</p>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Data moves down through the layers when sending (each layer adds its own header) and back up through the layers when receiving (each layer strips its header).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Common Cyber Threats and Protection Methods <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Threats:</strong></p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li><strong>Malware</strong> &mdash; Viruses, worms, trojans, ransomware, spyware. Can delete files, spy on users, or lock systems for ransom.</li>
+                            <li><strong>Phishing</strong> &mdash; Fake emails/websites that trick users into revealing passwords or financial information.</li>
+                            <li><strong>SQL Injection</strong> &mdash; Malicious code entered into web forms to access or manipulate databases.</li>
+                            <li><strong>Brute Force</strong> &mdash; Automated tools try every password combination until the correct one is found.</li>
+                            <li><strong>Social Engineering</strong> &mdash; Manipulating people into revealing confidential information through deception.</li>
+                        </ul>
+                        <p><strong>Protection Methods:</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li><strong>Firewall</strong> &mdash; Monitors traffic and blocks suspicious activity.</li>
+                            <li><strong>Encryption</strong> &mdash; Scrambles data so intercepted information cannot be read.</li>
+                            <li><strong>Strong passwords</strong> &mdash; Long, complex passwords with mixed characters are harder to crack.</li>
+                            <li><strong>Two-factor authentication (2FA)</strong> &mdash; Requires a second form of verification (e.g., SMS code).</li>
+                            <li><strong>Regular updates</strong> &mdash; Patches fix known security vulnerabilities in software.</li>
+                            <li><strong>Anti-malware software</strong> &mdash; Scans for and removes malicious software.</li>
+                            <li><strong>Input validation</strong> &mdash; Checking user input to prevent SQL injection attacks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EXPLORE TAB ===== -->
+        <div id="explore" class="section">
+            <div class="section-header">
+                <h2>&#128269; Explore &amp; Visualise</h2>
+                <p>Interactive diagrams and walkthroughs</p>
+            </div>
+
+            <!-- Topology Comparison -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128268;</div>
+                    <div class="card-title">Topology Comparison</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Compare the three main network topologies. Click each button to reveal advantages and disadvantages.</p>
+                <div class="topology-grid">
+                    <!-- Star -->
+                    <div class="topology-card">
+                        <h4>Star Topology</h4>
+                        <div class="topology-diagram" id="starDiagram">
+                            <div class="topo-hub" style="top:90px;left:88px;">SW</div>
+                            <div class="topo-node" style="top:10px;left:92px;">A</div>
+                            <div class="topo-node" style="top:50px;left:10px;">B</div>
+                            <div class="topo-node" style="top:50px;left:174px;">C</div>
+                            <div class="topo-node" style="top:160px;left:20px;">D</div>
+                            <div class="topo-node" style="top:160px;left:164px;">E</div>
+                        </div>
+                        <svg style="position:absolute;top:0;left:0;width:220px;height:220px;pointer-events:none;z-index:1;" id="starSVG"></svg>
+                        <button class="topology-toggle" onclick="toggleTopoDetails('starDetails', this)">Show Details</button>
+                        <div class="topology-details" id="starDetails">
+                            <p><strong style="color:var(--success);">Advantages:</strong></p>
+                            <ul style="margin:0.25rem 0 0.75rem 1.2rem;font-size:0.85rem;">
+                                <li>If one cable fails, only that device is affected</li>
+                                <li>Easy to add/remove devices</li>
+                                <li>No data collisions &mdash; dedicated connections</li>
+                                <li>Better performance under heavy use</li>
+                            </ul>
+                            <p><strong style="color:var(--error);">Disadvantages:</strong></p>
+                            <ul style="margin:0.25rem 0 0 1.2rem;font-size:0.85rem;">
+                                <li>Central switch is a single point of failure</li>
+                                <li>Uses more cable than bus</li>
+                                <li>More expensive to install</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Mesh -->
+                    <div class="topology-card">
+                        <h4>Mesh Topology</h4>
+                        <div class="topology-diagram" id="meshDiagram">
+                            <div class="topo-node" style="top:10px;left:92px;">A</div>
+                            <div class="topo-node" style="top:80px;left:10px;">B</div>
+                            <div class="topo-node" style="top:80px;left:174px;">C</div>
+                            <div class="topo-node" style="top:170px;left:40px;">D</div>
+                            <div class="topo-node" style="top:170px;left:144px;">E</div>
+                        </div>
+                        <button class="topology-toggle" onclick="toggleTopoDetails('meshDetails', this)">Show Details</button>
+                        <div class="topology-details" id="meshDetails">
+                            <p><strong style="color:var(--success);">Advantages:</strong></p>
+                            <ul style="margin:0.25rem 0 0.75rem 1.2rem;font-size:0.85rem;">
+                                <li>High redundancy &mdash; multiple paths for data</li>
+                                <li>No single point of failure</li>
+                                <li>Very reliable for critical systems</li>
+                                <li>Data can be transmitted simultaneously</li>
+                            </ul>
+                            <p><strong style="color:var(--error);">Disadvantages:</strong></p>
+                            <ul style="margin:0.25rem 0 0 1.2rem;font-size:0.85rem;">
+                                <li>Most expensive to install</li>
+                                <li>Complex to set up and manage</li>
+                                <li>Requires many cables: n(n-1)/2</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bus -->
+                    <div class="topology-card">
+                        <h4>Bus Topology</h4>
+                        <div class="topology-diagram" id="busDiagram">
+                            <div class="topo-node" style="top:50px;left:30px;">A</div>
+                            <div class="topo-node" style="top:50px;left:92px;">B</div>
+                            <div class="topo-node" style="top:50px;left:154px;">C</div>
+                            <div class="topo-node" style="top:150px;left:30px;">D</div>
+                            <div class="topo-node" style="top:150px;left:92px;">E</div>
+                            <div style="position:absolute;top:108px;left:10px;width:200px;height:4px;background:var(--accent-primary);opacity:0.5;border-radius:2px;z-index:1;"></div>
+                            <div style="position:absolute;top:102px;left:6px;width:12px;height:16px;background:var(--warning);border-radius:2px;z-index:2;font-size:0.5rem;display:flex;align-items:center;justify-content:center;color:var(--bg-dark);font-weight:700;">T</div>
+                            <div style="position:absolute;top:102px;left:202px;width:12px;height:16px;background:var(--warning);border-radius:2px;z-index:2;font-size:0.5rem;display:flex;align-items:center;justify-content:center;color:var(--bg-dark);font-weight:700;">T</div>
+                        </div>
+                        <button class="topology-toggle" onclick="toggleTopoDetails('busDetails', this)">Show Details</button>
+                        <div class="topology-details" id="busDetails">
+                            <p><strong style="color:var(--success);">Advantages:</strong></p>
+                            <ul style="margin:0.25rem 0 0.75rem 1.2rem;font-size:0.85rem;">
+                                <li>Cheap to install &mdash; minimal cable</li>
+                                <li>Simple to set up for small networks</li>
+                                <li>Easy to extend</li>
+                            </ul>
+                            <p><strong style="color:var(--error);">Disadvantages:</strong></p>
+                            <ul style="margin:0.25rem 0 0 1.2rem;font-size:0.85rem;">
+                                <li>Backbone failure takes down whole network</li>
+                                <li>Performance drops with more devices</li>
+                                <li>Data collisions on shared cable</li>
+                                <li>Difficult to troubleshoot</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Packet Switching Walkthrough -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128230;</div>
+                    <div class="card-title">Packet Switching Walkthrough</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Step through how data is transmitted using packet switching.</p>
+                <div class="step-indicator" id="packetStepIndicator">
+                    <div class="step-dot active"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                    <div class="step-dot"></div>
+                </div>
+                <div id="packetStepsContainer">
+                    <div class="packet-step active" data-step="0">
+                        <h4>Step 1: Data is Split into Packets</h4>
+                        <p>The data is broken into small packets. Each packet has a header containing the source IP address, destination IP address, and a packet number so they can be reassembled.</p>
+                        <div class="packet-visual">
+                            [Packet 1] Src: 192.168.1.10 | Dst: 85.42.7.3 | #1 | "Hello "<br>
+                            [Packet 2] Src: 192.168.1.10 | Dst: 85.42.7.3 | #2 | "World"<br>
+                            [Packet 3] Src: 192.168.1.10 | Dst: 85.42.7.3 | #3 | "!"
+                        </div>
+                    </div>
+                    <div class="packet-step" data-step="1">
+                        <h4>Step 2: Packets Sent Independently</h4>
+                        <p>Each packet is sent independently across the network. They may take completely different routes to reach the same destination, depending on network traffic and availability.</p>
+                        <div class="packet-visual">
+                            Packet #1 &#8594; Route A &#8594; Router 3 &#8594; Router 7 &#8594; Destination<br>
+                            Packet #2 &#8594; Route B &#8594; Router 1 &#8594; Router 5 &#8594; Destination<br>
+                            Packet #3 &#8594; Route C &#8594; Router 2 &#8594; Router 4 &#8594; Destination
+                        </div>
+                    </div>
+                    <div class="packet-step" data-step="2">
+                        <h4>Step 3: Routers Direct Packets</h4>
+                        <p>Routers examine the destination IP address in each packet header and forward it along the best available path at that moment. If one route is congested, packets are sent via an alternative route.</p>
+                        <div class="packet-visual">
+                            Router checks destination IP &#8594; Consults routing table<br>
+                            &#8594; Forwards packet along fastest available path<br>
+                            &#8594; Each router repeats this process (hop by hop)
+                        </div>
+                    </div>
+                    <div class="packet-step" data-step="3">
+                        <h4>Step 4: Packets Arrive Out of Order</h4>
+                        <p>Because packets take different routes, they may arrive at the destination in a different order from how they were sent. Some packets may even arrive before others that were sent first.</p>
+                        <div class="packet-visual">
+                            Arrived: Packet #2 &#10003; | Packet #3 &#10003; | Packet #1 &#10003;<br>
+                            Order received: #2, #3, #1 (out of order!)
+                        </div>
+                    </div>
+                    <div class="packet-step" data-step="4">
+                        <h4>Step 5: TCP Reassembles Packets</h4>
+                        <p>TCP at the destination uses the packet numbers to reassemble the packets in the correct order. If any packets are missing or corrupted (detected by the checksum), TCP requests them to be re-sent.</p>
+                        <div class="packet-visual">
+                            TCP checks packet numbers: #1, #2, #3 &#10003;<br>
+                            Reassembles in order: "Hello " + "World" + "!" = "Hello World!"<br>
+                            All packets received &#10003; &mdash; Data complete
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="packetStep(-1)" id="btnPacketPrev" disabled>&#8592; Previous</button>
+                    <button class="btn btn-primary" onclick="packetStep(1)" id="btnPacketNext">Next Step &#8594;</button>
+                </div>
+            </div>
+
+            <!-- Protocol Matcher -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128220;</div>
+                    <div class="card-title">Protocol Matcher</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Click each protocol to reveal what it does.</p>
+                <div class="protocol-grid" id="protocolGrid"></div>
+            </div>
+        </div>
+
+        <!-- ===== PRACTICE TAB ===== -->
+        <div id="practice" class="section">
+            <div class="section-header">
+                <h2>&#129513; Guided Practice</h2>
+                <p>Apply your knowledge with interactive exercises</p>
+            </div>
+
+            <!-- Categorize: Star vs Mesh vs Bus -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128194;</div>
+                    <div class="card-title">Categorise: Star vs Mesh vs Bus</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each item into the correct topology category.</p>
+                <div class="items-bank" id="topoBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="topoBankGrid"></div>
+                </div>
+                <div class="category-container" id="topoCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkTopology()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetTopology()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Categorize: Threats vs Protection -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128274;</div>
+                    <div class="card-title">Categorise: Threats vs Protection</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each item into the correct category.</p>
+                <div class="items-bank" id="secBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="secBankGrid"></div>
+                </div>
+                <div class="category-container" id="secCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkSecurity()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetSecurity()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Fill-in-blank: TCP/IP Layers -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#9999;&#65039;</div>
+                    <div class="card-title">Fill in the Blanks: TCP/IP Layers</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Fill in the 4 layers of the TCP/IP model in order from top to bottom.</p>
+                <div class="fill-blank-container" id="fillBlanks"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkFillBlanks()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetFillBlanks()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Parsons: Packet Switching Steps -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128290;</div>
+                    <div class="card-title">Order the Steps: Packet Switching</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag the steps into the correct order.</p>
+                <div class="parsons-container">
+                    <div class="parsons-bank" id="psBank">
+                        <h4>Available Steps</h4>
+                    </div>
+                    <div class="parsons-solution" id="psSolution">
+                        <h4>Correct Order</h4>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkPacketSteps()">Check Order</button>
+                    <button class="btn btn-secondary" onclick="resetPacketSteps()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RECALL TAB ===== -->
+        <div id="recall" class="section">
+            <div class="section-header">
+                <h2>&#129504; Retrieval Practice</h2>
+                <p>Test your memory by matching terms with definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#127183;</div>
+                    <div class="card-title">Memory Match</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Find all 8 matching pairs. Click two cards to flip them.</p>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="resetMemoryGame()">Reset Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== APPLY TAB ===== -->
+        <div id="apply" class="section">
+            <div class="section-header">
+                <h2>&#128221; Exam Practice</h2>
+                <p>Build answers using sentence banks, then reveal the mark scheme</p>
+            </div>
+
+            <div id="examQuestionsContainer"></div>
+        </div>
+
+        <!-- ===== CHALLENGE TAB ===== -->
+        <div id="challenge" class="section">
+            <div class="section-header">
+                <h2>&#9889; Challenge</h2>
+                <p>No hints, no help &mdash; prove your mastery</p>
+            </div>
+
+            <div class="timer-bar">
+                <span style="color:var(--text-secondary);">Time Remaining:</span>
+                <div class="timer-progress"><div class="timer-fill" id="timerFill"></div></div>
+                <div class="timer-display" id="timerDisplay">5:00</div>
+            </div>
+
+            <div id="challengeContainer"></div>
+            <div class="btn-group" style="justify-content:center;">
+                <button class="btn btn-primary" onclick="submitChallenge()" id="btnSubmitChallenge">Submit All Answers</button>
+            </div>
+        </div>
+
+        <!-- ===== REVIEW TAB ===== -->
+        <div id="review" class="section">
+            <div class="section-header">
+                <h2>&#128202; Performance Review</h2>
+                <p>See how you performed across each sub-topic</p>
+            </div>
+
+            <div class="review-grid" id="reviewGrid"></div>
+
+            <div class="review-summary" id="reviewSummary">
+                <h3 style="margin-bottom:1rem;">Overall Performance</h3>
+                <div class="score-value" id="overallScore" style="color:var(--accent-primary);">0%</div>
+                <p class="score-label" id="overallLabel">Complete activities to see your results</p>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="switchTab('learn')">Revise Again</button>
+                    <button class="btn btn-secondary" onclick="switchTab('challenge')">Retry Challenge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+    // ===== STATE =====
+    let state = {
+        activitiesCompleted: 0,
+        correctAnswers: 0,
+        streak: 0,
+        totalActivities: 8
+    };
+
+    const topicScores = {
+        'Network Types': { correct: 0, total: 0 },
+        'Topologies': { correct: 0, total: 0 },
+        'Wired & Wireless': { correct: 0, total: 0 },
+        'Protocols': { correct: 0, total: 0 },
+        'Threats & Security': { correct: 0, total: 0 }
+    };
+
+    function updateProgress() {
+        document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+        document.getElementById('correctAnswers').textContent = state.correctAnswers;
+        document.getElementById('streakCount').textContent = state.streak;
+        const pct = Math.round((state.activitiesCompleted / state.totalActivities) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+    }
+
+    function showNotification(msg, type = 'success') {
+        const el = document.getElementById('notification');
+        el.textContent = msg;
+        el.className = 'notification ' + type + ' show';
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function switchTab(sectionId) {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const tab = document.querySelector(`.nav-tab[data-section="${sectionId}"]`);
+        if (tab) tab.classList.add('active');
+        document.getElementById(sectionId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (sectionId === 'review') renderReview();
+        if (sectionId === 'challenge' && !challengeTimerStarted) startChallengeTimer();
+    }
+
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.section));
+    });
+
+    function toggleAccordion(header) {
+        header.classList.toggle('open');
+        header.nextElementSibling.classList.toggle('open');
+    }
+
+    function addScore(topic, correct, total) {
+        if (topicScores[topic]) {
+            topicScores[topic].correct += correct;
+            topicScores[topic].total += total;
+        }
+    }
+
+    // ===== EXPLORE: TOPOLOGY DETAILS TOGGLE =====
+    function toggleTopoDetails(id, btn) {
+        const el = document.getElementById(id);
+        el.classList.toggle('show');
+        btn.textContent = el.classList.contains('show') ? 'Hide Details' : 'Show Details';
+    }
+
+    // ===== EXPLORE: PACKET SWITCHING WALKTHROUGH =====
+    let currentPacketStep = 0;
+    const totalPacketSteps = 5;
+
+    function packetStep(dir) {
+        currentPacketStep += dir;
+        if (currentPacketStep < 0) currentPacketStep = 0;
+        if (currentPacketStep >= totalPacketSteps) currentPacketStep = totalPacketSteps - 1;
+
+        document.querySelectorAll('.packet-step').forEach(s => s.classList.remove('active'));
+        document.querySelector(`.packet-step[data-step="${currentPacketStep}"]`).classList.add('active');
+
+        const dots = document.querySelectorAll('.step-dot');
+        dots.forEach((d, i) => {
+            d.classList.remove('active', 'completed');
+            if (i < currentPacketStep) d.classList.add('completed');
+            if (i === currentPacketStep) d.classList.add('active');
+        });
+
+        document.getElementById('btnPacketPrev').disabled = currentPacketStep === 0;
+        document.getElementById('btnPacketNext').disabled = currentPacketStep === totalPacketSteps - 1;
+
+        if (currentPacketStep === totalPacketSteps - 1) {
+            addScore('Protocols', 1, 1);
+        }
+    }
+
+    // ===== EXPLORE: PROTOCOL MATCHER =====
+    const protocols = [
+        { name: 'HTTP', desc: 'HyperText Transfer Protocol — used for accessing and displaying web pages in a browser.' },
+        { name: 'HTTPS', desc: 'Secure version of HTTP — encrypts data between browser and web server for safe browsing.' },
+        { name: 'FTP', desc: 'File Transfer Protocol — used for uploading and downloading files to/from a server.' },
+        { name: 'SMTP', desc: 'Simple Mail Transfer Protocol — used for sending outgoing emails from client to server.' },
+        { name: 'POP', desc: 'Post Office Protocol — downloads emails from the server to the device and removes them from the server.' },
+        { name: 'IMAP', desc: 'Internet Message Access Protocol — synchronises emails across multiple devices, keeping them on the server.' },
+        { name: 'TCP', desc: 'Transmission Control Protocol — breaks data into packets, ensures reliable delivery, and requests re-sends of missing data.' },
+        { name: 'IP', desc: 'Internet Protocol — assigns IP addresses and routes packets across the network to the correct destination.' }
+    ];
+
+    function initProtocols() {
+        const grid = document.getElementById('protocolGrid');
+        grid.innerHTML = protocols.map((p, i) => `
+            <div class="protocol-card" onclick="revealProtocol(this)" data-idx="${i}">
+                <div class="protocol-name">${p.name}</div>
+                <div class="protocol-hint">Click to reveal</div>
+                <div class="protocol-desc">${p.desc}</div>
+            </div>
+        `).join('');
+    }
+
+    function revealProtocol(el) {
+        el.classList.toggle('revealed');
+    }
+
+    initProtocols();
+
+    // ===== PRACTICE: CATEGORIZE TOPOLOGIES =====
+    const topoItems = [
+        { text: 'Central switch/hub', category: 'Star' },
+        { text: 'Easy to add devices', category: 'Star' },
+        { text: 'If central switch fails all lose connection', category: 'Star' },
+        { text: 'Each device has dedicated connection to switch', category: 'Star' },
+        { text: 'High redundancy', category: 'Mesh' },
+        { text: 'Most expensive to install', category: 'Mesh' },
+        { text: 'Data can take multiple paths', category: 'Mesh' },
+        { text: 'Good for critical systems', category: 'Mesh' },
+        { text: 'Uses single backbone cable', category: 'Bus' },
+        { text: 'Cheap to install', category: 'Bus' },
+        { text: 'If backbone fails whole network fails', category: 'Bus' },
+        { text: 'Performance drops with more devices', category: 'Bus' }
+    ];
+
+    let topoChecked = false;
+
+    function initTopology() {
+        const bankGrid = document.getElementById('topoBankGrid');
+        const catContainer = document.getElementById('topoCategories');
+        const categories = ['Star', 'Mesh', 'Bus'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTopoItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...topoItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'topo' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'topo' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropTopoItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    function checkTopology() {
+        if (topoChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#topoCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('topoBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! Well done!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Topologies', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Topologies', 0, 1);
+        }
+        state.activitiesCompleted++;
+        topoChecked = true;
+        updateProgress();
+    }
+
+    function resetTopology() {
+        topoChecked = false;
+        initTopology();
+    }
+
+    initTopology();
+
+    // ===== PRACTICE: CATEGORIZE SECURITY =====
+    const secItems = [
+        { text: 'Malware', category: 'Threats' },
+        { text: 'Phishing', category: 'Threats' },
+        { text: 'SQL injection', category: 'Threats' },
+        { text: 'Brute force attack', category: 'Threats' },
+        { text: 'Social engineering', category: 'Threats' },
+        { text: 'Firewall', category: 'Protection' },
+        { text: 'Encryption', category: 'Protection' },
+        { text: 'Strong passwords', category: 'Protection' },
+        { text: 'Two-factor authentication', category: 'Protection' },
+        { text: 'Regular software updates', category: 'Protection' }
+    ];
+
+    let secChecked = false;
+
+    function initSecurity() {
+        const bankGrid = document.getElementById('secBankGrid');
+        const catContainer = document.getElementById('secCategories');
+        const categories = ['Threats', 'Protection'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropSecItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...secItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'sec' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'sec' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropSecItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    function checkSecurity() {
+        if (secChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#secCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('secBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! Well done!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Threats & Security', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Threats & Security', 0, 1);
+        }
+        state.activitiesCompleted++;
+        secChecked = true;
+        updateProgress();
+    }
+
+    function resetSecurity() {
+        secChecked = false;
+        initSecurity();
+    }
+
+    initSecurity();
+
+    // ===== PRACTICE: FILL IN THE BLANKS (TCP/IP) =====
+    const fillBlankData = [
+        { before: 'Layer 4 (top):', blank: 'Application', answer: 'application', hint: 'HTTP, FTP, SMTP live here' },
+        { before: 'Example protocols:', blank: '', answer: '', hint: '' },
+        { before: 'HTTP, FTP, SMTP', blank: '', answer: '', hint: '' },
+        { before: '', blank: '', answer: '', hint: '' },
+        { before: 'Layer 3:', blank: 'Transport', answer: 'transport', hint: 'TCP works at this layer' },
+        { before: 'Role: breaks data into', blank: '', answer: '', hint: '' },
+        { before: 'packets, ensures delivery', blank: '', answer: '', hint: '' },
+        { before: '', blank: '', answer: '', hint: '' },
+        { before: 'Layer 2:', blank: 'Internet', answer: 'internet', hint: 'IP addresses and routing' },
+        { before: 'Role: addresses and', blank: '', answer: '', hint: '' },
+        { before: 'routes packets', blank: '', answer: '', hint: '' },
+        { before: '', blank: '', answer: '', hint: '' },
+        { before: 'Layer 1 (bottom):', blank: 'Network Interface', answer: 'network interface', hint: 'Ethernet, Wi-Fi — physical' }
+    ];
+
+    let fillChecked = false;
+
+    function initFillBlanks() {
+        const container = document.getElementById('fillBlanks');
+        container.innerHTML = '';
+        fillBlankData.forEach((line, i) => {
+            if (!line.before && !line.answer) return;
+            const div = document.createElement('div');
+            div.className = 'fill-blank-line';
+            let html = `<span>${line.before}</span>`;
+            if (line.answer) {
+                html += ` <input class="fill-blank-input" data-answer="${line.answer}" data-idx="${i}" placeholder="..." style="min-width:150px;">`;
+                if (line.hint) html += ` <button class="hint-btn" onclick="showHint(this,'${line.hint}')">Hint</button>`;
+            }
+            div.innerHTML = html;
+            container.appendChild(div);
+        });
+    }
+
+    function showHint(btn, hint) {
+        btn.textContent = hint;
+        btn.style.color = 'var(--warning)';
+        btn.style.borderColor = 'var(--warning)';
+    }
+
+    function checkFillBlanks() {
+        if (fillChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#fillBlanks .fill-blank-input').forEach(input => {
+            const answer = input.dataset.answer.toLowerCase().replace(/\s+/g, ' ').trim();
+            const val = input.value.toLowerCase().replace(/\s+/g, ' ').trim();
+            if (val === answer) {
+                input.classList.add('correct');
+            } else {
+                input.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (allCorrect) {
+            showNotification('All layers correct!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Protocols', 1, 1);
+        } else {
+            showNotification('Some layers are wrong. Check the red fields.', 'error');
+            state.streak = 0;
+            addScore('Protocols', 0, 1);
+        }
+        state.activitiesCompleted++;
+        fillChecked = true;
+        updateProgress();
+    }
+
+    function resetFillBlanks() {
+        fillChecked = false;
+        initFillBlanks();
+    }
+
+    initFillBlanks();
+
+    // ===== PRACTICE: PACKET SWITCHING PARSONS =====
+    const packetSwitchSteps = [
+        { id: 1, text: '1. Data is split into packets with headers (source/destination IP, packet number)', order: 1 },
+        { id: 2, text: '2. Packets are routed independently across the network', order: 2 },
+        { id: 3, text: '3. Routers find the best path for each packet', order: 3 },
+        { id: 4, text: '4. Packets arrive at destination, possibly out of order', order: 4 },
+        { id: 5, text: '5. TCP reassembles packets in correct order using packet numbers', order: 5 }
+    ];
+    let psChecked = false;
+
+    function initPacketSteps() {
+        const bank = document.getElementById('psBank');
+        const solution = document.getElementById('psSolution');
+        bank.innerHTML = '<h4>Available Steps</h4>';
+        solution.innerHTML = '<h4>Correct Order</h4>';
+
+        const shuffled = [...packetSwitchSteps].sort(() => Math.random() - 0.5);
+        shuffled.forEach(step => {
+            const el = document.createElement('div');
+            el.className = 'parsons-block';
+            el.draggable = true;
+            el.textContent = step.text;
+            el.dataset.order = step.order;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', step.id); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bank.appendChild(el);
+        });
+
+        [bank, solution].forEach(container => {
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                const dragging = document.querySelector('.parsons-block.dragging');
+                if (!dragging) return;
+                const blocks = [...container.querySelectorAll('.parsons-block:not(.dragging)')];
+                const after = blocks.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = e.clientY - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) return { offset, element: child };
+                    return closest;
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+                if (after) container.insertBefore(dragging, after);
+                else container.appendChild(dragging);
+            });
+        });
+    }
+
+    function checkPacketSteps() {
+        if (psChecked) return;
+        const blocks = document.getElementById('psSolution').querySelectorAll('.parsons-block');
+        let allCorrect = true;
+        blocks.forEach((block, i) => {
+            if (parseInt(block.dataset.order) === i + 1) {
+                block.classList.add('correct');
+            } else {
+                block.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (blocks.length !== packetSwitchSteps.length) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('Perfect order!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Protocols', 1, 1);
+        } else {
+            showNotification('Not quite right. Check the order.', 'error');
+            state.streak = 0;
+            addScore('Protocols', 0, 1);
+        }
+        state.activitiesCompleted++;
+        psChecked = true;
+        updateProgress();
+    }
+
+    function resetPacketSteps() {
+        psChecked = false;
+        initPacketSteps();
+    }
+
+    initPacketSteps();
+
+    // ===== RECALL: MEMORY GAME =====
+    const memoryPairs = [
+        { term: 'Firewall', definition: 'Monitors and filters incoming/outgoing network traffic based on security rules' },
+        { term: 'Star Topology', definition: 'All devices connect to a central switch; if switch fails, all lose connection' },
+        { term: 'Packet Switching', definition: 'Data split into packets, sent independently, reassembled at destination' },
+        { term: 'TCP', definition: 'Transport protocol that breaks data into packets and ensures reliable delivery' },
+        { term: 'Phishing', definition: 'Fraudulent attempt to obtain sensitive data by impersonating a trusted source' },
+        { term: 'MAC Address', definition: 'Unique hardware address permanently assigned to a network interface card' },
+        { term: 'LAN', definition: 'Local Area Network covering a small geographical area like a school' },
+        { term: 'Encryption', definition: 'Scrambling data so only authorised parties with the decryption key can read it' }
+    ];
+
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let memoryLocked = false;
+
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        matchedPairs = 0;
+        flippedCards = [];
+        memoryLocked = false;
+
+        const cards = [];
+        memoryPairs.forEach((pair, i) => {
+            cards.push({ pairId: i, text: pair.term, type: 'term' });
+            cards.push({ pairId: i, text: pair.definition, type: 'def' });
+        });
+        cards.sort(() => Math.random() - 0.5);
+
+        cards.forEach((card, idx) => {
+            const el = document.createElement('div');
+            el.className = 'memory-card';
+            el.dataset.pairId = card.pairId;
+            el.dataset.idx = idx;
+            el.innerHTML = `<div class="card-back">?</div><div class="card-front">${card.text}</div>`;
+            el.addEventListener('click', () => flipCard(el));
+            grid.appendChild(el);
+        });
+    }
+
+    function flipCard(card) {
+        if (memoryLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        card.classList.add('flipped');
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+            memoryLocked = true;
+            const [a, b] = flippedCards;
+            if (a.dataset.pairId === b.dataset.pairId) {
+                a.classList.add('matched');
+                b.classList.add('matched');
+                matchedPairs++;
+                flippedCards = [];
+                memoryLocked = false;
+                if (matchedPairs === memoryPairs.length) {
+                    showNotification('All pairs matched! Excellent memory!');
+                    state.activitiesCompleted++;
+                    state.correctAnswers++;
+                    state.streak++;
+                    addScore('Network Types', 1, 1);
+                    updateProgress();
+                }
+            } else {
+                setTimeout(() => {
+                    a.classList.remove('flipped');
+                    b.classList.remove('flipped');
+                    flippedCards = [];
+                    memoryLocked = false;
+                }, 1000);
+            }
+        }
+    }
+
+    function resetMemoryGame() { initMemoryGame(); }
+    initMemoryGame();
+
+    // ===== APPLY: EXAM QUESTIONS WITH SENTENCE BANK =====
+    const examQuestions = [
+        {
+            id: 1,
+            question: 'Explain two advantages of a star topology over a bus topology. (4 marks)',
+            marks: 4,
+            topic: 'Topologies',
+            sentences: [
+                { id: 1, text: 'In a star topology, if one cable fails, only that device is affected \u2014 the rest of the network continues to work.', points: ['fault1'] },
+                { id: 2, text: 'In a bus topology, if the backbone cable fails, the entire network goes down.', points: ['fault2'] },
+                { id: 3, text: 'A star topology makes it easy to add or remove devices without disrupting the network.', points: ['add'] },
+                { id: 4, text: 'Star networks offer better performance as each device has a dedicated connection and doesn\u2019t share bandwidth.', points: ['perform'] },
+                { id: 5, text: 'A star topology uses less cable than a bus topology.', points: [], distractor: true },
+                { id: 6, text: 'A bus topology provides faster speeds because data goes directly along the backbone.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'fault1', description: 'Star: if one cable fails, only that device affected (fault tolerance)', mark: 1 },
+                { point: 'fault2', description: 'Bus: backbone failure takes down whole network (comparison)', mark: 1 },
+                { point: 'add', description: 'Star: easy to add/remove devices without disruption', mark: 1 },
+                { point: 'perform', description: 'Star: dedicated connection / no shared bandwidth / better performance', mark: 1 }
+            ],
+            modelAnswer: 'In a star topology, if one cable fails only that single device loses connection, whereas in a bus topology a single backbone failure brings down the entire network. Additionally, star topologies make it easy to add or remove devices without disrupting existing connections, and each device has a dedicated link to the switch so bandwidth is not shared.'
+        },
+        {
+            id: 2,
+            question: 'Describe how packet switching transmits data across a network. (4 marks)',
+            marks: 4,
+            topic: 'Protocols',
+            sentences: [
+                { id: 1, text: 'The data is split into small packets, each with a header containing source IP, destination IP, and packet number.', points: ['split'] },
+                { id: 2, text: 'Each packet is sent independently and may take different routes across the network.', points: ['routes'] },
+                { id: 3, text: 'Routers direct packets along the best available path at that moment.', points: ['routers'] },
+                { id: 4, text: 'At the destination, packets are reassembled in the correct order using packet numbers. Missing packets are re-requested.', points: ['reassemble'] },
+                { id: 5, text: 'All packets must travel along the same fixed route to the destination.', points: [], distractor: true },
+                { id: 6, text: 'The data is sent as one continuous stream without being divided.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'split', description: 'Data split into packets with headers (source/dest IP, packet number)', mark: 1 },
+                { point: 'routes', description: 'Packets sent independently, may take different routes', mark: 1 },
+                { point: 'routers', description: 'Routers direct packets along best available path', mark: 1 },
+                { point: 'reassemble', description: 'Reassembled in correct order at destination / missing packets re-requested', mark: 1 }
+            ],
+            modelAnswer: 'Data is divided into small packets, each with a header containing source IP, destination IP, and a packet number. Each packet is sent independently across the network and may take different routes. Routers examine each packet and forward it along the best available path. At the destination, TCP uses the packet numbers to reassemble the data in the correct order, and any missing packets are re-requested.'
+        },
+        {
+            id: 3,
+            question: 'Explain two methods an organisation can use to protect against cyber attacks. (4 marks)',
+            marks: 4,
+            topic: 'Threats & Security',
+            sentences: [
+                { id: 1, text: 'A firewall can be used to monitor and filter incoming and outgoing traffic, blocking suspicious connections.', points: ['firewall'] },
+                { id: 2, text: 'This prevents unauthorised access and can detect potential threats before they reach the network.', points: ['fw_benefit'] },
+                { id: 3, text: 'Encryption can be used to scramble data so that even if intercepted, it cannot be read without the decryption key.', points: ['encrypt'] },
+                { id: 4, text: 'This protects sensitive data during transmission and storage.', points: ['enc_benefit'] },
+                { id: 5, text: 'Installing games on the server to test network security.', points: [], distractor: true },
+                { id: 6, text: 'Using simple passwords like \'123456\' for quick access.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'firewall', description: 'Firewall: monitors/filters traffic, blocks suspicious connections', mark: 1 },
+                { point: 'fw_benefit', description: 'Firewall benefit: prevents unauthorised access / detects threats', mark: 1 },
+                { point: 'encrypt', description: 'Encryption: scrambles data so it cannot be read without the key', mark: 1 },
+                { point: 'enc_benefit', description: 'Encryption benefit: protects data during transmission and storage', mark: 1 }
+            ],
+            modelAnswer: 'A firewall monitors and filters all incoming and outgoing network traffic, blocking suspicious connections and preventing unauthorised access before threats reach the network. Encryption scrambles data using an algorithm so that even if it is intercepted during transmission, it cannot be read without the correct decryption key, protecting sensitive information both in transit and at rest.'
+        }
+    ];
+
+    let currentExamQ = 0;
+    let examAnswers = {};
+
+    function renderExamQuestion(idx) {
+        const container = document.getElementById('examQuestionsContainer');
+        const q = examQuestions[idx];
+        const shuffledSentences = [...q.sentences].sort(() => Math.random() - 0.5);
+        examAnswers[idx] = [];
+
+        container.innerHTML = `
+            <div class="card">
+                <div class="exam-q-header">
+                    <span style="color:var(--text-muted)">Question ${idx + 1} of ${examQuestions.length}</span>
+                    <span class="marks-badge">${q.marks} marks</span>
+                </div>
+                <h4 style="margin-bottom:1.5rem;line-height:1.6;white-space:pre-line;">${q.question}</h4>
+
+                <div class="sentence-bank-container">
+                    <div class="sentence-bank">
+                        <h4>Sentence Bank</h4>
+                        <div id="sentenceBank">
+                            ${shuffledSentences.map(s =>
+                                `<div class="sentence-item" data-sid="${s.id}" onclick="toggleExamSentence(${idx},${s.id},this)">${s.text}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="answer-area">
+                        <h4>Your Answer</h4>
+                        <div id="answerArea"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="submitExamAnswer(${idx})">Submit Answer</button>
+                    ${idx > 0 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx - 1})">&#8592; Previous</button>` : ''}
+                    ${idx < examQuestions.length - 1 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx + 1})">Next &#8594;</button>` : ''}
+                </div>
+
+                <div class="mark-scheme-reveal" id="markSchemeReveal"></div>
+            </div>
+        `;
+        currentExamQ = idx;
+    }
+
+    function toggleExamSentence(qIdx, sid, el) {
+        const answerArea = document.getElementById('answerArea');
+        if (examAnswers[qIdx].includes(sid)) {
+            examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+            el.classList.remove('in-answer');
+            const inAnswer = answerArea.querySelector(`[data-sid="${sid}"]`);
+            if (inAnswer) inAnswer.remove();
+        } else {
+            examAnswers[qIdx].push(sid);
+            el.classList.add('in-answer');
+            const clone = document.createElement('div');
+            clone.className = 'sentence-item selected';
+            clone.dataset.sid = sid;
+            clone.textContent = el.textContent;
+            clone.onclick = () => {
+                examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+                el.classList.remove('in-answer');
+                clone.remove();
+            };
+            answerArea.appendChild(clone);
+        }
+    }
+
+    function submitExamAnswer(qIdx) {
+        const q = examQuestions[qIdx];
+        const selected = examAnswers[qIdx] || [];
+        const pointsAwarded = [];
+
+        selected.forEach(sid => {
+            const sentence = q.sentences.find(s => s.id === sid);
+            if (sentence) {
+                sentence.points.forEach(p => { if (!pointsAwarded.includes(p)) pointsAwarded.push(p); });
+            }
+        });
+
+        let marksAwarded = 0;
+        q.markScheme.forEach(m => { if (pointsAwarded.includes(m.point)) marksAwarded++; });
+
+        const reveal = document.getElementById('markSchemeReveal');
+        let scoreColor = marksAwarded === q.marks ? 'var(--success)' : marksAwarded >= q.marks / 2 ? 'var(--warning)' : 'var(--error)';
+
+        reveal.innerHTML = `
+            <div class="score-display" style="border-color:${scoreColor};">
+                <div class="score-value" style="color:${scoreColor}">${marksAwarded}/${q.marks}</div>
+                <div class="score-label">${marksAwarded === q.marks ? 'Full marks!' : marksAwarded >= q.marks / 2 ? 'Good effort!' : 'Keep practising!'}</div>
+            </div>
+            <h4 style="margin:1rem 0 0.75rem;">Mark Scheme</h4>
+            ${q.markScheme.map(m => `
+                <div class="mark-point">
+                    <span class="mark-icon">${pointsAwarded.includes(m.point) ? '\u2713' : '\u2717'}</span>
+                    <span class="mark-text" style="color:${pointsAwarded.includes(m.point) ? 'var(--success)' : 'var(--error)'}">[${m.mark} mark] ${m.description}</span>
+                </div>
+            `).join('')}
+            <h4 style="margin:1rem 0 0.5rem;">Model Answer</h4>
+            <div class="model-answer">${q.modelAnswer}</div>
+        `;
+        reveal.classList.add('show');
+
+        state.correctAnswers += marksAwarded;
+        state.activitiesCompleted++;
+        addScore(q.topic, marksAwarded, q.marks);
+        if (marksAwarded === q.marks) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+    }
+
+    renderExamQuestion(0);
+
+    // ===== CHALLENGE: TIMED QUIZ =====
+    const challengeQuestions = [
+        {
+            topic: 'Network Types',
+            q: 'Which of these is a characteristic of a WAN?',
+            options: ['Covers a small area like one building', 'Owned and maintained by a single organisation', 'Covers a large geographical area connecting multiple LANs', 'Uses only Bluetooth connections'],
+            correct: 2,
+            explanation: 'A WAN covers a large area (e.g., country or worldwide) and connects multiple LANs together. The internet is the largest WAN.'
+        },
+        {
+            topic: 'Topologies',
+            q: 'In a full mesh topology with 5 devices, how many connections are needed?',
+            options: ['5', '8', '10', '20'],
+            correct: 2,
+            explanation: 'Formula = n(n-1)/2 = 5\u00d74/2 = 10 connections needed.'
+        },
+        {
+            topic: 'Protocols',
+            q: 'Which protocol is used to send emails?',
+            options: ['HTTP', 'FTP', 'SMTP', 'POP'],
+            correct: 2,
+            explanation: 'SMTP (Simple Mail Transfer Protocol) handles sending/outgoing emails. POP/IMAP are for receiving.'
+        },
+        {
+            topic: 'Threats & Security',
+            q: 'What type of attack involves trying every possible password combination?',
+            options: ['Phishing', 'SQL injection', 'Brute force', 'Social engineering'],
+            correct: 2,
+            explanation: 'Brute force systematically tries all possible combinations until the correct password is found.'
+        },
+        {
+            topic: 'Wired & Wireless',
+            q: 'Which of the following is an advantage of wireless over wired connections?',
+            options: ['Higher speeds', 'Greater mobility and flexibility', 'More secure', 'Less interference'],
+            correct: 1,
+            explanation: 'Wireless allows devices to connect without cables, providing freedom of movement. Wired is typically faster and more secure.'
+        }
+    ];
+
+    let challengeTimerStarted = false;
+    let challengeTimer = null;
+    let challengeTimeLeft = 300;
+    let challengeSubmitted = false;
+
+    function startChallengeTimer() {
+        challengeTimerStarted = true;
+        challengeTimeLeft = 300;
+        updateTimerDisplay();
+        challengeTimer = setInterval(() => {
+            challengeTimeLeft--;
+            updateTimerDisplay();
+            if (challengeTimeLeft <= 0) {
+                clearInterval(challengeTimer);
+                submitChallenge();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(challengeTimeLeft / 60);
+        const secs = challengeTimeLeft % 60;
+        document.getElementById('timerDisplay').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timerFill').style.width = (challengeTimeLeft / 300 * 100) + '%';
+        if (challengeTimeLeft < 60) {
+            document.getElementById('timerDisplay').style.color = 'var(--error)';
+            document.getElementById('timerFill').style.background = 'var(--error)';
+        }
+    }
+
+    function initChallenge() {
+        const container = document.getElementById('challengeContainer');
+        container.innerHTML = challengeQuestions.map((q, qi) => `
+            <div class="quiz-question" data-topic="${q.topic}">
+                <h4>Q${qi + 1}. ${q.q}</h4>
+                <div class="quiz-options">
+                    ${q.options.map((opt, oi) => `
+                        <div class="quiz-option" data-q="${qi}" data-opt="${oi}" onclick="selectChallengeOption(${qi},${oi},this)">
+                            <span class="option-letter">${String.fromCharCode(65 + oi)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-feedback" id="challengeFb${qi}"></div>
+            </div>
+        `).join('');
+    }
+
+    function selectChallengeOption(qi, oi, el) {
+        if (challengeSubmitted) return;
+        document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function submitChallenge() {
+        if (challengeSubmitted) return;
+        challengeSubmitted = true;
+        if (challengeTimer) clearInterval(challengeTimer);
+
+        let totalCorrect = 0;
+        challengeQuestions.forEach((q, qi) => {
+            const selected = document.querySelector(`.quiz-option[data-q="${qi}"].selected`);
+            const fb = document.getElementById(`challengeFb${qi}`);
+            const correct = document.querySelector(`.quiz-option[data-q="${qi}"][data-opt="${q.correct}"]`);
+            correct.classList.add('correct');
+
+            if (selected && parseInt(selected.dataset.opt) === q.correct) {
+                totalCorrect++;
+                fb.className = 'quiz-feedback show correct';
+                fb.textContent = '\u2713 ' + q.explanation;
+                addScore(q.topic, 1, 1);
+            } else {
+                if (selected) selected.classList.add('incorrect');
+                fb.className = 'quiz-feedback show incorrect';
+                fb.textContent = '\u2717 ' + q.explanation;
+                addScore(q.topic, 0, 1);
+            }
+            document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.add('disabled'));
+        });
+
+        state.correctAnswers += totalCorrect;
+        state.activitiesCompleted++;
+        if (totalCorrect === challengeQuestions.length) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+        showNotification(`Challenge: ${totalCorrect}/${challengeQuestions.length} correct`);
+    }
+
+    initChallenge();
+
+    // ===== REVIEW TAB =====
+    function renderReview() {
+        const grid = document.getElementById('reviewGrid');
+        grid.innerHTML = '';
+        let totalCorrect = 0, totalPossible = 0;
+
+        Object.entries(topicScores).forEach(([topic, scores]) => {
+            const pct = scores.total > 0 ? Math.round((scores.correct / scores.total) * 100) : 0;
+            totalCorrect += scores.correct;
+            totalPossible += scores.total;
+            const cls = pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low';
+            const color = pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--error)';
+            grid.innerHTML += `
+                <div class="review-card">
+                    <h4>${topic}</h4>
+                    <div class="review-score ${cls}">${pct}%</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">${scores.correct}/${scores.total} points</div>
+                    <div class="review-bar"><div class="review-fill" style="width:${pct}%;background:${color}"></div></div>
+                </div>
+            `;
+        });
+
+        const overall = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
+        document.getElementById('overallScore').textContent = overall + '%';
+        document.getElementById('overallScore').style.color =
+            overall >= 70 ? 'var(--success)' : overall >= 40 ? 'var(--warning)' : 'var(--error)';
+        document.getElementById('overallLabel').textContent =
+            overall >= 70 ? 'Great work! You have a strong understanding.' :
+            overall >= 40 ? 'Good progress. Review the weaker areas.' :
+            totalPossible === 0 ? 'Complete activities to see your results.' :
+            'Keep practising. Focus on the red areas.';
+    }
+    </script>
+</body>
+</html>

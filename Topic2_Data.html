@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 2: Data Representation | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-primary: #f97316;
+            --accent-secondary: #f59e0b;
+            --accent-glow: rgba(249, 115, 22, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b7280;
+            --border-color: #2a2a3a;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #f97316 0%, #f59e0b 100%);
+            --gradient-2: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none; z-index: 0;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.9rem; margin-bottom: 1rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent-primary); }
+
+        /* Hero */
+        .hero { text-align: center; padding: 3rem 2rem; position: relative; }
+        .hero::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-block; background: var(--gradient-1);
+            color: var(--bg-dark); padding: 0.5rem 1.5rem; border-radius: 50px;
+            font-weight: 600; font-size: 0.85rem; letter-spacing: 0.1em;
+            text-transform: uppercase; margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 1rem;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.8rem;
+            font-weight: 600; color: var(--accent-primary);
+        }
+        .stat-label {
+            font-size: 0.75rem; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .progress-bar-container { flex: 1; min-width: 200px; max-width: 400px; }
+        .progress-bar { height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill {
+            height: 100%; background: var(--gradient-1);
+            border-radius: 10px; transition: width 0.5s ease; width: 0%;
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 2rem; padding: 0.4rem; background: var(--bg-card);
+            border-radius: 15px; border: 1px solid var(--border-color);
+        }
+        .nav-tab {
+            padding: 0.7rem 1rem; background: transparent; border: none;
+            color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            border-radius: 10px; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-tab.active { background: var(--gradient-1); color: var(--bg-dark); font-weight: 600; }
+
+        /* Sections */
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; transition: all 0.3s ease;
+        }
+        .card:hover { border-color: var(--accent-primary); box-shadow: 0 0 30px var(--accent-glow); }
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .card-icon {
+            width: 50px; height: 50px; background: var(--gradient-1);
+            border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+        }
+        .card-title { font-size: 1.2rem; font-weight: 600; }
+
+        /* Key Point Callout */
+        .key-point {
+            background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(245,158,11,0.1));
+            border: 1px solid rgba(249,115,22,0.3); border-left: 4px solid var(--accent-primary);
+            border-radius: 12px; padding: 1.25rem; margin: 1rem 0;
+        }
+        .key-point-label {
+            font-size: 0.75rem; font-weight: 600; color: var(--accent-primary);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
+        }
+        .key-point p { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        /* Definition Grid */
+        .definition-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+        }
+        .definition-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .definition-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: var(--gradient-1);
+        }
+        .definition-card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+            font-weight: 600; color: var(--accent-primary); margin-bottom: 0.5rem;
+        }
+        .definition-text { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; }
+
+        /* Accordion */
+        .accordion { margin-bottom: 1rem; }
+        .accordion-header {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s; font-weight: 500;
+        }
+        .accordion-header:hover { border-color: var(--accent-primary); }
+        .accordion-header.open { border-radius: 12px 12px 0 0; border-color: var(--accent-primary); }
+        .accordion-arrow { transition: transform 0.3s; font-size: 0.8rem; }
+        .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+        .accordion-body {
+            display: none; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-top: none; border-radius: 0 0 12px 12px; padding: 1.5rem;
+            color: var(--text-secondary); line-height: 1.7;
+        }
+        .accordion-body.open { display: block; }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem; border: none; border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: var(--gradient-1); color: var(--bg-dark); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--accent-glow); }
+        .btn-secondary { background: var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover { background: #3a3a4a; }
+        .btn-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+            max-width: 800px; margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0.75rem; text-align: center; font-size: 0.8rem;
+            position: relative; perspective: 600px;
+        }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-primary); transform: scale(1.03); }
+        .memory-card .card-front, .memory-card .card-back {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            justify-content: center; padding: 0.75rem; border-radius: 10px;
+            backface-visibility: hidden; transition: transform 0.4s;
+        }
+        .memory-card .card-back {
+            background: var(--gradient-1); color: var(--bg-dark);
+            font-weight: 600; font-size: 1.5rem;
+        }
+        .memory-card .card-front {
+            background: var(--bg-card); transform: rotateY(180deg);
+            color: var(--text-primary); font-size: 0.78rem; line-height: 1.4;
+        }
+        .memory-card.flipped .card-back, .memory-card.matched .card-back { transform: rotateY(180deg); }
+        .memory-card.flipped .card-front, .memory-card.matched .card-front { transform: rotateY(0); }
+        .memory-card.matched { border-color: var(--success); opacity: 0.8; pointer-events: none; }
+
+        /* Categorize */
+        .category-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .category-box {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 200px; transition: border-color 0.3s;
+        }
+        .category-box.drag-over { border-color: var(--accent-primary); background: rgba(249,115,22,0.05); }
+        .category-box h4 {
+            font-size: 1rem; margin-bottom: 1rem; color: var(--accent-primary);
+            text-align: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .category-items { display: flex; flex-direction: column; gap: 0.5rem; min-height: 50px; }
+        .category-item, .bank-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: grab; transition: all 0.3s; font-size: 0.9rem;
+            user-select: none;
+        }
+        .category-item:hover, .bank-item:hover { border-color: var(--accent-primary); }
+        .category-item.correct, .bank-item.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .category-item.incorrect, .bank-item.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .items-bank { margin-bottom: 2rem; }
+        .items-bank h4 { margin-bottom: 1rem; color: var(--text-secondary); }
+        .items-bank-grid {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+            padding: 1rem; background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; min-height: 60px;
+        }
+
+        /* Parsons / Ordering */
+        .parsons-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .parsons-bank, .parsons-solution {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .parsons-bank h4, .parsons-solution h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .parsons-solution { border-color: rgba(249,115,22,0.3); }
+        .parsons-block {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: grab;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+            transition: all 0.3s; user-select: none;
+        }
+        .parsons-block:hover { border-color: var(--accent-primary); }
+        .parsons-block.dragging { opacity: 0.4; }
+        .parsons-block.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .parsons-block.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+
+        /* Fill in Blank */
+        .fill-blank-container { max-width: 700px; margin: 0 auto; }
+        .fill-blank-line {
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+            margin-bottom: 0.75rem; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 2;
+        }
+        .fill-blank-input {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 6px; padding: 0.3rem 0.6rem; color: var(--accent-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+            min-width: 100px; outline: none; transition: border-color 0.3s;
+        }
+        .fill-blank-input:focus { border-color: var(--accent-primary); }
+        .fill-blank-input.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .fill-blank-input.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .hint-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-muted);
+            padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .hint-btn:hover { border-color: var(--warning); color: var(--warning); }
+
+        /* Sentence Bank (Apply tab) */
+        .sentence-bank-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .sentence-bank, .answer-area {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .answer-area { border-color: rgba(249,115,22,0.3); }
+        .sentence-bank h4, .answer-area h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .sentence-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;
+            font-size: 0.88rem; line-height: 1.5; transition: all 0.3s; user-select: none;
+        }
+        .sentence-item:hover { border-color: var(--accent-primary); }
+        .sentence-item.selected { border-color: var(--accent-primary); background: rgba(249,115,22,0.1); }
+        .sentence-item.in-answer { opacity: 0.4; pointer-events: none; }
+        .mark-scheme-reveal {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem; display: none;
+        }
+        .mark-scheme-reveal.show { display: block; }
+        .mark-point {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);
+        }
+        .mark-point:last-child { border-bottom: none; }
+        .mark-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+        .mark-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .score-display {
+            text-align: center; padding: 1.5rem; background: var(--bg-card);
+            border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 1rem;
+        }
+        .score-value { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; }
+        .score-label { color: var(--text-secondary); font-size: 0.9rem; }
+
+        /* Quiz (Challenge tab) */
+        .quiz-question { margin-bottom: 2rem; }
+        .quiz-question h4 {
+            margin-bottom: 1rem; font-size: 1rem; line-height: 1.5;
+            padding: 1rem; background: var(--bg-card); border-radius: 10px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .quiz-options { display: grid; gap: 0.5rem; }
+        .quiz-option {
+            padding: 0.9rem 1rem; background: var(--bg-card-hover);
+            border: 2px solid var(--border-color); border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; display: flex;
+            align-items: center; gap: 0.75rem; font-size: 0.9rem;
+        }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-primary); }
+        .quiz-option.selected { border-color: var(--accent-primary); background: rgba(249,115,22,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(16,185,129,0.15); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+        .option-letter {
+            width: 28px; height: 28px; border-radius: 50%; background: var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .quiz-feedback {
+            padding: 1rem; border-radius: 10px; margin-top: 0.5rem;
+            font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--error); }
+
+        /* Timer */
+        .timer-bar {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .timer-display { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--accent-primary); }
+        .timer-progress { flex: 1; margin: 0 1.5rem; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--gradient-1); border-radius: 3px; transition: width 1s linear; width: 100%; }
+
+        /* Review Tab */
+        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .review-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; text-align: center;
+        }
+        .review-card h4 { font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-secondary); }
+        .review-score {
+            font-family: 'JetBrains Mono', monospace; font-size: 2rem;
+            font-weight: 700; margin-bottom: 0.25rem;
+        }
+        .review-score.high { color: var(--success); }
+        .review-score.mid { color: var(--warning); }
+        .review-score.low { color: var(--error); }
+        .review-bar { height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 0.5rem; }
+        .review-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+        .review-summary {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 2rem; margin-top: 1.5rem; text-align: center;
+        }
+
+        /* Trace Table */
+        .trace-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .trace-table th, .trace-table td {
+            border: 1px solid var(--border-color); padding: 0.6rem 1rem;
+            text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+        }
+        .trace-table th { background: rgba(249,115,22,0.15); color: var(--accent-primary); }
+        .trace-table td { background: var(--bg-card); }
+        .trace-table tr.active-row td { background: rgba(249,115,22,0.08); border-color: var(--accent-primary); }
+
+        /* Converter / Calculator styles */
+        .converter-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
+            margin: 1rem 0;
+        }
+        .converter-field label {
+            display: block; font-size: 0.8rem; color: var(--accent-primary);
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+        .converter-field input, .converter-field select {
+            width: 100%; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 8px; padding: 0.6rem 0.8rem; color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;
+            outline: none; transition: border-color 0.3s;
+        }
+        .converter-field input:focus, .converter-field select:focus { border-color: var(--accent-primary); }
+        .converter-field select { cursor: pointer; }
+        .converter-field select option { background: var(--bg-card); color: var(--text-primary); }
+        .calc-result {
+            background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(245,158,11,0.1));
+            border: 1px solid rgba(249,115,22,0.3); border-radius: 12px;
+            padding: 1.25rem; margin-top: 1rem; text-align: center;
+        }
+        .calc-result .result-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.5rem;
+            font-weight: 700; color: var(--accent-primary); margin-bottom: 0.25rem;
+        }
+        .calc-result .result-label { color: var(--text-secondary); font-size: 0.85rem; }
+
+        /* Binary addition specific */
+        .binary-addition-grid {
+            display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+            font-family: 'JetBrains Mono', monospace; margin: 1rem 0;
+        }
+        .binary-row {
+            display: flex; gap: 0.5rem; align-items: center;
+        }
+        .binary-cell {
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 600;
+        }
+        .binary-cell input {
+            width: 40px; height: 40px; text-align: center; background: var(--bg-card);
+            border: 2px solid var(--border-color); border-radius: 6px;
+            color: var(--accent-primary); font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem; font-weight: 600; outline: none;
+        }
+        .binary-cell input:focus { border-color: var(--accent-primary); }
+        .binary-cell input.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .binary-cell input.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .binary-divider {
+            width: 100%; max-width: 400px; height: 2px;
+            background: var(--accent-primary); margin: 0.25rem 0;
+        }
+        .carry-label, .row-label {
+            width: 60px; text-align: right; color: var(--text-muted); font-size: 0.8rem;
+        }
+
+        /* Exam Question Display */
+        .exam-q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .marks-badge {
+            background: rgba(249,115,22,0.2); color: var(--accent-primary);
+            padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;
+            font-weight: 600; border: 1px solid rgba(249,115,22,0.3);
+        }
+        .model-answer {
+            background: rgba(249,115,22,0.05); border: 1px solid rgba(249,115,22,0.2);
+            border-radius: 12px; padding: 1.25rem; margin-top: 1rem;
+            color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem;
+            border-radius: 12px; font-weight: 500; z-index: 100;
+            transform: translateY(100px); opacity: 0; transition: all 0.4s ease;
+            max-width: 350px;
+        }
+        .notification.show { transform: translateY(0); opacity: 1; }
+        .notification.success { background: rgba(16,185,129,0.9); color: white; }
+        .notification.error { background: rgba(239,68,68,0.9); color: white; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .parsons-container, .sentence-bank-container { grid-template-columns: 1fr; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-tab { padding: 0.5rem 0.7rem; font-size: 0.75rem; }
+            .progress-tracker { flex-direction: column; text-align: center; }
+            .converter-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .memory-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <a href="index.html" class="back-link">&#8592; Back to CS Hub</a>
+
+        <div class="hero">
+            <div class="hero-badge">Topic 2 &mdash; Paper 1</div>
+            <h1>Data Representation</h1>
+            <p>Binary, hexadecimal, images, sound &amp; compression &mdash; understand how computers store and process data.</p>
+        </div>
+
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">&#128214; Learn</button>
+            <button class="nav-tab" data-section="explore">&#128269; Explore</button>
+            <button class="nav-tab" data-section="practice">&#129513; Practice</button>
+            <button class="nav-tab" data-section="recall">&#129504; Recall</button>
+            <button class="nav-tab" data-section="apply">&#128221; Apply</button>
+            <button class="nav-tab" data-section="challenge">&#9889; Challenge</button>
+            <button class="nav-tab" data-section="review">&#128202; Review</button>
+        </div>
+
+        <!-- ===== LEARN TAB ===== -->
+        <div id="learn" class="section active">
+            <div class="section-header">
+                <h2>&#128214; Core Theory</h2>
+                <p>Key definitions, concepts, and terminology for Topic 2</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128273;</div>
+                    <div class="card-title">Key Definitions</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Bit</div>
+                        <div class="definition-text">The smallest unit of data, a single binary digit (0 or 1).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Nibble</div>
+                        <div class="definition-text">4 bits.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Byte</div>
+                        <div class="definition-text">8 bits.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Binary</div>
+                        <div class="definition-text">Base-2 number system using 0 and 1.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Denary</div>
+                        <div class="definition-text">Base-10 number system (everyday counting).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Hexadecimal</div>
+                        <div class="definition-text">Base-16 using 0&ndash;9 and A&ndash;F.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">ASCII</div>
+                        <div class="definition-text">Character encoding using 7 bits, 128 characters.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Unicode</div>
+                        <div class="definition-text">Extended character encoding supporting all world languages, up to 32 bits.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Pixel</div>
+                        <div class="definition-text">A single point/dot in a digital image.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Resolution</div>
+                        <div class="definition-text">The number of pixels in an image (width &times; height).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Colour Depth</div>
+                        <div class="definition-text">Number of bits used to represent the colour of each pixel.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Sample Rate</div>
+                        <div class="definition-text">Number of samples taken per second, measured in Hz.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Bit Depth</div>
+                        <div class="definition-text">Number of bits per sample in digital sound.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Lossy Compression</div>
+                        <div class="definition-text">Permanently removes data to reduce file size; some quality is lost.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Lossless Compression</div>
+                        <div class="definition-text">Reduces file size without losing any data; original can be perfectly restored.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Run-Length Encoding (RLE)</div>
+                        <div class="definition-text">Lossless compression that replaces repeated consecutive values with a count and value.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128161;</div>
+                    <div class="card-title">Key Points</div>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>Units of data storage: 1 byte = 8 bits, 1 KB = 1024 bytes, 1 MB = 1024 KB, 1 GB = 1024 MB, 1 TB = 1024 GB.</p>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>Hexadecimal is used because it's more human-readable than binary. Each hex digit represents exactly 4 binary digits (a nibble).</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128290;</div>
+                    <div class="card-title">Number Base Conversions</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Binary to Denary Conversion <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Place values:</strong> 128, 64, 32, 16, 8, 4, 2, 1</p>
+                        <p style="margin-top:0.75rem;"><strong>Method:</strong> Write out the place values. Place the binary digits underneath. Add up the place values where there is a 1.</p>
+                        <p style="margin-top:0.75rem;"><strong>Example:</strong> <code style="color:var(--accent-primary)">10110011</code></p>
+                        <table class="trace-table" style="max-width:500px;">
+                            <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th></tr>
+                            <tr><td>1</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+                        </table>
+                        <p style="margin-top:0.5rem;">128 + 32 + 16 + 2 + 1 = <strong style="color:var(--accent-primary)">179</strong></p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Denary to Binary Conversion <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Method (Repeated Division by 2):</strong> Divide the denary number by 2 repeatedly. Record the remainder each time. Read the remainders from bottom to top.</p>
+                        <p style="margin-top:0.75rem;"><strong>Alternative (Place Value Method):</strong> Start from the left (128). If the place value fits into the remaining number, write 1 and subtract it. Otherwise write 0. Move to the next place value.</p>
+                        <p style="margin-top:0.75rem;"><strong>Example:</strong> Convert 179 to binary</p>
+                        <p>179 &ge; 128? Yes &rarr; 1 (remaining: 51)</p>
+                        <p>51 &ge; 64? No &rarr; 0</p>
+                        <p>51 &ge; 32? Yes &rarr; 1 (remaining: 19)</p>
+                        <p>19 &ge; 16? Yes &rarr; 1 (remaining: 3)</p>
+                        <p>3 &ge; 8? No &rarr; 0</p>
+                        <p>3 &ge; 4? No &rarr; 0</p>
+                        <p>3 &ge; 2? Yes &rarr; 1 (remaining: 1)</p>
+                        <p>1 &ge; 1? Yes &rarr; 1 (remaining: 0)</p>
+                        <p style="margin-top:0.5rem;">Result: <strong style="color:var(--accent-primary)">10110011</strong></p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Hexadecimal to Binary/Denary <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Hex to Binary:</strong> Split each hex digit into a 4-bit nibble.</p>
+                        <p style="margin-top:0.75rem;"><strong>Example:</strong> <code style="color:var(--accent-primary)">B3</code></p>
+                        <p>B = 11 in denary = <code>1011</code> in binary</p>
+                        <p>3 = 3 in denary = <code>0011</code> in binary</p>
+                        <p>B3 = <strong style="color:var(--accent-primary)">10110011</strong></p>
+                        <p style="margin-top:0.75rem;"><strong>Hex to Denary:</strong> Multiply each digit by its place value (16&sup1;, 16&sup0;).</p>
+                        <p>B3 = (11 &times; 16) + (3 &times; 1) = 176 + 3 = <strong style="color:var(--accent-primary)">179</strong></p>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Hex values: A=10, B=11, C=12, D=13, E=14, F=15. Each hex digit maps directly to one nibble (4 bits).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Binary Addition Rules <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Rules:</strong></p>
+                        <p>0 + 0 = 0</p>
+                        <p>0 + 1 = 1</p>
+                        <p>1 + 0 = 1</p>
+                        <p>1 + 1 = 10 (write 0, carry 1)</p>
+                        <p>1 + 1 + 1 = 11 (write 1, carry 1)</p>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p><strong>Overflow</strong> occurs when the result of a binary addition exceeds the available number of bits (e.g., two 8-bit numbers produce a 9-bit result). The extra bit is lost, giving an incorrect answer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128248;</div>
+                    <div class="card-title">Images &amp; Sound</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Image File Size Formula <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Formula:</strong> File size (bits) = width &times; height &times; colour depth</p>
+                        <p style="margin-top:0.75rem;">To convert to bytes, divide by 8. To convert to KB, divide by 1024. To convert to MB, divide by 1024 again.</p>
+                        <p style="margin-top:0.75rem;"><strong>Example:</strong> A 1920 &times; 1080 image with 24-bit colour depth:</p>
+                        <p>1920 &times; 1080 &times; 24 = 49,766,400 bits</p>
+                        <p>49,766,400 &divide; 8 = 6,220,800 bytes</p>
+                        <p>6,220,800 &divide; 1024 = 6,075 KB</p>
+                        <p>6,075 &divide; 1024 &asymp; <strong style="color:var(--accent-primary)">5.93 MB</strong></p>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Increasing resolution or colour depth increases the file size. Higher colour depth = more colours available. Higher resolution = more detail but bigger file.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Sound File Size Formula <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Formula:</strong> File size (bits) = sample rate &times; bit depth &times; duration (seconds)</p>
+                        <p style="margin-top:0.75rem;">To convert to bytes, divide by 8.</p>
+                        <p style="margin-top:0.75rem;"><strong>Example:</strong> A 30-second clip at 44,100 Hz sample rate with 16-bit depth:</p>
+                        <p>44,100 &times; 16 &times; 30 = 21,168,000 bits</p>
+                        <p>21,168,000 &divide; 8 = 2,646,000 bytes</p>
+                        <p>2,646,000 &divide; 1024 &asymp; 2,583.98 KB</p>
+                        <p>2,583.98 &divide; 1024 &asymp; <strong style="color:var(--accent-primary)">2.52 MB</strong></p>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Higher sample rate = more samples per second = better quality sound but larger file. Higher bit depth = more levels of amplitude = better quality but larger file.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EXPLORE TAB ===== -->
+        <div id="explore" class="section">
+            <div class="section-header">
+                <h2>&#128269; Explore &amp; Calculate</h2>
+                <p>Interactive converters and calculators for data representation</p>
+            </div>
+
+            <!-- Binary / Denary / Hex Converter -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128259;</div>
+                    <div class="card-title">Binary &#8596; Denary &#8596; Hex Converter</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Type in any field to convert between number bases (8-bit: 0&ndash;255).</p>
+                <div class="converter-grid">
+                    <div class="converter-field">
+                        <label>Binary (base 2)</label>
+                        <input type="text" id="convBinary" placeholder="e.g. 10110011" maxlength="8" oninput="convertFrom('binary')">
+                    </div>
+                    <div class="converter-field">
+                        <label>Denary (base 10)</label>
+                        <input type="text" id="convDenary" placeholder="e.g. 179" oninput="convertFrom('denary')">
+                    </div>
+                    <div class="converter-field">
+                        <label>Hexadecimal (base 16)</label>
+                        <input type="text" id="convHex" placeholder="e.g. B3" maxlength="2" oninput="convertFrom('hex')">
+                    </div>
+                </div>
+                <div id="converterFeedback" style="color:var(--error);font-size:0.85rem;margin-top:0.5rem;min-height:1.2em;"></div>
+            </div>
+
+            <!-- Binary Addition Practice -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#10133;</div>
+                    <div class="card-title">Binary Addition Practice</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Add the two 8-bit binary numbers. Enter your answer below.</p>
+                <div class="binary-addition-grid">
+                    <div class="binary-row">
+                        <span class="row-label">Carry:</span>
+                        <div id="carryRow" style="display:flex;gap:0.5rem;"></div>
+                    </div>
+                    <div class="binary-row">
+                        <span class="row-label">A:</span>
+                        <div id="numARow" style="display:flex;gap:0.5rem;"></div>
+                    </div>
+                    <div class="binary-row">
+                        <span class="row-label">B:</span>
+                        <div id="numBRow" style="display:flex;gap:0.5rem;"></div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;">
+                        <span class="row-label"></span>
+                        <div class="binary-divider"></div>
+                    </div>
+                    <div class="binary-row">
+                        <span class="row-label">Sum:</span>
+                        <div id="sumRow" style="display:flex;gap:0.5rem;"></div>
+                    </div>
+                </div>
+                <div id="additionFeedback" style="text-align:center;margin-top:0.75rem;font-size:0.9rem;min-height:1.5em;"></div>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="checkAddition()">Check Answer</button>
+                    <button class="btn btn-secondary" onclick="newAddition()">New Problem</button>
+                </div>
+            </div>
+
+            <!-- Image File Size Calculator -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128444;</div>
+                    <div class="card-title">Image File Size Calculator</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Enter the image dimensions and colour depth to calculate the file size.</p>
+                <div class="converter-grid">
+                    <div class="converter-field">
+                        <label>Width (pixels)</label>
+                        <input type="number" id="imgWidth" placeholder="e.g. 1920" min="1">
+                    </div>
+                    <div class="converter-field">
+                        <label>Height (pixels)</label>
+                        <input type="number" id="imgHeight" placeholder="e.g. 1080" min="1">
+                    </div>
+                    <div class="converter-field">
+                        <label>Colour Depth</label>
+                        <select id="imgColourDepth">
+                            <option value="1">1-bit (2 colours)</option>
+                            <option value="8">8-bit (256 colours)</option>
+                            <option value="16">16-bit (65,536 colours)</option>
+                            <option value="24" selected>24-bit (16.7M colours)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="calcImageSize()">Calculate</button>
+                </div>
+                <div id="imageResult" class="calc-result" style="display:none;"></div>
+            </div>
+
+            <!-- Sound File Size Calculator -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#127925;</div>
+                    <div class="card-title">Sound File Size Calculator</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Enter the recording properties to calculate the file size.</p>
+                <div class="converter-grid">
+                    <div class="converter-field">
+                        <label>Sample Rate (Hz)</label>
+                        <input type="number" id="sndSampleRate" placeholder="e.g. 44100" min="1">
+                    </div>
+                    <div class="converter-field">
+                        <label>Bit Depth (bits)</label>
+                        <input type="number" id="sndBitDepth" placeholder="e.g. 16" min="1">
+                    </div>
+                    <div class="converter-field">
+                        <label>Duration (seconds)</label>
+                        <input type="number" id="sndDuration" placeholder="e.g. 30" min="1">
+                    </div>
+                </div>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="calcSoundSize()">Calculate</button>
+                </div>
+                <div id="soundResult" class="calc-result" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- ===== PRACTICE TAB ===== -->
+        <div id="practice" class="section">
+            <div class="section-header">
+                <h2>&#129513; Guided Practice</h2>
+                <p>Apply your knowledge with hints available</p>
+            </div>
+
+            <!-- Categorize: Lossy vs Lossless -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128194;</div>
+                    <div class="card-title">Categorise: Lossy vs Lossless Compression</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each item into the correct category.</p>
+                <div class="items-bank" id="compressBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="compressBankGrid"></div>
+                </div>
+                <div class="category-container" id="compressCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkCompress()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetCompress()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Fill-in-blank: Binary Conversion -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#9999;&#65039;</div>
+                    <div class="card-title">Fill in the Blanks: Binary Conversion</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Convert denary 179 to binary using the place value method. Fill in each bit. Click the hint button if you get stuck.</p>
+                <div class="fill-blank-container" id="fillBlanks"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkFillBlanks()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetFillBlanks()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Parsons: RLE Encoding Steps -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#128290;</div>
+                    <div class="card-title">Order the Steps: RLE Encoding</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag the steps into the correct order for Run-Length Encoding.</p>
+                <div class="parsons-container">
+                    <div class="parsons-bank" id="rleBank">
+                        <h4>Available Steps</h4>
+                    </div>
+                    <div class="parsons-solution" id="rleSolution">
+                        <h4>Correct Order</h4>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkRLESteps()">Check Order</button>
+                    <button class="btn btn-secondary" onclick="resetRLESteps()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RECALL TAB ===== -->
+        <div id="recall" class="section">
+            <div class="section-header">
+                <h2>&#129504; Retrieval Practice</h2>
+                <p>Test your memory by matching terms with definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#127183;</div>
+                    <div class="card-title">Memory Match</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Find all 8 matching pairs. Click two cards to flip them.</p>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="resetMemoryGame()">Reset Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== APPLY TAB ===== -->
+        <div id="apply" class="section">
+            <div class="section-header">
+                <h2>&#128221; Exam Practice</h2>
+                <p>Build answers using sentence banks, then reveal the mark scheme</p>
+            </div>
+
+            <div id="examQuestionsContainer"></div>
+        </div>
+
+        <!-- ===== CHALLENGE TAB ===== -->
+        <div id="challenge" class="section">
+            <div class="section-header">
+                <h2>&#9889; Challenge</h2>
+                <p>No hints, no help &mdash; prove your mastery</p>
+            </div>
+
+            <div class="timer-bar">
+                <span style="color:var(--text-secondary);">Time Remaining:</span>
+                <div class="timer-progress"><div class="timer-fill" id="timerFill"></div></div>
+                <div class="timer-display" id="timerDisplay">5:00</div>
+            </div>
+
+            <div id="challengeContainer"></div>
+            <div class="btn-group" style="justify-content:center;">
+                <button class="btn btn-primary" onclick="submitChallenge()" id="btnSubmitChallenge">Submit All Answers</button>
+            </div>
+        </div>
+
+        <!-- ===== REVIEW TAB ===== -->
+        <div id="review" class="section">
+            <div class="section-header">
+                <h2>&#128202; Performance Review</h2>
+                <p>See how you performed across each sub-topic</p>
+            </div>
+
+            <div class="review-grid" id="reviewGrid"></div>
+
+            <div class="review-summary" id="reviewSummary">
+                <h3 style="margin-bottom:1rem;">Overall Performance</h3>
+                <div class="score-value" id="overallScore" style="color:var(--accent-primary);">0%</div>
+                <p class="score-label" id="overallLabel">Complete activities to see your results</p>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="switchTab('learn')">Revise Again</button>
+                    <button class="btn btn-secondary" onclick="switchTab('challenge')">Retry Challenge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+    // ===== STATE =====
+    let state = {
+        activitiesCompleted: 0,
+        correctAnswers: 0,
+        streak: 0,
+        totalActivities: 8
+    };
+
+    const topicScores = {
+        'Number Bases': { correct: 0, total: 0 },
+        'Binary Arithmetic': { correct: 0, total: 0 },
+        'Characters': { correct: 0, total: 0 },
+        'Images': { correct: 0, total: 0 },
+        'Sound': { correct: 0, total: 0 },
+        'Compression': { correct: 0, total: 0 }
+    };
+
+    function updateProgress() {
+        document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+        document.getElementById('correctAnswers').textContent = state.correctAnswers;
+        document.getElementById('streakCount').textContent = state.streak;
+        const pct = Math.round((state.activitiesCompleted / state.totalActivities) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+    }
+
+    function showNotification(msg, type = 'success') {
+        const el = document.getElementById('notification');
+        el.textContent = msg;
+        el.className = 'notification ' + type + ' show';
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function switchTab(sectionId) {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const tab = document.querySelector(`.nav-tab[data-section="${sectionId}"]`);
+        if (tab) tab.classList.add('active');
+        document.getElementById(sectionId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (sectionId === 'review') renderReview();
+        if (sectionId === 'challenge' && !challengeTimerStarted) startChallengeTimer();
+    }
+
+    // Tab switching
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.section));
+    });
+
+    // Accordion
+    function toggleAccordion(header) {
+        header.classList.toggle('open');
+        header.nextElementSibling.classList.toggle('open');
+    }
+
+    // ===== SCORING HELPER =====
+    function addScore(topic, correct, total) {
+        if (topicScores[topic]) {
+            topicScores[topic].correct += correct;
+            topicScores[topic].total += total;
+        }
+    }
+
+    // ===== EXPLORE: NUMBER BASE CONVERTER =====
+    let convertLock = false;
+
+    function convertFrom(source) {
+        if (convertLock) return;
+        convertLock = true;
+        const fb = document.getElementById('converterFeedback');
+        fb.textContent = '';
+
+        const binInput = document.getElementById('convBinary');
+        const denInput = document.getElementById('convDenary');
+        const hexInput = document.getElementById('convHex');
+
+        try {
+            if (source === 'binary') {
+                const val = binInput.value.trim();
+                if (val === '') { denInput.value = ''; hexInput.value = ''; convertLock = false; return; }
+                if (!/^[01]{1,8}$/.test(val)) { fb.textContent = 'Binary must be 1-8 digits of 0 or 1'; convertLock = false; return; }
+                const dec = parseInt(val, 2);
+                denInput.value = dec;
+                hexInput.value = dec.toString(16).toUpperCase();
+            } else if (source === 'denary') {
+                const val = denInput.value.trim();
+                if (val === '') { binInput.value = ''; hexInput.value = ''; convertLock = false; return; }
+                const dec = parseInt(val, 10);
+                if (isNaN(dec) || dec < 0 || dec > 255) { fb.textContent = 'Denary must be 0-255'; convertLock = false; return; }
+                binInput.value = dec.toString(2).padStart(8, '0');
+                hexInput.value = dec.toString(16).toUpperCase();
+            } else if (source === 'hex') {
+                const val = hexInput.value.trim().toUpperCase();
+                if (val === '') { binInput.value = ''; denInput.value = ''; convertLock = false; return; }
+                if (!/^[0-9A-F]{1,2}$/.test(val)) { fb.textContent = 'Hex must be 1-2 digits (0-9, A-F)'; convertLock = false; return; }
+                const dec = parseInt(val, 16);
+                binInput.value = dec.toString(2).padStart(8, '0');
+                denInput.value = dec;
+            }
+        } catch (e) {
+            fb.textContent = 'Invalid input';
+        }
+        convertLock = false;
+    }
+
+    // ===== EXPLORE: BINARY ADDITION PRACTICE =====
+    let addA = [], addB = [], addAnswer = [];
+    let additionChecked = false;
+
+    function generateAddition() {
+        // Generate two random 8-bit numbers whose sum fits in 8 bits (no overflow for simplicity)
+        const a = Math.floor(Math.random() * 128) + 1;
+        const b = Math.floor(Math.random() * (256 - a));
+        addA = a.toString(2).padStart(8, '0').split('').map(Number);
+        addB = b.toString(2).padStart(8, '0').split('').map(Number);
+        const sum = a + b;
+        addAnswer = sum.toString(2).padStart(8, '0').split('').map(Number);
+    }
+
+    function renderAddition() {
+        const carryRow = document.getElementById('carryRow');
+        const numARow = document.getElementById('numARow');
+        const numBRow = document.getElementById('numBRow');
+        const sumRow = document.getElementById('sumRow');
+
+        carryRow.innerHTML = '';
+        numARow.innerHTML = '';
+        numBRow.innerHTML = '';
+        sumRow.innerHTML = '';
+
+        for (let i = 0; i < 8; i++) {
+            carryRow.innerHTML += '<div class="binary-cell" style="color:var(--text-muted);font-size:0.75rem;" id="carry' + i + '"></div>';
+            numARow.innerHTML += '<div class="binary-cell">' + addA[i] + '</div>';
+            numBRow.innerHTML += '<div class="binary-cell">' + addB[i] + '</div>';
+            sumRow.innerHTML += '<div class="binary-cell"><input type="text" maxlength="1" id="sum' + i + '"></div>';
+        }
+        document.getElementById('additionFeedback').innerHTML = '';
+        additionChecked = false;
+    }
+
+    function newAddition() {
+        generateAddition();
+        renderAddition();
+    }
+
+    function checkAddition() {
+        if (additionChecked) return;
+        let allCorrect = true;
+        for (let i = 0; i < 8; i++) {
+            const input = document.getElementById('sum' + i);
+            const val = input.value.trim();
+            if (parseInt(val) === addAnswer[i]) {
+                input.classList.add('correct');
+            } else {
+                input.classList.add('incorrect');
+                allCorrect = false;
+            }
+        }
+
+        // Show carries
+        let carry = 0;
+        for (let i = 7; i >= 0; i--) {
+            const s = addA[i] + addB[i] + carry;
+            carry = s >= 2 ? 1 : 0;
+            if (carry && i > 0) {
+                document.getElementById('carry' + (i - 1)).textContent = '1';
+            }
+        }
+
+        const fb = document.getElementById('additionFeedback');
+        const decA = parseInt(addA.join(''), 2);
+        const decB = parseInt(addB.join(''), 2);
+        const decSum = decA + decB;
+
+        if (allCorrect) {
+            fb.innerHTML = '<span style="color:var(--success)">Correct! ' + decA + ' + ' + decB + ' = ' + decSum + ' = ' + addAnswer.join('') + '</span>';
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Binary Arithmetic', 1, 1);
+        } else {
+            fb.innerHTML = '<span style="color:var(--error)">Not quite. ' + decA + ' + ' + decB + ' = ' + decSum + ' = ' + addAnswer.join('') + '</span>';
+            state.streak = 0;
+            addScore('Binary Arithmetic', 0, 1);
+        }
+        state.activitiesCompleted++;
+        additionChecked = true;
+        updateProgress();
+    }
+
+    generateAddition();
+    renderAddition();
+
+    // ===== EXPLORE: IMAGE FILE SIZE CALCULATOR =====
+    function calcImageSize() {
+        const w = parseInt(document.getElementById('imgWidth').value);
+        const h = parseInt(document.getElementById('imgHeight').value);
+        const d = parseInt(document.getElementById('imgColourDepth').value);
+        const result = document.getElementById('imageResult');
+
+        if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
+            showNotification('Please enter valid width and height values.', 'error');
+            return;
+        }
+
+        const bits = w * h * d;
+        const bytes = bits / 8;
+        const kb = bytes / 1024;
+        const mb = kb / 1024;
+
+        result.style.display = 'block';
+        result.innerHTML = `
+            <div class="result-value">${mb >= 1 ? mb.toFixed(2) + ' MB' : kb >= 1 ? kb.toFixed(2) + ' KB' : bytes.toFixed(0) + ' bytes'}</div>
+            <div class="result-label">
+                ${w} &times; ${h} &times; ${d} = ${bits.toLocaleString()} bits<br>
+                &divide; 8 = ${bytes.toLocaleString()} bytes<br>
+                &divide; 1024 = ${kb.toFixed(2)} KB<br>
+                &divide; 1024 = ${mb.toFixed(2)} MB
+            </div>
+        `;
+        addScore('Images', 1, 1);
+    }
+
+    // ===== EXPLORE: SOUND FILE SIZE CALCULATOR =====
+    function calcSoundSize() {
+        const sr = parseInt(document.getElementById('sndSampleRate').value);
+        const bd = parseInt(document.getElementById('sndBitDepth').value);
+        const dur = parseFloat(document.getElementById('sndDuration').value);
+        const result = document.getElementById('soundResult');
+
+        if (isNaN(sr) || isNaN(bd) || isNaN(dur) || sr <= 0 || bd <= 0 || dur <= 0) {
+            showNotification('Please enter valid sample rate, bit depth, and duration.', 'error');
+            return;
+        }
+
+        const bits = sr * bd * dur;
+        const bytes = bits / 8;
+        const kb = bytes / 1024;
+        const mb = kb / 1024;
+
+        result.style.display = 'block';
+        result.innerHTML = `
+            <div class="result-value">${mb >= 1 ? mb.toFixed(2) + ' MB' : kb >= 1 ? kb.toFixed(2) + ' KB' : bytes.toFixed(0) + ' bytes'}</div>
+            <div class="result-label">
+                ${sr.toLocaleString()} &times; ${bd} &times; ${dur} = ${bits.toLocaleString()} bits<br>
+                &divide; 8 = ${bytes.toLocaleString()} bytes<br>
+                &divide; 1024 = ${kb.toFixed(2)} KB<br>
+                &divide; 1024 = ${mb.toFixed(2)} MB
+            </div>
+        `;
+        addScore('Sound', 1, 1);
+    }
+
+    // ===== PRACTICE: CATEGORIZE LOSSY VS LOSSLESS =====
+    const compressItems = [
+        { text: 'JPEG images', category: 'Lossy' },
+        { text: 'MP3 audio', category: 'Lossy' },
+        { text: 'Streaming video', category: 'Lossy' },
+        { text: 'Reducing colour depth', category: 'Lossy' },
+        { text: 'Reducing resolution', category: 'Lossy' },
+        { text: 'MPEG video', category: 'Lossy' },
+        { text: 'PNG images', category: 'Lossless' },
+        { text: 'FLAC audio', category: 'Lossless' },
+        { text: 'ZIP files', category: 'Lossless' },
+        { text: 'RLE encoding', category: 'Lossless' },
+        { text: 'Huffman coding', category: 'Lossless' },
+        { text: 'Medical imaging storage', category: 'Lossless' }
+    ];
+
+    let compressChecked = false;
+
+    function initCompress() {
+        const bankGrid = document.getElementById('compressBankGrid');
+        const catContainer = document.getElementById('compressCategories');
+        const categories = ['Lossy', 'Lossless'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropCompressItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...compressItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'c' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'c' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropCompressItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    function checkCompress() {
+        if (compressChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#compressCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('compressBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! Well done!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Compression', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Compression', 0, 1);
+        }
+        state.activitiesCompleted++;
+        compressChecked = true;
+        updateProgress();
+    }
+
+    function resetCompress() {
+        compressChecked = false;
+        initCompress();
+    }
+
+    initCompress();
+
+    // ===== PRACTICE: FILL IN THE BLANKS - BINARY CONVERSION =====
+    const fillBlankData = [
+        { before: 'Convert 179 to binary using place values:', blank: '', answer: '', hint: '' },
+        { before: '128 fits into 179?', blank: '1', answer: '1', hint: 'Is 179 >= 128?' },
+        { before: 'Remaining: 179 - 128 = 51. 64 fits into 51?', blank: '0', answer: '0', hint: 'Is 51 >= 64?' },
+        { before: '32 fits into 51?', blank: '1', answer: '1', hint: 'Is 51 >= 32?' },
+        { before: 'Remaining: 51 - 32 = 19. 16 fits into 19?', blank: '1', answer: '1', hint: 'Is 19 >= 16?' },
+        { before: 'Remaining: 19 - 16 = 3. 8 fits into 3?', blank: '0', answer: '0', hint: 'Is 3 >= 8?' },
+        { before: '4 fits into 3?', blank: '0', answer: '0', hint: 'Is 3 >= 4?' },
+        { before: '2 fits into 3?', blank: '1', answer: '1', hint: 'Is 3 >= 2?' },
+        { before: 'Remaining: 3 - 2 = 1. 1 fits into 1?', blank: '1', answer: '1', hint: 'Is 1 >= 1?' },
+        { before: 'Binary result:', blank: '10110011', answer: '10110011', hint: 'Combine all 8 bits' }
+    ];
+    let fillChecked = false;
+
+    function initFillBlanks() {
+        const container = document.getElementById('fillBlanks');
+        container.innerHTML = '';
+        fillBlankData.forEach((line, i) => {
+            const div = document.createElement('div');
+            div.className = 'fill-blank-line';
+            let html = `<span>${line.before}</span>`;
+            if (line.answer) {
+                html += ` <input class="fill-blank-input" data-answer="${line.answer}" data-idx="${i}" placeholder="..." style="width:${line.answer.length > 4 ? '120px' : '60px'}">`;
+                if (line.hint) html += ` <button class="hint-btn" onclick="showHint(this,'${line.hint}')">Hint</button>`;
+            }
+            div.innerHTML = html;
+            container.appendChild(div);
+        });
+    }
+
+    function showHint(btn, hint) {
+        btn.textContent = hint;
+        btn.style.color = 'var(--warning)';
+        btn.style.borderColor = 'var(--warning)';
+    }
+
+    function checkFillBlanks() {
+        if (fillChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#fillBlanks .fill-blank-input').forEach(input => {
+            const answer = input.dataset.answer.toLowerCase().replace(/\s/g, '');
+            const val = input.value.toLowerCase().replace(/\s/g, '');
+            if (val === answer) {
+                input.classList.add('correct');
+            } else {
+                input.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (allCorrect) {
+            showNotification('All blanks correct!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Number Bases', 1, 1);
+        } else {
+            showNotification('Some blanks are wrong. Check the red fields.', 'error');
+            state.streak = 0;
+            addScore('Number Bases', 0, 1);
+        }
+        state.activitiesCompleted++;
+        fillChecked = true;
+        updateProgress();
+    }
+
+    function resetFillBlanks() {
+        fillChecked = false;
+        initFillBlanks();
+    }
+
+    initFillBlanks();
+
+    // ===== PRACTICE: RLE ENCODING STEPS (PARSONS) =====
+    const rleSteps = [
+        { id: 1, text: '1. Read through the data from left to right', order: 1 },
+        { id: 2, text: '2. Count consecutive repeated values', order: 2 },
+        { id: 3, text: '3. Record the count followed by the value', order: 3 },
+        { id: 4, text: '4. Move to the next different value', order: 4 },
+        { id: 5, text: '5. Repeat until all data is encoded', order: 5 }
+    ];
+    let rleChecked = false;
+
+    function initRLESteps() {
+        const bank = document.getElementById('rleBank');
+        const solution = document.getElementById('rleSolution');
+        bank.innerHTML = '<h4>Available Steps</h4>';
+        solution.innerHTML = '<h4>Correct Order</h4>';
+
+        const shuffled = [...rleSteps].sort(() => Math.random() - 0.5);
+        shuffled.forEach(step => {
+            const el = document.createElement('div');
+            el.className = 'parsons-block';
+            el.draggable = true;
+            el.textContent = step.text;
+            el.dataset.order = step.order;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', step.id); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bank.appendChild(el);
+        });
+
+        [bank, solution].forEach(container => {
+            container.addEventListener('dragover', e => {
+                e.preventDefault();
+                const dragging = document.querySelector('.parsons-block.dragging');
+                if (!dragging) return;
+                const blocks = [...container.querySelectorAll('.parsons-block:not(.dragging)')];
+                const after = blocks.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = e.clientY - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) return { offset, element: child };
+                    return closest;
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
+                if (after) container.insertBefore(dragging, after);
+                else container.appendChild(dragging);
+            });
+        });
+    }
+
+    function checkRLESteps() {
+        if (rleChecked) return;
+        const blocks = document.getElementById('rleSolution').querySelectorAll('.parsons-block');
+        let allCorrect = true;
+        blocks.forEach((block, i) => {
+            if (parseInt(block.dataset.order) === i + 1) {
+                block.classList.add('correct');
+            } else {
+                block.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (blocks.length !== rleSteps.length) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('Perfect order!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Compression', 1, 1);
+        } else {
+            showNotification('Not quite right. Check the order.', 'error');
+            state.streak = 0;
+            addScore('Compression', 0, 1);
+        }
+        state.activitiesCompleted++;
+        rleChecked = true;
+        updateProgress();
+    }
+
+    function resetRLESteps() {
+        rleChecked = false;
+        initRLESteps();
+    }
+
+    initRLESteps();
+
+    // ===== RECALL: MEMORY GAME =====
+    const memoryPairs = [
+        { term: 'Sample Rate', definition: 'Number of samples taken per second, measured in Hz' },
+        { term: 'Colour Depth', definition: 'Number of bits used to represent each pixel\'s colour' },
+        { term: 'Resolution', definition: 'The number of pixels in an image (width \u00d7 height)' },
+        { term: 'Lossy', definition: 'Permanently removes data; reduces quality but smaller file' },
+        { term: 'Lossless', definition: 'No data is lost; original can be perfectly restored' },
+        { term: 'ASCII', definition: '7-bit character encoding with 128 characters' },
+        { term: 'Hexadecimal', definition: 'Base-16 number system using 0-9 and A-F' },
+        { term: 'Overflow', definition: 'When a binary calculation exceeds the available number of bits' }
+    ];
+
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let memoryLocked = false;
+
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        matchedPairs = 0;
+        flippedCards = [];
+        memoryLocked = false;
+
+        const cards = [];
+        memoryPairs.forEach((pair, i) => {
+            cards.push({ pairId: i, text: pair.term, type: 'term' });
+            cards.push({ pairId: i, text: pair.definition, type: 'def' });
+        });
+        cards.sort(() => Math.random() - 0.5);
+
+        cards.forEach((card, idx) => {
+            const el = document.createElement('div');
+            el.className = 'memory-card';
+            el.dataset.pairId = card.pairId;
+            el.dataset.idx = idx;
+            el.innerHTML = `<div class="card-back">?</div><div class="card-front">${card.text}</div>`;
+            el.addEventListener('click', () => flipCard(el));
+            grid.appendChild(el);
+        });
+    }
+
+    function flipCard(card) {
+        if (memoryLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        card.classList.add('flipped');
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+            memoryLocked = true;
+            const [a, b] = flippedCards;
+            if (a.dataset.pairId === b.dataset.pairId) {
+                a.classList.add('matched');
+                b.classList.add('matched');
+                matchedPairs++;
+                flippedCards = [];
+                memoryLocked = false;
+                if (matchedPairs === memoryPairs.length) {
+                    showNotification('All pairs matched! Excellent memory!');
+                    state.activitiesCompleted++;
+                    state.correctAnswers++;
+                    state.streak++;
+                    addScore('Characters', 1, 1);
+                    updateProgress();
+                }
+            } else {
+                setTimeout(() => {
+                    a.classList.remove('flipped');
+                    b.classList.remove('flipped');
+                    flippedCards = [];
+                    memoryLocked = false;
+                }, 1000);
+            }
+        }
+    }
+
+    function resetMemoryGame() { initMemoryGame(); }
+    initMemoryGame();
+
+    // ===== APPLY: EXAM QUESTIONS WITH SENTENCE BANK =====
+    const examQuestions = [
+        {
+            id: 1,
+            question: 'Convert the denary number 157 to an 8-bit binary number. Show your working. (2 marks)',
+            marks: 2,
+            topic: 'Number Bases',
+            sentences: [
+                { id: 1, text: 'Place value headings: 128, 64, 32, 16, 8, 4, 2, 1', points: ['method'] },
+                { id: 2, text: '157 = 128+16+8+4+1 = 10011101', points: ['answer'] },
+                { id: 3, text: '157 = 10011111', points: [], distractor: true },
+                { id: 4, text: 'Divide 157 by 16 to get the hex value', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'method', description: 'Shows place value method or repeated division', mark: 1 },
+                { point: 'answer', description: 'Correct answer: 10011101', mark: 1 }
+            ],
+            modelAnswer: 'Using place value headings 128, 64, 32, 16, 8, 4, 2, 1: 157 = 128 + 16 + 8 + 4 + 1. So 157 in binary is 10011101.'
+        },
+        {
+            id: 2,
+            question: 'Calculate the file size of an image that is 800\u00d7600 pixels with a colour depth of 24 bits. Give your answer in megabytes (MB). (3 marks)',
+            marks: 3,
+            topic: 'Images',
+            sentences: [
+                { id: 1, text: 'File size = width \u00d7 height \u00d7 colour depth', points: ['formula'] },
+                { id: 2, text: 'File size = 800 \u00d7 600 \u00d7 24 = 11,520,000 bits', points: ['calc'] },
+                { id: 3, text: '11,520,000 \u00f7 8 = 1,440,000 bytes \u00f7 1024 = 1,406.25 KB \u00f7 1024 \u2248 1.37 MB', points: ['convert'] },
+                { id: 4, text: 'File size = 800 \u00d7 600 = 480,000 bytes', points: [], distractor: true },
+                { id: 5, text: 'File size = 800 + 600 \u00d7 24 = 15,200 bits', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'formula', description: 'Correct formula: width \u00d7 height \u00d7 colour depth', mark: 1 },
+                { point: 'calc', description: 'Correct calculation in bits: 11,520,000', mark: 1 },
+                { point: 'convert', description: 'Correct conversion to MB: \u2248 1.37 MB', mark: 1 }
+            ],
+            modelAnswer: 'File size = width \u00d7 height \u00d7 colour depth = 800 \u00d7 600 \u00d7 24 = 11,520,000 bits. Convert to bytes: 11,520,000 \u00f7 8 = 1,440,000 bytes. Convert to KB: 1,440,000 \u00f7 1024 = 1,406.25 KB. Convert to MB: 1,406.25 \u00f7 1024 \u2248 1.37 MB.'
+        },
+        {
+            id: 3,
+            question: 'Explain why lossy compression reduces the quality of a file while lossless compression does not. (3 marks)',
+            marks: 3,
+            topic: 'Compression',
+            sentences: [
+                { id: 1, text: 'Lossy compression permanently removes data from the file that cannot be recovered.', points: ['lossy'] },
+                { id: 2, text: 'This means some detail/quality is lost, but the file size is significantly reduced.', points: ['quality'] },
+                { id: 3, text: 'Lossless compression uses techniques like RLE to reduce file size without removing any original data, so the file can be perfectly restored.', points: ['lossless'] },
+                { id: 4, text: 'Lossy compression makes the file bigger but higher quality.', points: [], distractor: true },
+                { id: 5, text: 'Lossless compression removes duplicate pixels to save space.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'lossy', description: 'Lossy removes data permanently that cannot be recovered', mark: 1 },
+                { point: 'quality', description: 'Quality/detail is lost as a result', mark: 1 },
+                { point: 'lossless', description: 'Lossless preserves all original data; file can be perfectly restored', mark: 1 }
+            ],
+            modelAnswer: 'Lossy compression permanently removes data from the file that cannot be recovered, meaning some detail and quality is lost, but the file size is significantly reduced. Lossless compression uses techniques like Run-Length Encoding (RLE) to reduce file size without removing any of the original data, so the file can be perfectly restored to its original form.'
+        }
+    ];
+
+    let currentExamQ = 0;
+    let examAnswers = {};
+
+    function renderExamQuestion(idx) {
+        const container = document.getElementById('examQuestionsContainer');
+        const q = examQuestions[idx];
+        const shuffledSentences = [...q.sentences].sort(() => Math.random() - 0.5);
+        examAnswers[idx] = [];
+
+        container.innerHTML = `
+            <div class="card">
+                <div class="exam-q-header">
+                    <span style="color:var(--text-muted)">Question ${idx + 1} of ${examQuestions.length}</span>
+                    <span class="marks-badge">${q.marks} marks</span>
+                </div>
+                <h4 style="margin-bottom:1.5rem;line-height:1.6;white-space:pre-line;">${q.question}</h4>
+
+                <div class="sentence-bank-container">
+                    <div class="sentence-bank">
+                        <h4>Sentence Bank</h4>
+                        <div id="sentenceBank">
+                            ${shuffledSentences.map(s =>
+                                `<div class="sentence-item" data-sid="${s.id}" onclick="toggleExamSentence(${idx},${s.id},this)">${s.text}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="answer-area">
+                        <h4>Your Answer</h4>
+                        <div id="answerArea"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="submitExamAnswer(${idx})">Submit Answer</button>
+                    ${idx > 0 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx - 1})">&#8592; Previous</button>` : ''}
+                    ${idx < examQuestions.length - 1 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx + 1})">Next &#8594;</button>` : ''}
+                </div>
+
+                <div class="mark-scheme-reveal" id="markSchemeReveal"></div>
+            </div>
+        `;
+        currentExamQ = idx;
+    }
+
+    function toggleExamSentence(qIdx, sid, el) {
+        const answerArea = document.getElementById('answerArea');
+        if (examAnswers[qIdx].includes(sid)) {
+            examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+            el.classList.remove('in-answer');
+            const inAnswer = answerArea.querySelector(`[data-sid="${sid}"]`);
+            if (inAnswer) inAnswer.remove();
+        } else {
+            examAnswers[qIdx].push(sid);
+            el.classList.add('in-answer');
+            const clone = document.createElement('div');
+            clone.className = 'sentence-item selected';
+            clone.dataset.sid = sid;
+            clone.textContent = el.textContent;
+            clone.onclick = () => {
+                examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+                el.classList.remove('in-answer');
+                clone.remove();
+            };
+            answerArea.appendChild(clone);
+        }
+    }
+
+    function submitExamAnswer(qIdx) {
+        const q = examQuestions[qIdx];
+        const selected = examAnswers[qIdx] || [];
+        const pointsAwarded = [];
+
+        selected.forEach(sid => {
+            const sentence = q.sentences.find(s => s.id === sid);
+            if (sentence) {
+                sentence.points.forEach(p => { if (!pointsAwarded.includes(p)) pointsAwarded.push(p); });
+            }
+        });
+
+        let marksAwarded = 0;
+        q.markScheme.forEach(m => { if (pointsAwarded.includes(m.point)) marksAwarded++; });
+
+        const reveal = document.getElementById('markSchemeReveal');
+        let scoreColor = marksAwarded === q.marks ? 'var(--success)' : marksAwarded >= q.marks / 2 ? 'var(--warning)' : 'var(--error)';
+
+        reveal.innerHTML = `
+            <div class="score-display" style="border-color:${scoreColor};">
+                <div class="score-value" style="color:${scoreColor}">${marksAwarded}/${q.marks}</div>
+                <div class="score-label">${marksAwarded === q.marks ? 'Full marks!' : marksAwarded >= q.marks / 2 ? 'Good effort!' : 'Keep practising!'}</div>
+            </div>
+            <h4 style="margin:1rem 0 0.75rem;">Mark Scheme</h4>
+            ${q.markScheme.map(m => `
+                <div class="mark-point">
+                    <span class="mark-icon">${pointsAwarded.includes(m.point) ? '\u2713' : '\u2717'}</span>
+                    <span class="mark-text" style="color:${pointsAwarded.includes(m.point) ? 'var(--success)' : 'var(--error)'}">[${m.mark} mark] ${m.description}</span>
+                </div>
+            `).join('')}
+            <h4 style="margin:1rem 0 0.5rem;">Model Answer</h4>
+            <div class="model-answer">${q.modelAnswer}</div>
+        `;
+        reveal.classList.add('show');
+
+        state.correctAnswers += marksAwarded;
+        state.activitiesCompleted++;
+        addScore(q.topic, marksAwarded, q.marks);
+        if (marksAwarded === q.marks) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+    }
+
+    renderExamQuestion(0);
+
+    // ===== CHALLENGE: TIMED QUIZ =====
+    const challengeQuestions = [
+        {
+            topic: 'Number Bases',
+            q: 'What is the hexadecimal equivalent of binary 11010110?',
+            options: ['A6', 'D6', 'B6', 'C6'],
+            correct: 1,
+            explanation: 'Split into nibbles: 1101 = D (13), 0110 = 6. So 11010110 = D6 in hexadecimal.'
+        },
+        {
+            topic: 'Binary Arithmetic',
+            q: 'What is the result of adding binary 01101011 and 00110101?',
+            options: ['10100000', '10011110', '11000000', '10000000'],
+            correct: 0,
+            explanation: '01101011 = 107, 00110101 = 53. 107 + 53 = 160 = 10100000 in binary.'
+        },
+        {
+            topic: 'Images',
+            q: 'An image is 1024\u00d7768 pixels with 256 colours. What colour depth is used?',
+            options: ['4 bits', '8 bits', '16 bits', '24 bits'],
+            correct: 1,
+            explanation: '256 = 2\u2078, so 8-bit colour depth is needed to represent 256 different colours.'
+        },
+        {
+            topic: 'Sound',
+            q: 'Increasing the sample rate of a sound file will:',
+            options: ['Reduce the file size', 'Increase the file size and quality', 'Change the bit depth', 'Make the sound quieter'],
+            correct: 1,
+            explanation: 'Higher sample rate means more samples per second, which captures more detail (better quality) but produces a larger file.'
+        },
+        {
+            topic: 'Compression',
+            q: 'Which is an example of lossless compression?',
+            options: ['JPEG', 'MP3', 'PNG', 'MPEG'],
+            correct: 2,
+            explanation: 'PNG uses lossless compression, preserving all original data. JPEG, MP3, and MPEG all use lossy compression.'
+        }
+    ];
+
+    let challengeTimerStarted = false;
+    let challengeTimer = null;
+    let challengeTimeLeft = 300;
+    let challengeSubmitted = false;
+
+    function startChallengeTimer() {
+        challengeTimerStarted = true;
+        challengeTimeLeft = 300;
+        updateTimerDisplay();
+        challengeTimer = setInterval(() => {
+            challengeTimeLeft--;
+            updateTimerDisplay();
+            if (challengeTimeLeft <= 0) {
+                clearInterval(challengeTimer);
+                submitChallenge();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(challengeTimeLeft / 60);
+        const secs = challengeTimeLeft % 60;
+        document.getElementById('timerDisplay').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timerFill').style.width = (challengeTimeLeft / 300 * 100) + '%';
+        if (challengeTimeLeft < 60) {
+            document.getElementById('timerDisplay').style.color = 'var(--error)';
+            document.getElementById('timerFill').style.background = 'var(--error)';
+        }
+    }
+
+    function initChallenge() {
+        const container = document.getElementById('challengeContainer');
+        container.innerHTML = challengeQuestions.map((q, qi) => `
+            <div class="quiz-question" data-topic="${q.topic}">
+                <h4>Q${qi + 1}. ${q.q}</h4>
+                <div class="quiz-options">
+                    ${q.options.map((opt, oi) => `
+                        <div class="quiz-option" data-q="${qi}" data-opt="${oi}" onclick="selectChallengeOption(${qi},${oi},this)">
+                            <span class="option-letter">${String.fromCharCode(65 + oi)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-feedback" id="challengeFb${qi}"></div>
+            </div>
+        `).join('');
+    }
+
+    function selectChallengeOption(qi, oi, el) {
+        if (challengeSubmitted) return;
+        document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function submitChallenge() {
+        if (challengeSubmitted) return;
+        challengeSubmitted = true;
+        if (challengeTimer) clearInterval(challengeTimer);
+
+        let totalCorrect = 0;
+        challengeQuestions.forEach((q, qi) => {
+            const selected = document.querySelector(`.quiz-option[data-q="${qi}"].selected`);
+            const fb = document.getElementById(`challengeFb${qi}`);
+            const correct = document.querySelector(`.quiz-option[data-q="${qi}"][data-opt="${q.correct}"]`);
+            correct.classList.add('correct');
+
+            if (selected && parseInt(selected.dataset.opt) === q.correct) {
+                totalCorrect++;
+                fb.className = 'quiz-feedback show correct';
+                fb.textContent = '\u2713 ' + q.explanation;
+                addScore(q.topic, 1, 1);
+            } else {
+                if (selected) selected.classList.add('incorrect');
+                fb.className = 'quiz-feedback show incorrect';
+                fb.textContent = '\u2717 ' + q.explanation;
+                addScore(q.topic, 0, 1);
+            }
+            document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.add('disabled'));
+        });
+
+        state.correctAnswers += totalCorrect;
+        state.activitiesCompleted++;
+        if (totalCorrect === challengeQuestions.length) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+        showNotification(`Challenge: ${totalCorrect}/${challengeQuestions.length} correct`);
+    }
+
+    initChallenge();
+
+    // ===== REVIEW TAB =====
+    function renderReview() {
+        const grid = document.getElementById('reviewGrid');
+        grid.innerHTML = '';
+        let totalCorrect = 0, totalPossible = 0;
+
+        Object.entries(topicScores).forEach(([topic, scores]) => {
+            const pct = scores.total > 0 ? Math.round((scores.correct / scores.total) * 100) : 0;
+            totalCorrect += scores.correct;
+            totalPossible += scores.total;
+            const cls = pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low';
+            const color = pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--error)';
+            grid.innerHTML += `
+                <div class="review-card">
+                    <h4>${topic}</h4>
+                    <div class="review-score ${cls}">${pct}%</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">${scores.correct}/${scores.total} points</div>
+                    <div class="review-bar"><div class="review-fill" style="width:${pct}%;background:${color}"></div></div>
+                </div>
+            `;
+        });
+
+        const overall = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
+        document.getElementById('overallScore').textContent = overall + '%';
+        document.getElementById('overallScore').style.color =
+            overall >= 70 ? 'var(--success)' : overall >= 40 ? 'var(--warning)' : 'var(--error)';
+        document.getElementById('overallLabel').textContent =
+            overall >= 70 ? 'Great work! You have a strong understanding.' :
+            overall >= 40 ? 'Good progress. Review the weaker areas.' :
+            totalPossible === 0 ? 'Complete activities to see your results.' :
+            'Keep practising. Focus on the red areas.';
+    }
+    </script>
+</body>
+</html>

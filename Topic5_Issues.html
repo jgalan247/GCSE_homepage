@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic 5: Issues & Impact | GCSE Computer Science</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-card-hover: #1a1a25;
+            --accent-primary: #f43f5e;
+            --accent-secondary: #ec4899;
+            --accent-glow: rgba(244, 63, 94, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b7280;
+            --border-color: #2a2a3a;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --gradient-1: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);
+            --gradient-2: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(244, 63, 94, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(244, 63, 94, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none; z-index: 0;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--text-secondary); text-decoration: none;
+            font-size: 0.9rem; margin-bottom: 1rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent-primary); }
+
+        /* Hero */
+        .hero { text-align: center; padding: 3rem 2rem; position: relative; }
+        .hero::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-block; background: var(--gradient-1);
+            color: var(--bg-dark); padding: 0.5rem 1.5rem; border-radius: 50px;
+            font-weight: 600; font-size: 0.85rem; letter-spacing: 0.1em;
+            text-transform: uppercase; margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 1rem;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .progress-stats { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.8rem;
+            font-weight: 600; color: var(--accent-primary);
+        }
+        .stat-label {
+            font-size: 0.75rem; color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .progress-bar-container { flex: 1; min-width: 200px; max-width: 400px; }
+        .progress-bar { height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden; }
+        .progress-fill {
+            height: 100%; background: var(--gradient-1);
+            border-radius: 10px; transition: width 0.5s ease; width: 0%;
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 2rem; padding: 0.4rem; background: var(--bg-card);
+            border-radius: 15px; border: 1px solid var(--border-color);
+        }
+        .nav-tab {
+            padding: 0.7rem 1rem; background: transparent; border: none;
+            color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            border-radius: 10px; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .nav-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+        .nav-tab.active { background: var(--gradient-1); color: var(--bg-dark); font-weight: 600; }
+
+        /* Sections */
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-secondary); }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem; transition: all 0.3s ease;
+        }
+        .card:hover { border-color: var(--accent-primary); box-shadow: 0 0 30px var(--accent-glow); }
+        .card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+        .card-icon {
+            width: 50px; height: 50px; background: var(--gradient-1);
+            border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+        }
+        .card-title { font-size: 1.2rem; font-weight: 600; }
+
+        /* Key Point Callout */
+        .key-point {
+            background: linear-gradient(135deg, rgba(244,63,94,0.1), rgba(236,72,153,0.1));
+            border: 1px solid rgba(244,63,94,0.3); border-left: 4px solid var(--accent-primary);
+            border-radius: 12px; padding: 1.25rem; margin: 1rem 0;
+        }
+        .key-point-label {
+            font-size: 0.75rem; font-weight: 600; color: var(--accent-primary);
+            text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;
+        }
+        .key-point p { color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+
+        /* Definition Grid */
+        .definition-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+        }
+        .definition-card {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; transition: all 0.3s ease;
+            position: relative; overflow: hidden;
+        }
+        .definition-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: var(--gradient-1);
+        }
+        .definition-card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
+        .definition-term {
+            font-family: 'JetBrains Mono', monospace; font-size: 1.1rem;
+            font-weight: 600; color: var(--accent-primary); margin-bottom: 0.5rem;
+        }
+        .definition-text { color: var(--text-secondary); line-height: 1.6; font-size: 0.9rem; }
+
+        /* Accordion */
+        .accordion { margin-bottom: 1rem; }
+        .accordion-header {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s; font-weight: 500;
+        }
+        .accordion-header:hover { border-color: var(--accent-primary); }
+        .accordion-header.open { border-radius: 12px 12px 0 0; border-color: var(--accent-primary); }
+        .accordion-arrow { transition: transform 0.3s; font-size: 0.8rem; }
+        .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+        .accordion-body {
+            display: none; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-top: none; border-radius: 0 0 12px 12px; padding: 1.5rem;
+            color: var(--text-secondary); line-height: 1.7;
+        }
+        .accordion-body.open { display: block; }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem; border: none; border-radius: 10px;
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background: var(--gradient-1); color: var(--bg-dark); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--accent-glow); }
+        .btn-secondary { background: var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover { background: #3a3a4a; }
+        .btn-group { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+        /* Memory Game */
+        .memory-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+            max-width: 800px; margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0.75rem; text-align: center; font-size: 0.8rem;
+            position: relative; perspective: 600px;
+        }
+        .memory-card:hover:not(.flipped):not(.matched) { border-color: var(--accent-primary); transform: scale(1.03); }
+        .memory-card .card-front, .memory-card .card-back {
+            position: absolute; inset: 0; display: flex; align-items: center;
+            justify-content: center; padding: 0.75rem; border-radius: 10px;
+            backface-visibility: hidden; transition: transform 0.4s;
+        }
+        .memory-card .card-back {
+            background: var(--gradient-1); color: var(--bg-dark);
+            font-weight: 600; font-size: 1.5rem;
+        }
+        .memory-card .card-front {
+            background: var(--bg-card); transform: rotateY(180deg);
+            color: var(--text-primary); font-size: 0.78rem; line-height: 1.4;
+        }
+        .memory-card.flipped .card-back, .memory-card.matched .card-back { transform: rotateY(180deg); }
+        .memory-card.flipped .card-front, .memory-card.matched .card-front { transform: rotateY(0); }
+        .memory-card.matched { border-color: var(--success); opacity: 0.8; pointer-events: none; }
+
+        /* Categorize */
+        .category-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+        .category-box {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 200px; transition: border-color 0.3s;
+        }
+        .category-box.drag-over { border-color: var(--accent-primary); background: rgba(244,63,94,0.05); }
+        .category-box h4 {
+            font-size: 1rem; margin-bottom: 1rem; color: var(--accent-primary);
+            text-align: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .category-items { display: flex; flex-direction: column; gap: 0.5rem; min-height: 50px; }
+        .category-item, .bank-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; cursor: grab; transition: all 0.3s; font-size: 0.9rem;
+            user-select: none;
+        }
+        .category-item:hover, .bank-item:hover { border-color: var(--accent-primary); }
+        .category-item.correct, .bank-item.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .category-item.incorrect, .bank-item.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .items-bank { margin-bottom: 2rem; }
+        .items-bank h4 { margin-bottom: 1rem; color: var(--text-secondary); }
+        .items-bank-grid {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+            padding: 1rem; background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; min-height: 60px;
+        }
+
+        /* Fill in Blank */
+        .fill-blank-container { max-width: 700px; margin: 0 auto; }
+        .fill-blank-line {
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+            margin-bottom: 0.75rem; font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem; color: var(--text-secondary); line-height: 2;
+        }
+        .fill-blank-input {
+            background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 6px; padding: 0.3rem 0.6rem; color: var(--accent-primary);
+            font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem;
+            min-width: 100px; outline: none; transition: border-color 0.3s;
+        }
+        .fill-blank-input:focus { border-color: var(--accent-primary); }
+        .fill-blank-input.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+        .fill-blank-input.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .hint-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-muted);
+            padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .hint-btn:hover { border-color: var(--warning); color: var(--warning); }
+
+        /* Sentence Bank (Apply tab) */
+        .sentence-bank-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .sentence-bank, .answer-area {
+            background: var(--bg-card); border: 2px dashed var(--border-color);
+            border-radius: 16px; padding: 1.5rem; min-height: 300px;
+        }
+        .answer-area { border-color: rgba(244,63,94,0.3); }
+        .sentence-bank h4, .answer-area h4 {
+            margin-bottom: 1rem; color: var(--accent-primary); text-align: center;
+            padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);
+        }
+        .sentence-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 1px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;
+            font-size: 0.88rem; line-height: 1.5; transition: all 0.3s; user-select: none;
+        }
+        .sentence-item:hover { border-color: var(--accent-primary); }
+        .sentence-item.selected { border-color: var(--accent-primary); background: rgba(244,63,94,0.1); }
+        .sentence-item.in-answer { opacity: 0.4; pointer-events: none; }
+        .mark-scheme-reveal {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; margin-top: 1.5rem; display: none;
+        }
+        .mark-scheme-reveal.show { display: block; }
+        .mark-point {
+            display: flex; align-items: flex-start; gap: 0.75rem;
+            padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);
+        }
+        .mark-point:last-child { border-bottom: none; }
+        .mark-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+        .mark-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .score-display {
+            text-align: center; padding: 1.5rem; background: var(--bg-card);
+            border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 1rem;
+        }
+        .score-value { font-family: 'JetBrains Mono', monospace; font-size: 2.5rem; font-weight: 700; }
+        .score-label { color: var(--text-secondary); font-size: 0.9rem; }
+
+        /* Quiz (Challenge tab) */
+        .quiz-question { margin-bottom: 2rem; }
+        .quiz-question h4 {
+            margin-bottom: 1rem; font-size: 1rem; line-height: 1.5;
+            padding: 1rem; background: var(--bg-card); border-radius: 10px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .quiz-options { display: grid; gap: 0.5rem; }
+        .quiz-option {
+            padding: 0.9rem 1rem; background: var(--bg-card-hover);
+            border: 2px solid var(--border-color); border-radius: 10px;
+            cursor: pointer; transition: all 0.3s; display: flex;
+            align-items: center; gap: 0.75rem; font-size: 0.9rem;
+        }
+        .quiz-option:hover:not(.disabled) { border-color: var(--accent-primary); }
+        .quiz-option.selected { border-color: var(--accent-primary); background: rgba(244,63,94,0.1); }
+        .quiz-option.correct { border-color: var(--success); background: rgba(16,185,129,0.15); }
+        .quiz-option.incorrect { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+        .option-letter {
+            width: 28px; height: 28px; border-radius: 50%; background: var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600; font-size: 0.8rem; flex-shrink: 0;
+        }
+        .quiz-feedback {
+            padding: 1rem; border-radius: 10px; margin-top: 0.5rem;
+            font-size: 0.88rem; line-height: 1.5; display: none;
+        }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); color: var(--success); }
+        .quiz-feedback.incorrect { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--error); }
+
+        /* Timer */
+        .timer-bar {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .timer-display { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--accent-primary); }
+        .timer-progress { flex: 1; margin: 0 1.5rem; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; }
+        .timer-fill { height: 100%; background: var(--gradient-1); border-radius: 3px; transition: width 1s linear; width: 100%; }
+
+        /* Review Tab */
+        .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .review-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; text-align: center;
+        }
+        .review-card h4 { font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--text-secondary); }
+        .review-score {
+            font-family: 'JetBrains Mono', monospace; font-size: 2rem;
+            font-weight: 700; margin-bottom: 0.25rem;
+        }
+        .review-score.high { color: var(--success); }
+        .review-score.mid { color: var(--warning); }
+        .review-score.low { color: var(--error); }
+        .review-bar { height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 0.5rem; }
+        .review-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+        .review-summary {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 2rem; margin-top: 1.5rem; text-align: center;
+        }
+
+        /* Scenario Analyser */
+        .scenario-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+        }
+        .scenario-text {
+            font-size: 1rem; line-height: 1.6; color: var(--text-primary);
+            margin-bottom: 1rem; font-style: italic;
+            padding: 1rem; background: rgba(244,63,94,0.05); border-radius: 10px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .scenario-btns {
+            display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;
+        }
+        .scenario-btn {
+            padding: 0.5rem 1rem; border: 2px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-card-hover); color: var(--text-primary);
+            cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .scenario-btn:hover { border-color: var(--accent-primary); }
+        .scenario-btn.selected { border-color: var(--accent-primary); background: rgba(244,63,94,0.15); }
+        .scenario-btn.correct-answer { border-color: var(--success); background: rgba(16,185,129,0.15); }
+        .scenario-btn.wrong-answer { border-color: var(--error); background: rgba(239,68,68,0.1); }
+        .scenario-explanation {
+            display: none; padding: 1rem; border-radius: 10px; margin-top: 0.5rem;
+            font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);
+            background: var(--bg-card-hover); border: 1px solid var(--border-color);
+        }
+        .scenario-explanation.show { display: block; }
+
+        /* Law Matcher */
+        .law-matcher-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+        }
+        .offence-list, .law-list {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem;
+        }
+        .offence-item {
+            padding: 0.75rem 1rem; background: var(--bg-card-hover); border: 2px solid var(--border-color);
+            border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer;
+            font-size: 0.88rem; line-height: 1.4; transition: all 0.3s; user-select: none;
+        }
+        .offence-item:hover { border-color: var(--accent-primary); }
+        .offence-item.active { border-color: var(--accent-primary); background: rgba(244,63,94,0.1); }
+        .offence-item.matched { opacity: 0.5; pointer-events: none; }
+        .offence-item .match-tag {
+            display: inline-block; font-size: 0.7rem; padding: 0.15rem 0.5rem;
+            border-radius: 4px; margin-left: 0.5rem; font-weight: 600;
+        }
+        .offence-item .match-tag.correct { background: rgba(16,185,129,0.2); color: var(--success); }
+        .offence-item .match-tag.incorrect { background: rgba(239,68,68,0.2); color: var(--error); }
+        .law-btn {
+            display: block; width: 100%; padding: 1rem; margin-bottom: 0.75rem;
+            border: 2px solid var(--border-color); border-radius: 10px;
+            background: var(--bg-card-hover); color: var(--text-primary);
+            cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem; font-weight: 600; text-align: center;
+            transition: all 0.3s;
+        }
+        .law-btn:hover { border-color: var(--accent-primary); background: rgba(244,63,94,0.1); }
+
+        /* Exam Question Display */
+        .exam-q-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .marks-badge {
+            background: rgba(244,63,94,0.2); color: var(--accent-primary);
+            padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem;
+            font-weight: 600; border: 1px solid rgba(244,63,94,0.3);
+        }
+        .model-answer {
+            background: rgba(244,63,94,0.05); border: 1px solid rgba(244,63,94,0.2);
+            border-radius: 12px; padding: 1.25rem; margin-top: 1rem;
+            color: var(--text-secondary); line-height: 1.7; font-size: 0.9rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem;
+            border-radius: 12px; font-weight: 500; z-index: 100;
+            transform: translateY(100px); opacity: 0; transition: all 0.4s ease;
+            max-width: 350px;
+        }
+        .notification.show { transform: translateY(0); opacity: 1; }
+        .notification.success { background: rgba(16,185,129,0.9); color: white; }
+        .notification.error { background: rgba(239,68,68,0.9); color: white; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .sentence-bank-container, .law-matcher-grid { grid-template-columns: 1fr; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .nav-tab { padding: 0.5rem 0.7rem; font-size: 0.75rem; }
+            .progress-tracker { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .memory-grid { grid-template-columns: repeat(2, 1fr); }
+            .category-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="container">
+        <a href="index.html" class="back-link">&#8592; Back to CS Hub</a>
+
+        <div class="hero">
+            <div class="hero-badge">Topic 5 &mdash; Paper 1</div>
+            <h1>Issues &amp; Impact</h1>
+            <p>Ethical, legal, environmental &amp; cultural issues &mdash; understand the wider impact of technology on society.</p>
+        </div>
+
+        <div class="progress-tracker">
+            <div class="progress-stats">
+                <div class="stat">
+                    <div class="stat-value" id="activitiesCompleted">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="correctAnswers">0</div>
+                    <div class="stat-label">Correct</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="streakCount">0</div>
+                    <div class="stat-label">Streak</div>
+                </div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="learn">📖 Learn</button>
+            <button class="nav-tab" data-section="explore">🔍 Explore</button>
+            <button class="nav-tab" data-section="practice">🧩 Practice</button>
+            <button class="nav-tab" data-section="recall">🧠 Recall</button>
+            <button class="nav-tab" data-section="apply">📝 Apply</button>
+            <button class="nav-tab" data-section="challenge">⚡ Challenge</button>
+            <button class="nav-tab" data-section="review">📊 Review</button>
+        </div>
+
+        <!-- ===== LEARN TAB ===== -->
+        <div id="learn" class="section active">
+            <div class="section-header">
+                <h2>📖 Core Theory</h2>
+                <p>Key definitions, concepts, and terminology for Topic 5</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔑</div>
+                    <div class="card-title">Key Definitions</div>
+                </div>
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="definition-term">Ethical Issues</div>
+                        <div class="definition-text">Questions about what is morally right or wrong regarding the use of technology.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Legal Issues</div>
+                        <div class="definition-text">Matters relating to laws and regulations governing the use of technology.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Environmental Impact</div>
+                        <div class="definition-text">The effect of technology on the natural environment (e-waste, energy use, carbon footprint).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Cultural Issues</div>
+                        <div class="definition-text">How technology affects the way people live, communicate and interact across different societies.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Data Protection Act (2018)</div>
+                        <div class="definition-text">UK law controlling how personal data is collected, stored, used and shared. Incorporates GDPR.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Computer Misuse Act (1990)</div>
+                        <div class="definition-text">Makes it illegal to gain unauthorised access to computer systems, modify data without permission, or create malware.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Copyright, Designs &amp; Patents Act (1988)</div>
+                        <div class="definition-text">Protects the intellectual property of creators &mdash; illegal to copy, distribute or modify without permission.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Creative Commons</div>
+                        <div class="definition-text">A licensing system that allows creators to share their work with specific permissions.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Open Source Software</div>
+                        <div class="definition-text">Source code is freely available to view, modify and distribute (e.g., Linux, Firefox).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Proprietary Software</div>
+                        <div class="definition-text">Source code is owned by a company and cannot be viewed or modified (e.g., Windows, Photoshop).</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Digital Divide</div>
+                        <div class="definition-text">The gap between those who have access to technology and those who do not.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">E-waste</div>
+                        <div class="definition-text">Electronic waste &mdash; discarded devices that contain hazardous materials.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Carbon Footprint</div>
+                        <div class="definition-text">The total amount of greenhouse gases produced by manufacturing and using technology.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Privacy</div>
+                        <div class="definition-text">An individual&rsquo;s right to control their personal information.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Surveillance</div>
+                        <div class="definition-text">Monitoring of individuals&rsquo; activities, often using cameras, tracking or data collection.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">Cookies</div>
+                        <div class="definition-text">Small text files stored by websites on a user&rsquo;s device to track preferences or activity.</div>
+                    </div>
+                    <div class="definition-card">
+                        <div class="definition-term">GDPR</div>
+                        <div class="definition-text">General Data Protection Regulation &mdash; EU/UK regulation giving individuals rights over their personal data.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💡</div>
+                    <div class="card-title">Key Points</div>
+                </div>
+                <div class="key-point">
+                    <div class="key-point-label">Key Point</div>
+                    <p>The three main UK computing laws are: Data Protection Act (2018), Computer Misuse Act (1990), and Copyright, Designs &amp; Patents Act (1988).</p>
+                </div>
+                <div class="key-point" style="margin-top:1rem;">
+                    <div class="key-point-label">Key Point</div>
+                    <p>Technology has both positive and negative impacts &mdash; exam questions often ask you to &lsquo;discuss&rsquo; both sides.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚖️</div>
+                    <div class="card-title">UK Computing Laws</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Data Protection Act (2018) &mdash; 6 Principles <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>The DPA 2018 incorporates GDPR into UK law. Organisations that collect personal data must follow these 6 principles:</p>
+                        <ol style="margin-top:0.75rem;padding-left:1.5rem;">
+                            <li style="margin-bottom:0.5rem;"><strong>Lawfulness, fairness and transparency</strong> &mdash; data must be processed legally and openly.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Purpose limitation</strong> &mdash; data can only be collected for a specific, stated purpose.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Data minimisation</strong> &mdash; only the data that is necessary should be collected.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Accuracy</strong> &mdash; personal data must be kept accurate and up to date.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Storage limitation</strong> &mdash; data should not be kept for longer than needed.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Security</strong> &mdash; data must be protected against unauthorised access, loss or damage.</li>
+                        </ol>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Under GDPR, individuals have the right to access their data, request correction, and request deletion (&lsquo;right to be forgotten&rsquo;).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Computer Misuse Act (1990) &mdash; 3 Offences <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>The CMA defines three levels of offence:</p>
+                        <ol style="margin-top:0.75rem;padding-left:1.5rem;">
+                            <li style="margin-bottom:0.5rem;"><strong>Unauthorised access to computer material</strong> &mdash; e.g., accessing someone else&rsquo;s account without permission. Even if no damage is done, this is still an offence.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Unauthorised access with intent to commit a further offence</strong> &mdash; e.g., hacking into a bank&rsquo;s system to steal money or commit fraud.</li>
+                            <li style="margin-bottom:0.5rem;"><strong>Unauthorised modification of computer material</strong> &mdash; e.g., creating and distributing malware/viruses, deleting or altering files without permission.</li>
+                        </ol>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Just accessing a computer system without permission is illegal, even if you don&rsquo;t change or damage anything.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Copyright, Designs &amp; Patents Act (1988) <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>This law protects the <strong>intellectual property</strong> of creators. It covers:</p>
+                        <ul style="margin-top:0.75rem;padding-left:1.5rem;">
+                            <li style="margin-bottom:0.5rem;">Software code, music, films, images, text and other creative works</li>
+                            <li style="margin-bottom:0.5rem;">It is illegal to copy, distribute, or modify copyrighted work without the owner&rsquo;s permission</li>
+                            <li style="margin-bottom:0.5rem;">Penalties include fines and imprisonment</li>
+                        </ul>
+                        <p style="margin-top:0.75rem;"><strong>Creative Commons</strong> is an alternative licensing system that allows creators to share work with specific permissions (e.g., allow non-commercial use, require attribution).</p>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Downloading pirated software, music or films is a breach of the Copyright Act, even if it is freely available online.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💻</div>
+                    <div class="card-title">Open Source vs Proprietary Software</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Open Source vs Proprietary &mdash; Advantages &amp; Disadvantages <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                            <div>
+                                <h4 style="color:var(--accent-primary);margin-bottom:0.75rem;">Open Source</h4>
+                                <p><strong>Advantages:</strong></p>
+                                <ul style="padding-left:1.5rem;margin-bottom:0.75rem;">
+                                    <li>Free to download and use</li>
+                                    <li>Source code can be viewed, modified and improved</li>
+                                    <li>Community can find and fix bugs quickly</li>
+                                    <li>Can be customised to meet specific needs</li>
+                                </ul>
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul style="padding-left:1.5rem;">
+                                    <li>May lack professional support/documentation</li>
+                                    <li>Can be less user-friendly</li>
+                                    <li>May have compatibility issues</li>
+                                    <li>Quality can vary</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--accent-primary);margin-bottom:0.75rem;">Proprietary</h4>
+                                <p><strong>Advantages:</strong></p>
+                                <ul style="padding-left:1.5rem;margin-bottom:0.75rem;">
+                                    <li>Professional technical support available</li>
+                                    <li>Thoroughly tested and reliable</li>
+                                    <li>Regular, managed updates</li>
+                                    <li>Usually more user-friendly</li>
+                                </ul>
+                                <p><strong>Disadvantages:</strong></p>
+                                <ul style="padding-left:1.5rem;">
+                                    <li>Costs money (licence/subscription)</li>
+                                    <li>Source code is hidden &mdash; can&rsquo;t be modified</li>
+                                    <li>Users must wait for the company to fix bugs</li>
+                                    <li>Less customisable</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌍</div>
+                    <div class="card-title">Environmental &amp; Social Impact</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Environmental Impacts of Technology <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                            <div>
+                                <h4 style="color:var(--success);margin-bottom:0.75rem;">Positive</h4>
+                                <ul style="padding-left:1.5rem;">
+                                    <li style="margin-bottom:0.5rem;">Smart energy systems reduce waste and optimise power usage</li>
+                                    <li style="margin-bottom:0.5rem;">Remote working reduces commuting and transport emissions</li>
+                                    <li style="margin-bottom:0.5rem;">Digital documents reduce paper usage</li>
+                                    <li style="margin-bottom:0.5rem;">Sensors and IoT can monitor and protect environments</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--error);margin-bottom:0.75rem;">Negative</h4>
+                                <ul style="padding-left:1.5rem;">
+                                    <li style="margin-bottom:0.5rem;">E-waste contains toxic materials (lead, mercury, cadmium) that pollute land and water</li>
+                                    <li style="margin-bottom:0.5rem;">Data centres consume huge amounts of electricity for computing and cooling</li>
+                                    <li style="margin-bottom:0.5rem;">Mining rare earth minerals destroys habitats and ecosystems</li>
+                                    <li style="margin-bottom:0.5rem;">Manufacturing devices has a large carbon footprint</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Privacy and Surveillance Debate <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                            <div>
+                                <h4 style="color:var(--success);margin-bottom:0.75rem;">Arguments For Surveillance</h4>
+                                <ul style="padding-left:1.5rem;">
+                                    <li style="margin-bottom:0.5rem;">Helps prevent and investigate crime</li>
+                                    <li style="margin-bottom:0.5rem;">Can protect national security</li>
+                                    <li style="margin-bottom:0.5rem;">CCTV can make public spaces safer</li>
+                                    <li style="margin-bottom:0.5rem;">Can help find missing people</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 style="color:var(--error);margin-bottom:0.75rem;">Arguments Against Surveillance</h4>
+                                <ul style="padding-left:1.5rem;">
+                                    <li style="margin-bottom:0.5rem;">Violates individuals&rsquo; right to privacy</li>
+                                    <li style="margin-bottom:0.5rem;">Data could be misused or hacked</li>
+                                    <li style="margin-bottom:0.5rem;">Can create a &lsquo;surveillance state&rsquo; culture of fear</li>
+                                    <li style="margin-bottom:0.5rem;">Facial recognition can have bias and errors</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Exam questions on privacy and surveillance often ask you to &lsquo;discuss&rsquo; &mdash; you must give arguments for AND against, then offer a balanced conclusion.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== EXPLORE TAB ===== -->
+        <div id="explore" class="section">
+            <div class="section-header">
+                <h2>🔍 Explore &amp; Analyse</h2>
+                <p>Apply your knowledge to real-world scenarios</p>
+            </div>
+
+            <!-- Scenario Analyser -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔎</div>
+                    <div class="card-title">Scenario Analyser</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">For each scenario, select all the issue types that apply, then click Check to see the explanation.</p>
+                <div id="scenarioContainer"></div>
+            </div>
+
+            <!-- Law Matcher -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">⚖️</div>
+                    <div class="card-title">Law Matcher</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Click an offence, then click the correct law it falls under.</p>
+                <div class="law-matcher-grid">
+                    <div class="offence-list" id="offenceList">
+                        <h4 style="color:var(--accent-primary);margin-bottom:1rem;text-align:center;padding-bottom:0.75rem;border-bottom:1px solid var(--border-color);">Offences / Scenarios</h4>
+                    </div>
+                    <div class="law-list" id="lawList">
+                        <h4 style="color:var(--accent-primary);margin-bottom:1rem;text-align:center;padding-bottom:0.75rem;border-bottom:1px solid var(--border-color);">Laws</h4>
+                    </div>
+                </div>
+                <div id="lawMatcherFeedback" style="margin-top:1rem;text-align:center;font-size:0.9rem;"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="resetLawMatcher()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PRACTICE TAB ===== -->
+        <div id="practice" class="section">
+            <div class="section-header">
+                <h2>🧩 Guided Practice</h2>
+                <p>Apply your knowledge with hints available</p>
+            </div>
+
+            <!-- Categorize: Ethical vs Legal vs Environmental vs Cultural -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📂</div>
+                    <div class="card-title">Categorise: Ethical, Legal, Environmental, or Cultural</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each item into the correct category.</p>
+                <div class="items-bank" id="issueBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="issueBankGrid"></div>
+                </div>
+                <div class="category-container" id="issueCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkIssues()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetIssues()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Categorize: Open Source vs Proprietary -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💻</div>
+                    <div class="card-title">Categorise: Open Source vs Proprietary</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Drag each item into the correct category.</p>
+                <div class="items-bank" id="softwareBank">
+                    <h4>Items to sort:</h4>
+                    <div class="items-bank-grid" id="softwareBankGrid"></div>
+                </div>
+                <div class="category-container" id="softwareCategories"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkSoftware()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetSoftware()">Reset</button>
+                </div>
+            </div>
+
+            <!-- Fill-in-blank -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">✏️</div>
+                    <div class="card-title">Fill in the Blanks: Key Concepts</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Complete each sentence. Click the hint button if you get stuck.</p>
+                <div class="fill-blank-container" id="fillBlanks"></div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="checkFillBlanks()">Check Answers</button>
+                    <button class="btn btn-secondary" onclick="resetFillBlanks()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RECALL TAB ===== -->
+        <div id="recall" class="section">
+            <div class="section-header">
+                <h2>🧠 Retrieval Practice</h2>
+                <p>Test your memory by matching terms with definitions</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🃏</div>
+                    <div class="card-title">Memory Match</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;">Find all 8 matching pairs. Click two cards to flip them.</p>
+                <div class="memory-grid" id="memoryGrid"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="resetMemoryGame()">Reset Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== APPLY TAB ===== -->
+        <div id="apply" class="section">
+            <div class="section-header">
+                <h2>📝 Exam Practice</h2>
+                <p>Build answers using sentence banks, then reveal the mark scheme</p>
+            </div>
+
+            <div id="examQuestionsContainer"></div>
+        </div>
+
+        <!-- ===== CHALLENGE TAB ===== -->
+        <div id="challenge" class="section">
+            <div class="section-header">
+                <h2>⚡ Challenge</h2>
+                <p>No hints, no help &mdash; prove your mastery</p>
+            </div>
+
+            <div class="timer-bar">
+                <span style="color:var(--text-secondary);">Time Remaining:</span>
+                <div class="timer-progress"><div class="timer-fill" id="timerFill"></div></div>
+                <div class="timer-display" id="timerDisplay">5:00</div>
+            </div>
+
+            <div id="challengeContainer"></div>
+            <div class="btn-group" style="justify-content:center;">
+                <button class="btn btn-primary" onclick="submitChallenge()" id="btnSubmitChallenge">Submit All Answers</button>
+            </div>
+        </div>
+
+        <!-- ===== REVIEW TAB ===== -->
+        <div id="review" class="section">
+            <div class="section-header">
+                <h2>📊 Performance Review</h2>
+                <p>See how you performed across each sub-topic</p>
+            </div>
+
+            <div class="review-grid" id="reviewGrid"></div>
+
+            <div class="review-summary" id="reviewSummary">
+                <h3 style="margin-bottom:1rem;">Overall Performance</h3>
+                <div class="score-value" id="overallScore" style="color:var(--accent-primary);">0%</div>
+                <p class="score-label" id="overallLabel">Complete activities to see your results</p>
+                <div class="btn-group" style="justify-content:center;">
+                    <button class="btn btn-primary" onclick="switchTab('learn')">Revise Again</button>
+                    <button class="btn btn-secondary" onclick="switchTab('challenge')">Retry Challenge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+    // ===== STATE =====
+    let state = {
+        activitiesCompleted: 0,
+        correctAnswers: 0,
+        streak: 0,
+        totalActivities: 9
+    };
+
+    const topicScores = {
+        'Ethics': { correct: 0, total: 0 },
+        'Legislation': { correct: 0, total: 0 },
+        'Environment': { correct: 0, total: 0 },
+        'Culture': { correct: 0, total: 0 },
+        'Open Source vs Proprietary': { correct: 0, total: 0 },
+        'Privacy': { correct: 0, total: 0 }
+    };
+
+    function updateProgress() {
+        document.getElementById('activitiesCompleted').textContent = state.activitiesCompleted;
+        document.getElementById('correctAnswers').textContent = state.correctAnswers;
+        document.getElementById('streakCount').textContent = state.streak;
+        const pct = Math.round((state.activitiesCompleted / state.totalActivities) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+    }
+
+    function showNotification(msg, type = 'success') {
+        const el = document.getElementById('notification');
+        el.textContent = msg;
+        el.className = 'notification ' + type + ' show';
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function switchTab(sectionId) {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const tab = document.querySelector(`.nav-tab[data-section="${sectionId}"]`);
+        if (tab) tab.classList.add('active');
+        document.getElementById(sectionId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (sectionId === 'review') renderReview();
+        if (sectionId === 'challenge' && !challengeTimerStarted) startChallengeTimer();
+    }
+
+    // Tab switching
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.section));
+    });
+
+    // Accordion
+    function toggleAccordion(header) {
+        header.classList.toggle('open');
+        header.nextElementSibling.classList.toggle('open');
+    }
+
+    // ===== SCORING HELPER =====
+    function addScore(topic, correct, total) {
+        if (topicScores[topic]) {
+            topicScores[topic].correct += correct;
+            topicScores[topic].total += total;
+        }
+    }
+
+    // ===== EXPLORE: SCENARIO ANALYSER =====
+    const scenarios = [
+        {
+            id: 1,
+            text: 'A company collects user browsing data and sells it to advertisers without informing users.',
+            correctTypes: ['Legal', 'Ethical'],
+            explanation: 'This is a Legal issue because it breaches the Data Protection Act — personal data is being used without consent. It is also an Ethical issue because users are not being informed, which is morally wrong.'
+        },
+        {
+            id: 2,
+            text: 'Millions of old smartphones are dumped in landfills in developing countries each year.',
+            correctTypes: ['Environmental', 'Cultural'],
+            explanation: 'This is an Environmental issue because e-waste contains hazardous materials that pollute land and water. It is also a Cultural issue because the digital divide means poorer nations bear the burden of waste from richer countries.'
+        },
+        {
+            id: 3,
+            text: 'An AI recruitment tool consistently rejects applications from certain ethnic backgrounds.',
+            correctTypes: ['Ethical', 'Legal'],
+            explanation: 'This is primarily an Ethical issue because the AI exhibits bias and discrimination, which is morally wrong. It is also a Legal issue because it may breach equality legislation.'
+        },
+        {
+            id: 4,
+            text: 'A rural village has no broadband internet while nearby cities have fibre connections.',
+            correctTypes: ['Cultural', 'Ethical'],
+            explanation: 'This is a Cultural issue because the digital divide means rural communities miss out on digital services, education and opportunities. It is also an Ethical issue because unequal access to technology raises questions about fairness.'
+        }
+    ];
+
+    let scenarioResults = {};
+
+    function initScenarios() {
+        const container = document.getElementById('scenarioContainer');
+        container.innerHTML = '';
+        scenarioResults = {};
+        const types = ['Ethical', 'Legal', 'Environmental', 'Cultural'];
+
+        scenarios.forEach((sc, idx) => {
+            scenarioResults[sc.id] = { checked: false, selectedTypes: [] };
+            const div = document.createElement('div');
+            div.className = 'scenario-card';
+            div.innerHTML = `
+                <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;">Scenario ${idx + 1} of ${scenarios.length}</div>
+                <div class="scenario-text">"${sc.text}"</div>
+                <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.75rem;">Select all issue types that apply:</p>
+                <div class="scenario-btns" id="scenarioBtns${sc.id}">
+                    ${types.map(t => `<button class="scenario-btn" data-scenario="${sc.id}" data-type="${t}" onclick="toggleScenarioType(${sc.id},'${t}',this)">${t}</button>`).join('')}
+                </div>
+                <button class="btn btn-primary" style="font-size:0.85rem;padding:0.5rem 1rem;" onclick="checkScenario(${sc.id})">Check</button>
+                <div class="scenario-explanation" id="scenarioExpl${sc.id}">${sc.explanation}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function toggleScenarioType(scId, type, btn) {
+        if (scenarioResults[scId].checked) return;
+        btn.classList.toggle('selected');
+        const arr = scenarioResults[scId].selectedTypes;
+        const idx = arr.indexOf(type);
+        if (idx >= 0) arr.splice(idx, 1);
+        else arr.push(type);
+    }
+
+    function checkScenario(scId) {
+        if (scenarioResults[scId].checked) return;
+        scenarioResults[scId].checked = true;
+        const sc = scenarios.find(s => s.id === scId);
+        const btns = document.querySelectorAll(`[data-scenario="${scId}"]`);
+        let allCorrect = true;
+
+        btns.forEach(btn => {
+            const type = btn.dataset.type;
+            const isCorrect = sc.correctTypes.includes(type);
+            const wasSelected = btn.classList.contains('selected');
+
+            if (isCorrect && wasSelected) {
+                btn.classList.add('correct-answer');
+            } else if (isCorrect && !wasSelected) {
+                btn.classList.add('correct-answer');
+                allCorrect = false;
+            } else if (!isCorrect && wasSelected) {
+                btn.classList.add('wrong-answer');
+                allCorrect = false;
+            }
+        });
+
+        const expl = document.getElementById(`scenarioExpl${scId}`);
+        expl.classList.add('show');
+
+        if (allCorrect) {
+            showNotification('Correct! Well identified.');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Ethics', 1, 1);
+        } else {
+            showNotification('Not quite. Check the highlighted answers.', 'error');
+            state.streak = 0;
+            addScore('Ethics', 0, 1);
+        }
+        state.activitiesCompleted++;
+        updateProgress();
+    }
+
+    initScenarios();
+
+    // ===== EXPLORE: LAW MATCHER =====
+    const lawMatcherData = [
+        { text: 'Hacking into a school\'s network without permission', law: 'Computer Misuse Act' },
+        { text: 'Downloading a movie illegally', law: 'Copyright Act' },
+        { text: 'A company sharing customer data without consent', law: 'Data Protection Act' },
+        { text: 'Creating and spreading a virus', law: 'Computer Misuse Act' },
+        { text: 'Copying software and selling it', law: 'Copyright Act' },
+        { text: 'Keeping inaccurate personal records', law: 'Data Protection Act' },
+        { text: 'Accessing someone else\'s email account', law: 'Computer Misuse Act' },
+        { text: 'Using someone\'s photograph without permission', law: 'Copyright Act' }
+    ];
+
+    const lawNames = ['Data Protection Act', 'Computer Misuse Act', 'Copyright Act'];
+    let selectedOffence = null;
+    let lawMatcherScore = { correct: 0, total: 0 };
+    let lawMatcherDone = false;
+
+    function initLawMatcher() {
+        const offenceList = document.getElementById('offenceList');
+        const lawList = document.getElementById('lawList');
+        selectedOffence = null;
+        lawMatcherScore = { correct: 0, total: 0 };
+        lawMatcherDone = false;
+
+        offenceList.innerHTML = '<h4 style="color:var(--accent-primary);margin-bottom:1rem;text-align:center;padding-bottom:0.75rem;border-bottom:1px solid var(--border-color);">Offences / Scenarios</h4>';
+        lawList.innerHTML = '<h4 style="color:var(--accent-primary);margin-bottom:1rem;text-align:center;padding-bottom:0.75rem;border-bottom:1px solid var(--border-color);">Laws</h4>';
+
+        const shuffled = [...lawMatcherData].sort(() => Math.random() - 0.5);
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'offence-item';
+            el.textContent = item.text;
+            el.dataset.idx = i;
+            el.dataset.law = item.law;
+            el.addEventListener('click', () => selectOffence(el));
+            offenceList.appendChild(el);
+        });
+
+        lawNames.forEach(law => {
+            const btn = document.createElement('button');
+            btn.className = 'law-btn';
+            btn.textContent = law;
+            btn.addEventListener('click', () => assignLaw(law));
+            lawList.appendChild(btn);
+        });
+
+        document.getElementById('lawMatcherFeedback').textContent = '';
+    }
+
+    function selectOffence(el) {
+        if (el.classList.contains('matched')) return;
+        document.querySelectorAll('.offence-item').forEach(o => o.classList.remove('active'));
+        el.classList.add('active');
+        selectedOffence = el;
+    }
+
+    function assignLaw(law) {
+        if (!selectedOffence || selectedOffence.classList.contains('matched')) return;
+
+        const correctLaw = selectedOffence.dataset.law;
+        const tag = document.createElement('span');
+        tag.className = 'match-tag';
+
+        if (law === correctLaw) {
+            tag.classList.add('correct');
+            tag.textContent = law;
+            lawMatcherScore.correct++;
+        } else {
+            tag.classList.add('incorrect');
+            tag.textContent = law + ' (should be ' + correctLaw + ')';
+        }
+        lawMatcherScore.total++;
+
+        selectedOffence.appendChild(tag);
+        selectedOffence.classList.remove('active');
+        selectedOffence.classList.add('matched');
+        selectedOffence = null;
+
+        if (lawMatcherScore.total === lawMatcherData.length) {
+            lawMatcherDone = true;
+            const fb = document.getElementById('lawMatcherFeedback');
+            if (lawMatcherScore.correct === lawMatcherScore.total) {
+                fb.innerHTML = '<span style="color:var(--success)">All correct! You know your laws well.</span>';
+                showNotification('Law Matcher: Perfect score!');
+                state.correctAnswers++;
+                state.streak++;
+            } else {
+                fb.innerHTML = `<span style="color:var(--warning)">${lawMatcherScore.correct}/${lawMatcherScore.total} correct. Review the incorrect ones.</span>`;
+                showNotification(`Law Matcher: ${lawMatcherScore.correct}/${lawMatcherScore.total}`, 'error');
+                state.streak = 0;
+            }
+            addScore('Legislation', lawMatcherScore.correct, lawMatcherScore.total);
+            state.activitiesCompleted++;
+            updateProgress();
+        }
+    }
+
+    function resetLawMatcher() {
+        initLawMatcher();
+    }
+
+    initLawMatcher();
+
+    // ===== PRACTICE: CATEGORIZE ISSUES =====
+    const issueItems = [
+        { text: 'AI bias in recruitment', category: 'Ethical' },
+        { text: 'Using technology to monitor employees', category: 'Ethical' },
+        { text: 'Replacing workers with automation', category: 'Ethical' },
+        { text: 'Internet censorship', category: 'Ethical' },
+        { text: 'Hacking into computer systems', category: 'Legal' },
+        { text: 'Downloading pirated software', category: 'Legal' },
+        { text: 'Sharing personal data without consent', category: 'Legal' },
+        { text: 'Creating malware', category: 'Legal' },
+        { text: 'E-waste in landfills', category: 'Environmental' },
+        { text: 'Energy consumption of data centres', category: 'Environmental' },
+        { text: 'Mining rare earth minerals', category: 'Environmental' },
+        { text: 'Carbon emissions from manufacturing', category: 'Environmental' },
+        { text: 'Digital divide between rich and poor', category: 'Cultural' },
+        { text: 'Social media changing communication', category: 'Cultural' },
+        { text: 'Online learning replacing classrooms', category: 'Cultural' }
+    ];
+
+    let issuesChecked = false;
+
+    function initIssues() {
+        const bankGrid = document.getElementById('issueBankGrid');
+        const catContainer = document.getElementById('issueCategories');
+        const categories = ['Ethical', 'Legal', 'Environmental', 'Cultural'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropIssueItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...issueItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'issue' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'issue' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropIssueItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        item.draggable = true;
+        item.addEventListener('dragstart', ev => { ev.dataTransfer.setData('text/plain', id); item.classList.add('dragging'); });
+        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    // Also allow dragging back to bank
+    document.getElementById('issueBankGrid')?.addEventListener?.('dragover', e => e.preventDefault());
+    document.getElementById('issueBankGrid')?.addEventListener?.('drop', e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'bank-item';
+        document.getElementById('issueBankGrid').appendChild(item);
+    });
+
+    function checkIssues() {
+        if (issuesChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#issueCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('issueBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! Well done!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Ethics', 1, 1);
+            addScore('Legislation', 1, 1);
+            addScore('Environment', 1, 1);
+            addScore('Culture', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Ethics', 0, 1);
+            addScore('Legislation', 0, 1);
+            addScore('Environment', 0, 1);
+            addScore('Culture', 0, 1);
+        }
+        state.activitiesCompleted++;
+        issuesChecked = true;
+        updateProgress();
+    }
+
+    function resetIssues() {
+        issuesChecked = false;
+        initIssues();
+    }
+
+    initIssues();
+
+    // ===== PRACTICE: CATEGORIZE SOFTWARE =====
+    const softwareItems = [
+        { text: 'Source code freely available', category: 'Open Source' },
+        { text: 'Community can modify and improve', category: 'Open Source' },
+        { text: 'Usually free to use', category: 'Open Source' },
+        { text: 'Examples include Linux and Firefox', category: 'Open Source' },
+        { text: 'Source code is secret', category: 'Proprietary' },
+        { text: 'Company controls updates', category: 'Proprietary' },
+        { text: 'Usually requires purchase/licence', category: 'Proprietary' },
+        { text: 'Examples include Windows and Photoshop', category: 'Proprietary' }
+    ];
+
+    let softwareChecked = false;
+
+    function initSoftware() {
+        const bankGrid = document.getElementById('softwareBankGrid');
+        const catContainer = document.getElementById('softwareCategories');
+        const categories = ['Open Source', 'Proprietary'];
+
+        catContainer.innerHTML = categories.map(c =>
+            `<div class="category-box" data-category="${c}" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropSoftwareItem(event,this)"><h4>${c}</h4><div class="category-items"></div></div>`
+        ).join('');
+
+        const shuffled = [...softwareItems].sort(() => Math.random() - 0.5);
+        bankGrid.innerHTML = '';
+        shuffled.forEach((item, i) => {
+            const el = document.createElement('div');
+            el.className = 'bank-item';
+            el.draggable = true;
+            el.textContent = item.text;
+            el.dataset.category = item.category;
+            el.dataset.id = 'sw' + i;
+            el.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', 'sw' + i); el.classList.add('dragging'); });
+            el.addEventListener('dragend', () => el.classList.remove('dragging'));
+            bankGrid.appendChild(el);
+        });
+    }
+
+    function dropSoftwareItem(e, box) {
+        e.preventDefault();
+        box.classList.remove('drag-over');
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.bank-item[data-id="${id}"], .category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'category-item';
+        item.dataset.id = id;
+        item.draggable = true;
+        item.addEventListener('dragstart', ev => { ev.dataTransfer.setData('text/plain', id); item.classList.add('dragging'); });
+        item.addEventListener('dragend', () => item.classList.remove('dragging'));
+        box.querySelector('.category-items').appendChild(item);
+    }
+
+    document.getElementById('softwareBankGrid')?.addEventListener?.('dragover', e => e.preventDefault());
+    document.getElementById('softwareBankGrid')?.addEventListener?.('drop', e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.querySelector(`.category-item[data-id="${id}"]`);
+        if (!item) return;
+        item.className = 'bank-item';
+        document.getElementById('softwareBankGrid').appendChild(item);
+    });
+
+    function checkSoftware() {
+        if (softwareChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#softwareCategories .category-box').forEach(box => {
+            const cat = box.dataset.category;
+            box.querySelectorAll('.category-item').forEach(item => {
+                if (item.dataset.category === cat) {
+                    item.classList.add('correct');
+                } else {
+                    item.classList.add('incorrect');
+                    allCorrect = false;
+                }
+            });
+        });
+        if (document.getElementById('softwareBankGrid').children.length > 0) allCorrect = false;
+
+        if (allCorrect) {
+            showNotification('All correct! You know your software types.');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Open Source vs Proprietary', 1, 1);
+        } else {
+            showNotification('Some items are in the wrong category.', 'error');
+            state.streak = 0;
+            addScore('Open Source vs Proprietary', 0, 1);
+        }
+        state.activitiesCompleted++;
+        softwareChecked = true;
+        updateProgress();
+    }
+
+    function resetSoftware() {
+        softwareChecked = false;
+        initSoftware();
+    }
+
+    initSoftware();
+
+    // ===== PRACTICE: FILL IN THE BLANKS =====
+    const fillBlankData = [
+        { before: 'The', blank: 'Computer Misuse Act', answer: 'computer misuse act', hint: 'Which law covers hacking?', after: 'makes it illegal to gain unauthorised access to computer systems.' },
+        { before: 'The Data Protection Act requires organisations to keep personal data', blank: 'secure', answer: 'secure', hint: 'How should data be stored?', after: '.' },
+        { before: 'The Copyright Act protects the', blank: 'intellectual property', answer: 'intellectual property', hint: 'What type of property does it protect?', after: 'of creators.' },
+        { before: 'Under GDPR, individuals have the right to request their data be', blank: 'deleted', answer: 'deleted', hint: 'Right to be forgotten', after: '.' },
+        { before: 'Open source software allows users to view and modify the', blank: 'source code', answer: 'source code', hint: 'What can developers see?', after: '.' },
+        { before: 'The', blank: 'digital divide', answer: 'digital divide', hint: 'Gap in access to technology', after: 'is the gap between those with and without access to technology.' }
+    ];
+    let fillChecked = false;
+
+    function initFillBlanks() {
+        const container = document.getElementById('fillBlanks');
+        container.innerHTML = '';
+        fillBlankData.forEach((line, i) => {
+            const div = document.createElement('div');
+            div.className = 'fill-blank-line';
+            let html = `<span>${line.before}</span>`;
+            html += ` <input class="fill-blank-input" data-answer="${line.answer}" data-idx="${i}" placeholder="..." style="min-width:${Math.max(100, line.answer.length * 12)}px;">`;
+            html += ` <button class="hint-btn" onclick="showHint(this,'${line.hint}')">Hint</button>`;
+            if (line.after) html += ` <span>${line.after}</span>`;
+            div.innerHTML = html;
+            container.appendChild(div);
+        });
+    }
+
+    function showHint(btn, hint) {
+        btn.textContent = hint;
+        btn.style.color = 'var(--warning)';
+        btn.style.borderColor = 'var(--warning)';
+    }
+
+    function checkFillBlanks() {
+        if (fillChecked) return;
+        let allCorrect = true;
+        document.querySelectorAll('#fillBlanks .fill-blank-input').forEach(input => {
+            const answer = input.dataset.answer.toLowerCase().replace(/\s+/g, ' ').trim();
+            const val = input.value.toLowerCase().replace(/\s+/g, ' ').trim();
+            // Accept multiple valid answers
+            const alternatives = {
+                'secure': ['secure', 'safe', 'protected'],
+                'deleted': ['deleted', 'erased', 'removed'],
+                'intellectual property': ['intellectual property']
+            };
+            const validAnswers = alternatives[answer] || [answer];
+            if (validAnswers.some(a => val === a)) {
+                input.classList.add('correct');
+            } else {
+                input.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+        if (allCorrect) {
+            showNotification('All blanks correct!');
+            state.correctAnswers++;
+            state.streak++;
+            addScore('Legislation', 1, 1);
+            addScore('Privacy', 1, 1);
+        } else {
+            showNotification('Some blanks are wrong. Check the red fields.', 'error');
+            state.streak = 0;
+            addScore('Legislation', 0, 1);
+            addScore('Privacy', 0, 1);
+        }
+        state.activitiesCompleted++;
+        fillChecked = true;
+        updateProgress();
+    }
+
+    function resetFillBlanks() {
+        fillChecked = false;
+        initFillBlanks();
+    }
+
+    initFillBlanks();
+
+    // ===== RECALL: MEMORY GAME =====
+    const memoryPairs = [
+        { term: 'Computer Misuse Act', definition: 'Makes it illegal to gain unauthorised access to computer systems or modify data' },
+        { term: 'Data Protection Act', definition: 'Controls how personal data is collected, stored, used and shared' },
+        { term: 'Copyright Act', definition: 'Protects intellectual property — illegal to copy or distribute without permission' },
+        { term: 'E-waste', definition: 'Discarded electronic devices containing hazardous materials' },
+        { term: 'Digital Divide', definition: 'The gap between those who have access to technology and those who do not' },
+        { term: 'Open Source', definition: 'Software whose source code is freely available to view, modify and distribute' },
+        { term: 'GDPR', definition: 'Regulation giving individuals rights over their personal data' },
+        { term: 'Privacy', definition: 'An individual\'s right to control how their personal information is collected and used' }
+    ];
+
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let memoryLocked = false;
+
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        matchedPairs = 0;
+        flippedCards = [];
+        memoryLocked = false;
+
+        const cards = [];
+        memoryPairs.forEach((pair, i) => {
+            cards.push({ pairId: i, text: pair.term, type: 'term' });
+            cards.push({ pairId: i, text: pair.definition, type: 'def' });
+        });
+        cards.sort(() => Math.random() - 0.5);
+
+        cards.forEach((card, idx) => {
+            const el = document.createElement('div');
+            el.className = 'memory-card';
+            el.dataset.pairId = card.pairId;
+            el.dataset.idx = idx;
+            el.innerHTML = `<div class="card-back">?</div><div class="card-front">${card.text}</div>`;
+            el.addEventListener('click', () => flipCard(el));
+            grid.appendChild(el);
+        });
+    }
+
+    function flipCard(card) {
+        if (memoryLocked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        card.classList.add('flipped');
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+            memoryLocked = true;
+            const [a, b] = flippedCards;
+            if (a.dataset.pairId === b.dataset.pairId) {
+                a.classList.add('matched');
+                b.classList.add('matched');
+                matchedPairs++;
+                flippedCards = [];
+                memoryLocked = false;
+                if (matchedPairs === memoryPairs.length) {
+                    showNotification('All pairs matched! Excellent memory!');
+                    state.activitiesCompleted++;
+                    state.correctAnswers++;
+                    state.streak++;
+                    addScore('Legislation', 1, 1);
+                    addScore('Privacy', 1, 1);
+                    updateProgress();
+                }
+            } else {
+                setTimeout(() => {
+                    a.classList.remove('flipped');
+                    b.classList.remove('flipped');
+                    flippedCards = [];
+                    memoryLocked = false;
+                }, 1000);
+            }
+        }
+    }
+
+    function resetMemoryGame() { initMemoryGame(); }
+    initMemoryGame();
+
+    // ===== APPLY: EXAM QUESTIONS WITH SENTENCE BANK =====
+    const examQuestions = [
+        {
+            id: 1,
+            question: 'Explain two environmental impacts of technology. (4 marks)',
+            marks: 4,
+            topic: 'Environment',
+            sentences: [
+                { id: 1, text: 'Manufacturing electronic devices requires mining rare earth minerals, which damages ecosystems and creates pollution.', points: ['mining'] },
+                { id: 2, text: 'This contributes to habitat destruction and uses large amounts of energy and water.', points: ['mining_impact'] },
+                { id: 3, text: 'When devices are discarded, e-waste often ends up in landfills where toxic materials like lead and mercury can leak into soil and water.', points: ['ewaste'] },
+                { id: 4, text: 'Data centres that power cloud computing consume enormous amounts of electricity, contributing to carbon emissions.', points: ['energy'] },
+                { id: 5, text: 'Technology has no environmental impact because it is digital.', points: [], distractor: true },
+                { id: 6, text: 'Recycling electronic devices is impossible due to the materials used.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'mining', description: 'Mining/manufacturing impact on ecosystems', mark: 1 },
+                { point: 'mining_impact', description: 'Environmental damage from mining (habitat, energy, water)', mark: 1 },
+                { point: 'ewaste', description: 'E-waste hazards (toxic materials in landfill)', mark: 1 },
+                { point: 'energy', description: 'Energy consumption/carbon emissions from data centres', mark: 1 }
+            ],
+            modelAnswer: 'Manufacturing electronic devices requires mining rare earth minerals, which damages ecosystems through habitat destruction and pollution. This process uses large amounts of energy and water. When devices are discarded, e-waste ends up in landfills where toxic materials like lead and mercury leak into soil and water. Additionally, data centres consume enormous amounts of electricity, contributing significantly to carbon emissions.'
+        },
+        {
+            id: 2,
+            question: 'Describe how the Data Protection Act (2018) protects individuals. (3 marks)',
+            marks: 3,
+            topic: 'Legislation',
+            sentences: [
+                { id: 1, text: 'Organisations must only collect personal data that is necessary and relevant for a specific purpose.', points: ['purpose'] },
+                { id: 2, text: 'Personal data must be kept accurate, up to date, and not stored for longer than needed.', points: ['accurate'] },
+                { id: 3, text: 'Individuals have the right to see what data is held about them and request its deletion.', points: ['rights'] },
+                { id: 4, text: 'The DPA allows companies to share data freely with third parties.', points: [], distractor: true },
+                { id: 5, text: 'Personal data must be made publicly available for transparency.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'purpose', description: 'Purpose limitation / data minimisation', mark: 1 },
+                { point: 'accurate', description: 'Accuracy / storage limitation', mark: 1 },
+                { point: 'rights', description: 'Individual rights (access / deletion)', mark: 1 }
+            ],
+            modelAnswer: 'The Data Protection Act requires organisations to only collect personal data that is necessary for a specific, stated purpose (purpose limitation and data minimisation). Personal data must be kept accurate, up to date, and not stored for longer than needed (accuracy and storage limitation). Individuals have the right to see what data is held about them and can request its deletion.'
+        },
+        {
+            id: 3,
+            question: 'Discuss the advantages and disadvantages of open-source software. (6 marks)',
+            marks: 6,
+            topic: 'Open Source vs Proprietary',
+            sentences: [
+                { id: 1, text: 'Open source is usually free to download and use, reducing costs for individuals and organisations.', points: ['free'] },
+                { id: 2, text: 'The source code can be viewed, modified and improved by a community of developers.', points: ['modify'] },
+                { id: 3, text: 'Bugs and security vulnerabilities can be identified and fixed quickly by the community.', points: ['bugs'] },
+                { id: 4, text: 'However, open source may lack professional support and documentation compared to proprietary alternatives.', points: ['support'] },
+                { id: 5, text: 'It may be less user-friendly as it is often developed by programmers rather than UX designers.', points: ['ux'] },
+                { id: 6, text: 'There may be compatibility issues with proprietary file formats or hardware.', points: ['compat'] },
+                { id: 7, text: 'Open source software always has more features than proprietary software.', points: [], distractor: true },
+                { id: 8, text: 'Open source is less secure because anyone can see the code.', points: [], distractor: true }
+            ],
+            markScheme: [
+                { point: 'free', description: 'Free / low cost', mark: 1 },
+                { point: 'modify', description: 'Community can modify / improve', mark: 1 },
+                { point: 'bugs', description: 'Bugs fixed quickly by community', mark: 1 },
+                { point: 'support', description: 'Lack of professional support', mark: 1 },
+                { point: 'ux', description: 'Less user-friendly', mark: 1 },
+                { point: 'compat', description: 'Compatibility issues', mark: 1 }
+            ],
+            modelAnswer: 'Open source software is usually free to download and use, which reduces costs significantly. The source code can be viewed, modified and improved by a global community of developers, meaning bugs and security issues can often be identified and fixed quickly. However, open source may lack the professional support and documentation that proprietary software provides. It can also be less user-friendly, as it is often developed by programmers without dedicated UX design. There may also be compatibility issues with proprietary file formats or hardware.'
+        }
+    ];
+
+    let currentExamQ = 0;
+    let examAnswers = {};
+
+    function renderExamQuestion(idx) {
+        const container = document.getElementById('examQuestionsContainer');
+        const q = examQuestions[idx];
+        const shuffledSentences = [...q.sentences].sort(() => Math.random() - 0.5);
+        examAnswers[idx] = [];
+
+        container.innerHTML = `
+            <div class="card">
+                <div class="exam-q-header">
+                    <span style="color:var(--text-muted)">Question ${idx + 1} of ${examQuestions.length}</span>
+                    <span class="marks-badge">${q.marks} marks</span>
+                </div>
+                <h4 style="margin-bottom:1.5rem;line-height:1.6;white-space:pre-line;">${q.question}</h4>
+
+                <div class="sentence-bank-container">
+                    <div class="sentence-bank">
+                        <h4>Sentence Bank</h4>
+                        <div id="sentenceBank">
+                            ${shuffledSentences.map(s =>
+                                `<div class="sentence-item" data-sid="${s.id}" onclick="toggleExamSentence(${idx},${s.id},this)">${s.text}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="answer-area">
+                        <h4>Your Answer</h4>
+                        <div id="answerArea"></div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="submitExamAnswer(${idx})">Submit Answer</button>
+                    ${idx > 0 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx - 1})">&#8592; Previous</button>` : ''}
+                    ${idx < examQuestions.length - 1 ? `<button class="btn btn-secondary" onclick="renderExamQuestion(${idx + 1})">Next &#8594;</button>` : ''}
+                </div>
+
+                <div class="mark-scheme-reveal" id="markSchemeReveal"></div>
+            </div>
+        `;
+        currentExamQ = idx;
+    }
+
+    function toggleExamSentence(qIdx, sid, el) {
+        const answerArea = document.getElementById('answerArea');
+        if (examAnswers[qIdx].includes(sid)) {
+            examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+            el.classList.remove('in-answer');
+            const inAnswer = answerArea.querySelector(`[data-sid="${sid}"]`);
+            if (inAnswer) inAnswer.remove();
+        } else {
+            examAnswers[qIdx].push(sid);
+            el.classList.add('in-answer');
+            const clone = document.createElement('div');
+            clone.className = 'sentence-item selected';
+            clone.dataset.sid = sid;
+            clone.textContent = el.textContent;
+            clone.onclick = () => {
+                examAnswers[qIdx] = examAnswers[qIdx].filter(id => id !== sid);
+                el.classList.remove('in-answer');
+                clone.remove();
+            };
+            answerArea.appendChild(clone);
+        }
+    }
+
+    function submitExamAnswer(qIdx) {
+        const q = examQuestions[qIdx];
+        const selected = examAnswers[qIdx] || [];
+        const pointsAwarded = [];
+
+        selected.forEach(sid => {
+            const sentence = q.sentences.find(s => s.id === sid);
+            if (sentence) {
+                sentence.points.forEach(p => { if (!pointsAwarded.includes(p)) pointsAwarded.push(p); });
+            }
+        });
+
+        let marksAwarded = 0;
+        q.markScheme.forEach(m => { if (pointsAwarded.includes(m.point)) marksAwarded++; });
+
+        const reveal = document.getElementById('markSchemeReveal');
+        let scoreColor = marksAwarded === q.marks ? 'var(--success)' : marksAwarded >= q.marks / 2 ? 'var(--warning)' : 'var(--error)';
+
+        reveal.innerHTML = `
+            <div class="score-display" style="border-color:${scoreColor};">
+                <div class="score-value" style="color:${scoreColor}">${marksAwarded}/${q.marks}</div>
+                <div class="score-label">${marksAwarded === q.marks ? 'Full marks!' : marksAwarded >= q.marks / 2 ? 'Good effort!' : 'Keep practising!'}</div>
+            </div>
+            <h4 style="margin:1rem 0 0.75rem;">Mark Scheme</h4>
+            ${q.markScheme.map(m => `
+                <div class="mark-point">
+                    <span class="mark-icon">${pointsAwarded.includes(m.point) ? '✓' : '✗'}</span>
+                    <span class="mark-text" style="color:${pointsAwarded.includes(m.point) ? 'var(--success)' : 'var(--error)'}">[${m.mark} mark] ${m.description}</span>
+                </div>
+            `).join('')}
+            <h4 style="margin:1rem 0 0.5rem;">Model Answer</h4>
+            <div class="model-answer">${q.modelAnswer}</div>
+        `;
+        reveal.classList.add('show');
+
+        state.correctAnswers += marksAwarded;
+        state.activitiesCompleted++;
+        addScore(q.topic, marksAwarded, q.marks);
+        if (marksAwarded === q.marks) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+    }
+
+    renderExamQuestion(0);
+
+    // ===== CHALLENGE: TIMED QUIZ =====
+    const challengeQuestions = [
+        {
+            topic: 'Legislation',
+            q: 'Under the Computer Misuse Act, which of these is an offence?',
+            options: ['Forgetting your password', 'Accessing someone else\'s account without permission', 'Sending an email', 'Downloading free software'],
+            correct: 1,
+            explanation: 'The CMA makes unauthorised access to computer systems illegal, even if no damage is done.'
+        },
+        {
+            topic: 'Environment',
+            q: 'What is the main environmental concern with data centres?',
+            options: ['They take up too much office space', 'They consume large amounts of electricity and generate heat', 'They produce too much noise', 'They use too many monitors'],
+            correct: 1,
+            explanation: 'Data centres require enormous energy for computing and cooling, contributing significantly to carbon emissions.'
+        },
+        {
+            topic: 'Ethics',
+            q: 'An AI system used by police to predict crime rates has been shown to disproportionately target certain communities. This is primarily:',
+            options: ['A legal issue', 'An ethical issue', 'An environmental issue', 'A hardware issue'],
+            correct: 1,
+            explanation: 'AI bias raises ethical concerns about fairness, discrimination and the moral responsibility of those who deploy such systems.'
+        },
+        {
+            topic: 'Open Source vs Proprietary',
+            q: 'Which is an advantage of proprietary software over open source?',
+            options: ['It is always free', 'Source code is available', 'Professional technical support is usually provided', 'Anyone can modify it'],
+            correct: 2,
+            explanation: 'Proprietary software companies typically offer dedicated customer support, training and documentation.'
+        },
+        {
+            topic: 'Privacy',
+            q: 'Under GDPR, which right do individuals have regarding their personal data?',
+            options: ['The right to sell their data to companies', 'The right to request deletion of their data', 'The right to access other people\'s data', 'The right to bypass security systems'],
+            correct: 1,
+            explanation: 'GDPR includes the \'right to be forgotten\' — individuals can request organisations delete their personal data.'
+        }
+    ];
+
+    let challengeTimerStarted = false;
+    let challengeTimer = null;
+    let challengeTimeLeft = 300;
+    let challengeSubmitted = false;
+
+    function startChallengeTimer() {
+        challengeTimerStarted = true;
+        challengeTimeLeft = 300;
+        updateTimerDisplay();
+        challengeTimer = setInterval(() => {
+            challengeTimeLeft--;
+            updateTimerDisplay();
+            if (challengeTimeLeft <= 0) {
+                clearInterval(challengeTimer);
+                submitChallenge();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(challengeTimeLeft / 60);
+        const secs = challengeTimeLeft % 60;
+        document.getElementById('timerDisplay').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timerFill').style.width = (challengeTimeLeft / 300 * 100) + '%';
+        if (challengeTimeLeft < 60) {
+            document.getElementById('timerDisplay').style.color = 'var(--error)';
+            document.getElementById('timerFill').style.background = 'var(--error)';
+        }
+    }
+
+    function initChallenge() {
+        const container = document.getElementById('challengeContainer');
+        container.innerHTML = challengeQuestions.map((q, qi) => `
+            <div class="quiz-question" data-topic="${q.topic}">
+                <h4>Q${qi + 1}. ${q.q}</h4>
+                <div class="quiz-options">
+                    ${q.options.map((opt, oi) => `
+                        <div class="quiz-option" data-q="${qi}" data-opt="${oi}" onclick="selectChallengeOption(${qi},${oi},this)">
+                            <span class="option-letter">${String.fromCharCode(65 + oi)}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-feedback" id="challengeFb${qi}"></div>
+            </div>
+        `).join('');
+    }
+
+    function selectChallengeOption(qi, oi, el) {
+        if (challengeSubmitted) return;
+        document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+    }
+
+    function submitChallenge() {
+        if (challengeSubmitted) return;
+        challengeSubmitted = true;
+        if (challengeTimer) clearInterval(challengeTimer);
+
+        let totalCorrect = 0;
+        challengeQuestions.forEach((q, qi) => {
+            const selected = document.querySelector(`.quiz-option[data-q="${qi}"].selected`);
+            const fb = document.getElementById(`challengeFb${qi}`);
+            const correct = document.querySelector(`.quiz-option[data-q="${qi}"][data-opt="${q.correct}"]`);
+            correct.classList.add('correct');
+
+            if (selected && parseInt(selected.dataset.opt) === q.correct) {
+                totalCorrect++;
+                fb.className = 'quiz-feedback show correct';
+                fb.textContent = '✓ ' + q.explanation;
+                addScore(q.topic, 1, 1);
+            } else {
+                if (selected) selected.classList.add('incorrect');
+                fb.className = 'quiz-feedback show incorrect';
+                fb.textContent = '✗ ' + q.explanation;
+                addScore(q.topic, 0, 1);
+            }
+            document.querySelectorAll(`.quiz-option[data-q="${qi}"]`).forEach(o => o.classList.add('disabled'));
+        });
+
+        state.correctAnswers += totalCorrect;
+        state.activitiesCompleted++;
+        if (totalCorrect === challengeQuestions.length) state.streak++;
+        else state.streak = 0;
+        updateProgress();
+        showNotification(`Challenge: ${totalCorrect}/${challengeQuestions.length} correct`);
+    }
+
+    initChallenge();
+
+    // ===== REVIEW TAB =====
+    function renderReview() {
+        const grid = document.getElementById('reviewGrid');
+        grid.innerHTML = '';
+        let totalCorrect = 0, totalPossible = 0;
+
+        Object.entries(topicScores).forEach(([topic, scores]) => {
+            const pct = scores.total > 0 ? Math.round((scores.correct / scores.total) * 100) : 0;
+            totalCorrect += scores.correct;
+            totalPossible += scores.total;
+            const cls = pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low';
+            const color = pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--error)';
+            grid.innerHTML += `
+                <div class="review-card">
+                    <h4>${topic}</h4>
+                    <div class="review-score ${cls}">${pct}%</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">${scores.correct}/${scores.total} points</div>
+                    <div class="review-bar"><div class="review-fill" style="width:${pct}%;background:${color}"></div></div>
+                </div>
+            `;
+        });
+
+        const overall = totalPossible > 0 ? Math.round((totalCorrect / totalPossible) * 100) : 0;
+        document.getElementById('overallScore').textContent = overall + '%';
+        document.getElementById('overallScore').style.color =
+            overall >= 70 ? 'var(--success)' : overall >= 40 ? 'var(--warning)' : 'var(--error)';
+        document.getElementById('overallLabel').textContent =
+            overall >= 70 ? 'Great work! You have a strong understanding.' :
+            overall >= 40 ? 'Good progress. Review the weaker areas.' :
+            totalPossible === 0 ? 'Complete activities to see your results.' :
+            'Keep practising. Focus on the red areas.';
+    }
+    </script>
+</body>
+</html>
