@@ -581,6 +581,91 @@
 
             <div class="card">
                 <div class="card-header">
+                    <div class="card-icon">🌍</div>
+                    <div class="card-title">Real-World Examples &amp; Analogies</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Algorithm — Making a Cup of Tea ☕ <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>A recipe is a perfect everyday example of an algorithm. Consider making a cup of tea:</p>
+                        <ol style="color:var(--text-secondary);line-height:2;padding-left:1.5rem;">
+                            <li>Fill the kettle with water</li>
+                            <li>Turn the kettle on</li>
+                            <li>Wait for the water to boil</li>
+                            <li>Put a teabag in a mug</li>
+                            <li>Pour boiling water into the mug</li>
+                            <li>Wait 3 minutes</li>
+                            <li>Remove the teabag</li>
+                            <li>Add milk (optional)</li>
+                        </ol>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);">Every step is <strong>clear</strong>, <strong>unambiguous</strong>, and the process <strong>finishes</strong> — all the properties of a good algorithm. Notice it also includes <strong>sequence</strong> (steps in order), <strong>selection</strong> (optional milk), and <strong>iteration</strong> (you could say "stir 5 times").</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Decomposition — Planning a School Trip 🚌 <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color:var(--text-secondary);"><strong>Analogy:</strong> Imagine you need to organise a school trip. That's a huge task! Decomposition means breaking it into sub-problems:</p>
+                        <ul style="color:var(--text-secondary);line-height:2;padding-left:1.5rem;">
+                            <li><strong>Transport</strong> — book a coach, plan the route</li>
+                            <li><strong>Permissions</strong> — send consent forms, collect replies</li>
+                            <li><strong>Activities</strong> — plan the schedule, book tickets</li>
+                            <li><strong>Safety</strong> — risk assessment, first aid kit, staff ratios</li>
+                            <li><strong>Budget</strong> — calculate costs, collect payments</li>
+                        </ul>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);">Each sub-problem is now small enough to give to a different person. This is exactly how software developers work — they decompose a big program into modules that different team members build independently.</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Abstraction — The London Underground Map 🗺️ <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color:var(--text-secondary);">The London Underground map is a famous example of abstraction. The real Tube tunnels twist, turn, and vary in depth underground. But Harry Beck's map <strong>removes all that unnecessary detail</strong> and shows only what matters: which stations exist and how they connect.</p>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Exam Tip</div>
+                            <p>In the exam, abstraction = <strong>removing unnecessary detail</strong>. If they ask "What is being abstracted away?", identify what's been left OUT (e.g., real distances, geography). If they ask "What is being kept?", identify what's essential (e.g., station names, connections).</p>
+                        </div>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>More examples of abstraction:</strong></p>
+                        <ul style="color:var(--text-secondary);line-height:2;padding-left:1.5rem;">
+                            <li>A <strong>car dashboard</strong> shows speed and fuel — you don't need to see every engine component</li>
+                            <li>A <strong>weather forecast</strong> shows temperature and rain chance — not atmospheric pressure equations</li>
+                            <li>A <strong>variable name</strong> like <code>playerScore</code> abstracts away the memory address where the data is stored</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Sequence, Selection &amp; Iteration — Everyday Examples 🔄 <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color:var(--text-secondary);"><strong>Sequence</strong> is everywhere — brushing your teeth (wet brush → apply toothpaste → brush → rinse). The order matters!</p>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>Selection</strong> is every decision you make: <em>"IF it's raining THEN take an umbrella ELSE wear sunglasses."</em> In Python:</p>
+                        <pre style="background:var(--bg-dark);padding:1rem;border-radius:8px;color:var(--accent-primary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin:0.75rem 0;overflow-x:auto;">if temperature &lt; 15:
+    print("Wear a coat")
+else:
+    print("T-shirt weather!")</pre>
+                        <p style="color:var(--text-secondary);"><strong>Iteration</strong> is any repetition. A <strong>count-controlled loop</strong> is like doing 20 press-ups (you know in advance how many). A <strong>condition-controlled loop</strong> is like stirring soup until it boils (you don't know when it will happen).</p>
+                        <pre style="background:var(--bg-dark);padding:1rem;border-radius:8px;color:var(--accent-primary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin:0.75rem 0;overflow-x:auto;"># Count-controlled (FOR)
+for i in range(20):
+    print("Press-up", i + 1)
+
+# Condition-controlled (WHILE)
+while soup_temp &lt; 100:
+    stir()</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
                     <div class="card-icon">📊</div>
                     <div class="card-title">Flowchart Symbols</div>
                 </div>
@@ -624,6 +709,14 @@
                             <div class="key-point-label">Key Point</div>
                             <p>Works on both sorted and unsorted lists. Simple but slow for large datasets &mdash; worst case checks every item (O(n)).</p>
                         </div>
+                        <p style="margin-top:1rem;color:var(--text-secondary);"><strong>Analogy:</strong> Linear search is like looking for a specific book on an unsorted bookshelf — you start at one end and check each book until you find it. If it's the last book, you've checked every single one.</p>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>Walkthrough:</strong> Searching for <strong>42</strong> in [10, 23, 42, 7, 15]:</p>
+                        <ol style="color:var(--text-secondary);line-height:2;padding-left:1.5rem;">
+                            <li>Check index 0: 10 ≠ 42 → move on</li>
+                            <li>Check index 1: 23 ≠ 42 → move on</li>
+                            <li>Check index 2: 42 = 42 → <strong>Found at index 2!</strong></li>
+                        </ol>
+                        <p style="margin-top:0.5rem;color:var(--text-secondary);">Only 3 comparisons needed here (best case = 1, worst case = all items).</p>
                     </div>
                 </div>
 
@@ -637,6 +730,13 @@
                             <div class="key-point-label">Key Point</div>
                             <p>Much faster than linear search for large datasets &mdash; halves the search space each time (O(log n)). But the data must be sorted first.</p>
                         </div>
+                        <p style="margin-top:1rem;color:var(--text-secondary);"><strong>Analogy:</strong> Binary search is like looking up a word in a dictionary. You don't start at page 1 — you open to the middle. If your word comes before that page alphabetically, you look in the first half. If after, the second half. Each time you halve the pages to search.</p>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>Walkthrough:</strong> Searching for <strong>31</strong> in [3, 7, 11, 15, 23, 31, 42]:</p>
+                        <ol style="color:var(--text-secondary);line-height:2;padding-left:1.5rem;">
+                            <li>low=0, high=6, mid=3 → list[3]=15 → 31 &gt; 15 → search right half</li>
+                            <li>low=4, high=6, mid=5 → list[5]=31 → <strong>Found at index 5!</strong></li>
+                        </ol>
+                        <p style="margin-top:0.5rem;color:var(--text-secondary);">Only 2 comparisons! A linear search would have needed 6. For 1 million items, binary search needs at most 20 comparisons vs 1,000,000 for linear.</p>
                     </div>
                 </div>
             </div>
@@ -657,6 +757,14 @@
                             <div class="key-point-label">Key Point</div>
                             <p>Simple to understand and implement. Inefficient for large lists (O(n&sup2;)). Good at detecting an already-sorted list (best case O(n)).</p>
                         </div>
+                        <p style="margin-top:1rem;color:var(--text-secondary);"><strong>Analogy:</strong> Imagine bubbles rising in a fizzy drink — the largest values "bubble up" to the end of the list with each pass.</p>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>Walkthrough:</strong> Sorting [5, 3, 8, 1]:</p>
+                        <p style="color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;line-height:2;padding-left:0.5rem;">
+                            Pass 1: [<strong>5,3</strong>,8,1] → swap → [3,<strong>5,8</strong>,1] → ok → [3,5,<strong>8,1</strong>] → swap → [3,5,1,<strong>8</strong>]<br>
+                            Pass 2: [<strong>3,5</strong>,1,8] → ok → [3,<strong>5,1</strong>,8] → swap → [3,1,<strong>5</strong>,8]<br>
+                            Pass 3: [<strong>3,1</strong>,5,8] → swap → [1,<strong>3</strong>,5,8]<br>
+                            ✓ Sorted!
+                        </p>
                     </div>
                 </div>
 
@@ -669,6 +777,18 @@
                         <div class="key-point">
                             <div class="key-point-label">Key Point</div>
                             <p>Much faster than bubble sort for large datasets (O(n log n)). Uses more memory because it creates new sub-lists. A divide-and-conquer algorithm.</p>
+                        </div>
+                        <p style="margin-top:1rem;color:var(--text-secondary);"><strong>Analogy:</strong> Imagine sorting a deck of cards by splitting the deck in half again and again until you have single cards, then merging them back in order — like a tournament bracket in reverse.</p>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>Walkthrough:</strong> Sorting [6, 3, 8, 2]:</p>
+                        <p style="color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;line-height:2;padding-left:0.5rem;">
+                            Split: [6,3,8,2] → [6,3] and [8,2]<br>
+                            Split: [6,3] → [6] and [3] &nbsp;|&nbsp; [8,2] → [8] and [2]<br>
+                            Merge: [6]+[3] → [3,6] &nbsp;|&nbsp; [8]+[2] → [2,8]<br>
+                            Merge: [3,6]+[2,8] → [2,3,6,8] ✓
+                        </p>
+                        <div class="key-point" style="margin-top:0.75rem;">
+                            <div class="key-point-label">Exam Comparison</div>
+                            <p>Bubble sort is <strong>simple but slow</strong> (O(n²)), uses <strong>no extra memory</strong>. Merge sort is <strong>fast</strong> (O(n log n)) but uses <strong>extra memory</strong> for sub-lists. Examiners love asking you to compare them.</p>
                         </div>
                     </div>
                 </div>
@@ -683,6 +803,14 @@
                             <div class="key-point-label">Key Point</div>
                             <p>Efficient for small or nearly-sorted lists. Works in-place (doesn&rsquo;t need extra memory). Worst case is O(n&sup2;).</p>
                         </div>
+                        <p style="margin-top:1rem;color:var(--text-secondary);"><strong>Analogy:</strong> This is exactly how you sort playing cards in your hand. You pick up one card at a time and slide it into the right position among the cards you're already holding.</p>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);"><strong>Walkthrough:</strong> Sorting [5, 2, 8, 1]:</p>
+                        <p style="color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;line-height:2;padding-left:0.5rem;">
+                            Start: [<strong>5</strong>] | 2, 8, 1 &nbsp;(5 is the sorted part)<br>
+                            Take 2: insert before 5 → [<strong>2, 5</strong>] | 8, 1<br>
+                            Take 8: insert after 5 → [<strong>2, 5, 8</strong>] | 1<br>
+                            Take 1: insert before 2 → [<strong>1, 2, 5, 8</strong>] ✓
+                        </p>
                     </div>
                 </div>
             </div>
@@ -708,6 +836,68 @@
                     <div class="definition-card">
                         <div class="definition-term" style="font-size:0.95rem;">Condition-controlled loop</div>
                         <div class="definition-text"><code>WHILE condition DO ... ENDWHILE</code></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📝</div>
+                    <div class="card-title">Worked Example: Putting It All Together</div>
+                </div>
+                <p style="color:var(--text-secondary);margin-bottom:1rem;"><strong>Problem:</strong> A teacher wants a program to calculate and display the average score from a class of 30 students. Let's apply computational thinking:</p>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Step 1: Decomposition <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color:var(--text-secondary);">Break the problem into sub-problems:</p>
+                        <ul style="color:var(--text-secondary);line-height:2;padding-left:1.5rem;">
+                            <li>Get each student's score (input)</li>
+                            <li>Add up all the scores (processing)</li>
+                            <li>Divide total by 30 to get average (processing)</li>
+                            <li>Display the result (output)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Step 2: Abstraction <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color:var(--text-secondary);">What do we need? Student scores and the count (30). What do we ignore? Student names, subjects, dates — they're not needed for calculating an average.</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Step 3: Algorithm (Pseudocode) <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+<pre style="background:var(--bg-dark);padding:1rem;border-radius:8px;color:var(--accent-primary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;overflow-x:auto;">total ← 0
+FOR i ← 1 TO 30
+    INPUT score
+    total ← total + score
+NEXT i
+average ← total / 30
+OUTPUT "The average score is: " + average</pre>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);">This uses <strong>sequence</strong> (steps run in order), <strong>iteration</strong> (FOR loop repeats 30 times), and <strong>variables</strong> (total, score, average). Selection isn't needed here, but we could add it: <code>IF average &gt;= 50 THEN OUTPUT "Pass" ELSE OUTPUT "Fail"</code></p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Step 4: Python Code <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="accordion-body">
+<pre style="background:var(--bg-dark);padding:1rem;border-radius:8px;color:var(--accent-primary);font-family:'JetBrains Mono',monospace;font-size:0.85rem;overflow-x:auto;">total = 0
+for i in range(30):
+    score = int(input("Enter score: "))
+    total = total + score
+average = total / 30
+print("The average score is:", average)</pre>
                     </div>
                 </div>
             </div>

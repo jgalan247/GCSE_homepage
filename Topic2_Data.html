@@ -643,6 +643,143 @@
                 </div>
             </div>
 
+            <!-- Real-World Examples & Analogies -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#127758;</div>
+                    <div class="card-title">Real-World Examples &amp; Analogies</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        &#128161; Why Binary? &mdash; The Light Switch Analogy <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>Computers use binary because transistors (tiny electronic switches) can only be <strong>ON (1)</strong> or <strong>OFF (0)</strong> &mdash; just like a light switch. There is no &ldquo;half on&rdquo;. With 1 switch you get 2 states. With 2 switches, you get 4 combinations (00, 01, 10, 11). With 8 switches (1 byte), you get 256 combinations &mdash; enough to represent every letter, digit, and symbol you need.</p>
+                        <table class="trace-table" style="max-width:450px; margin-top:1rem;">
+                            <tr><th>Number of Bits</th><th>Combinations (2<sup>n</sup>)</th></tr>
+                            <tr><td>1 bit</td><td>2 values</td></tr>
+                            <tr><td>2 bits</td><td>4 values</td></tr>
+                            <tr><td>3 bits</td><td>8 values</td></tr>
+                            <tr><td>4 bits (nibble)</td><td>16 values</td></tr>
+                            <tr><td>8 bits (byte)</td><td>256 values</td></tr>
+                        </table>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Every piece of data inside a computer &mdash; text, images, sound, video, programs &mdash; is ultimately stored as patterns of 0s and 1s. The more bits you use, the more different values you can represent: 2<sup>n</sup> possible values for n bits.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        &#128290; Hexadecimal &mdash; Shorthand for Humans <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>Imagine trying to remember a phone number that&rsquo;s 32 digits long &mdash; that&rsquo;s what a binary colour code looks like! Hex condenses every 4 binary digits into a single character. So instead of writing <code style="color:var(--accent-primary)">11111111 00000000 00000000</code> for pure red, you write <code style="color:var(--accent-primary)">FF0000</code>.</p>
+                        <p style="margin-top:0.75rem;">Web developers use hex colour codes every day:</p>
+                        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin:0.75rem 0;">
+                            <span style="display:inline-flex; align-items:center; gap:0.5rem;"><span style="width:20px;height:20px;background:#FF0000;border-radius:4px;display:inline-block;"></span> <code style="color:var(--accent-primary)">#FF0000</code> = Red</span>
+                            <span style="display:inline-flex; align-items:center; gap:0.5rem;"><span style="width:20px;height:20px;background:#00FF00;border-radius:4px;display:inline-block;"></span> <code style="color:var(--accent-primary)">#00FF00</code> = Green</span>
+                            <span style="display:inline-flex; align-items:center; gap:0.5rem;"><span style="width:20px;height:20px;background:#0000FF;border-radius:4px;display:inline-block;"></span> <code style="color:var(--accent-primary)">#0000FF</code> = Blue</span>
+                        </div>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Each hex digit = exactly 4 binary digits (a nibble). Two hex digits = 1 byte. This is why hex is used for MAC addresses, colour codes, memory addresses, and error codes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        &#128444;&#65039; How Images are Stored &mdash; The Mosaic Analogy <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>A digital image is like a mosaic made of tiny coloured tiles (pixels). <strong>Resolution</strong> = how many tiles there are (more tiles = more detail = bigger file). <strong>Colour depth</strong> = how many paint colours you have available:</p>
+                        <table class="trace-table" style="max-width:500px; margin-top:0.75rem;">
+                            <tr><th>Colour Depth</th><th>Colours Available</th><th>Example</th></tr>
+                            <tr><td>1-bit</td><td>2</td><td>Black &amp; white</td></tr>
+                            <tr><td>8-bit</td><td>256</td><td>GIF images</td></tr>
+                            <tr><td>24-bit</td><td>16.7 million</td><td>True colour (photos)</td></tr>
+                        </table>
+                        <p style="margin-top:1rem;"><strong>Walkthrough &mdash; Calculate the file size of a 1920&times;1080 image at 24-bit colour:</strong></p>
+                        <pre style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; margin:0.75rem 0; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text-secondary); overflow-x:auto;">Step 1:  Total pixels    = 1920 &times; 1080 = 2,073,600 pixels
+Step 2:  Total bits      = 2,073,600 &times; 24 = 49,766,400 bits
+Step 3:  Convert to bytes = 49,766,400 &divide; 8 = 6,220,800 bytes
+Step 4:  Convert to KB   = 6,220,800 &divide; 1024 = 6,075 KB
+Step 5:  Convert to MB   = 6,075 &divide; 1024 &asymp; <strong style="color:var(--accent-primary)">5.93 MB</strong></pre>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Increasing resolution OR colour depth increases file size. This is why compression is essential &mdash; a raw 4K photo would be over 24 MB!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        &#128266; How Sound is Stored &mdash; The Flipbook Analogy <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>Recording digital sound is like making a flipbook of a wave. The <strong>sample rate</strong> is how many &ldquo;snapshots&rdquo; you take per second (CD quality = 44,100 per second). The <strong>bit depth</strong> is how precisely you measure each snapshot (16-bit CD quality = 65,536 possible values). More snapshots + more precision = better quality but bigger file.</p>
+                        <p style="margin-top:1rem;"><strong>Walkthrough &mdash; Calculate file size for 3 minutes of CD-quality stereo audio:</strong></p>
+                        <pre style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; margin:0.75rem 0; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text-secondary); overflow-x:auto;">Sample rate:  44,100 Hz
+Bit depth:    16 bits
+Channels:     2 (stereo)
+Duration:     3 min = 180 seconds
+
+Step 1:  Total bits  = 44,100 &times; 16 &times; 2 &times; 180 = 254,016,000 bits
+Step 2:  Bytes       = 254,016,000 &divide; 8 = 31,752,000 bytes
+Step 3:  MB          = 31,752,000 &divide; 1024 &divide; 1024 &asymp; <strong style="color:var(--accent-primary)">30.3 MB</strong></pre>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>This is why MP3 compression exists &mdash; it reduces 30 MB to about 3&ndash;4 MB by removing frequencies humans can barely hear (lossy compression).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        &#128203; Lossy vs Lossless &mdash; The Photocopy Analogy <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong>Lossless</strong> compression is like zipping a folder &mdash; when you unzip it, everything is exactly the same. <strong>Lossy</strong> is like photocopying a photocopy &mdash; each copy loses a tiny bit of detail, and you can never get the original back.</p>
+                        <table class="trace-table" style="margin-top:0.75rem;">
+                            <tr><th>Type</th><th>How It Works</th><th>Formats</th><th>Best For</th></tr>
+                            <tr><td>Lossy</td><td>Permanently removes data humans won&rsquo;t notice</td><td>JPEG, MP3, MPEG</td><td>Photos, music, video</td></tr>
+                            <tr><td>Lossless</td><td>Finds patterns to store data more efficiently</td><td>ZIP, PNG, FLAC</td><td>Text, code, medical images</td></tr>
+                        </table>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Key Point</div>
+                            <p>Lossy gives smaller files but you lose quality permanently. Lossless gives larger files but the original data is perfectly preserved. Choose based on whether quality loss matters.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        &#128202; Run-Length Encoding (RLE) Walkthrough <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>RLE works on data with lots of repeated consecutive values. It replaces runs of the same value with a count and the value.</p>
+                        <p style="margin-top:0.75rem;"><strong>Example:</strong> AAABBBCCCCDD becomes 3A3B4C2D. That&rsquo;s 12 characters compressed to 8.</p>
+                        <p style="margin-top:1rem;"><strong>Encoding walkthrough:</strong></p>
+                        <pre style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; margin:0.75rem 0; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text-secondary); overflow-x:auto;">Original:   W W W W W B B B W W W W W W W W
+Count:      5 &times; W       3 &times; B   8 &times; W
+Encoded:    5W 3B 8W
+
+16 characters &rarr; 6 characters  (62.5% reduction!)</pre>
+                        <p style="margin-top:1rem;"><strong>Decoding walkthrough:</strong></p>
+                        <pre style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; margin:0.75rem 0; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text-secondary); overflow-x:auto;">Encoded:    4R 2G 5B
+Decoded:    R R R R G G B B B B B
+Result:     RRRRGGBBBBB</pre>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>RLE is great for simple images with large blocks of the same colour (pixel art, diagrams, logos), but terrible for photographs where every pixel is different &mdash; it can actually make the file <em>larger</em>!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon">&#128161;</div>
@@ -730,9 +867,24 @@
                         <p>1 + 0 = 1</p>
                         <p>1 + 1 = 10 (write 0, carry 1)</p>
                         <p>1 + 1 + 1 = 11 (write 1, carry 1)</p>
+                        <p style="margin-top:1rem;"><strong>Worked Example &mdash; Add 01101011 (107) + 00110101 (53):</strong></p>
+                        <pre style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; margin:0.75rem 0; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text-secondary); overflow-x:auto;">  Carry:    <span style="color:var(--accent-primary)">1 1 1 1 1</span>
+            0 1 1 0 1 0 1 1   (107)
+          + 0 0 1 1 0 1 0 1   ( 53)
+          &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+          = 1 0 1 0 0 0 0 0   (160)  &#10004;</pre>
+                        <p style="margin-top:0.5rem; color:var(--text-secondary);">Work from <strong>right to left</strong>. When 1+1 = 10, write 0 and carry 1 to the next column. When 1+1+1 = 11, write 1 and carry 1.</p>
+
+                        <p style="margin-top:1.25rem;"><strong>Overflow Example:</strong></p>
+                        <pre style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1rem; margin:0.75rem 0; font-family:'JetBrains Mono',monospace; font-size:0.85rem; color:var(--text-secondary); overflow-x:auto;">            1 1 1 1 1 1 1 1   (255)
+          + 0 0 0 0 0 0 0 1   (  1)
+          &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;
+          <span style="color:var(--error)">1</span> 0 0 0 0 0 0 0 0   (256 &mdash; needs 9 bits!)
+          &uarr;
+    This 9th bit is lost &mdash; the computer stores 00000000 (0) &mdash; WRONG!</pre>
                         <div class="key-point">
                             <div class="key-point-label">Key Point</div>
-                            <p><strong>Overflow</strong> occurs when the result of a binary addition exceeds the available number of bits (e.g., two 8-bit numbers produce a 9-bit result). The extra bit is lost, giving an incorrect answer.</p>
+                            <p><strong>Overflow</strong> occurs when the result of a binary addition exceeds the available number of bits (e.g., two 8-bit numbers produce a 9-bit result). The extra bit is lost, giving an incorrect answer. If adding two 8-bit numbers gives a 9th bit, the computer truncates it &mdash; the result wraps around and is wrong.</p>
                         </div>
                     </div>
                 </div>

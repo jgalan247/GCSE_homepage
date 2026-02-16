@@ -709,6 +709,77 @@
                 </div>
             </div>
 
+            <!-- Real-World Examples & Analogies -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">&#127757;</div>
+                    <div class="card-title">Real-World Examples &amp; Analogies</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        CPU as a Kitchen Analogy &#127859; <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="margin-bottom:0.75rem;">Imagine the CPU is like a <strong>kitchen chef</strong> preparing a meal:</p>
+                        <ul style="margin-left:1.5rem;line-height:2;">
+                            <li><strong style="color:var(--accent-primary);">CU (Control Unit)</strong> = The <strong>recipe instructions</strong> &mdash; tells the chef what to do and in what order.</li>
+                            <li><strong style="color:var(--accent-primary);">ALU (Arithmetic Logic Unit)</strong> = The <strong>actual cooking, chopping and mixing</strong> &mdash; where the real work happens.</li>
+                            <li><strong style="color:var(--accent-primary);">Registers</strong> = The <strong>counter space</strong> &mdash; tiny area for ingredients being used right now.</li>
+                            <li><strong style="color:var(--accent-primary);">Cache</strong> = The <strong>spice rack</strong> &mdash; small but super fast to grab frequently used items.</li>
+                            <li><strong style="color:var(--accent-primary);">RAM</strong> = The <strong>fridge</strong> &mdash; bigger storage, quick to access, but loses contents when the power is off (volatile).</li>
+                            <li><strong style="color:var(--accent-primary);">HDD / SSD</strong> = The <strong>freezer / pantry</strong> &mdash; large, persistent storage but slower to access.</li>
+                        </ul>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Why This Matters</div>
+                            <p>This analogy maps directly to the memory hierarchy. From registers (fastest, smallest) down to secondary storage (slowest, largest) &mdash; exam questions often ask you to compare speed, capacity, and volatility.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        FDE Cycle as Online Shopping &#128722; <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="margin-bottom:0.75rem;">Think of the Fetch-Decode-Execute cycle like <strong>online shopping</strong>:</p>
+                        <div style="margin-left:1rem;">
+                            <p style="margin-bottom:0.5rem;"><strong style="color:#10b981;">FETCH:</strong> You look up the <strong>address</strong> (PC) of the next item on your shopping list, go to that address (MAR), and bring the item back (MDR).</p>
+                            <p style="margin-bottom:0.5rem;"><strong style="color:#f59e0b;">DECODE:</strong> You read the <strong>product label</strong> to work out what it is and what to do with it (CU decodes the instruction).</p>
+                            <p style="margin-bottom:0.5rem;"><strong style="color:#ef4444;">EXECUTE:</strong> You actually <strong>use the product</strong> &mdash; put it on, eat it, etc. (ALU performs the calculation or data is moved).</p>
+                            <p style="margin-bottom:0;"><strong style="color:var(--accent-primary);">PC + 1:</strong> The PC then moves to the <strong>next item</strong> on the list (PC increments by 1).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Storage Analogy &#128190; <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <ul style="margin-left:1.5rem;line-height:2;">
+                            <li><strong style="color:var(--accent-primary);">RAM</strong> is like a <strong>whiteboard</strong> &mdash; fast to write and erase but wiped clean when you leave (volatile).</li>
+                            <li><strong style="color:var(--accent-primary);">ROM</strong> is like a <strong>tattoo</strong> &mdash; permanent, can&rsquo;t be easily changed (non-volatile, read-only).</li>
+                            <li><strong style="color:var(--accent-primary);">HDD</strong> is like a <strong>record player</strong> &mdash; a spinning disc with a needle reading data (mechanical, slower).</li>
+                            <li><strong style="color:var(--accent-primary);">SSD</strong> is like a <strong>USB stick</strong> &mdash; no moving parts, faster, more durable but more expensive.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Compiler vs Interpreter as Translation &#127760; <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <ul style="margin-left:1.5rem;line-height:2;">
+                            <li>A <strong style="color:var(--accent-primary);">compiler</strong> is like translating an <strong>entire book</strong> from French to English before reading it &mdash; takes time upfront, but once done you can read it quickly over and over.</li>
+                            <li>An <strong style="color:var(--accent-primary);">interpreter</strong> is like having a <strong>translator sitting next to you</strong>, translating one sentence at a time as you go &mdash; you can start reading immediately but it&rsquo;s slower overall.</li>
+                            <li>An <strong style="color:var(--accent-primary);">assembler</strong> is like a simple <strong>word-for-word dictionary lookup</strong> &mdash; each assembly instruction maps directly to one machine code instruction.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <!-- Accordions -->
             <div class="card">
                 <div class="card-header">
@@ -739,6 +810,29 @@
                             <li>The instruction is carried out &mdash; this might involve the ALU performing a calculation, data being read/written to memory, or a result being stored in the ACC.</li>
                             <li>The cycle then repeats from the FETCH stage.</li>
                         </ul>
+
+                        <div class="key-point" style="margin-top:1.25rem;">
+                            <div class="key-point-label">Walkthrough &mdash; FDE with ADD Instruction</div>
+                            <p style="margin-bottom:0.5rem;"><strong>Starting state:</strong> PC holds address <code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">0005</code> (the next instruction location).</p>
+                            <p style="margin-bottom:0.25rem;"><strong style="color:#10b981;">1. FETCH:</strong></p>
+                            <ul style="margin-left:1.5rem;margin-bottom:0.5rem;">
+                                <li>Address <code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">0005</code> is copied from the PC to the MAR.</li>
+                                <li>The CPU fetches the instruction stored at address 0005 in RAM.</li>
+                                <li>The instruction is placed in the MDR, then copied to the CIR.</li>
+                                <li>The PC increments to <code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">0006</code>.</li>
+                            </ul>
+                            <p style="margin-bottom:0.25rem;"><strong style="color:#f59e0b;">2. DECODE:</strong></p>
+                            <ul style="margin-left:1.5rem;margin-bottom:0.5rem;">
+                                <li>The CU reads the instruction from the CIR.</li>
+                                <li>It&rsquo;s <code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">ADD 14</code> &mdash; &ldquo;add the value at address 14 to the accumulator.&rdquo;</li>
+                            </ul>
+                            <p style="margin-bottom:0.25rem;"><strong style="color:#ef4444;">3. EXECUTE:</strong></p>
+                            <ul style="margin-left:1.5rem;">
+                                <li>The MAR is set to <code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">14</code>.</li>
+                                <li>The value at address 14 (say, <strong>7</strong>) is fetched into the MDR.</li>
+                                <li>The ALU adds 7 to the accumulator. If the ACC was <strong>3</strong>, it is now <strong>10</strong>.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -760,6 +854,17 @@
                                 <tr><td>Cost per GB</td><td>Expensive</td><td>Cheaper</td></tr>
                             </tbody>
                         </table>
+
+                        <div class="key-point" style="margin-top:1.25rem;">
+                            <div class="key-point-label">Worked Example &mdash; Choosing Storage</div>
+                            <p style="margin-bottom:0.5rem;"><strong>Scenario:</strong> A school needs to store 500&thinsp;GB of student records that must be kept for 7 years.</p>
+                            <ul style="margin-left:1.5rem;line-height:1.8;">
+                                <li><strong style="color:var(--accent-primary);">HDD:</strong> &#10003; Cheap at this capacity &bull; &#10003; 500&thinsp;GB easily available &bull; &#10007; Mechanical parts can fail over time</li>
+                                <li><strong style="color:var(--accent-primary);">SSD:</strong> &#10003; Faster access &bull; &#10003; More reliable (no moving parts) &bull; &#10007; More expensive per GB</li>
+                                <li><strong style="color:var(--accent-primary);">Optical (DVD):</strong> &#10007; Would need ~107 DVDs (4.7&thinsp;GB each) &mdash; not practical for this volume</li>
+                            </ul>
+                            <p style="margin-top:0.5rem;"><strong>Best choice:</strong> SSD for reliability over 7 years, or HDD if budget is limited.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -781,6 +886,13 @@
                                 <tr><td>Use case</td><td>Distributing finished software</td><td>Testing / development</td></tr>
                             </tbody>
                         </table>
+
+                        <div class="key-point" style="margin-top:1.25rem;">
+                            <div class="key-point-label">Exam Quick-Reference</div>
+                            <p style="margin-bottom:0.5rem;"><strong style="color:var(--accent-primary);">Compiler:</strong> Translates ALL at once &rarr; Creates executable file &rarr; Faster to run after compilation &rarr; Errors shown after full translation &rarr; Used for finished software (C++, Java)</p>
+                            <p style="margin-bottom:0.5rem;"><strong style="color:var(--accent-primary);">Interpreter:</strong> Translates ONE LINE at a time &rarr; No executable file created &rarr; Slower to run (translates every time) &rarr; Stops at first error (easier to debug) &rarr; Used for development/testing (Python)</p>
+                            <p><strong style="color:var(--accent-primary);">Assembler:</strong> Translates assembly language (low-level) into machine code &mdash; one-to-one mapping between instructions.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -837,8 +949,31 @@
                                 </table>
                             </div>
                         </div>
+
+                        <div class="key-point" style="margin-top:1.25rem;">
+                            <div class="key-point-label">Walkthrough &mdash; Combined Logic Circuit</div>
+                            <p style="margin-bottom:0.5rem;">Given inputs <strong>A = 1</strong> and <strong>B = 0</strong>:</p>
+                            <ul style="margin-left:1.5rem;line-height:2;">
+                                <li><code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">A AND B</code> = 1 AND 0 = <strong>0</strong></li>
+                                <li><code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">NOT B</code> = NOT 0 = <strong>1</strong></li>
+                                <li><code style="background:rgba(139,92,246,0.2);padding:0.15rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">(A AND B) OR (NOT B)</code> = 0 OR 1 = <strong>1</strong></li>
+                            </ul>
+                            <p style="margin-top:0.5rem;"><strong>Exam tip:</strong> Always work through each gate left-to-right, writing down intermediate values. Never try to do it all in your head &mdash; show your working!</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Exam Tips -->
+            <div class="key-point" style="margin-top:0.5rem;">
+                <div class="key-point-label">Key Exam Tips for Topic 3</div>
+                <ul style="margin-left:1.5rem;line-height:2;color:var(--text-secondary);">
+                    <li><strong>&ldquo;State&rdquo;</strong> questions need a one-word or short-phrase answer &mdash; don&rsquo;t over-explain.</li>
+                    <li><strong>&ldquo;Describe&rdquo;</strong> = say what it is + what it does (two parts).</li>
+                    <li><strong>&ldquo;Explain&rdquo;</strong> = describe + say WHY or HOW (add reasoning).</li>
+                    <li>For FDE questions, <strong>always mention specific register names</strong> (PC, MAR, MDR, ACC) &mdash; generic answers lose marks.</li>
+                    <li>Logic gate questions: <strong>draw truth tables systematically</strong> &mdash; don&rsquo;t skip rows. List all input combinations (00, 01, 10, 11).</li>
+                </ul>
             </div>
         </div>
 

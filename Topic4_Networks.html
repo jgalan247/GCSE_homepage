@@ -719,6 +719,95 @@
 
             <div class="card">
                 <div class="card-header">
+                    <div class="card-icon">&#127758;</div>
+                    <div class="card-title">Real-World Examples &amp; Analogies</div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Network Types &mdash; School Analogy <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong style="color:var(--accent-primary);">LAN (Local Area Network)</strong></p>
+                        <p style="margin:0.25rem 0 0.75rem 0;">Like your school&rsquo;s internal network &mdash; all computers in one building connected together, owned by the school. Uses Ethernet cables or WiFi.</p>
+
+                        <p><strong style="color:var(--accent-primary);">WAN (Wide Area Network)</strong></p>
+                        <p style="margin:0.25rem 0 0.75rem 0;">Like the internet connecting your school to schools across the country. Uses third-party infrastructure (BT, Virgin, etc.). The internet is the biggest WAN.</p>
+
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Real Example</div>
+                            <p>When you access Google from school, your school LAN connects to the WAN (internet) via a router. The router is the gateway between the two networks.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Topology Analogies <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong style="color:var(--accent-primary);">Star Topology</strong></p>
+                        <p style="margin:0.25rem 0 0.75rem 0;">Like a classroom where every student talks through the teacher (central switch/server). If one student is absent, others still work. If the teacher is absent, nobody communicates.</p>
+                        <div class="key-point" style="margin-bottom:1rem;">
+                            <div class="key-point-label">Real Example</div>
+                            <p>Most home WiFi networks are star &mdash; all devices connect to the router, which is the central point.</p>
+                        </div>
+
+                        <p><strong style="color:var(--accent-primary);">Bus Topology</strong></p>
+                        <p style="margin:0.25rem 0 0.75rem 0;">Like a single road where all houses share the same road. Cheap to set up, but if the road is blocked, nobody can travel. Data collisions happen when two devices transmit at once.</p>
+
+                        <p style="margin-top:0.75rem;"><strong style="color:var(--accent-primary);">Mesh Topology</strong></p>
+                        <p style="margin:0.25rem 0 0;">Like a group chat where everyone has everyone else&rsquo;s phone number. If one person&rsquo;s phone dies, everyone else can still message each other.</p>
+                        <div class="key-point" style="margin-top:1rem;">
+                            <div class="key-point-label">Real Example</div>
+                            <p>Smart home devices often use Zigbee mesh networks &mdash; each device relays signals to its neighbours, so even distant devices stay connected.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Client-Server vs Peer-to-Peer &mdash; Real Life <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p><strong style="color:var(--accent-primary);">Client-Server &rarr; Netflix</strong></p>
+                        <p style="margin:0.25rem 0 0.75rem 0;">You (client) request a film from Netflix&rsquo;s servers. The server stores everything centrally, manages security, and handles all requests.</p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li><strong>Advantages:</strong> Centrally managed, backed up, secure</li>
+                            <li><strong>Disadvantages:</strong> Expensive server hardware, single point of failure if the server goes down</li>
+                        </ul>
+
+                        <p><strong style="color:var(--accent-primary);">Peer-to-Peer &rarr; Bluetooth File Sharing</strong></p>
+                        <p style="margin:0.25rem 0 0.75rem 0;">Like sharing music files directly between friends&rsquo; phones via Bluetooth. Each device is equal &mdash; both client and server.</p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li><strong>Advantages:</strong> No central server needed, cheap to set up</li>
+                            <li><strong>Disadvantages:</strong> Hard to manage security, each device must be powerful enough to share resources</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Packet Switching &mdash; Post Office Analogy <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p>Sending data over a network is like posting a long letter that&rsquo;s been split into numbered postcards (packets):</p>
+                        <ol style="margin:0.75rem 0 1rem 1.5rem; line-height:1.8;">
+                            <li>Each postcard has: the <strong>destination address</strong> (IP), the <strong>return address</strong>, and a <strong>sequence number</strong>.</li>
+                            <li>The postcards might take <strong>different routes</strong> through the postal system (routers decide the best path based on traffic).</li>
+                            <li>At the destination, the postcards are put back in <strong>correct order</strong> using the sequence numbers.</li>
+                            <li>If any postcard is <strong>lost</strong>, the receiver asks for it to be <strong>resent</strong>.</li>
+                        </ol>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p>A packet contains: source IP address, destination IP address, sequence number (for reassembly), payload (the actual data), and a checksum (for error detection). Routers read the destination IP to decide where to forward each packet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
                     <div class="card-icon">&#128218;</div>
                     <div class="card-title">Detailed Notes</div>
                 </div>
@@ -812,6 +901,29 @@
 
                 <div class="accordion">
                     <div class="accordion-header" onclick="toggleAccordion(this)">
+                        Walkthrough &mdash; Sending an Email (Protocols in Action) <span class="accordion-arrow">&#9660;</span>
+                    </div>
+                    <div class="accordion-body">
+                        <p style="color:var(--text-secondary);margin-bottom:1rem;">Follow an email from sender to recipient to see how protocols work together:</p>
+                        <ol style="margin:0 0 1rem 1.5rem; line-height:2;">
+                            <li><strong>You compose an email in Gmail</strong> (application layer)</li>
+                            <li><strong>SMTP</strong> protocol packages your message and sends it to your email server</li>
+                            <li><strong>TCP</strong> breaks the email into packets, adds sequence numbers for reassembly</li>
+                            <li><strong>IP</strong> adds source and destination IP addresses to each packet</li>
+                            <li>Packets travel across the internet via <strong>routers</strong> (each router reads the IP and forwards the packet along the best route)</li>
+                            <li>At the destination, <strong>TCP reassembles</strong> packets in the correct order</li>
+                            <li>The recipient&rsquo;s email server receives the email via <strong>SMTP</strong></li>
+                            <li>When they open their inbox, <strong>POP3 or IMAP</strong> retrieves the email</li>
+                        </ol>
+                        <div class="key-point">
+                            <div class="key-point-label">Key Point</div>
+                            <p><strong>SMTP</strong> = sending emails &nbsp;&bull;&nbsp; <strong>POP3</strong> = downloading emails (deletes from server) &nbsp;&bull;&nbsp; <strong>IMAP</strong> = viewing/syncing emails (keeps on server). In exams, always name the specific protocol &mdash; don&rsquo;t just say &ldquo;a protocol.&rdquo;</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
                         TCP/IP 4-Layer Model Explained <span class="accordion-arrow">&#9660;</span>
                     </div>
                     <div class="accordion-body">
@@ -823,6 +935,15 @@
                             <div class="key-point-label">Key Point</div>
                             <p>Data moves down through the layers when sending (each layer adds its own header) and back up through the layers when receiving (each layer strips its header).</p>
                         </div>
+
+                        <p style="margin-top:1.5rem;"><strong style="color:var(--accent-primary);">Walkthrough &mdash; Loading a Webpage (www.bbc.co.uk):</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem; line-height:1.8;">
+                            <li><strong>Application Layer:</strong> Your browser sends an HTTP GET request for www.bbc.co.uk</li>
+                            <li><strong>Transport Layer:</strong> TCP breaks the request into packets, assigns port 80 (HTTP) or 443 (HTTPS)</li>
+                            <li><strong>Internet Layer:</strong> IP addresses are added (your IP &rarr; BBC server IP), routers forward packets across networks</li>
+                            <li><strong>Network Interface Layer:</strong> Data is converted to electrical signals on Ethernet cable or WiFi radio waves. MAC addresses used for local delivery.</li>
+                        </ul>
+                        <p style="margin-top:0.75rem;color:var(--text-secondary);font-size:0.9rem;">The BBC server processes the request, and the webpage data travels back through the same 4 layers in reverse.</p>
                     </div>
                 </div>
 
@@ -849,8 +970,36 @@
                             <li><strong>Anti-malware software</strong> &mdash; Scans for and removes malicious software.</li>
                             <li><strong>Input validation</strong> &mdash; Checking user input to prevent SQL injection attacks.</li>
                         </ul>
+
+                        <p style="margin-top:1.5rem;"><strong style="color:var(--accent-primary);">Real-World Cyber Attack Examples:</strong></p>
+                        <ul style="margin:0.5rem 0 1rem 1.5rem;">
+                            <li><strong>Phishing:</strong> In 2020, Twitter employees were tricked by phone phishing, leading to hackers accessing celebrity accounts (Barack Obama, Elon Musk) and posting Bitcoin scam tweets.</li>
+                            <li><strong>SQL Injection:</strong> Hackers insert code like <code style="background:var(--bg-card);padding:0.1rem 0.4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--error);">' OR 1=1 --</code> into a login form to bypass authentication and access the entire database.</li>
+                            <li><strong>Brute Force:</strong> Trying every possible password combination. A 4-digit PIN has 10,000 combinations &mdash; a computer can try all of them in seconds.</li>
+                            <li><strong>DDoS (Distributed Denial of Service):</strong> Thousands of compromised computers (a botnet) flood a website with requests until it crashes and becomes unavailable.</li>
+                            <li><strong>Malware types:</strong> Virus (attaches to files, spreads when run), Worm (self-replicates across networks without user action), Trojan (disguised as legitimate software), Ransomware (encrypts files, demands payment to unlock).</li>
+                        </ul>
+
+                        <p><strong style="color:var(--accent-primary);">Protection Methods &mdash; Explained with Analogies:</strong></p>
+                        <ul style="margin:0.5rem 0 0 1.5rem;">
+                            <li><strong>Firewall:</strong> Monitors all incoming/outgoing traffic, blocks suspicious connections &mdash; like a security guard checking IDs at the door.</li>
+                            <li><strong>Encryption:</strong> Scrambles data so intercepted messages are unreadable &mdash; like writing in a secret code only the recipient knows.</li>
+                            <li><strong>Anti-malware:</strong> Scans files for known virus signatures and suspicious behaviour, quarantines threats.</li>
+                            <li><strong>Access controls:</strong> Usernames, passwords, and biometrics limit who can access what resources.</li>
+                            <li><strong>Penetration testing:</strong> Hiring ethical hackers to find vulnerabilities before criminals do.</li>
+                            <li><strong>Network policies:</strong> Rules about password length, software installation, USB device usage, and acceptable use.</li>
+                        </ul>
                     </div>
                 </div>
+            </div>
+
+            <div class="key-point" style="margin-top:1.5rem;">
+                <div class="key-point-label">&#128161; Key Exam Tips for Topic 4</div>
+                <p style="margin-bottom:0.5rem;">&#8226; When comparing topologies, give <strong>specific</strong> advantages/disadvantages &mdash; don&rsquo;t just say &ldquo;more reliable.&rdquo; Say <em>why</em> it is more reliable.</p>
+                <p style="margin-bottom:0.5rem;">&#8226; For protocol questions, name the <strong>specific protocol</strong> (HTTP, SMTP, TCP, IP) &mdash; don&rsquo;t just say &ldquo;a protocol.&rdquo;</p>
+                <p style="margin-bottom:0.5rem;">&#8226; Packet switching questions should mention: <strong>packets</strong>, <strong>different routes</strong>, <strong>sequence numbers</strong>, and <strong>reassembly</strong> at the destination.</p>
+                <p style="margin-bottom:0.5rem;">&#8226; Security questions often ask for <strong>TWO methods</strong> &mdash; have several ready: firewall, encryption, anti-malware, authentication, penetration testing.</p>
+                <p>&#8226; Remember: <strong>LAN</strong> = small area (one site), <strong>WAN</strong> = large area (multiple sites, uses third-party links).</p>
             </div>
         </div>
 
